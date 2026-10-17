@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tıbbi Araçlar</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+:root{--bg:#f3f6f8;--surface:#fff;--fg:#14222b;--muted:#5b6b75;--line:#d8e0e5;--accent:#0f6e8c;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif}
+@media (prefers-color-scheme: dark){:root{--bg:#0e171c;--surface:#16232a;--fg:#e4ecf0;--muted:#93a5af;--line:#2a3a43;--accent:#4fb3d1;color-scheme:dark}}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+h1{font-size:1.6rem;margin:0}
+.sub{margin:0;color:var(--muted);font-size:.92rem}
+a.tool{display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;color:var(--fg);
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+a.tool:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+a.tool strong{display:block;font-size:1.1rem}
+a.tool span{color:var(--muted);font-size:.9rem}
+a.tool .go{color:var(--accent);font-size:1.4rem;font-weight:700}
+.note{font-size:.82rem;color:var(--muted);margin:8px 0 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tıbbi Araçlar</h1>
+  <p class="sub">Dahiliye pratiği için hesaplayıcılar</p>
+  <a class="tool" href="egfr.html">
+    <div><strong>eGFR</strong><span>CKD-EPI 2021 ve KDIGO G evresi</span></div>
+    <div class="go">›</div>
+  </a>
+  <p class="note">Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz.</p>
+</div>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
+</body>
+</html>

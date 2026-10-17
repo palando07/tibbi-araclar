@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>eGFR Hesaplayıcı</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+/* Layout: tek sütun klinik kart; üstte giriş alanları, altta büyük sonuç ve KDIGO G-evresi şeridi */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#0f6e8c; --accent-soft:#e2f0f4;
+  --g1:#2e8b57; --g2:#7aa83a; --g3a:#d9a21b; --g3b:#e07b24; --g4:#d24b32; --g5:#9b2335;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#4fb3d1; --accent-soft:#183540; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#4fb3d1; --accent-soft:#183540; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.field{display:flex;flex-direction:column;gap:6px}
+label,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.row{display:flex;gap:10px;align-items:stretch}
+input[type=number]{flex:1;min-width:0;font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg)}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.err{color:var(--g4);font-size:.85rem;min-height:1.2em;margin:0}
+.result{display:flex;flex-direction:column;gap:14px}
+.big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.big .num{font:700 3.2rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.big .unit{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.stage-text{margin:0;font-size:.98rem}
+.scale{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;position:relative}
+.scale div{height:10px;border-radius:3px;opacity:.35}
+.scale div.on{opacity:1}
+.ticks{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;font:500 .72rem var(--font-num);color:var(--muted);text-align:center}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+code{font-family:var(--font-num);font-size:.82rem;background:var(--accent-soft);padding:1px 5px;border-radius:4px;word-break:break-word}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+td:first-child{font-family:var(--font-num);font-weight:700;white-space:nowrap}
+@media (prefers-reduced-motion:no-preference){.scale div{transition:opacity .2s}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Tıbbi Araçlar</a>
+    <h1>eGFR Hesaplayıcı</h1>
+    <p>CKD-EPI 2021 (ırk katsayısız) formülü, erişkin hastalar için</p>
+  </header>
+
+  <form class="card" id="form" novalidate>
+    <div class="field">
+      <label for="scr">Serum kreatinin</label>
+      <div class="row">
+        <input id="scr" type="number" inputmode="decimal" step="0.01" min="0" value="1.2">
+        <div class="seg" role="group" aria-label="Kreatinin birimi">
+          <button type="button" id="u-mg" aria-pressed="true">mg/dL</button>
+          <button type="button" id="u-um" aria-pressed="false">µmol/L</button>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label for="age">Yaş (yıl)</label>
+      <input id="age" type="number" inputmode="numeric" step="1" min="18" max="120" value="65">
+    </div>
+    <div class="field">
+      <span class="lbl" id="sexlbl">Cinsiyet</span>
+      <div class="seg" role="group" aria-labelledby="sexlbl">
+        <button type="button" id="s-f" aria-pressed="true">Kadın</button>
+        <button type="button" id="s-m" aria-pressed="false">Erkek</button>
+      </div>
+    </div>
+    <p class="err" id="err" aria-live="polite"></p>
+  </form>
+
+  <section class="card result" aria-live="polite">
+    <span class="lbl">Tahmini GFR</span>
+    <div class="big"><span class="num" id="out">–</span><span class="unit">mL/dk/1,73 m²</span></div>
+    <div><span class="pill" id="pill">–</span></div>
+    <p class="stage-text" id="stagetext"></p>
+    <div>
+      <div class="scale" id="scale">
+        <div style="background:var(--g5)"></div><div style="background:var(--g4)"></div>
+        <div style="background:var(--g3b)"></div><div style="background:var(--g3a)"></div>
+        <div style="background:var(--g2)"></div><div style="background:var(--g1)"></div>
+      </div>
+      <div class="ticks"><span>G5</span><span>G4</span><span>G3b</span><span>G3a</span><span>G2</span><span>G1</span></div>
+    </div>
+    <p class="note">Değerler örnek olarak doldurulmuştur. Kendi hastanızın değerlerini girdiğinizde sonuç anında güncellenir.</p>
+  </section>
+
+  <section class="card">
+    <details>
+      <summary>KDIGO GFR evreleri</summary>
+      <table>
+        <tr><td>G1</td><td>≥ 90</td><td>Normal veya yüksek</td></tr>
+        <tr><td>G2</td><td>60–89</td><td>Hafif azalmış</td></tr>
+        <tr><td>G3a</td><td>45–59</td><td>Hafif-orta azalmış</td></tr>
+        <tr><td>G3b</td><td>30–44</td><td>Orta-ağır azalmış</td></tr>
+        <tr><td>G4</td><td>15–29</td><td>Ağır azalmış</td></tr>
+        <tr><td>G5</td><td>&lt; 15</td><td>Böbrek yetmezliği</td></tr>
+      </table>
+      <p>G1 ve G2, böbrek hasarı bulgusu (ör. albüminüri) yoksa KBH tanısı koydurmaz.</p>
+    </details>
+    <details>
+      <summary>Formül</summary>
+      <p><code>eGFR = 142 × min(SCr/κ, 1)^α × max(SCr/κ, 1)^−1,200 × 0,9938^yaş × 1,012 [kadın]</code></p>
+      <p>κ: kadında 0,7, erkekte 0,9. α: kadında −0,241, erkekte −0,302. SCr mg/dL cinsindendir (µmol/L ÷ 88,4).</p>
+      <p>Kaynak: Inker LA ve ark., N Engl J Med 2021;385:1737–49.</p>
+    </details>
+    <p class="note">Bu araç klinik karar desteği içindir; akut böbrek hasarında, gebelikte, aşırı kas kütlesi veya ampütasyonda formül güvenilir değildir.</p>
+  </section>
+</div>
+
+<script>
+(function(){
+  var unit='mg', sex='f';
+  var $=function(id){return document.getElementById(id)};
+  var colors={G1:'--g1',G2:'--g2',G3a:'--g3a',G3b:'--g3b',G4:'--g4',G5:'--g5'};
+  var texts={G1:'Normal veya yüksek',G2:'Hafif azalmış',G3a:'Hafif-orta derecede azalmış',G3b:'Orta-ağır derecede azalmış',G4:'Ağır derecede azalmış',G5:'Böbrek yetmezliği'};
+  var order=['G5','G4','G3b','G3a','G2','G1'];
+
+  function egfr(scrMg, age, female){
+    var k=female?0.7:0.9, a=female?-0.241:-0.302, r=scrMg/k;
+    return 142*Math.pow(Math.min(r,1),a)*Math.pow(Math.max(r,1),-1.2)*Math.pow(0.9938,age)*(female?1.012:1);
+  }
+  function stage(g){return g>=90?'G1':g>=60?'G2':g>=45?'G3a':g>=30?'G3b':g>=15?'G4':'G5'}
+
+  function setSeg(a,b,on){$(a).setAttribute('aria-pressed',on);$(b).setAttribute('aria-pressed',!on)}
+
+  function calc(){
+    var scr=parseFloat($('scr').value), age=parseFloat($('age').value), err='';
+    if(!(scr>0)) err='Kreatinin değerini girin (0’dan büyük olmalı).';
+    else if(!(age>=18&&age<=120)) err='Yaş 18 ile 120 arasında olmalı; formül erişkinler içindir.';
+    $('err').textContent=err;
+    var cells=$('scale').children;
+    if(err){$('out').textContent='–';$('pill').textContent='–';$('pill').style.background='var(--muted)';$('stagetext').textContent='';
+      for(var i=0;i<cells.length;i++)cells[i].className='';return}
+    var mg=unit==='mg'?scr:scr/88.4;
+    var g=egfr(mg,age,sex==='f'), s=stage(g);
+    $('out').textContent=Math.round(g);
+    $('pill').textContent=s;
+    $('pill').style.background='var('+colors[s]+')';
+    $('stagetext').textContent=texts[s]+' GFR.';
+    for(var j=0;j<cells.length;j++)cells[j].className=order[j]===s?'on':'';
+  }
+
+  $('u-mg').onclick=function(){if(unit!=='mg'){var v=parseFloat($('scr').value);if(v>0)$('scr').value=(v/88.4).toFixed(2);unit='mg';setSeg('u-mg','u-um',true);$('scr').step='0.01';calc()}};
+  $('u-um').onclick=function(){if(unit!=='um'){var v=parseFloat($('scr').value);if(v>0)$('scr').value=Math.round(v*88.4);unit='um';setSeg('u-um','u-mg',true);$('scr').step='1';calc()}};
+  $('s-f').onclick=function(){sex='f';setSeg('s-f','s-m',true);calc()};
+  $('s-m').onclick=function(){sex='m';setSeg('s-m','s-f',true);calc()};
+  $('scr').oninput=calc;$('age').oninput=calc;
+  $('form').onsubmit=function(e){e.preventDefault()};
+  calc();
+})();
+</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
+</body>
+</html>
