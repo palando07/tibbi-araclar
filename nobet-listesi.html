@@ -81,7 +81,7 @@ details p{margin:8px 0 0}
   </header>
   <section class="card" id="kur">
     <h2>Ayrı uygulama olarak ekleyin</h2>
-    <p class="note">Nöbet listesini ana ekranınıza kendi simgesiyle ekleyebilirsiniz. Kayıtlarınız aynı kalır.<br>
+    <p class="note">Nöbet listesini ana ekranınıza kendi simgesiyle ekleyebilirsiniz. iPhone'da yeni simgedeki liste boş başlar; Android'de kayıtlarınız aynı kalır.<br>
     <b>iPhone (Safari):</b> Paylaş düğmesi → Ana Ekrana Ekle.<br>
     <b>Android (Chrome):</b> sağ üstteki ⋮ menüsü → Ana ekrana ekle veya Uygulamayı yükle.</p>
     <button type="button" class="btn ghost" id="kur-kapat">Tamam, gizle</button>
@@ -119,6 +119,9 @@ details summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:.9r
 .chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 11px;font:500 .85rem var(--font-body);cursor:pointer}
 .empty{color:var(--muted);text-align:center;margin:8px 0}
 .confirm{display:flex;flex-direction:column;gap:10px;border:1px solid var(--high);border-radius:10px;padding:12px}
+textarea{font:500 .95rem var(--font-body);padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0;resize:vertical}
+textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn:disabled{opacity:.5;cursor:default}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:.9rem}
 </style>
   <section class="card">
@@ -128,8 +131,17 @@ details summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:.9r
       <div><b id="n-crit">0</b><span>kritik hasta</span></div>
     </div>
     <div class="row" style="flex-wrap:wrap">
-      <button type="button" class="btn ghost" id="b-copy">Devir metnini kopyala</button>
+      <button type="button" class="btn ghost" id="b-share">Devret (paylaş)</button>
+      <button type="button" class="btn ghost" id="b-copy">Kopyala</button>
+      <button type="button" class="btn ghost" id="b-in">Devir al</button>
       <button type="button" class="btn ghost" id="b-clear">Nöbeti bitir</button>
+    </div>
+    <div class="confirm" id="imp" hidden style="border-color:var(--accent)">
+      <label for="imp-t" class="advice" style="font-weight:600">Önceki nöbetçinin gönderdiği devir metnini yapıştırın</label>
+      <textarea id="imp-t" rows="7" placeholder="Nöbet devri – …&#10;Yatak 12 (A.K.) – KRİTİK: Pnömoni&#10;  [ ] K kontrolü"></textarea>
+      <p class="note" id="imp-s"></p>
+      <div class="row" style="flex-wrap:wrap"><button type="button" class="btn" id="imp-ok" disabled>Listeye ekle</button><button type="button" class="btn ghost" id="imp-no">Vazgeç</button></div>
+      <p class="note">Aynı yatak numarası listenizde varsa o hasta gelen bilgiyle güncellenir. Tamamlanmış işler aktarılmaz.</p>
     </div>
     <div class="confirm" id="confirm" hidden>
       <p class="advice">Tüm hastalar ve yapılacaklar bu telefondan silinecek. Geri alınamaz.</p>
@@ -236,13 +248,44 @@ details summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:.9r
       if(!p.tasks.length)lines.push('  Bekleyen iş yok');lines.push('')});
     return lines.join('\n').trim();
   }
+  // Devir metnini geri okur: "Yatak 12 (A.K.) – KRİTİK: not" ve altında "[ ] iş" satırları
+  function parse(txt){
+    var out=[],cur=null;
+    txt.replace(/\r/g,'').split('\n').forEach(function(line){
+      var l=line.trim();if(!l)return;
+      var m=l.match(/^Yatak\s+([^\s:(]+)(?:\s*\(([^)]*)\))?(?:\s*[–-]\s*(STAB[İI]L|D[İI]KKAT|KR[İI]T[İI]K))?(?:\s*:\s*(.*))?$/i);
+      if(m){var pr=m[3]?(/KR/i.test(m[3])?2:/KK/i.test(m[3])?1:0):0;
+        cur={bed:m[1].slice(0,8),ini:(m[2]||'').slice(0,5),dx:(m[4]||'').replace(/\b\d{11}\b/g,'').trim().slice(0,80),pr:pr,tasks:[]};out.push(cur);return}
+      var t=l.match(/^\[( |x|X)?\]\s*(.+)$/);
+      if(t&&cur&&!(t[1]&&t[1].trim()))cur.tasks.push({id:id(),t:t[2].slice(0,80),d:false});
+    });
+    return out;
+  }
+  var pending=[];
+  $('b-in').onclick=function(){$('imp').hidden=false;$('confirm').hidden=true;$('imp-t').focus()};
+  $('imp-no').onclick=function(){$('imp').hidden=true;$('imp-t').value='';pending=[];$('imp-s').textContent='';$('imp-ok').disabled=true};
+  $('imp-t').oninput=function(){pending=parse($('imp-t').value);var n=0;pending.forEach(function(p){n+=p.tasks.length});
+    $('imp-s').textContent=pending.length?pending.length+' hasta, '+n+' bekleyen iş bulundu.':($('imp-t').value.trim()?'Metinde "Yatak …" ile başlayan satır bulunamadı.':'');
+    $('imp-ok').disabled=!pending.length};
+  $('imp-ok').onclick=function(){
+    var add=0,upd=0;
+    pending.forEach(function(q){var ex=data.patients.filter(function(p){return p.bed===q.bed})[0];
+      if(ex){ex.ini=q.ini||ex.ini;ex.dx=q.dx||ex.dx;ex.pr=q.pr;var have={};ex.tasks.forEach(function(t){have[t.t]=1});q.tasks.forEach(function(t){if(!have[t.t])ex.tasks.push(t)});upd++}
+      else{q.id=id();data.patients.push(q);add++}});
+    save();render();$('imp-no').onclick();toast(add+' hasta eklendi'+(upd?', '+upd+' güncellendi':''));
+  };
+  $('b-share').onclick=function(){
+    if(!data.patients.length){toast('Listede hasta yok');return}
+    var t=handoff();
+    if(navigator.share)navigator.share({text:t}).catch(function(){});else $('b-copy').onclick();
+  };
   $('b-copy').onclick=function(){
     if(!data.patients.length){toast('Listede hasta yok');return}
     var t=handoff();
     function fb(){var ta=el('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Devir metni kopyalandı')}catch(e){}document.body.removeChild(ta)}
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast('Devir metni kopyalandı')},fb);else fb();
   };
-  $('b-clear').onclick=function(){$('confirm').hidden=false};
+  $('b-clear').onclick=function(){$('confirm').hidden=false;$('imp').hidden=true};
   $('b-clear-no').onclick=function(){$('confirm').hidden=true};
   $('b-clear-yes').onclick=function(){data={patients:[]};save();render();$('confirm').hidden=true;toast('Liste temizlendi')};
   save();render();
