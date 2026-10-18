@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Elektrolit Hesaplamaları</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+/* Layout: tek sütun; üstte laboratuvar değerleri ızgarası, altta her hesaplamanın sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#0f6e8c; --accent-soft:#e2f0f4;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#4fb3d1; --accent-soft:#183540; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#4fb3d1; --accent-soft:#183540; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.card h2{margin:0;font-size:1.15rem}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400;text-transform:none}
+input[type=number]{font:600 1.2rem var(--font-num);padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.res{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.res .num{font:700 2.4rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .unit{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-weight:700;font-size:.82rem;color:#fff}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.advice{margin:0;font-size:.95rem}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Tıbbi Araçlar</a>
+    <h1>Elektrolit Hesaplamaları</h1>
+    <p>Düzeltilmiş kalsiyum, anyon açığı ve hiperglisemide düzeltilmiş sodyum</p>
+  </header>
+
+  <section class="card">
+    <h2>Laboratuvar değerleri</h2>
+    <div class="grid">
+      <div class="field"><label for="na">Sodyum <span>mEq/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="132"></div>
+      <div class="field"><label for="cl">Klor <span>mEq/L</span></label><input id="cl" type="number" inputmode="decimal" step="any" value="98"></div>
+      <div class="field"><label for="hco3">Bikarbonat <span>mEq/L</span></label><input id="hco3" type="number" inputmode="decimal" step="any" value="14"></div>
+      <div class="field"><label for="alb">Albümin <span>g/dL</span></label><input id="alb" type="number" inputmode="decimal" step="any" value="2.5"></div>
+      <div class="field"><label for="ca">Total kalsiyum <span>mg/dL</span></label><input id="ca" type="number" inputmode="decimal" step="any" value="8.0"></div>
+      <div class="field"><label for="glu">Glukoz <span>mg/dL</span></label><input id="glu" type="number" inputmode="decimal" step="any" value="450"></div>
+    </div>
+    <p class="note">Değerler örnek olarak doldurulmuştur. Boş bıraktığınız değere bağlı hesaplama gösterilmez.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Düzeltilmiş kalsiyum</h2>
+    <div class="res"><span class="num" id="cca">–</span><span class="unit">mg/dL</span><span class="pill" id="cca-pill"></span></div>
+    <p class="f">Ca + 0,8 × (4 − albümin)</p>
+    <p class="note">Ciddi hipoalbüminemi, böbrek yetmezliği ve asit-baz bozukluğunda tahmini zayıftır; şüphede iyonize kalsiyum ölçün.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Anyon açığı</h2>
+    <div class="res"><span class="num" id="ag">–</span><span class="unit">mEq/L</span><span class="pill" id="ag-pill"></span></div>
+    <div class="sub"><span>Albümine göre düzeltilmiş</span><b id="cag">–</b></div>
+    <div class="sub" id="dr-row"><span>Delta oranı</span><b id="dr">–</b></div>
+    <p class="advice" id="dr-txt"></p>
+    <p class="f">Na − (Cl + HCO₃) · düzeltilmiş: + 2,5 × (4 − albümin) · delta oranı: (AA − 12) / (24 − HCO₃)</p>
+    <p class="note">Normal aralık laboratuvara göre değişir; burada 8–12 mEq/L alınmıştır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Düzeltilmiş sodyum</h2>
+    <div class="res"><span class="num" id="cna">–</span><span class="unit">mEq/L</span><span class="pill" id="cna-pill"></span></div>
+    <div class="sub"><span>Katz katsayısıyla (1,6)</span><b id="cna16">–</b></div>
+    <p class="f">Na + 2,4 × (glukoz − 100) / 100 (Hillier) · Na + 1,6 × (glukoz − 100) / 100 (Katz)</p>
+    <p class="note">Büyük sonuç Hillier katsayısıyla hesaplanır; glukoz 400 mg/dL üzerindeyken daha doğrudur.</p>
+  </section>
+
+  <p class="note">Kaynaklar: Payne RB, BMJ 1973 (kalsiyum); Figge J, Crit Care Med 1998 (albümin düzeltmesi); Hillier TA, Am J Med 1999 (sodyum). Bu araç klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz.</p>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+
+  function calc(){
+    var na=v('na'),cl=v('cl'),hco3=v('hco3'),alb=v('alb'),ca=v('ca'),glu=v('glu');
+
+    if(ca!==null&&alb!==null){
+      var c=ca+0.8*(4-alb);$('cca').textContent=f1(c);
+      c<8.5?pill('cca-pill','Düşük','var(--low)'):c>10.5?pill('cca-pill','Yüksek','var(--high)'):pill('cca-pill','Normal','var(--ok)');
+    }else{$('cca').textContent='–';pill('cca-pill','')}
+
+    if(na!==null&&cl!==null&&hco3!==null){
+      var ag=na-(cl+hco3);$('ag').textContent=f1(ag);
+      var cag=alb!==null?ag+2.5*(4-alb):ag;
+      $('cag').textContent=alb!==null?f1(cag)+' mEq/L':'albümin girin';
+      cag>12?pill('ag-pill','Yüksek','var(--high)'):cag<8?pill('ag-pill','Düşük','var(--low)'):pill('ag-pill','Normal','var(--ok)');
+      if(cag>12&&hco3<24){
+        var dr=(cag-12)/(24-hco3);$('dr').textContent=f1(dr);$('dr-row').hidden=false;
+        $('dr-txt').textContent=dr<1?'Delta oranı < 1: yüksek anyon açıklı asidoza eşlik eden normal anyon açıklı asidoz düşünülebilir.'
+          :dr>2?'Delta oranı > 2: eşlik eden metabolik alkaloz veya önceden var olan yüksek bikarbonat düşünülebilir.'
+          :'Delta oranı 1–2: saf yüksek anyon açıklı metabolik asidozla uyumlu.';
+      }else{$('dr-row').hidden=true;$('dr-txt').textContent=''}
+    }else{$('ag').textContent='–';$('cag').textContent='–';pill('ag-pill','');$('dr-row').hidden=true;$('dr-txt').textContent=''}
+
+    if(na!==null&&glu!==null){
+      var ex=Math.max(glu-100,0)/100, h=na+2.4*ex, k=na+1.6*ex;
+      $('cna').textContent=f1(h);$('cna16').textContent=f1(k)+' mEq/L';
+      h<135?pill('cna-pill','Hiponatremi','var(--low)'):h>145?pill('cna-pill','Hipernatremi','var(--high)'):pill('cna-pill','Normal','var(--ok)');
+    }else{$('cna').textContent='–';$('cna16').textContent='–';pill('cna-pill','')}
+  }
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc)});
+  calc();
+})();
+</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
+</body>
+</html>
