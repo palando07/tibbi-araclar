@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>STOP-BANG</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Tıbbi Araçlar</a>
+    <h1>STOP-BANG</h1>
+    <p>Obstrüktif uyku apnesi riski</p>
+  </header>
+
+  <section class="card">
+    <div class="items">
+      <label class="item"><input type="checkbox" id="s" data-p="1" checked><span class="txt">Horlama<small>yüksek sesle, kapalı kapıdan duyulacak kadar</small></span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="t" data-p="1"><span class="txt">Yorgunluk<small>gündüz sık yorgunluk veya uyuklama</small></span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="o" data-p="1"><span class="txt">Gözlenen apne<small>uykuda solunumun durduğu gözlenmiş</small></span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="p" data-p="1" checked><span class="txt">Hipertansiyon<small>tedavi alıyor veya tansiyonu yüksek</small></span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="b" data-p="1"><span class="txt">VKİ &gt; 35 kg/m²</span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="a" data-p="1" checked><span class="txt">Yaş &gt; 50</span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="n" data-p="1"><span class="txt">Boyun çevresi &gt; 40 cm</span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="g" data-p="1" checked><span class="txt">Erkek cinsiyet</span><span class="pts">+1</span></label>
+    </div>
+    <p class="note">Örnek olarak dört madde işaretlenmiştir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">STOP-BANG</span>
+    <div class="res"><span class="num" id="sc">–</span><span class="of">/ 8</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="adv"></p>
+    <p class="note">0–2 düşük, 3–4 orta, 5–8 yüksek risk. STOP sorularından ≥ 2 pozitif ve erkek cinsiyet, VKİ &gt; 35 veya boyun &gt; 40 cm'den biri varsa da yüksek risk kabul edilir. Kaynak: Chung F ve ark., Chest 2016.</p>
+  </section>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  function calc(){
+    var c=function(id){return $(id).checked?1:0};
+    var stop=c('s')+c('t')+c('o')+c('p'), s=stop+c('b')+c('a')+c('n')+c('g');
+    $('sc').textContent=s;
+    var hi=s>=5||(stop>=2&&(c('g')||c('b')||c('n')));
+    if(hi){pill('pl','Yüksek risk','var(--high)');$('adv').textContent='Orta-ağır uyku apnesi olasılığı yüksek. Polisomnografi için yönlendirin; anestezi öncesi bildirin.'}
+    else if(s>=3){pill('pl','Orta risk','var(--warn)');$('adv').textContent='Uyku apnesi açısından değerlendirme düşünülebilir.'}
+    else{pill('pl','Düşük risk','var(--ok)');$('adv').textContent='Orta-ağır uyku apnesi olasılığı düşük.'}
+  }
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

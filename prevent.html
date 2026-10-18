@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PREVENT Risk Hesaplayıcı</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Tıbbi Araçlar</a>
+    <h1>PREVENT Risk Hesaplayıcı</h1>
+    <p>AHA PREVENT: 10 yıllık kardiyovasküler hastalık, ASKVH ve kalp yetmezliği riski</p>
+  </header>
+
+  <section class="card">
+    <div class="grid">
+      <div class="field"><label for="age">Yaş <span>30–79</span></label><input id="age" type="number" inputmode="numeric" step="1" value="55"></div>
+      <div class="field"><label for="sbp">Sistolik tansiyon <span>mmHg</span></label><input id="sbp" type="number" inputmode="numeric" step="1" value="140"></div>
+      <div class="field"><label for="tc">Total kolesterol <span>mg/dL</span></label><input id="tc" type="number" inputmode="decimal" step="any" value="213"></div>
+      <div class="field"><label for="hdl">HDL kolesterol <span>mg/dL</span></label><input id="hdl" type="number" inputmode="decimal" step="any" value="50"></div>
+      <div class="field"><label for="bmi">VKİ <span>kg/m²</span></label><input id="bmi" type="number" inputmode="decimal" step="any" value="30"></div>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" type="number" inputmode="decimal" step="any" value="90"></div>
+    </div>
+    <div class="field"><span class="lbl">Cinsiyet</span><div class="seg wrapseg"><button type="button" data-g="sex" data-v="m" aria-pressed="true">Erkek</button><button type="button" data-g="sex" data-v="f" aria-pressed="false">Kadın</button></div></div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="dm" data-p="" checked><span class="txt">Diabetes mellitus</span></label>
+      <label class="item"><input type="checkbox" id="smk" data-p=""><span class="txt">Aktif sigara içiciliği</span></label>
+      <label class="item"><input type="checkbox" id="bpm" data-p=""><span class="txt">Antihipertansif kullanıyor</span></label>
+      <label class="item"><input type="checkbox" id="st" data-p=""><span class="txt">Statin kullanıyor</span></label>
+    </div>
+    <p class="note" id="range"></p>
+    <p class="note">Değerler örnek olarak doldurulmuştur. eGFR için menüdeki eGFR hesaplayıcısını kullanabilirsiniz.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">10 yıllık kardiyovasküler hastalık riski</span>
+    <div class="res"><span class="num" id="cvd">–</span><span class="of">%</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="adv"></p>
+    <div class="sub"><span>Aterosklerotik KVH (ASKVH)</span><b id="ascvd">–</b></div>
+    <div class="sub"><span>Kalp yetmezliği</span><b id="hf">–</b></div>
+    <p class="note">Toplam KVH = ASKVH (koroner kalp hastalığı, inme) + kalp yetmezliği. Risk sınıfları: &lt; %5 düşük, %5–7,4 sınırda, %7,5–19,9 orta, ≥ %20 yüksek. Taban (base) model kullanılır; HbA1c, idrar albümin/kreatinin oranı ve sosyal yoksunluk indeksi dahil değildir. PREVENT, eski Pooled Cohort skoruna göre genellikle daha düşük risk verir; statin eşikleri henüz PREVENT'e göre güncellenmemiştir. Kaynak: Khan SS ve ark., Circulation 2024;149:430–449; 2025 AHA/ACC Hipertansiyon Kılavuzu.</p>
+  </section>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var K={cvd:{f:[-3.307728,0.7939329,0.0305239,-0.1606857,-0.2394003,0.360078,0.8667604,0.5360739,0.6045917,0.0433769,0.3151672,-0.1477655,-0.0663612,0.1197879,-0.0819715,0.0306769,-0.0946348,-0.27057,-0.078715,-0.1637806],
+               m:[-3.031168,0.7688528,0.0736174,-0.0954431,-0.4347345,0.3362658,0.7692857,0.4386871,0.5378979,0.0164827,0.288879,-0.1337349,-0.0475924,0.150273,-0.0517874,0.0191169,-0.1049477,-0.2251948,-0.0895067,-0.1543702]},
+         ascvd:{f:[-3.819975,0.719883,0.1176967,-0.151185,-0.0835358,0.3592852,0.8348585,0.4831078,0.4864619,0.0397779,0.2265309,-0.0592374,-0.0395762,0.0844423,-0.0567839,0.0325692,-0.1035985,-0.2417542,-0.0791142,-0.1671492],
+               m:[-3.500655,0.7099847,0.1658663,-0.1144285,-0.2837212,0.3239977,0.7189597,0.3956973,0.3690075,0.0203619,0.2036522,-0.0865581,-0.0322916,0.114563,-0.0300005,0.0232747,-0.0927024,-0.2018525,-0.0970527,-0.1217081]},
+         hf:{f:[-4.310409,0.8998235,-0.4559771,0.3576505,1.038346,0.583916,-0.0072294,0.2997706,0.7451638,0.0557087,0.3534442,-0.0981511,-0.0946663,-0.3581041,-0.1159453,-0.003878,-0.1884289],
+             m:[-3.946391,0.8972642,-0.6811466,0.3634461,0.923776,0.5023736,-0.0485841,0.3726929,0.6926917,0.0251827,0.2980922,-0.0497731,-0.1289201,-0.3040924,-0.1401688,0.0068126,-0.1797778]}};
+  function dot(c,x){var s=0;for(var i=0;i<c.length;i++)s+=c[i]*x[i];return 100/(1+Math.exp(-s))}
+  function calc(){
+    var age=v('age'),sbp=v('sbp'),tc=v('tc'),hdl=v('hdl'),bmi=v('bmi'),egfr=v('egfr'),sx=segVal('sex');
+    var dm=$('dm').checked?1:0,smk=$('smk').checked?1:0,bpm=$('bpm').checked?1:0,st=$('st').checked?1:0;
+    if([age,sbp,tc,hdl,bmi,egfr].some(function(x){return x===null})){['cvd','ascvd','hf'].forEach(function(i){$(i).textContent='–'});pill('pl','');$('adv').textContent='Tüm değerleri girin.';return}
+    var out=[];if(age<30||age>79)out.push('yaş 30–79');if(tc<130||tc>320)out.push('total kolesterol 130–320');if(hdl<20||hdl>100)out.push('HDL 20–100');
+    if(sbp<90||sbp>200)out.push('sistolik 90–200');if(bmi<18.5||bmi>39.9)out.push('VKİ 18,5–39,9');if(egfr<15||egfr>140)out.push('eGFR 15–140');
+    $('range').textContent=out.length?'Uyarı: formül şu aralıklarda geliştirilmiştir: '+out.join(', ')+'. Sonuç güvenilir olmayabilir.':'';
+    var a=(age-55)/10, nh=(tc-hdl)*0.02586-3.5, h=(hdl*0.02586-1.3)/0.3, sl=(Math.min(sbp,110)-110)/20, sh=(Math.max(sbp,110)-130)/20,
+        el=(Math.min(egfr,60)-60)/-15, eh=(Math.max(egfr,60)-90)/-15, bl=(Math.min(bmi,30)-25)/5, bh=(Math.max(bmi,30)-30)/5;
+    var x=[1,a,nh,h,sl,sh,dm,smk,el,eh,bpm,st,bpm*sh,st*nh,a*nh,a*h,a*sh,a*dm,a*smk,a*el];
+    var xh=[1,a,sl,sh,dm,smk,bl,bh,el,eh,bpm,bpm*sh,a*sh,a*dm,a*smk,a*bh,a*el];
+    var c=dot(K.cvd[sx],x);$('cvd').textContent=f1(c);$('ascvd').textContent='%'+f1(dot(K.ascvd[sx],x));$('hf').textContent='%'+f1(dot(K.hf[sx],xh));
+    if(c<5){pill('pl','Düşük','var(--ok)');$('adv').textContent='Sağlıklı yaşam tarzı önerileri.'}
+    else if(c<7.5){pill('pl','Sınırda','var(--warn)');$('adv').textContent='Statin kararı risk artırıcı faktörlere göre bireysel verilir.'}
+    else if(c<20){pill('pl','Orta','var(--warn)');$('adv').textContent='Statin tedavisi düşünülmelidir. Evre 1 hipertansiyonda (130–139/80–89 mmHg) ilaç tedavisi başlanması önerilir (2025 AHA/ACC).'}
+    else{pill('pl','Yüksek','var(--high)');$('adv').textContent='Statin tedavisi ve risk faktörlerinin sıkı kontrolü önerilir.'}
+  }
+  seg('sex',calc);document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

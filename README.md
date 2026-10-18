@@ -19,5 +19,13 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | VKİ ve vücut yüzey alanı | `vki.html` |
 | Düzeltilmiş QT | `qtc.html` |
 | Glasgow Koma Skalası | `glasgow-koma.html` |
+| PREVENT (10 yıllık KVH, ASKVH, KY) | `prevent.html` |
+| HEART skoru | `heart-skoru.html` |
+| Duke kriterleri | `duke-kriterleri.html` |
+| Ortalama arter basıncı | `ortalama-arter-basinci.html` |
+| R faktör | `r-faktor.html` |
+| FIB-4 | `fib-4.html` |
+| Levotiroksin dozu | `levotiroksin.html` |
+| STOP-BANG | `stop-bang.html` |
 
 Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz. Hiçbir hasta verisi kaydedilmez. Ortak kod (Kopyala düğmesi, çevrimdışı çalışma) `ortak.js` dosyasındadır.

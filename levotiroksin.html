@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Levotiroksin Dozu</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Tıbbi Araçlar</a>
+    <h1>Levotiroksin Dozu</h1>
+    <p>Hipotiroidide başlangıç ve tam replasman dozu</p>
+  </header>
+
+  <section class="card">
+    <div class="grid">
+      <div class="field"><label for="wt">Kilo <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="68"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" type="number" inputmode="numeric" step="1" value="45"></div>
+    </div>
+    <div class="field"><span class="lbl">Endikasyon</span><div class="items">
+      <label class="item"><input type="radio" name="ind" value="overt" checked><span class="txt">Aşikar hipotiroidi</span></label>
+      <label class="item"><input type="radio" name="ind" value="sub"><span class="txt">Subklinik hipotiroidi<small>tedavi kararı verilmişse</small></span></label>
+      <label class="item"><input type="radio" name="ind" value="tx"><span class="txt">Total tiroidektomi sonrası<small>benign nedenle</small></span></label>
+      <label class="item"><input type="radio" name="ind" value="dtc"><span class="txt">Diferansiye tiroid kanseri<small>TSH baskılama hedefleniyorsa</small></span></label>
+    </div></div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="cad" data-p=""><span class="txt">Koroner arter hastalığı veya aritmi</span></label>
+      <label class="item"><input type="checkbox" id="preg" data-p=""><span class="txt">Gebelik</span></label>
+    </div>
+    <p class="note">Değerler örnek olarak doldurulmuştur.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl" id="lbl">Önerilen günlük doz</span>
+    <div class="res"><span class="num" id="dose">–</span><span class="of">µg/gün</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="adv"></p>
+    <div class="sub"><span>Kiloya göre hesaplanan</span><b id="calcd">–</b></div>
+    <div class="sub"><span>Kontrol</span><b>TSH, 6–8 hafta sonra</b></div>
+    <p class="note">Tam replasman dozu yaklaşık 1,6 µg/kg/gündür; obez hastada ideal kiloya göre hesaplamak daha uygundur. Sonuç en yakın 12,5 µg'a yuvarlanır. Tablet sabah aç karnına, kahvaltıdan 30–60 dakika önce, kalsiyum, demir ve PPI'dan ayrı alınmalıdır. Kaynak: ATA Hipotiroidi Kılavuzu 2014; ATA Gebelik Kılavuzu 2017; ATA DTK Kılavuzu 2015.</p>
+  </section>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  function r12(x){return Math.round(x/12.5)*12.5}
+  function fmt(x){return String(x).replace('.',',')}
+  function val(n){return document.querySelector('input[name='+n+']:checked').value}
+  function calc(){
+    var wt=v('wt'),age=v('age'),ind=val('ind'),cad=$('cad').checked,preg=$('preg').checked;
+    if(wt===null||age===null){$('dose').textContent='–';pill('pl','');$('adv').textContent='Kilo ve yaşı girin.';$('calcd').textContent='–';return}
+    var full=1.6*wt, txt='', d, lbl='Önerilen günlük doz';
+    $('calcd').textContent=fmt(Math.round(full))+' µg (1,6 µg/kg)';
+    if(ind==='dtc'){d=r12(2*wt);$('calcd').textContent=fmt(Math.round(2*wt))+' µg (2 µg/kg)';pill('pl','Baskılama dozu','var(--warn)');
+      txt='TSH baskılama için yaklaşık 2 µg/kg/gün. Hedef TSH, nüks riskine göre belirlenir; yaşlı ve kalp hastasında aşırı baskılamadan kaçının.'}
+    else if(ind==='sub'){d=(age>=60||cad)?25:50;lbl='Başlangıç dozu';pill('pl','Düşük doz','var(--ok)');
+      txt='Subklinik hipotiroidide genellikle 25–75 µg/gün yeterlidir. TSH hedef aralığa gelene kadar 6–8 haftada bir 12,5–25 µg artırın.'}
+    else if(age>=60||cad){d=cad?25:50;lbl='Başlangıç dozu';pill('pl','Kademeli başla','var(--warn)');
+      txt=(cad?'Koroner hastalıkta 12,5–25 µg':'60 yaş üzerinde 25–50 µg')+' ile başlayın, 6–8 haftada bir 12,5–25 µg artırın. Hedef doz yaklaşık '+fmt(r12(full))+' µg/gün.'}
+    else{d=r12(full);pill('pl','Tam doz','var(--ok)');
+      txt='Genç ve kalp hastalığı olmayan hastada tam replasman dozuyla başlanabilir.'+(ind==='tx'?' Tiroidektomi sonrası doz ameliyattan hemen sonra başlanır.':'')}
+    if(preg)txt+=' Gebelik: tedavi alan hastada gebelik saptanınca doz %25–30 artırılır (pratikte haftada 2 ek tablet). TSH ilk yarıda 4 haftada bir izlenir.';
+    $('lbl').textContent=lbl;$('dose').textContent=fmt(d);$('adv').textContent=txt;
+  }
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

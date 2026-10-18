@@ -5,7 +5,8 @@
   var css = document.createElement('style');
   css.textContent = '.copy{align-self:flex-start;border:1px solid var(--line);background:var(--bg);color:var(--accent);' +
     'font:600 .9rem var(--font-body);padding:8px 16px;border-radius:999px;cursor:pointer}' +
-    '.copy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}';
+    '.copy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}' +
+    '.field label.item{font:inherit;letter-spacing:normal;color:inherit;text-transform:none}';
   document.head.appendChild(css);
 
   function txt(el){ return el ? el.textContent.replace(/\s+/g, ' ').trim() : ''; }
