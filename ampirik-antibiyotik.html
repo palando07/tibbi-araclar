@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ampirik Antibiyotik</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Ampirik Antibiyotik</h1>
+    <p>Sık enfeksiyonlarda kılavuza göre başlangıç tedavisi</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ol.rec{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:8px}
+ol.rec li{padding-left:2px;font-weight:600}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.sub{align-items:flex-start}
+.sub b{white-space:normal;text-align:right;max-width:66%;font-family:var(--font-body);font-weight:600}
+.link{color:var(--accent);font-weight:600}
+</style>
+  <section class="card">
+    <h2>Enfeksiyon</h2>
+    <div class="field"><label for="inf">Tanı</label>
+      <select id="inf">
+        <option value="tkp">Toplum kökenli pnömoni</option>
+        <option value="hkp">Hastane kökenli pnömoni</option>
+        <option value="sis">Komplike olmayan sistit (kadın)</option>
+        <option value="piy">Piyelonefrit / komplike idrar yolu enfeksiyonu</option>
+        <option value="sel">Selülit / deri ve yumuşak doku</option>
+        <option value="iai">İntraabdominal enfeksiyon</option>
+        <option value="fn">Febril nötropeni</option>
+        <option value="sep">Sepsis, kaynağı belirsiz</option>
+        <option value="cdi">Clostridioides difficile enfeksiyonu</option>
+        <option value="men">Bakteriyel menenjit (toplum kökenli)</option>
+      </select>
+    </div>
+    <div class="field" id="sev-f"><span class="lbl">Ağırlık</span><div class="seg wrapseg" id="sev"></div></div>
+    <div class="items" id="risks">
+      <label class="item" id="w-com"><input type="checkbox" id="com"><span class="txt">Ek hastalık var<small>KOAH, diyabet, kalp, böbrek veya karaciğer yetmezliği, alkol, malignite, asplenia</small></span></label>
+      <label class="item" id="w-mrsa"><input type="checkbox" id="mrsa"><span class="txt">MRSA riski<small>önceki MRSA kolonizasyonu/enfeksiyonu, son 90 günde IV antibiyotik, hemodiyaliz</small></span></label>
+      <label class="item" id="w-pse"><input type="checkbox" id="pse"><span class="txt">Pseudomonas riski<small>önceki P. aeruginosa üremesi, son 90 günde yatış + IV antibiyotik, bronşektazi</small></span></label>
+      <label class="item" id="w-esbl"><input type="checkbox" id="esbl"><span class="txt">ESBL riski<small>son 3 ayda ESBL üremesi, son 90 günde antibiyotik veya yatış, bakımevi</small></span></label>
+      <label class="item" id="w-old"><input type="checkbox" id="old"><span class="txt">50 yaş üstü veya immünsüpresyon<small>Listeria kapsamı gerekir</small></span></label>
+      <label class="item" id="w-ren"><input type="checkbox" id="ren"><span class="txt">eGFR < 30 mL/dk</span></label>
+      <label class="item" id="w-pen"><input type="checkbox" id="pen"><span class="txt">Ciddi penisilin alerjisi<small>anafilaksi, anjiyoödem veya ağır deri reaksiyonu</small></span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2 id="t-rx">Önerilen ampirik tedavi</h2>
+    <ol class="rec" id="rx"></ol>
+    <div class="sub"><span>Süre</span><b id="dur">–</b></div>
+    <p class="note">Dozlar normal böbrek fonksiyonu içindir. <a class="link" href="bobrek-ilac-dozu.html">Böbrekte ilaç dozu →</a></p>
+  </section>
+
+  <section class="card" aria-live="polite" id="alt-c">
+    <h2>Ciddi penisilin alerjisinde</h2>
+    <ol class="rec" id="alt"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Dikkat edilecekler</h2>
+    <ul class="chk" id="nt"></ul>
+  </section>
+
+  <p class="note">Kaynaklar: ATS/IDSA 2019 (TKP), IDSA/ATS 2016 (HKP), IDSA 2011 ve 2025 (idrar yolu), IDSA 2014 (deri ve yumuşak doku), SIS/IDSA 2010–2017 (intraabdominal), IDSA 2010 ve ASCO/IDSA 2018 (febril nötropeni), Surviving Sepsis 2021, IDSA/SHEA 2021 (C. difficile), IDSA 2004 ve ESCMID 2016 (menenjit). Ülkemizde E. coli'de kinolon ve TMP-SMX direnci ile ESBL sıklığı yüksektir; hastanenizin antibiyogram verilerine ve enfeksiyon hastalıkları önerilerine göre uyarlayın. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var R={};
+  var C='Antibiyotikten önce kan kültürü (2 set) ve enfeksiyon bölgesinden kültür alın.';
+  var D='48–72 saatte kültür ve klinik yanıta göre tedaviyi daraltın veya kesin.';
+  var INF={
+  tkp:{sev:['Ayaktan','Serviste yatan','Ağır / YBÜ'],risks:['com','mrsa','pse','pen'],f:function(s,r){
+    var rx,alt,dur,nt=[];
+    if(s===0){
+      if(!r.com){rx=['Amoksisilin 1 g PO 3×1','veya doksisiklin 100 mg PO 2×1'];alt=['Doksisiklin 100 mg PO 2×1','veya levofloksasin 750 mg PO 1×1'];}
+      else{rx=['Amoksisilin-klavulanat 875/125 mg PO 2×1 (veya 2 g/125 mg 2×1) + klaritromisin 500 mg PO 2×1 (veya azitromisin 500 mg 1. gün, sonra 250 mg)','veya tek başına levofloksasin 750 mg PO 1×1 / moksifloksasin 400 mg PO 1×1'];alt=['Levofloksasin 750 mg PO 1×1 veya moksifloksasin 400 mg PO 1×1'];}
+      dur='En az 5 gün; 48–72 saat ateşsiz ve klinik olarak stabil olunca kesilir';
+      nt.push('Ülkemizde pnömokokta makrolid direnci yüksektir; makrolid tek başına önerilmez.');
+    }else{
+      var bl=r.pse?'Piperasilin-tazobaktam 4,5 g IV 4×1 (veya sefepim 2 g IV 3×1)':'Seftriakson '+(s===2?'2 g':'1–2 g')+' IV 1×1';
+      rx=[bl+' + klaritromisin 500 mg 2×1 (veya azitromisin 500 mg IV/PO 1×1)'];
+      if(s===1&&!r.pse)rx.push('veya tek başına levofloksasin 750 mg IV/PO 1×1');
+      if(s===2&&!r.pse)rx.push('veya seftriakson 2 g + levofloksasin 750 mg IV 1×1');
+      if(r.mrsa)rx.push('MRSA için ekleyin: vankomisin 15–20 mg/kg IV 2–3×1 (yükleme 25 mg/kg) veya linezolid 600 mg IV/PO 2×1');
+      alt=['Levofloksasin 750 mg IV 1×1'+(s===2?' + aztreonam 2 g IV 3×1':'')];
+      if(r.mrsa)alt.push('MRSA için: vankomisin veya linezolid ekleyin');
+      dur=s===2?'7 gün; klinik stabilite sağlandıysa':'5–7 gün; 48–72 saat ateşsiz ve stabil olunca kesilir';
+      nt.push(C);
+      if(r.mrsa||r.pse)nt.push('MRSA/Pseudomonas kapsamı başladıysanız kültür negatifse ve hasta düzeliyorsa 48 saatte kesin; burun MRSA PCR negatifliği vankomisini kesmeyi destekler.');
+      nt.push('Grip mevsiminde influenza testi; pozitifse oseltamivir 75 mg 2×1, 5 gün.');
+      if(s===2)nt.push('Ağır TKP ve şokta hidrokortizon 200 mg/gün düşünülebilir (CAPE COD).');
+    }
+    nt.push('IV başlandıysa klinik stabil olunca ağızdan tedaviye geçin.');
+    return{rx:rx,alt:alt,dur:dur,nt:nt}}},
+  hkp:{sev:['Düşük mortalite riski','Yüksek risk (septik şok, ventilasyon gereği)'],risks:['mrsa','esbl','pen'],f:function(s,r){
+    var bl=r.esbl?'Meropenem 1 g IV 3×1':'Piperasilin-tazobaktam 4,5 g IV 4×1 veya sefepim 2 g IV 3×1'+(s===0?' veya levofloksasin 750 mg IV 1×1':'');
+    var rx=[bl];
+    if(s===1)rx.push('İkinci antipsödomonal ilaç ekleyin: amikasin 15–20 mg/kg IV 1×1 veya levofloksasin 750 mg IV 1×1');
+    if(r.mrsa||s===1)rx.push('MRSA kapsamı: vankomisin 15–20 mg/kg IV 2–3×1 (yükleme 25 mg/kg) veya linezolid 600 mg IV 2×1');
+    var alt=['Levofloksasin 750 mg IV 1×1 + amikasin 15–20 mg/kg IV 1×1 veya aztreonam 2 g IV 3×1','Karbapenemlerle çapraz reaksiyon < %1; çoğu hastada dikkatle meropenem kullanılabilir'];
+    if(r.mrsa||s===1)alt.push('MRSA için: vankomisin veya linezolid');
+    return{rx:rx,alt:alt,dur:'7 gün',nt:[C,'Balgam / trakeal aspirat kültürü alın.',D,'Aminoglikozit kullanıyorsanız böbrek fonksiyonu ve düzey izleyin; kültüre göre 2–3 günde kesin.']}}},
+  sis:{sev:null,risks:['ren','pen'],f:function(s,r){
+    var rx=r.ren?['Fosfomisin trometamol 3 g PO tek doz']:['Nitrofurantoin 100 mg PO 2×1, 5 gün','veya fosfomisin trometamol 3 g PO tek doz','veya TMP-SMX 160/800 mg PO 2×1, 3 gün (yalnızca yerel direnç < %20 ise)'];
+    return{rx:rx,alt:['Penisilin alerjisi bu ilaçları etkilemez; yukarıdaki seçenekler kullanılabilir.'],dur:r.ren?'Tek doz':'Nitrofurantoin 5 gün, TMP-SMX 3 gün, fosfomisin tek doz',
+      nt:['Kinolonlar komplike olmayan sistitte ilk seçenek değildir (yan etki, direnç).','Ateş, yan ağrısı veya sistemik bulgu varsa piyelonefrit olarak tedavi edin.','Gebelik, erkek hasta veya kateter varsa komplike İYE kabul edilir.'].concat(r.ren?['eGFR < 30: nitrofurantoin etkisiz ve toksiktir.']:[])}}},
+  piy:{sev:['Ayaktan','Serviste yatan','Septik şok'],risks:['esbl','pen'],f:function(s,r){
+    var rx,alt,dur;
+    if(s===0){rx=['Seftriakson 1 g IV/IM tek doz, ardından kültüre göre ağızdan tedavi','Duyarlıysa: siprofloksasin 500 mg PO 2×1 (7 gün) veya levofloksasin 750 mg PO 1×1 (5 gün)','Duyarlıysa: TMP-SMX 160/800 mg PO 2×1 (7–14 gün)'];
+      if(r.esbl)rx[0]='Ertapenem 1 g IV/IM 1×1 ile başlayıp kültüre göre devam edin';
+      alt=['Gentamisin 5 mg/kg IV/IM tek doz, ardından kültüre göre ağızdan tedavi','Duyarlıysa siprofloksasin veya levofloksasin'];dur='Kinolonla 5–7 gün, TMP-SMX ile 7–14 gün, beta-laktamla 10–14 gün';}
+    else{rx=[s===2?'Meropenem 1 g IV 3×1 (± amikasin 15–20 mg/kg IV 1×1)':r.esbl?'Ertapenem 1 g IV 1×1':'Seftriakson 1–2 g IV 1×1'];
+      if(s===1&&!r.esbl)rx.push('veya piperasilin-tazobaktam 4,5 g IV 4×1 (son hastane yatışı varsa)');
+      alt=['Amikasin 15–20 mg/kg IV 1×1 veya gentamisin 5–7 mg/kg IV 1×1','Duyarlılık biliniyorsa siprofloksasin 400 mg IV 2×1'];
+      dur='7 gün (hızlı klinik yanıt varsa); bakteriyemi veya geç yanıtta 10–14 gün';}
+    return{rx:rx,alt:alt,dur:dur,nt:[C.replace('kan kültürü (2 set)','idrar kültürü'+(s>0?' ve kan kültürü (2 set)':'')),'Ülkemizde E. coli\'de kinolon ve TMP-SMX direnci sık; kültür sonucu olmadan ampirik oral kinolon dikkatli kullanılmalı.','48–72 saatte yanıt yoksa obstrüksiyon ve abse için görüntüleme (USG/BT) yapın.',D]}}},
+  sel:{sev:['Hafif (ayaktan)','Orta (sistemik bulgu)','Ağır / nekrotizan şüphesi'],risks:['mrsa','pen'],f:function(s,r){
+    var rx,alt,dur='5 gün; yanıta göre uzatılır';
+    if(s===0){rx=['Pürülan değilse: sefaleksin 500 mg PO 4×1 veya amoksisilin-klavulanat 875/125 mg PO 2×1','Abse varsa: insizyon ve drenaj esastır'+(r.mrsa?'; MRSA riski nedeniyle TMP-SMX 1–2 forte tablet PO 2×1 veya doksisiklin 100 mg PO 2×1':'')];alt=['Klindamisin 300–450 mg PO 3–4×1'+(r.mrsa?' veya TMP-SMX / doksisiklin':'')];}
+    else if(s===1){rx=['Sefazolin 1–2 g IV 3×1 veya seftriakson 1–2 g IV 1×1'+(r.mrsa?'':' veya ampisilin-sulbaktam 1,5–3 g IV 4×1')];if(r.mrsa)rx.push('MRSA riski / pürülan: vankomisin 15–20 mg/kg IV 2–3×1 veya linezolid 600 mg 2×1 ekleyin');alt=['Klindamisin 600–900 mg IV 3×1 veya vankomisin 15–20 mg/kg IV 2–3×1'];}
+    else{rx=['Acil cerrahi konsültasyon ve debridman','Vankomisin 15–20 mg/kg IV 2–3×1 (yükleme 25 mg/kg) + piperasilin-tazobaktam 4,5 g IV 4×1 (veya meropenem 1 g IV 3×1)','+ klindamisin 900 mg IV 3×1 (toksin baskılama, A grubu streptokok)'];alt=['Vankomisin veya linezolid + aztreonam 2 g IV 3×1 + metronidazol 500 mg IV 3×1','Ya da karbapenem (çapraz reaksiyon < %1) + klindamisin'];dur='Debridman gerekmeyene ve klinik düzelene kadar; ateşsiz 48 saat';}
+    return{rx:rx,alt:alt,dur:dur,nt:['Kızarık alanın sınırını işaretleyin; ilk 24–48 saatte biraz genişlemesi beklenebilir.','Ekstremiteyi elevasyona alın; tinea pedis, ödem gibi predispozan nedenleri tedavi edin.','Diyabetik ayak enfeksiyonu farklı yaklaşım gerektirir (IWGDF/IDSA 2023).'].concat(s===2?['Ağrının bulguyla orantısız olması, krepitasyon, büllöz değişiklik, hızlı yayılım: nekrotizan fasiit düşünün.']:[])}}},
+  iai:{sev:['Hafif-orta (toplum kökenli)','Ağır veya hastane kökenli'],risks:['mrsa','esbl','pen'],f:function(s,r){
+    var rx,alt;
+    if(s===0){rx=[r.esbl?'Ertapenem 1 g IV 1×1':'Seftriakson 2 g IV 1×1 + metronidazol 500 mg IV/PO 3×1','veya amoksisilin-klavulanat 1,2 g IV 3×1 (hafif olgularda)'];if(r.esbl)rx.pop();alt=['Siprofloksasin 400 mg IV 2×1 veya levofloksasin 750 mg IV 1×1 + metronidazol 500 mg 3×1'];}
+    else{rx=[r.esbl?'Meropenem 1 g IV 3×1':'Piperasilin-tazobaktam 4,5 g IV 4×1 (veya sefepim 2 g IV 3×1 + metronidazol 500 mg IV 3×1)'];if(r.mrsa)rx.push('+ vankomisin 15–20 mg/kg IV 2–3×1');alt=['Aztreonam 2 g IV 3×1 + metronidazol 500 mg IV 3×1'+(r.mrsa?' + vankomisin':''),'Ya da meropenem (çapraz reaksiyon < %1)'];}
+    return{rx:rx,alt:alt,dur:'Kaynak kontrolünden (drenaj/cerrahi) sonra 4 gün (STOP-IT)',
+      nt:['Kaynak kontrolü (abse drenajı, cerrahi) tedavinin temelidir.',C,'Hastane kökenli enfeksiyonda ve yoğun bakımda Candida için antifungal gerekebilir.',D]}}},
+  fn:{sev:['Düşük risk (MASCC ≥ 21)','Yüksek risk','Hemodinamik instabilite'],risks:['mrsa','esbl','pen'],f:function(s,r){
+    var rx,alt;
+    if(s===0){rx=['Siprofloksasin 500–750 mg PO 2×1 + amoksisilin-klavulanat 875/125 mg PO 2×1','Ayaktan izlem yalnızca uygun hastada; ilk doz hastanede'];alt=['Siprofloksasin 750 mg PO 2×1 + klindamisin 300 mg PO 4×1'];}
+    else{rx=[(r.esbl||s===2)?'Meropenem 1 g IV 3×1':'Sefepim 2 g IV 3×1 veya piperasilin-tazobaktam 4,5 g IV 4×1'];
+      if(s===2)rx.push('+ amikasin 15–20 mg/kg IV 1×1');
+      if(s===2||r.mrsa)rx.push('+ vankomisin 15–20 mg/kg IV 2–3×1 (yükleme 25 mg/kg)');
+      alt=['Aztreonam 2 g IV 3×1 + vankomisin 15–20 mg/kg IV 2–3×1','Ya da meropenem (çapraz reaksiyon < %1)'];}
+    return{rx:rx,alt:alt,dur:'Kaynak bulunursa ona göre; bulunmazsa ateşsiz 48 saat ve nötrofil > 500/mm³ olana kadar',
+      nt:['İlk doz başvurudan sonraki 1 saat içinde verilmelidir.',C+' Santral kateter varsa kateterden ve periferden ayrı kültür.','Vankomisin endikasyonları: hemodinamik instabilite, kateter enfeksiyonu, deri-yumuşak doku enfeksiyonu, pnömoni, MRSA kolonizasyonu. Kültür negatifse 48–72 saatte kesin.','Ateş 4–7 gün sürerse invaziv fungal enfeksiyon açısından değerlendirin (BT, galaktomannan) ve antifungal düşünün.']}}},
+  sep:{sev:['Sepsis','Septik şok'],risks:['mrsa','esbl','pen'],f:function(s,r){
+    var rx=[(r.esbl||s===1)?'Meropenem 1 g IV 3×1 (uzatılmış infüzyon tercih edilebilir)':'Piperasilin-tazobaktam 4,5 g IV 4×1'];
+    if(r.mrsa)rx.push('+ vankomisin 15–20 mg/kg IV 2–3×1 (yükleme 25 mg/kg)');
+    return{rx:rx,alt:['Aztreonam 2 g IV 3×1 + vankomisin 15–20 mg/kg IV 2–3×1 (abdominal kaynak düşünülüyorsa + metronidazol 500 mg IV 3×1)','Ya da meropenem (çapraz reaksiyon < %1)'],dur:'Kaynağa göre; çoğu olguda 7 gün. Prokalsitonin kesme kararını destekleyebilir.',
+      nt:['Septik şokta antibiyotik ilk 1 saatte, sepsiste 3 saat içinde başlanmalıdır.',C,'Kaynağı arayın (akciğer, idrar, karın, deri, kateter) ve kaynak kontrolü yapın.','30 mL/kg kristaloid, ortalama arter basıncı hedefi ≥ 65 mmHg.',D]}}},
+  cdi:{d:0,sev:['Ağır değil','Ağır (BK ≥ 15 000 veya kreatinin > 1,5)','Fulminan (hipotansiyon, ileus, megakolon)'],risks:[],f:function(s){
+    var rx=s===2?['Vankomisin 500 mg PO/nazogastrik 4×1','+ metronidazol 500 mg IV 3×1','İleusta rektal vankomisin 500 mg / 100 mL SF 4×1']:['Fidaksomisin 200 mg PO 2×1 (tercih)','veya vankomisin 125 mg PO 4×1'].concat(s===0?['İkisi de yoksa metronidazol 500 mg PO 3×1']:[]);
+    return{rx:rx,alt:['Penisilin alerjisi bu tedaviyi etkilemez.'],dur:'10 gün',
+      nt:['Mümkünse tetikleyen antibiyotiği kesin.','Oral vankomisin preparatı yoksa IV vankomisin flakonu ağızdan verilebilir.','Proton pompa inhibitörünü gözden geçirin.','Fulminan olguda genel cerrahi konsültasyonu (kolektomi).','Tekrarlayan atakta fidaksomisin, uzatılmış vankomisin veya bezlotoksumab / fekal mikrobiyota nakli.']}}},
+  men:{sev:null,risks:['old','pen'],f:function(s,r){
+    var rx=['Deksametazon 0,15 mg/kg IV 4×1 (4 gün), ilk antibiyotikten hemen önce veya birlikte','Seftriakson 2 g IV 2×1','+ vankomisin 15–20 mg/kg IV 2–3×1 (çukur düzey 15–20)'];
+    if(r.old)rx.push('+ ampisilin 2 g IV 6×1 (Listeria)');
+    var alt=['Deksametazon aynı şekilde','Moksifloksasin 400 mg IV 1×1 + vankomisin 15–20 mg/kg IV 2–3×1'];
+    if(r.old)alt.push('+ TMP-SMX 5 mg/kg (TMP) IV 6 saatte bir (Listeria)');
+    return{rx:rx,alt:alt,dur:'Pnömokok 10–14 gün, meningokok 7 gün, Listeria en az 21 gün',
+      nt:['Antibiyotiği LP için geciktirmeyin; LP hemen yapılamıyorsa kan kültüründen sonra başlayın.','Bilinç bozukluğu, fokal nörolojik bulgu, papil ödemi, nöbet veya immünsüpresyonda LP öncesi BT çekin.','Meningokokta yakın temaslılara profilaksi (siprofloksasin 500 mg tek doz).','Deksametazon pnömokok dışı etken gösterilirse kesilir.']}}}
+  };
+  var cur=null;
+  function build(){
+    var i=INF[$('inf').value],sv=$('sev');sv.innerHTML='';
+    $('sev-f').hidden=!i.sev;
+    if(i.sev)i.sev.forEach(function(t,k){var b=document.createElement('button');b.type='button';b.dataset.g='sev';b.dataset.v=k;b.setAttribute('aria-pressed',k===(i.d===undefined?(i.sev.length>2?1:0):i.d));b.textContent=t;sv.appendChild(b)});
+    seg('sev',calc);
+    ['com','mrsa','pse','esbl','old','ren','pen'].forEach(function(k){$('w-'+k).hidden=i.risks.indexOf(k)<0});
+    $('risks').hidden=!i.risks.length;
+    calc();
+  }
+  function calc(){
+    var i=INF[$('inf').value],s=i.sev?parseInt(segVal('sev')||0,10):0,r={};
+    ['com','mrsa','pse','esbl','old','ren','pen'].forEach(function(k){r[k]=$(k).checked&&i.risks.indexOf(k)>=0});
+    var o=i.f(s,r);
+    function fill(id,arr){var el=$(id);el.innerHTML='';arr.forEach(function(t){var li=document.createElement('li');li.textContent=t;el.appendChild(li)})}
+    fill('rx',o.rx);fill('alt',o.alt);$('dur').textContent=o.dur;fill('nt',o.nt.concat(i===INF.sis||i===INF.cdi?[]:[]));
+    $('alt-c').hidden=!r.pen&&i.risks.indexOf('pen')>=0;
+    if(i.risks.indexOf('pen')<0)$('alt-c').hidden=true;
+    $('t-rx').textContent='Önerilen ampirik tedavi'+(i.sev?' ('+i.sev[s]+')':'');
+  }
+  $('inf').addEventListener('change',build);
+  document.querySelectorAll('input[type=checkbox]').forEach(function(el){el.addEventListener('change',calc)});
+  build();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
