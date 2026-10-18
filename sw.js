@@ -1,10 +1,10 @@
 // Sayfaları telefona kaydeder, böylece internet yokken de açılır.
 // Bir sayfayı değiştirdiğinizde aşağıdaki sürüm numarasını artırın.
-const CACHE = 'tibbi-araclar-v17';
+const CACHE = 'tibbi-araclar-v18';
 const FILES = ['./', 'index.html', 'egfr.html', 'af-skor.html', 'elektrolit.html', 'kreatinin-klerensi.html', 'child-pugh.html', 'wells-pe.html',
   'meld-na.html', 'curb-65.html', 'qsofa.html', 'glasgow-blatchford.html',
   'sodyum.html', 'osmolalite.html', 'vki.html', 'qtc.html', 'glasgow-koma.html', 'ortak.js',
-  'prevent.html', 'heart-skoru.html', 'duke-kriterleri.html', 'ortalama-arter-basinci.html', 'r-faktor.html', 'fib-4.html', 'levotiroksin.html', 'stop-bang.html', 'nobet-listesi.html', 'diyabet-tedavi.html', 'insulin-dozu.html', 'bobrek-ilac-dozu.html', 'nobet.webmanifest', 'icons/nobet-192.png', 'icons/nobet-512.png', 'icons/nobet-apple.png',
+  'prevent.html', 'heart-skoru.html', 'duke-kriterleri.html', 'ortalama-arter-basinci.html', 'r-faktor.html', 'fib-4.html', 'levotiroksin.html', 'stop-bang.html', 'nobet-listesi.html', 'diyabet-tedavi.html', 'insulin-dozu.html', 'bobrek-ilac-dozu.html', 'elektrolit-replasmani.html', 'nobet.webmanifest', 'icons/nobet-192.png', 'icons/nobet-512.png', 'icons/nobet-apple.png',
   'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 const MATCH = { ignoreSearch: true, ignoreVary: true };

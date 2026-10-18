@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Elektrolit Replasmanı</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Elektrolit Replasmanı</h1>
+    <p>Potasyum, magnezyum, fosfor ve kalsiyum eksikliğinde doz</p>
+  </header>
+<style>
+.sub{align-items:flex-start}
+.sub b{white-space:normal;text-align:right;max-width:66%;font-family:var(--font-body);font-weight:600}
+.card h3{margin:6px 0 0;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+</style>
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="k">Potasyum <span>mEq/L</span></label><input id="k" type="number" inputmode="decimal" step="any" value="2.9"></div>
+      <div class="field"><label for="mg">Magnezyum <span>mg/dL</span></label><input id="mg" type="number" inputmode="decimal" step="any" value="1.3"></div>
+      <div class="field"><label for="p">Fosfor <span>mg/dL</span></label><input id="p" type="number" inputmode="decimal" step="any" value="1.8"></div>
+      <div class="field"><label for="ca">Total kalsiyum <span>mg/dL</span></label><input id="ca" type="number" inputmode="decimal" step="any" value="7.6"></div>
+      <div class="field"><label for="alb">Albümin <span>g/dL</span></label><input id="alb" type="number" inputmode="decimal" step="any" value="3.0"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" type="number" inputmode="decimal" step="any" value="60"></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="po" checked><span class="txt">Ağızdan alabiliyor<small>yutabiliyor, GİS emilimi sorunu yok</small></span></label>
+      <label class="item"><input type="checkbox" id="cvc"><span class="txt">Santral venöz kateter var</span></label>
+      <label class="item"><input type="checkbox" id="sym"><span class="txt">EKG değişikliği veya ciddi semptom<small>aritmi, U dalgası, QT uzaması, belirgin kas güçsüzlüğü, tetani, nöbet</small></span></label>
+    </div>
+    <p class="note">Örnek hasta doldurulmuştur. Boş bıraktığınız elektrolitin kartı gösterilmez. Normal aralıklar laboratuvara göre değişebilir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Potasyum</h2>
+    <div class="res"><span class="num" id="kk-v">–</span><span class="unit">mEq/L</span><span class="pill" id="kk-pl"></span></div>
+    <div class="sub" id="kk-r1"><span>Yol</span><b id="kk-yol">–</b></div>
+    <div class="sub" id="kk-r2"><span>Doz</span><b id="kk-doz">–</b></div>
+    <div class="sub" id="kk-r3"><span>Hız</span><b id="kk-hiz">–</b></div>
+    <div class="sub" id="kk-r4"><span>Kontrol</span><b id="kk-kon">–</b></div>
+    <p class="advice" id="kk-adv"></p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Magnezyum</h2>
+    <div class="res"><span class="num" id="mm-v">–</span><span class="unit">mg/dL</span><span class="pill" id="mm-pl"></span></div>
+    <div class="sub" id="mm-r1"><span>Yol</span><b id="mm-yol">–</b></div>
+    <div class="sub" id="mm-r2"><span>Doz</span><b id="mm-doz">–</b></div>
+    <div class="sub" id="mm-r3"><span>Hız</span><b id="mm-hiz">–</b></div>
+    <div class="sub" id="mm-r4"><span>Kontrol</span><b id="mm-kon">–</b></div>
+    <p class="advice" id="mm-adv"></p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Fosfor</h2>
+    <div class="res"><span class="num" id="pp-v">–</span><span class="unit">mg/dL</span><span class="pill" id="pp-pl"></span></div>
+    <div class="sub" id="pp-r1"><span>Yol</span><b id="pp-yol">–</b></div>
+    <div class="sub" id="pp-r2"><span>Doz</span><b id="pp-doz">–</b></div>
+    <div class="sub" id="pp-r3"><span>Hız</span><b id="pp-hiz">–</b></div>
+    <div class="sub" id="pp-r4"><span>Kontrol</span><b id="pp-kon">–</b></div>
+    <p class="advice" id="pp-adv"></p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Kalsiyum (albümine göre düzeltilmiş)</h2>
+    <div class="res"><span class="num" id="cc-v">–</span><span class="unit">mg/dL</span><span class="pill" id="cc-pl"></span></div>
+    <div class="sub" id="cc-r1"><span>Yol</span><b id="cc-yol">–</b></div>
+    <div class="sub" id="cc-r2"><span>Doz</span><b id="cc-doz">–</b></div>
+    <div class="sub" id="cc-r3"><span>Hız</span><b id="cc-hiz">–</b></div>
+    <div class="sub" id="cc-r4"><span>Kontrol</span><b id="cc-kon">–</b></div>
+    <p class="advice" id="cc-adv"></p>
+  </section>
+
+  <section class="card">
+    <h2>Unutulmaması gerekenler</h2>
+    <ul class="chk" style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem">
+      <li>Hipomagnezemi düzeltilmeden hipokalemi ve hipokalsemi kalıcı olarak düzelmez; önce magnezyumu verin.</li>
+      <li>Potasyumu dekstrozlu sıvıda sulandırmayın; insülin salınımı potasyumu hücre içine sokar.</li>
+      <li>IV potasyum asla bolus ya da IV puşe verilmez.</li>
+      <li>Kalsiyumu bikarbonat veya fosfat içeren sıvıyla aynı hattan vermeyin; çöker. Digoksin kullananlarda IV kalsiyumu yavaş verin.</li>
+      <li>Hipokalemide nedeni araştırın: kusma, ishal, diüretik, insülin, beta agonist, hipomagnezemi, renal kayıp (idrar K).</li>
+      <li>Yeniden beslenme sendromu riskinde (uzun açlık, alkolizm) fosfor, potasyum ve magnezyumu günlük izleyin.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: Kraft MD ve ark., Am J Health Syst Pharm 2005 (elektrolit replasmanı); Brown KA ve ark., JPEN 2006 (fosfor); Cooper MS, Gittoes NJ, BMJ 2008 (hipokalsemi); UpToDate özetleri. %7,5 KCl ampul 10 mL = 10 mEq; %10 kalsiyum glukonat 10 mL = 93 mg elemental kalsiyum. Hastanenizdeki ampul konsantrasyonlarını kontrol edin. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var g1=function(x){return (Math.round(x*10)/10).toString().replace('.',',')};
+  function show(k,on){['v','pl','r1','r2','r3','r4','adv'].forEach(function(s){var el=$(k+'-'+s);if(el)el.closest('section').hidden=!on})}
+  function set(k,val,lvl,yol,doz,hiz,kon,adv){
+    $(k+'-v').textContent=val;
+    var L=[['Normal','var(--ok)'],['Hafif düşük','var(--warn)'],['Orta düşük','var(--high)'],['Ağır düşük','var(--high)']][lvl];pill(k+'-pl',L[0],L[1]);
+    $(k+'-yol').textContent=yol;$(k+'-doz').textContent=doz;$(k+'-hiz').textContent=hiz;$(k+'-kon').textContent=kon;
+    ['r1','r2','r3','r4'].forEach(function(r){$(k+'-'+r).hidden=lvl===0});
+    $(k+'-adv').textContent=adv;
+  }
+  function calc(){
+    var K=v('k'),M=v('mg'),P=v('p'),C=v('ca'),A=v('alb'),wt=v('wt'),eg=v('egfr');
+    var po=$('po').checked,cvc=$('cvc').checked,sym=$('sym').checked,ckd=eg!==null&&eg<30,lowMg=M!==null&&M<1.7;
+    var renal=ckd?' eGFR < 30: doz yarıya indirildi, daha sık kontrol edin.':'';
+    // Potasyum
+    show('kk',K!==null);
+    if(K!==null){
+      if(K>=3.5)set('kk',g1(K),0,'','','','',K>5.0?'Potasyum yüksek; replasman gerekmez.':'Replasman gerekmez. Hedef 4,0 mEq/L (kalp hastasında ≥ 4,0).');
+      else{
+        var lvl=K>=3.0?1:K>=2.5?2:3,iv=sym||lvl===3||!po||(lvl===2&&!po),f=ckd?0.5:1;
+        var need=Math.round((4.0-K)*100*f/10)*10;
+        var yol,doz,hiz;
+        if(!iv){yol='Ağızdan';doz=(lvl===1?Math.round(40*f)+'–'+Math.round(60*f):Math.round(60*f)+'–'+Math.round(80*f))+' mEq/gün, 2–3 doza bölünmüş KCl';hiz='Tek seferde en fazla 40 mEq';}
+        else{yol=cvc?'IV (santral)':'IV (periferik)';var d=Math.round((lvl===3?40:lvl===2?40:20)*f);
+          doz=d+' mEq KCl ('+d/10+' ampul %7,5 KCl), '+(cvc?'100 mL':'1000 mL')+' serum fizyolojik içinde; ardından tekrarlanır';
+          hiz=cvc?'En fazla 20 mEq/saat ('+d/20+' saatte), monitör eşliğinde':'En fazla 10 mEq/saat ('+d/10+' saatte); periferde konsantrasyon ≤ 40 mEq/L';}
+        set('kk',g1(K),lvl,yol,doz,hiz,iv?'Her 40 mEq sonrası (2–4 saat içinde) K bakın':'Ertesi gün K bakın',
+          'Tahmini toplam ihtiyaç ~'+need+' mEq (her 10 mEq serum K\'yı yaklaşık 0,1 mEq/L artırır; süren kayıp varsa daha fazlası gerekir). Bölünmüş dozlarla, kontrollerle verin.'+(sym?' EKG değişikliği var: kardiyak monitörize edin.':'')+(lowMg?' Magnezyum da düşük: önce/birlikte magnezyum verin.':'')+renal);
+      }
+    }
+    // Magnezyum
+    show('mm',M!==null);
+    if(M!==null){
+      if(M>=1.7)set('mm',g1(M),0,'','','','','Replasman gerekmez.');
+      else{
+        var ml=M>=1.5?1:M>=1.0?2:3,f2=ckd?0.5:1,oral=ml===1&&po&&!sym;
+        var dz=sym?'2 g magnezyum sülfat IV':ml===1?'1–2 g magnezyum sülfat IV':ml===2?'2–4 g magnezyum sülfat IV':'4–8 g magnezyum sülfat IV';
+        if(f2<1&&!sym)dz=ml===1?'1 g magnezyum sülfat IV':ml===2?'1–2 g magnezyum sülfat IV':'2–4 g magnezyum sülfat IV';
+        set('mm',g1(M),ml,oral?'Ağızdan veya IV':'IV',(oral?'Magnezyum oksit 400 mg günde 2–3 kez (ishal yapabilir) ya da ':'')+dz,
+          sym?'10–15 dakikada (torsades, nöbet), sonra yavaş infüzyon':ml===3?'12–24 saatte yavaş infüzyon':'Saatte en fazla 1 g',
+          'Ertesi gün Mg bakın; IV verilenlerde idrarla hızlı atılır, tekrar gerekebilir',
+          'Hızlı verilen magnezyumun yarısı idrarla atılır; yavaş infüzyon daha etkilidir. Derin tendon reflekslerini izleyin.'+(sym&&ckd?' eGFR < 30: acil dozdan sonraki infüzyonu yarıya indirin, refleks ve Mg düzeyini sık izleyin.':renal));
+      }
+    }
+    // Fosfor
+    show('pp',P!==null);
+    if(P!==null){
+      if(P>=2.5)set('pp',g1(P),0,'','','','','Replasman gerekmez.');
+      else{
+        var pl=P>=2.0?1:P>=1.0?2:3,r=[[0,0],[0.08,0.16],[0.16,0.32],[0.32,0.64]][pl],f3=ckd?0.5:1;
+        var mm=wt?' = '+Math.round(r[0]*wt*f3)+'–'+Math.min(Math.round(r[1]*wt*f3),pl===3?50:45)+' mmol':'';
+        var oralP=pl===1&&po;
+        set('pp',g1(P),pl,oralP?'Ağızdan (tercih)':'IV',
+          oralP?'Fosfor 250–500 mg günde 3 kez (veya IV '+String(r[0]).replace('.',',')+'–'+String(r[1]).replace('.',',')+' mmol/kg)':
+            String(r[0]*f3).replace('.',',')+'–'+String(r[1]*f3).replace('.',',')+' mmol/kg'+mm+' sodyum veya potasyum fosfat',
+          oralP?'—':'4–6 saatte infüzyon',
+          'Ertesi gün P, Ca ve K bakın',
+          'K ≥ 4 mEq/L ise sodyum fosfat seçin (potasyum fosfat ayrıca K içerir). Hiperkalsemide IV fosfor vermeyin; kalsiyum fosfat çökmesi riski.'+renal);
+      }
+    }
+    // Kalsiyum
+    show('cc',C!==null);
+    if(C!==null){
+      var cc=A!==null?C+0.8*(4-A):C;
+      if(cc>=8.5)set('cc',g1(cc),0,'','','','',cc>10.5?'Kalsiyum yüksek; replasman gerekmez.':'Replasman gerekmez.');
+      else{
+        var cl=cc>=7.5?1:cc>=7.0?2:3,ivc=sym||cl>=2;
+        var lo=wt?Math.round(0.5*wt):null,hi=wt?Math.round(1.5*wt):null;
+        set('cc',g1(cc),cl,ivc?'IV':'Ağızdan',
+          ivc?'Kalsiyum glukonat %10, 10–20 mL (1–2 g) 50–100 mL SF içinde; ardından infüzyon':'Elemental kalsiyum 1–2 g/gün, bölünmüş dozlarla (ör. kalsiyum karbonat)',
+          ivc?'Bolus 10–20 dakikada; infüzyon 0,5–1,5 mg/kg/saat elemental Ca'+(wt?' ('+lo+'–'+hi+' mg/saat = %10 glukonattan '+g1(lo/9.3)+'–'+g1(hi/9.3)+' mL/saat)':''):'—',
+          ivc?'4–6 saatte bir Ca bakın':'1 hafta içinde Ca bakın',
+          (A!==null?'Albümine göre düzeltildi (ölçülen '+g1(C)+' mg/dL). Şüphede iyonize kalsiyum bakın. ':'')+(lowMg?'Magnezyum düşük: önce magnezyumu düzeltin. ':'')+'Nedeni araştırın: PTH, 25-OH D vitamini, magnezyum, fosfor, böbrek fonksiyonu.'+(ivc?' QT izleyin.':''));
+      }
+    }
+  }
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc)});
+  calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
