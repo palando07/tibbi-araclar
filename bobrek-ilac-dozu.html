@@ -85,7 +85,10 @@ ul.drugs li{padding:10px 0;border-top:1px solid var(--line);display:flex;flex-di
 ul.drugs li:first-child{border-top:0;padding-top:0}
 .dh{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .dh b{font-size:1rem}
-ul.drugs .advice{font-family:var(--font-num);font-size:.9rem;font-weight:600}
+ul.drugs .dose{margin:0;font-family:var(--font-num);font-size:.9rem;font-weight:600}
+ul.drugs .dl{font-family:var(--font-body);color:var(--accent);font-weight:700}
+ul.drugs .usual{margin:0;font-size:.82rem;color:var(--muted)}
+ul.drugs .usual s{text-decoration-thickness:1px}
 ul.drugs small{color:var(--muted);font-size:.82rem;line-height:1.4}
 .st{display:inline-block;padding:2px 10px;border-radius:999px;font:700 .75rem var(--font-body);color:#fff;white-space:nowrap}
 .st[data-s="0"]{background:var(--ok)}.st[data-s="1"]{background:var(--warn)}.st[data-s="2"]{background:var(--high)}
@@ -169,12 +172,13 @@ ul.drugs small{color:var(--muted);font-size:.82rem;line-height:1.4}
   {g:'ab',n:'Amoksisilin-klavulanat (ağızdan)',k:'augmentin',f:function(c){return c>=30?['875/125 mg 12 saatte bir veya 500/125 mg 8 saatte bir',0]:c>=10?['500/125 mg 12 saatte bir',1]:['500/125 mg 24 saatte bir',1]},hd:['500/125 mg 24 saatte bir; diyaliz sırasında ve sonrasında ek doz',1],nt:'875/125 mg tablet CrCl < 30 mL/dk olduğunda kullanılmaz.'},
   {g:'ab',n:'Levofloksasin',f:function(c){return c>=50?['750 mg 24 saatte bir',0]:c>=20?['750 mg 48 saatte bir',1]:['750 mg yükleme, sonra 500 mg 48 saatte bir',1]},hd:['750 mg yükleme, sonra 500 mg 48 saatte bir',1],nt:'500 mg rejiminde: CrCl 20–49 için 500 mg yükleme, sonra 250 mg 24 saatte bir.'},
   {g:'ab',n:'Siprofloksasin',f:function(c){return c>=50?['Ağızdan 500–750 mg 12 saatte bir; IV 400 mg 8–12 saatte bir',0]:c>=30?['Ağızdan 250–500 mg 12 saatte bir; IV 400 mg 12 saatte bir',1]:['Ağızdan 250–500 mg 18–24 saatte bir; IV 200–400 mg 18–24 saatte bir',1]},hd:['Ağızdan 250–500 mg 24 saatte bir, diyalizden sonra',1]},
-  {g:'ab',n:'Trimetoprim-sülfametoksazol',k:'bactrim kemoprim',f:function(c){return c>30?['Olağan doz',0]:c>=15?['Olağan dozun %50\'si',1]:['Önerilmez',2]},hd:['Önerilmez; zorunluysa diyalizden sonra %50 doz',2],nt:'Hiperkalemi ve kreatinin artışı (tübüler sekresyon) izleyin.'},
+  {g:'ab',n:'Trimetoprim-sülfametoksazol',k:'bactrim kemoprim',f:function(c){return c>30?['1 forte tablet (160/800 mg) 12 saatte bir; PCP tedavisinde 15–20 mg/kg/gün TMP',0]:c>=15?['1 forte tablet (160/800 mg) 24 saatte bir; PCP tedavisinde 7,5–10 mg/kg/gün TMP (dozun %50\'si)',1]:['Önerilmez',2]},hd:['Önerilmez; zorunluysa diyalizden sonra dozun %50\'si',2],nt:'Hiperkalemi ve kreatinin artışı (tübüler sekresyon) izleyin.'},
   {g:'ab',n:'Klaritromisin',f:function(c){return c>=30?['500 mg 12 saatte bir',0]:['250 mg 12 saatte bir veya 500 mg 24 saatte bir',1]},hd:['250 mg 12 saatte bir veya 500 mg 24 saatte bir',1]},
   {g:'ab',n:'Nitrofurantoin',f:function(c){return c>=30?['100 mg 12 saatte bir (5 gün)',0]:['Kullanmayın',2]},hd:['Kullanmayın',2],nt:'Böbrek yetmezliğinde etkisiz kalır, periferik nöropati riski artar.'},
-  {g:'ab',n:'Vankomisin',f:function(c){return c>=50?['Yükleme 20–35 mg/kg, idame 15–20 mg/kg 8–12 saatte bir',0]:['Yükleme 20–35 mg/kg (değişmez); idame dozu ve aralığı düzeye göre uzatılır',1]},hd:['Yükleme 20–25 mg/kg, sonra her diyalizden sonra 500–1000 mg; diyaliz öncesi düzeye göre',1],nt:'Hedef AUC 400–600 veya çukur düzey 15–20 mg/L. Kreatinini izleyin.'},
+  {g:'ab',n:'Vankomisin',f:function(c,e,p){var w=p.wt,m=function(k){return w?' ('+Math.round(w*k/250)*250+' mg)':''};
+    return c>=90?['Yükleme 25 mg/kg'+m(25)+', idame 15 mg/kg'+m(15)+' 8–12 saatte bir',0]:c>=50?['Yükleme 25 mg/kg'+m(25)+', idame 15 mg/kg'+m(15)+' 12 saatte bir',1]:c>=20?['Yükleme 25 mg/kg'+m(25)+', idame 15 mg/kg'+m(15)+' 24 saatte bir',1]:['Yükleme 25 mg/kg'+m(25)+', sonra 15 mg/kg'+m(15)+' 48–72 saatte bir, düzeye göre',1]},hd:['Yükleme 25 mg/kg, sonra her diyalizden sonra 500–1000 mg; diyaliz öncesi düzeye göre',1],nt:'Gerçek kiloyla hesaplanır, yükleme en fazla 3 g. 4. dozdan önce düzey bakın; hedef AUC 400–600 veya çukur 15–20 mg/L.'},
   {g:'av',n:'Asiklovir (IV)',f:function(c){return c>50?['5–10 mg/kg 8 saatte bir',0]:c>=25?['5–10 mg/kg 12 saatte bir',1]:c>=10?['5–10 mg/kg 24 saatte bir',1]:['2,5–5 mg/kg 24 saatte bir',1]},hd:['2,5–5 mg/kg 24 saatte bir, diyalizden sonra',1],nt:'Obezde ideal kiloyla hesaplayın. Bol hidrasyon; kristal nefropatisi riski.'},
-  {g:'av',n:'Flukonazol',f:function(c){return c>50?['Olağan doz',0]:['Yükleme dozundan sonra olağan dozun %50\'si',1]},hd:['Her diyalizden sonra tam doz',1]},
+  {g:'av',n:'Flukonazol',f:function(c){return c>50?['Yükleme 800 mg, sonra 400 mg/gün (kandidemi)',0]:['Yükleme 800 mg, sonra 200 mg/gün (dozun %50\'si)',1]},hd:['Her diyalizden sonra 400 mg (tam doz)',1]},
   {g:'av',n:'Oseltamivir (tedavi)',k:'tamiflu',f:function(c){return c>60?['75 mg 12 saatte bir',0]:c>30?['30 mg 12 saatte bir',1]:c>10?['30 mg 24 saatte bir',1]:['Önerilmez (diyalize girmeyenlerde)',2]},hd:['30 mg her diyalizden sonra',1]},
   {g:'ak',n:'Enoksaparin (tedavi)',k:'clexane',f:function(c){return c>=30?['1 mg/kg 12 saatte bir',0]:['1 mg/kg 24 saatte bir',1]},hd:['Önerilmez; anfraksiyone heparin tercih edin',2],nt:'Anti-Xa düzeyi ile izlem düşünülebilir.'},
   {g:'ak',n:'Enoksaparin (profilaksi)',k:'clexane',f:function(c){return c>=30?['40 mg 24 saatte bir',0]:['30 mg 24 saatte bir',1]},hd:['Anfraksiyone heparin 5000 ünite 8–12 saatte bir tercih edin',2]},
@@ -230,9 +234,11 @@ ul.drugs small{color:var(--muted);font-size:.82rem;line-height:1.4}
       if(q&&low(d.n+' '+(d.k||'')).indexOf(q)<0)return;
       var r=hd?d.hd:(c===null?null:d.f(c,e===null?c:e,p));
       if(only&&(!r||r[1]===0))return;
-      var li=document.createElement('li');
-      li.innerHTML='<div class="dh"><b></b>'+(r?'<span class="st" data-s="'+r[1]+'">'+lab[r[1]]+'</span>':'')+'</div><p class="advice"></p>'+(d.nt?'<small></small>':'');
+      var li=document.createElement('li'),u=d.f(120,120,{age:50,wt:p.wt||70,scr:0.9})[0],ch=r&&r[0]!==u;
+      li.innerHTML='<div class="dh"><b></b>'+(r?'<span class="st" data-s="'+r[1]+'">'+lab[r[1]]+'</span>':'')+'</div>'+
+        (ch?'<p class="usual">Olağan doz: <s></s></p><p class="dose"><span class="dl">Bu hasta için:</span> <span class="advice"></span></p>':'<p class="dose"><span class="advice"></span></p>')+(d.nt?'<small></small>':'');
       li.querySelector('b').textContent=d.n;li.querySelector('.advice').textContent=r?r[0]:'–';
+      if(ch)li.querySelector('s').textContent=u;
       if(d.nt)li.querySelector('small').textContent=d.nt;
       lists[d.g].appendChild(li);any=true;
     });
