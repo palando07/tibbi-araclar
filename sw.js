@@ -1,7 +1,7 @@
 // Sayfaları telefona kaydeder, böylece internet yokken de açılır.
 // Bir sayfayı değiştirdiğinizde aşağıdaki sürüm numarasını artırın.
-const CACHE = 'tibbi-araclar-v1';
-const FILES = ['./', 'index.html', 'egfr.html', 'manifest.webmanifest',
+const CACHE = 'tibbi-araclar-v2';
+const FILES = ['./', 'index.html', 'egfr.html', 'af-skor.html', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
