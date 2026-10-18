@@ -1,8 +1,9 @@
 // Sayfaları telefona kaydeder, böylece internet yokken de açılır.
 // Bir sayfayı değiştirdiğinizde aşağıdaki sürüm numarasını artırın.
-const CACHE = 'tibbi-araclar-v7';
+const CACHE = 'tibbi-araclar-v8';
 const FILES = ['./', 'index.html', 'egfr.html', 'af-skor.html', 'elektrolit.html', 'kreatinin-klerensi.html', 'child-pugh.html', 'wells-pe.html',
   'meld-na.html', 'curb-65.html', 'qsofa.html', 'glasgow-blatchford.html',
+  'sodyum.html', 'osmolalite.html', 'vki.html', 'qtc.html', 'glasgow-koma.html', 'ortak.js',
   'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 const MATCH = { ignoreSearch: true, ignoreVary: true };

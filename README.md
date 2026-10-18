@@ -14,5 +14,10 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | CURB-65 | `curb-65.html` |
 | qSOFA | `qsofa.html` |
 | Glasgow-Blatchford | `glasgow-blatchford.html` |
+| Sodyum ve sıvı açığı (hipo/hipernatremi) | `sodyum.html` |
+| Serum osmolalitesi | `osmolalite.html` |
+| VKİ ve vücut yüzey alanı | `vki.html` |
+| Düzeltilmiş QT | `qtc.html` |
+| Glasgow Koma Skalası | `glasgow-koma.html` |
 
-Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz. Hiçbir hasta verisi kaydedilmez.
+Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz. Hiçbir hasta verisi kaydedilmez. Ortak kod (Kopyala düğmesi, çevrimdışı çalışma) `ortak.js` dosyasındadır.

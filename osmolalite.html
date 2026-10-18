@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Serum Osmolalitesi</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Tıbbi Araçlar</a>
+    <h1>Serum Osmolalitesi</h1>
+    <p>Hesaplanan osmolalite, efektif osmolalite ve osmolar açık</p>
+  </header>
+<style>
+table.t{border-collapse:collapse;width:100%;font-size:.9rem}
+table.t th,table.t td{padding:8px 4px;border-bottom:1px solid var(--line);text-align:left}
+table.t th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+table.t td.n{font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+table.t th.n{text-align:right}
+.tw{overflow-x:auto}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+</style>
+  <section class="card">
+    <div class="grid">
+      <div class="field"><label for="na">Sodyum <span>mEq/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="138"></div>
+      <div class="field"><label for="glu">Glukoz <span>mg/dL</span></label><input id="glu" type="number" inputmode="decimal" step="any" value="110"></div>
+      <div class="field"><label for="ur">Üre <span>mg/dL</span></label><input id="ur" type="number" inputmode="decimal" step="any" value="40"></div>
+      <div class="field"><label for="mos">Ölçülen osmolalite <span>mOsm/kg</span></label><input id="mos" type="number" inputmode="decimal" step="any" value="310"></div>
+    </div>
+    <div class="field"><span class="lbl">Üre birimi</span><div class="seg wrapseg"><button type="button" data-g="unit" data-v="ure" aria-pressed="true">Üre (mg/dL)</button><button type="button" data-g="unit" data-v="bun" aria-pressed="false">BUN (mg/dL)</button></div></div>
+    <p class="note">Değerler örnek olarak doldurulmuştur. Ölçülen osmolaliteyi boş bırakırsanız osmolar açık hesaplanmaz.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Hesaplanan osmolalite</span>
+    <div class="res"><span class="num" id="osm">–</span><span class="of">mOsm/kg</span><span class="pill" id="pl"></span></div>
+    <div class="sub"><span>Efektif osmolalite (tonisite)</span><b id="eff">–</b></div>
+    <div class="sub"><span>Osmolar açık</span><b id="gap">–</b></div>
+    <p class="advice" id="adv"></p>
+    <p class="f">2 × Na + glukoz / 18 + BUN / 2,8 · efektif: 2 × Na + glukoz / 18 · osmolar açık: ölçülen − hesaplanan · BUN = üre / 2,14</p>
+    <p class="note">Normal serum osmolalitesi 275–295 mOsm/kg. Osmolar açık &gt; 10 mOsm/kg ise metanol, etilen glikol, etanol gibi ozmotik olarak aktif bir madde düşünülmelidir.</p>
+  </section>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var unit='ure';
+  function calc(){
+    var na=v('na'),glu=v('glu'),ur=v('ur'),mos=v('mos');
+    if(na===null||glu===null||ur===null){$('osm').textContent='–';$('eff').textContent='–';$('gap').textContent='–';pill('pl','');$('adv').textContent='Sodyum, glukoz ve üreyi girin.';return}
+    var bun=unit==='ure'?ur/2.14:ur, eff=2*na+glu/18, o=eff+bun/2.8;
+    $('osm').textContent=Math.round(o);$('eff').textContent=Math.round(eff)+' mOsm/kg';
+    o<275?pill('pl','Düşük','var(--low)'):o>295?pill('pl','Yüksek','var(--high)'):pill('pl','Normal','var(--ok)');
+    if(mos!==null){var g=mos-o;$('gap').textContent=f1(g)+' mOsm/kg';
+      $('adv').textContent=g>10?'Osmolar açık artmış: toksik alkol (metanol, etilen glikol), etanol, mannitol veya ağır ketoasidoz/laktik asidoz düşünülmelidir.':'Osmolar açık normal (≤ 10 mOsm/kg).'}
+    else{$('gap').textContent='ölçülen değer girin';$('adv').textContent=''}
+  }
+  seg('unit',function(){var n=segVal('unit');if(n!==unit){var x=v('ur');if(x!==null)$('ur').value=n==='bun'?f1(x/2.14).replace(',','.'):Math.round(x*2.14);unit=n;document.querySelector('label[for=ur]').innerHTML=(n==='bun'?'BUN':'Üre')+' <span>mg/dL</span>'}calc()});document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

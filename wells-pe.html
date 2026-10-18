@@ -10,21 +10,22 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 /* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
 :root{
   --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
-  --accent:#0f6e8c; --accent-soft:#e2f0f4;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
   --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
   --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-num:ui-monospace,"SF Mono",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#4fb3d1; --accent-soft:#183540; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#4fb3d1; --accent-soft:#183540; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
 }
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
@@ -119,6 +120,6 @@ details p{margin:8px 0 0}
   calc();
 })();
 </script>
-<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
+<script src="ortak.js"></script>
 </body>
 </html>
