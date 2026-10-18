@@ -1,4 +1,4 @@
-# Tıbbi Araçlar
+# Vizit
 
 Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplayıcılar.
 
