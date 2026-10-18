@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>İnsülin Dozu</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>İnsülin Dozu</h1>
+    <p>Serviste bazal-bolus başlangıç dozu, düzeltme skalası ve titrasyon</p>
+  </header>
+<style>
+.card h3{margin:6px 0 0;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+table.sc{border-collapse:collapse;width:100%;font-size:.92rem}
+table.sc th,table.sc td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left}
+table.sc th{font-size:.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+table.sc td:not(:first-child){font-family:var(--font-num);font-weight:700;font-variant-numeric:tabular-nums}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+</style>
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="80"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" type="number" inputmode="numeric" step="1" value="68"></div>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" type="number" inputmode="decimal" step="any" value="55"></div>
+      <div class="field"><label for="bg">Kan şekeri <span>mg/dL</span></label><input id="bg" type="number" inputmode="numeric" step="1" value="250"></div>
+    </div>
+    <div class="field"><span class="lbl">Beslenme</span>
+      <div class="seg wrapseg"><button type="button" data-g="eat" data-v="1" aria-pressed="true">Yemek yiyor</button><button type="button" data-g="eat" data-v="0" aria-pressed="false">Yetersiz / ağızdan almıyor</button></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="t1"><span class="txt">Tip 1 diyabet<small>bazal insülin hiçbir zaman kesilmez</small></span></label>
+      <label class="item"><input type="checkbox" id="home"><span class="txt">Evde insülin kullanıyor<small>evdeki günlük toplam dozdan hesaplanır</small></span></label>
+      <label class="item"><input type="checkbox" id="hypo"><span class="txt">Hipoglisemi riski yüksek<small>yakın zamanda hipoglisemi, sepsis, karaciğer yetmezliği, düşük kilo</small></span></label>
+      <label class="item"><input type="checkbox" id="ster"><span class="txt">Steroid alıyor<small>sabah tek doz prednizolon / metilprednizolon</small></span></label>
+    </div>
+    <div class="grid">
+      <div class="field" id="home-f" hidden><label for="htdd">Evdeki günlük toplam insülin <span>ünite</span></label><input id="htdd" type="number" inputmode="decimal" step="any" value="40"></div>
+      <div class="field" id="ster-f" hidden><label for="pred">Prednizolon eşdeğeri <span>mg/gün</span></label><input id="pred" type="number" inputmode="decimal" step="any" value="40"></div>
+    </div>
+    <p class="note" id="ster-n" hidden>Metilprednizolon 4 mg = prednizolon 5 mg. Deksametazon 0,75 mg = prednizolon 5 mg.</p>
+    <p class="note">Örnek hasta doldurulmuştur: 68 yaş, 80 kg, eGFR 55, kan şekeri 250 mg/dL, yemek yiyor. Diyabetik ketoasidoz, HHS ve yoğun bakımda IV insülin gereken hastalar için değildir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Başlangıç dozu (bazal-bolus)</span>
+    <div class="res"><span class="num" id="tdd">–</span><span class="unit">ünite/gün toplam</span><span class="pill" id="pl"></span></div>
+    <div class="sub"><span>Bazal (glarjin / detemir / degludek), günde 1 kez</span><b id="basal">–</b></div>
+    <div class="sub" id="bolus-row"><span>Hızlı etkili (aspart / lispro / glulisin), her ana öğünden önce</span><b id="bolus">–</b></div>
+    <p class="advice" id="adv"></p>
+    <p class="f" id="fx"></p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Düzeltme dozu</h2>
+    <div class="sub"><span>Düzeltme faktörü (1 ünite kan şekerini düşürür)</span><b id="cf">–</b></div>
+    <table class="sc t"><thead><tr><th>Kan şekeri (mg/dL)</th><th>Öğün öncesi</th><th>Gece yatarken</th></tr></thead><tbody id="sc"></tbody></table>
+    <p class="note" id="sc-n">Öğün dozuna eklenir. Hedef 140 mg/dL alınmıştır. Ağızdan almayan hastada 4–6 saatte bir ölçümle "öğün öncesi" sütunu kullanılır.</p>
+    <p class="f">Düzeltme faktörü = 1800 / günlük toplam doz (hızlı etkili analog için)</p>
+  </section>
+
+  <section class="card" id="ster-c" aria-live="polite" hidden>
+    <h2>Steroide bağlı hiperglisemi</h2>
+    <div class="res"><span class="num" id="nph">–</span><span class="unit">ünite NPH, sabah steroidle birlikte</span></div>
+    <p class="advice" id="ster-a"></p>
+    <p class="f">Her 10 mg prednizolon için 0,1 ünite/kg NPH, en fazla 0,4 ünite/kg</p>
+  </section>
+
+  <section class="card">
+    <h2>Bazal doz titrasyonu</h2>
+    <div class="grid">
+      <div class="field"><label for="cb">Şu anki bazal doz <span>ünite</span></label><input id="cb" type="number" inputmode="decimal" step="any" value="20"></div>
+      <div class="field"><label for="fbg">Sabah açlık kan şekeri <span>mg/dL</span></label><input id="fbg" type="number" inputmode="numeric" step="1" value="190"></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="h24"><span class="txt">Son 24 saatte < 70 mg/dL hipoglisemi oldu</span></label>
+    </div>
+  </section>
+  <section class="card" aria-live="polite">
+    <span class="lbl">Yarınki bazal doz</span>
+    <div class="res"><span class="num" id="nb">–</span><span class="unit">ünite</span><span class="pill" id="tpl"></span></div>
+    <p class="advice" id="tadv"></p>
+    <p class="note">Açlık 100–139 mg/dL: değiştirme. 140–180: %10 artır. &gt; 180: %20 artır. 70–99: %10 azalt. &lt; 70 veya hipoglisemi: %20 azalt.</p>
+  </section>
+
+  <section class="card">
+    <h2>Unutulmaması gerekenler</h2>
+    <ul class="chk">
+      <li>Serviste kan şekeri hedefi 140–180 mg/dL. 100 mg/dL altına inince tedavi yeniden değerlendirilir.</li>
+      <li>Yatışta metformin, sülfonilüre ve SGLT2 inhibitörlerine çoğunlukla ara verilir; SGLT2i'de öglisemik ketoasidoz riskini unutmayın.</li>
+      <li>Hipoglisemi (&lt; 70 mg/dL): bilinç açıksa 15–20 g ağızdan glukoz, 15 dakika sonra tekrar ölçün. Bilinç bozuksa %50 dekstroz 25–50 mL IV veya 1 mg glukagon IM.</li>
+      <li>Ölçüm: yemek yiyen hastada öğün öncesi ve yatarken; ağızdan almayanda 4–6 saatte bir.</li>
+      <li>Hasta yemek yemezse öğün dozu verilmez, bazal doz ve düzeltme sürer.</li>
+      <li>Kan şekeri &gt; 250 mg/dL ise ketonlara bakın; ketoasidoz veya HHS varsa IV insülin protokolüne geçin.</li>
+      <li>Taburculukta HbA1c'ye göre tedavi planlayın; HbA1c &lt; %7 ise çoğu zaman eski tedaviye dönülebilir.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: ADA Standards of Care 2025, Bölüm 16 (Hastanede diyabet bakımı); Umpierrez GE ve ark., Diabetes Care 2007 (RABBIT-2) ve 2013 (Basal Plus); Clore JN, Endocr Pract 2009 (steroid). Bu araç klinik karar desteği içindir; dozlar hastanın yanıtına göre her gün yeniden değerlendirilmelidir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  function r0(x){return Math.max(0,Math.round(x))}
+  function calc(){
+    var wt=v('wt'),age=v('age'),egfr=v('egfr'),bg=v('bg'),eat=segVal('eat')==='1';
+    var t1=$('t1').checked,home=$('home').checked,hypo=$('hypo').checked,ster=$('ster').checked;
+    $('home-f').hidden=!home;$('ster-f').hidden=!ster;$('ster-n').hidden=!ster;$('ster-c').hidden=!ster;
+    var sens=(age!==null&&age>=70)||(egfr!==null&&egfr<45)||hypo;
+    var tdd=null,fx='',why='';
+    if(home&&v('htdd')!==null&&v('htdd')>0){
+      var h=v('htdd'),red=sens||!eat;tdd=red?h*0.8:h;
+      fx='Evdeki doz '+r0(h)+' ünite'+(red?' × 0,8 (yaşlı, böbrek, hipoglisemi riski veya yetersiz beslenme nedeniyle %20 azaltıldı)':'');
+    }else if(wt!==null&&wt>0&&bg!==null){
+      var k=sens?0.3:bg>200?0.5:0.4;tdd=wt*k;
+      why=sens?'70 yaş üstü, eGFR < 45 veya hipoglisemi riski':bg>200?'kan şekeri 201–400 mg/dL':'kan şekeri 140–200 mg/dL';
+      fx=f1(wt).replace(',0','')+' kg × '+String(k).replace('.',',')+' ünite/kg ('+why+')';
+    }
+    var sc=$('sc');sc.innerHTML='';
+    if(tdd===null){$('tdd').textContent='–';$('basal').textContent='–';$('bolus').textContent='–';$('cf').textContent='–';$('adv').textContent='Ağırlık ve kan şekerini girin.';$('fx').textContent='';pill('pl','');}
+    else{
+      var basal=tdd/2,bol=eat?tdd/2/3:0;
+      $('tdd').textContent=r0(tdd);$('basal').textContent=r0(basal)+' ünite';
+      $('bolus-row').hidden=!eat;$('bolus').textContent=r0(bol)+' ünite';
+      pill('pl',sens?'Düşük doz':'Standart doz',sens?'var(--warn)':'var(--ok)');
+      var a=[];
+      if(bg!==null&&bg<140&&!home)a.push('Kan şekeri 140 mg/dL altında: bazal-bolus yerine yalnızca izlem ve düzeltme dozu yeterli olabilir.');
+      if(!eat)a.push('Ağızdan almıyor: yalnızca bazal doz ve düzeltme dozu verilir (Basal Plus). Günlük toplamın yarısı bazal olarak hesaplandı.');
+      if(t1)a.push('Tip 1 diyabet: hasta yemese de bazal insülin kesilmez. Ketonları izleyin.');
+      if(bg!==null&&bg>400)a.push('Kan şekeri 400 mg/dL üzerinde: ketoasidoz ve HHS dışlanmalı, IV insülin gerekebilir.');
+      a.push('Kan şekerine göre her gün yeniden değerlendirin; aşağıdaki titrasyon bölümünü kullanın.');
+      $('adv').textContent=a.join(' ');$('fx').textContent='Günlük toplam = '+fx+'. Yarısı bazal'+(eat?', yarısı üç öğüne bölünür.':'.');
+      var cf=1800/tdd;$('cf').textContent=r0(cf)+' mg/dL';
+      [[141,180],[181,220],[221,260],[261,300],[301,350],[351,400],[401,450]].forEach(function(r){
+        var mid=(r[0]+r[1])/2,d=Math.max(1,r0((mid-140)/cf)),n=r[1]<=200?0:Math.max(1,r0(d/2));
+        var tr=document.createElement('tr');
+        tr.innerHTML='<td>'+(r[0]>400?'&gt; 400':r[0]+'–'+r[1])+'</td><td>'+d+' ü</td><td>'+(n?n+' ü':'–')+'</td>';sc.appendChild(tr);
+      });
+    }
+    if(ster){
+      var p=v('pred');
+      if(wt!==null&&p!==null&&p>0){var u=Math.min(0.1*p/10,0.4)*wt*(sens?0.75:1);$('nph').textContent=r0(u);
+        $('ster-a').textContent='Steroid sabah verildiğinde öğleden sonra ve akşam kan şekerini yükseltir; NPH bu tepeyle örtüşür. Bazal-bolus dozuna eklenir.'+(sens?' Yaşlı, böbrek yetmezliği veya hipoglisemi riski nedeniyle %25 azaltıldı.':'')+' Steroid dozu azaltıldıkça NPH de aynı oranda azaltılır, steroid kesilince NPH kesilir.';}
+      else{$('nph').textContent='–';$('ster-a').textContent='Ağırlık ve steroid dozunu girin.'}
+    }
+    var cb=v('cb'),fbg=v('fbg'),h24=$('h24').checked;
+    if(cb!==null&&cb>0&&(fbg!==null||h24)){
+      var ch=h24||fbg<70?-0.2:fbg<100?-0.1:fbg<140?0:fbg<=180?0.1:0.2,nb=r0(cb*(1+ch));
+      if(ch!==0&&nb===r0(cb))nb=r0(cb)+(ch>0?1:-1);
+      $('nb').textContent=nb;
+      pill('tpl',ch>0?'%'+r0(ch*100)+' artır':ch<0?'%'+r0(-ch*100)+' azalt':'Değiştirme',ch>0?'var(--high)':ch<0?'var(--low)':'var(--ok)');
+      $('tadv').textContent=h24?'Hipoglisemi oldu: nedeni (öğün atlama, böbrek, sepsis, steroid kesilmesi) araştırın. Öğün dozlarını da gözden geçirin.':ch>0?'Akşam öğün öncesi değerler de yüksekse öğün dozlarını da %10–20 artırın.':ch<0?'Gece ve sabah erken saatlerde ölçüm sıklaştırılabilir.':'Açlık kan şekeri hedefte.';
+    }else{$('nb').textContent='–';pill('tpl','');$('tadv').textContent='Şu anki bazal dozu ve sabah açlık kan şekerini girin.'}
+  }
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc)});
+  seg('eat',calc);
+  calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

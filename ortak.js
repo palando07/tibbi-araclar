@@ -31,7 +31,8 @@
       lines.push(c.length >= 2 ? txt(c[0]) + ': ' + txt(c[c.length - 1]) : txt(s));
     });
     card.querySelectorAll('table.t tbody tr').forEach(function(tr){
-      var c = tr.cells; lines.push(txt(c[0]) + ': ' + Array.prototype.slice.call(c, 1).map(txt).join(', '));
+      var c = tr.cells, h = tr.closest('table').querySelectorAll('thead th');
+      lines.push(txt(c[0]) + ': ' + Array.prototype.slice.call(c, 1).map(function(td, i){ return (h[i + 1] ? txt(h[i + 1]) + ' ' : '') + txt(td); }).join(', '));
     });
     card.querySelectorAll('ol li, ul li').forEach(function(li, i){
       var b = li.querySelector('b'), a = li.querySelector('.advice');

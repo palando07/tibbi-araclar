@@ -28,6 +28,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Levotiroksin dozu | `levotiroksin.html` |
 | STOP-BANG | `stop-bang.html` |
 | Tip 2 diyabet tedavisi (HbA1c hedefi, ilaç seçimi) | `diyabet-tedavi.html` |
+| İnsülin dozu (bazal-bolus, düzeltme skalası, steroid NPH, titrasyon) | `insulin-dozu.html` |
 | Nöbet takip listesi: menüde yok, ayrı uygulama (nobet.webmanifest; veriler yalnız cihazda, localStorage) | `nobet-listesi.html` |
 
 Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz. Hiçbir hasta verisi kaydedilmez. Ortak kod (Kopyala düğmesi, çevrimdışı çalışma) `ortak.js` dosyasındadır.
