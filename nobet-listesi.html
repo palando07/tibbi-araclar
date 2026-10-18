@@ -4,10 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nöbet Takip Listesi</title>
-<meta name="theme-color" content="#0f6e8c">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="nobet.webmanifest">
+<link rel="icon" href="icons/nobet-192.png">
+<link rel="apple-touch-icon" href="icons/nobet-apple.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nöbet">
 <style>
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -77,6 +80,13 @@ details p{margin:8px 0 0}
     <h1>Nöbet Takip Listesi</h1>
     <p>Hastalar ve yapılacaklar; yalnızca bu telefonda saklanır</p>
   </header>
+  <section class="card" id="kur">
+    <h2>Ayrı uygulama olarak ekleyin</h2>
+    <p class="note">Nöbet listesini ana ekranınıza kendi simgesiyle ekleyebilirsiniz. Kayıtlarınız aynı kalır.<br>
+    <b>iPhone (Safari):</b> Paylaş düğmesi → Ana Ekrana Ekle.<br>
+    <b>Android (Chrome):</b> sağ üstteki ⋮ menüsü → Ana ekrana ekle veya Uygulamayı yükle.</p>
+    <button type="button" class="btn ghost" id="kur-kapat">Tamam, gizle</button>
+  </section>
 <style>
 input[type=text]{font:500 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
 input[type=text]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
@@ -238,6 +248,14 @@ details summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:.9r
   $('b-clear-yes').onclick=function(){data={patients:[]};save();render();$('confirm').hidden=true;toast('Liste temizlendi')};
   save();render();
 
+})();
+</script>
+<script>
+(function(){
+  var k=document.getElementById('kur'),key='nobet-kurulum-gizli';
+  var app=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+  try{if(app||localStorage.getItem(key))k.hidden=true}catch(e){if(app)k.hidden=true}
+  document.getElementById('kur-kapat').onclick=function(){k.hidden=true;try{localStorage.setItem(key,'1')}catch(e){}};
 })();
 </script>
 <script src="ortak.js"></script>

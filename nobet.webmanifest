@@ -1,0 +1,16 @@
+{
+  "id": "./nobet-listesi.html",
+  "name": "Vizit Nöbet",
+  "short_name": "Nöbet",
+  "lang": "tr",
+  "start_url": "./nobet-listesi.html",
+  "scope": "./nobet-listesi.html",
+  "display": "standalone",
+  "background_color": "#f3f6f8",
+  "theme_color": "#8c1c2c",
+  "icons": [
+    { "src": "icons/nobet-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/nobet-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/nobet-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
