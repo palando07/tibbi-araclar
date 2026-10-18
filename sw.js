@@ -1,13 +1,16 @@
 // Sayfaları telefona kaydeder, böylece internet yokken de açılır.
 // Bir sayfayı değiştirdiğinizde aşağıdaki sürüm numarasını artırın.
-const CACHE = 'tibbi-araclar-v6';
+const CACHE = 'tibbi-araclar-v7';
 const FILES = ['./', 'index.html', 'egfr.html', 'af-skor.html', 'elektrolit.html', 'kreatinin-klerensi.html', 'child-pugh.html', 'wells-pe.html',
   'meld-na.html', 'curb-65.html', 'qsofa.html', 'glasgow-blatchford.html',
   'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
+const MATCH = { ignoreSearch: true, ignoreVary: true };
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE)
+    .then(c => c.addAll(FILES.map(f => new Request(f, { cache: 'reload' }))))
+    .then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -16,12 +19,26 @@ self.addEventListener('activate', e => {
     .then(() => self.clients.claim()));
 });
 
-// Önce internetten güncel hâlini dener, olmazsa kayıtlı kopyayı açar.
+// Önce telefondaki kayıtlı kopyayı hemen açar, arka planda internetten günceller.
+// Yalnız sorunsuz gelen yanıtlar kaydedilir; böylece hastane Wi-Fi giriş sayfası gibi
+// yanlış bir sayfa kayıtlı kopyanın yerine geçmez.
 self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
-  e.respondWith(
-    fetch(e.request)
-      .then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return res; })
-      .catch(() => caches.match(e.request, { ignoreSearch: true }))
-  );
+  const req = e.request;
+  if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+  e.respondWith(caches.open(CACHE).then(async cache => {
+    const cached = await cache.match(req, MATCH);
+    const network = fetch(req).then(res => {
+      if (res.ok && res.type === 'basic' && !res.redirected) cache.put(req, res.clone());
+      return res;
+    });
+    if (cached) { e.waitUntil(network.catch(() => {})); return cached; }
+    try { return await network; }
+    catch (err) {
+      if (req.mode === 'navigate') {
+        const home = await cache.match('index.html', MATCH);
+        if (home) return home;
+      }
+      throw err;
+    }
+  }));
 });
