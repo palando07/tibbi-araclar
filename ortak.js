@@ -34,7 +34,7 @@
       var c = tr.cells, h = tr.closest('table').querySelectorAll('thead th');
       lines.push(txt(c[0]) + ': ' + Array.prototype.slice.call(c, 1).map(function(td, i){ return (h[i + 1] ? txt(h[i + 1]) + ' ' : '') + txt(td); }).join(', '));
     });
-    card.querySelectorAll('ol li, ul li').forEach(function(li, i){
+    Array.prototype.filter.call(card.querySelectorAll('ol li, ul li'), function(li){ return !li.closest('[hidden]'); }).forEach(function(li, i){
       var b = li.querySelector('b'), a = li.querySelector('.advice');
       lines.push((i + 1) + '. ' + (b ? txt(b) + (a ? ': ' + txt(a) : '') : txt(li)));
     });

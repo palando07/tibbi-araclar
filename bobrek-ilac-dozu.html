@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Böbrekte İlaç Dozu</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Böbrekte İlaç Dozu</h1>
+    <p>Kreatinin klerensine göre sık kullanılan ilaçların doz ayarı</p>
+  </header>
+<style>
+input[type=search]{font:500 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ul.drugs{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ul.drugs li{padding:10px 0;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+ul.drugs li:first-child{border-top:0;padding-top:0}
+.dh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dh b{font-size:1rem}
+ul.drugs .advice{font-family:var(--font-num);font-size:.9rem;font-weight:600}
+ul.drugs small{color:var(--muted);font-size:.82rem;line-height:1.4}
+.st{display:inline-block;padding:2px 10px;border-radius:999px;font:700 .75rem var(--font-body);color:#fff;white-space:nowrap}
+.st[data-s="0"]{background:var(--ok)}.st[data-s="1"]{background:var(--warn)}.st[data-s="2"]{background:var(--high)}
+</style>
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" type="number" inputmode="numeric" step="1" value="74"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="ht">Boy <span>cm</span></label><input id="ht" type="number" inputmode="numeric" step="1" value="170"></div>
+      <div class="field"><label for="scr">Kreatinin <span>mg/dL</span></label><input id="scr" type="number" inputmode="decimal" step="any" value="1.8"></div>
+    </div>
+    <div class="field"><span class="lbl">Cinsiyet</span>
+      <div class="seg"><button type="button" data-g="sex" data-v="m" aria-pressed="true">Erkek</button><button type="button" data-g="sex" data-v="f" aria-pressed="false">Kadın</button></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="hd"><span class="txt">Hemodiyalize giriyor</span></label>
+    </div>
+    <p class="note">Örnek hasta doldurulmuştur: 74 yaşında erkek, 70 kg, 170 cm, kreatinin 1,8 mg/dL. Akut böbrek hasarında kreatinin sabit olmadığı için hesap güvenilir değildir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Kreatinin klerensi (Cockcroft-Gault)</span>
+    <div class="res"><span class="num" id="crcl">–</span><span class="unit">mL/dk</span><span class="pill" id="pl"></span></div>
+    <div class="sub"><span>eGFR (CKD-EPI 2021)</span><b id="egfr">–</b></div>
+    <p class="note" id="wnote"></p>
+  </section>
+
+  <section class="card">
+    <input type="search" id="q" placeholder="İlaç ara: meropenem, apiksaban…" aria-label="İlaç ara" autocomplete="off">
+    <label class="item"><input type="checkbox" id="only"><span class="txt">Yalnızca doz ayarı gerekenleri göster</span></label>
+  </section>
+
+  <section class="card grp" id="g-ab" aria-live="polite">
+    <h2>Antibiyotikler</h2>
+    <ul class="drugs" id="l-ab"></ul>
+  </section>
+  <section class="card grp" id="g-av" aria-live="polite">
+    <h2>Antiviral ve antifungal</h2>
+    <ul class="drugs" id="l-av"></ul>
+  </section>
+  <section class="card grp" id="g-ak" aria-live="polite">
+    <h2>Antikoagülanlar</h2>
+    <ul class="drugs" id="l-ak"></ul>
+  </section>
+  <section class="card grp" id="g-dm" aria-live="polite">
+    <h2>Diyabet ilaçları</h2>
+    <ul class="drugs" id="l-dm"></ul>
+  </section>
+  <section class="card grp" id="g-nr" aria-live="polite">
+    <h2>Nöroloji ve ağrı</h2>
+    <ul class="drugs" id="l-nr"></ul>
+  </section>
+  <section class="card grp" id="g-dg" aria-live="polite">
+    <h2>Diğer</h2>
+    <ul class="drugs" id="l-dg"></ul>
+  </section>
+  <p class="note" id="none" hidden>Aramaya uyan ilaç yok.</p>
+
+  <p class="note">Dozlar erişkin, olağan endikasyon dozlarıdır; ilacın kendi prospektüsüne ve hastane formülerine göre doğrulayın. İlaç dozlamasında Cockcroft-Gault kullanılır; metformin ve DPP-4 inhibitörleri için eGFR kullanılmıştır. Kaynaklar: ürün bilgileri (FDA/EMA), Sanford Guide, ESC 2024 AF kılavuzu (NOAK dozları), KDIGO 2022. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  // Her ilaç: g grup, n ad, f(c, e, p) -> [doz, düzey (0 normal, 1 ayar, 2 kaçın)], hd diyaliz dozu [doz, düzey], nt not
+  var D=[
+  {g:'ab',n:'Piperasilin-tazobaktam',k:'tazocin',f:function(c){return c>40?['4,5 g 6 saatte bir',0]:c>=20?['3,375 g 6 saatte bir',1]:['2,25 g 6 saatte bir',1]},hd:['2,25 g 8 saatte bir + diyaliz sonrası 0,75 g',1],nt:'Nozokomiyal pnömoni / ağır enfeksiyon dozu. Uzatılmış infüzyon (4 saat) tercih edilebilir.'},
+  {g:'ab',n:'Meropenem',f:function(c){return c>50?['1 g 8 saatte bir',0]:c>=26?['1 g 12 saatte bir',1]:c>=10?['500 mg 12 saatte bir',1]:['500 mg 24 saatte bir',1]},hd:['500 mg 24 saatte bir, diyaliz günü diyalizden sonra',1],nt:'Menenjitte 2 g 8 saatte bir; böbrek yetmezliğinde aynı oranda azaltılır.'},
+  {g:'ab',n:'Ertapenem',f:function(c){return c>30?['1 g 24 saatte bir',0]:['500 mg 24 saatte bir',1]},hd:['500 mg 24 saatte bir, diyalizden sonra',1]},
+  {g:'ab',n:'Seftriakson',f:function(){return['1–2 g 24 saatte bir',0]},hd:['1–2 g 24 saatte bir',0],nt:'Böbrek yetmezliğinde doz ayarı gerekmez; eşlik eden ağır karaciğer yetmezliğinde en fazla 2 g/gün.'},
+  {g:'ab',n:'Sefazolin',f:function(c){return c>=35?['1–2 g 8 saatte bir',0]:c>10?['0,5–1 g 12 saatte bir',1]:['0,5–1 g 24 saatte bir',1]},hd:['2 g her diyalizden sonra (haftada 3 kez)',1]},
+  {g:'ab',n:'Seftazidim',f:function(c){return c>50?['2 g 8 saatte bir',0]:c>30?['1 g 12 saatte bir',1]:c>15?['1 g 24 saatte bir',1]:c>=6?['500 mg 24 saatte bir',1]:['500 mg 48 saatte bir',1]},hd:['1 g yükleme, sonra her diyalizden sonra 1 g',1]},
+  {g:'ab',n:'Sefepim',f:function(c){return c>60?['2 g 8 saatte bir',0]:c>=30?['2 g 12 saatte bir',1]:c>10?['2 g 24 saatte bir',1]:['1 g 24 saatte bir',1]},hd:['1. gün 1 g, sonra 500 mg–1 g 24 saatte bir (diyaliz günü diyalizden sonra)',1],nt:'Doz azaltılmazsa nörotoksisite (ensefalopati, nöbet) gelişebilir.'},
+  {g:'ab',n:'Ampisilin-sulbaktam',f:function(c){return c>=30?['1,5–3 g 6 saatte bir',0]:c>=15?['1,5–3 g 12 saatte bir',1]:['1,5–3 g 24 saatte bir',1]},hd:['1,5–3 g 24 saatte bir, diyalizden sonra',1]},
+  {g:'ab',n:'Amoksisilin-klavulanat (ağızdan)',k:'augmentin',f:function(c){return c>=30?['875/125 mg 12 saatte bir veya 500/125 mg 8 saatte bir',0]:c>=10?['500/125 mg 12 saatte bir',1]:['500/125 mg 24 saatte bir',1]},hd:['500/125 mg 24 saatte bir; diyaliz sırasında ve sonrasında ek doz',1],nt:'875/125 mg tablet CrCl < 30 mL/dk olduğunda kullanılmaz.'},
+  {g:'ab',n:'Levofloksasin',f:function(c){return c>=50?['750 mg 24 saatte bir',0]:c>=20?['750 mg 48 saatte bir',1]:['750 mg yükleme, sonra 500 mg 48 saatte bir',1]},hd:['750 mg yükleme, sonra 500 mg 48 saatte bir',1],nt:'500 mg rejiminde: CrCl 20–49 için 500 mg yükleme, sonra 250 mg 24 saatte bir.'},
+  {g:'ab',n:'Siprofloksasin',f:function(c){return c>=50?['Ağızdan 500–750 mg 12 saatte bir; IV 400 mg 8–12 saatte bir',0]:c>=30?['Ağızdan 250–500 mg 12 saatte bir; IV 400 mg 12 saatte bir',1]:['Ağızdan 250–500 mg 18–24 saatte bir; IV 200–400 mg 18–24 saatte bir',1]},hd:['Ağızdan 250–500 mg 24 saatte bir, diyalizden sonra',1]},
+  {g:'ab',n:'Trimetoprim-sülfametoksazol',k:'bactrim kemoprim',f:function(c){return c>30?['Olağan doz',0]:c>=15?['Olağan dozun %50\'si',1]:['Önerilmez',2]},hd:['Önerilmez; zorunluysa diyalizden sonra %50 doz',2],nt:'Hiperkalemi ve kreatinin artışı (tübüler sekresyon) izleyin.'},
+  {g:'ab',n:'Klaritromisin',f:function(c){return c>=30?['500 mg 12 saatte bir',0]:['250 mg 12 saatte bir veya 500 mg 24 saatte bir',1]},hd:['250 mg 12 saatte bir veya 500 mg 24 saatte bir',1]},
+  {g:'ab',n:'Nitrofurantoin',f:function(c){return c>=30?['100 mg 12 saatte bir (5 gün)',0]:['Kullanmayın',2]},hd:['Kullanmayın',2],nt:'Böbrek yetmezliğinde etkisiz kalır, periferik nöropati riski artar.'},
+  {g:'ab',n:'Vankomisin',f:function(c){return c>=50?['Yükleme 20–35 mg/kg, idame 15–20 mg/kg 8–12 saatte bir',0]:['Yükleme 20–35 mg/kg (değişmez); idame dozu ve aralığı düzeye göre uzatılır',1]},hd:['Yükleme 20–25 mg/kg, sonra her diyalizden sonra 500–1000 mg; diyaliz öncesi düzeye göre',1],nt:'Hedef AUC 400–600 veya çukur düzey 15–20 mg/L. Kreatinini izleyin.'},
+  {g:'av',n:'Asiklovir (IV)',f:function(c){return c>50?['5–10 mg/kg 8 saatte bir',0]:c>=25?['5–10 mg/kg 12 saatte bir',1]:c>=10?['5–10 mg/kg 24 saatte bir',1]:['2,5–5 mg/kg 24 saatte bir',1]},hd:['2,5–5 mg/kg 24 saatte bir, diyalizden sonra',1],nt:'Obezde ideal kiloyla hesaplayın. Bol hidrasyon; kristal nefropatisi riski.'},
+  {g:'av',n:'Flukonazol',f:function(c){return c>50?['Olağan doz',0]:['Yükleme dozundan sonra olağan dozun %50\'si',1]},hd:['Her diyalizden sonra tam doz',1]},
+  {g:'av',n:'Oseltamivir (tedavi)',k:'tamiflu',f:function(c){return c>60?['75 mg 12 saatte bir',0]:c>30?['30 mg 12 saatte bir',1]:c>10?['30 mg 24 saatte bir',1]:['Önerilmez (diyalize girmeyenlerde)',2]},hd:['30 mg her diyalizden sonra',1]},
+  {g:'ak',n:'Enoksaparin (tedavi)',k:'clexane',f:function(c){return c>=30?['1 mg/kg 12 saatte bir',0]:['1 mg/kg 24 saatte bir',1]},hd:['Önerilmez; anfraksiyone heparin tercih edin',2],nt:'Anti-Xa düzeyi ile izlem düşünülebilir.'},
+  {g:'ak',n:'Enoksaparin (profilaksi)',k:'clexane',f:function(c){return c>=30?['40 mg 24 saatte bir',0]:['30 mg 24 saatte bir',1]},hd:['Anfraksiyone heparin 5000 ünite 8–12 saatte bir tercih edin',2]},
+  {g:'ak',n:'Apiksaban (AF)',k:'eliquis noak',f:function(c,e,p){
+    if(c<15)return['Önerilmez',2];
+    var n=(p.age>=80?1:0)+(p.wt<=60?1:0)+(p.scr>=1.5?1:0);
+    if(n>=2)return['2,5 mg 12 saatte bir ('+n+' doz azaltma ölçütü)',1];
+    if(c<30)return['2,5 mg 12 saatte bir',1];
+    return['5 mg 12 saatte bir',0]},hd:['Avrupa\'da önerilmez',2],nt:'2,5 mg ölçütleri (en az 2): yaş ≥ 80, kilo ≤ 60 kg, kreatinin ≥ 1,5 mg/dL. VTE tedavisinde böbreğe göre doz ayarı yoktur.'},
+  {g:'ak',n:'Rivaroksaban (AF)',k:'xarelto noak',f:function(c){return c>50?['20 mg 24 saatte bir, yemekle',0]:c>=15?['15 mg 24 saatte bir, yemekle',1]:['Kullanmayın',2]},hd:['Kullanmayın',2]},
+  {g:'ak',n:'Dabigatran (AF)',k:'pradaxa noak',f:function(c,e,p){return c<30?['Kontrendike',2]:p.age>=80?['110 mg 12 saatte bir (yaş ≥ 80)',1]:c<=50?['150 mg 12 saatte bir; kanama riski yüksekse 110 mg',1]:['150 mg 12 saatte bir',0]},hd:['Kontrendike',2]},
+  {g:'ak',n:'Edoksaban (AF)',k:'lixiana noak',f:function(c,e,p){return c<15?['Kullanmayın',2]:c<=50?['30 mg 24 saatte bir',1]:p.wt<=60?['30 mg 24 saatte bir (kilo ≤ 60 kg)',1]:['60 mg 24 saatte bir',0]},hd:['Kullanmayın',2]},
+  {g:'dm',n:'Metformin',e:1,f:function(c,e){return e>=45?['Olağan doz (en fazla 2000–2550 mg/gün)',0]:e>=30?['En fazla 1000 mg/gün; yeni başlanmaz',1]:['Kontrendike',2]},hd:['Kontrendike',2],nt:'eGFR ile değerlendirilir. Kontrastlı tetkik ve akut hastalıkta ara verin.'},
+  {g:'dm',n:'Sitagliptin',e:1,k:'januvia',f:function(c,e){return e>=45?['100 mg/gün',0]:e>=30?['50 mg/gün',1]:['25 mg/gün',1]},hd:['25 mg/gün',1]},
+  {g:'dm',n:'Vildagliptin',e:1,k:'galvus',f:function(c,e){return e>=50?['50 mg 12 saatte bir',0]:['50 mg 24 saatte bir',1]},hd:['50 mg 24 saatte bir',1]},
+  {g:'dm',n:'Linagliptin',k:'trajenta',f:function(){return['5 mg/gün',0]},hd:['5 mg/gün',0],nt:'Böbrek yetmezliğinde doz ayarı gerekmez.'},
+  {g:'dm',n:'Gliklazid',k:'diamicron sülfonilüre',f:function(c){return c>=30?['Olağan doz; hipoglisemi açısından dikkat',c<60?1:0]:['Kullanmayın; insülin veya linagliptin tercih edin',2]},hd:['Kullanmayın',2]},
+  {g:'nr',n:'Gabapentin',k:'neurontin',f:function(c){return c>=60?['900–3600 mg/gün, 3 doza bölünmüş',0]:c>=30?['400–1400 mg/gün, 2 doza bölünmüş',1]:c>=15?['200–700 mg/gün, tek doz',1]:['100–300 mg/gün, tek doz',1]},hd:['100–300 mg/gün + her diyalizden sonra 125–350 mg',1]},
+  {g:'nr',n:'Pregabalin',k:'lyrica',f:function(c){return c>=60?['150–600 mg/gün, 2–3 doza bölünmüş',0]:c>=30?['75–300 mg/gün, 2–3 doza bölünmüş',1]:c>=15?['25–150 mg/gün, 1–2 doz',1]:['25–75 mg/gün, tek doz',1]},hd:['25–75 mg/gün + her diyalizden sonra ek doz',1]},
+  {g:'nr',n:'Levetirasetam',k:'keppra',f:function(c){return c>80?['500–1500 mg 12 saatte bir',0]:c>=50?['500–1000 mg 12 saatte bir',1]:c>=30?['250–750 mg 12 saatte bir',1]:['250–500 mg 12 saatte bir',1]},hd:['500–1000 mg 24 saatte bir + diyalizden sonra 250–500 mg',1]},
+  {g:'nr',n:'Tramadol',f:function(c){return c>=30?['50–100 mg 4–6 saatte bir, en fazla 400 mg/gün',0]:['12 saatte bir, en fazla 200 mg/gün',1]},hd:['12 saatte bir, en fazla 200 mg/gün; diyaliz günü diyalizden sonra',1],nt:'Nöbet ve serotonin sendromu riski; yaşlıda dikkat.'},
+  {g:'nr',n:'Morfin',f:function(c){return c>=50?['Olağan doz',0]:c>=30?['Dozu %25–50 azaltın, aralığı uzatın',1]:['Kaçının (aktif metabolit birikir); fentanil tercih edin',2]},hd:['Kaçının; fentanil tercih edin',2]},
+  {g:'dg',n:'Allopurinol',f:function(c){return c>=30?['100 mg/gün ile başlayın, ürik aside göre titre edin',0]:['50 mg/gün ile başlayın, yavaş titre edin',1]},hd:['50–100 mg, diyalizden sonra',1],nt:'Başlangıç dozu düşük tutulur; ürik asit hedefine göre yavaşça artırılabilir.'},
+  {g:'dg',n:'Kolşisin',f:function(c){return c>=30?['0,5 mg günde 1–2 kez',0]:['Dozu azaltın (ör. 0,5 mg gün aşırı); atak tedavisi 2 haftadan sık tekrarlanmaz',1]},hd:['Kaçının (diyalizle uzaklaşmaz)',2],nt:'Klaritromisin, siklosporin gibi CYP3A4/P-gp inhibitörleriyle birlikte kullanmayın.'},
+  {g:'dg',n:'Digoksin',f:function(c){return c>=50?['0,125–0,25 mg/gün',0]:['0,0625–0,125 mg/gün veya gün aşırı',1]},hd:['0,0625 mg gün aşırı',1],nt:'Düzey izleyin (hedef 0,5–0,9 ng/mL); hipokalemi toksisiteyi artırır.'},
+  {g:'dg',n:'Spironolakton',f:function(c){return c>=50?['25–50 mg/gün',0]:c>=30?['12,5–25 mg/gün veya gün aşırı',1]:['Kaçının (hiperkalemi)',2]},hd:['Kaçının',2],nt:'Potasyum > 5,0 mEq/L ise başlamayın.'},
+  {g:'dg',n:'NSAİİ (ibuprofen, diklofenak, naproksen)',k:'nsaid nsaii',f:function(c){return c>=60?['En düşük doz, en kısa süre',0]:c>=30?['Mümkünse kaçının; kısa süre, kreatinin ve potasyum izlemi',1]:['Kaçının',2]},hd:['Kaçının (rezidüel idrar varsa)',2]},
+  {g:'dg',n:'Famotidin',f:function(c){return c>=50?['20–40 mg 12–24 saatte bir',0]:['20 mg/gün veya 40 mg gün aşırı',1]},hd:['20 mg/gün',1],nt:'Yaşlıda böbrek yetmezliğinde konfüzyon yapabilir.'}
+  ];
+  var lab={0:'Normal doz',1:'Doz ayarı',2:'Kaçının'};
+  function low(s){return s.toLocaleLowerCase('tr').replace(/ı/g,'i').normalize('NFD').replace(/[̀-ͯ]/g,'')}
+  function calc(){
+    var age=v('age'),wt=v('wt'),ht=v('ht'),scr=v('scr'),f=segVal('sex')==='f',hd=$('hd').checked;
+    var c=null,e=null,wl='';
+    if(age!==null&&wt!==null&&scr!==null&&scr>0&&age>=18){
+      var use=wt;wl='gerçek kilo';
+      if(ht!==null&&ht>=152.4){var ibw=(f?45.5:50)+0.91*(ht-152.4),abw=ibw+0.4*(wt-ibw);
+        if(wt<ibw){use=wt;wl='gerçek kilo'}else if(wt>1.2*ibw){use=abw;wl='düzeltilmiş kilo ('+Math.round(abw)+' kg)'}else{use=ibw;wl='ideal kilo ('+Math.round(ibw)+' kg)'}}
+      c=(140-age)*use/(72*scr)*(f?0.85:1);
+      var k=f?0.7:0.9,a=f?-0.241:-0.302,r=scr/k;
+      e=142*Math.pow(Math.min(r,1),a)*Math.pow(Math.max(r,1),-1.2)*Math.pow(0.9938,age)*(f?1.012:1);
+    }
+    if(c===null&&!hd){$('crcl').textContent='–';$('egfr').textContent='–';pill('pl','');$('wnote').textContent='Yaş, kilo ve kreatinin girin.'}
+    else{
+      $('crcl').textContent=hd?'HD':Math.round(c);$('egfr').textContent=(hd||e===null)?'–':Math.round(e)+' mL/dk/1,73 m²';
+      if(hd)pill('pl','Hemodiyaliz','var(--high)');
+      else c>=60?pill('pl','≥ 60','var(--ok)'):c>=30?pill('pl','30–59','var(--warn)'):pill('pl','< 30','var(--high)');
+      $('wnote').textContent=hd?'Hemodiyaliz dozları gösteriliyor.':'Hesapta '+wl+' kullanıldı. Kilo seçimi: gerçek kilo idealin altındaysa gerçek, idealin %120\'sinin üstündeyse düzeltilmiş, aradaysa ideal kilo.';
+    }
+    var q=low($('q').value.trim()),only=$('only').checked,p={age:age,wt:wt,scr:scr},any=false;
+    var lists={};document.querySelectorAll('ul.drugs').forEach(function(u){u.innerHTML='';lists[u.id.slice(2)]=u});
+    D.forEach(function(d){
+      if(q&&low(d.n+' '+(d.k||'')).indexOf(q)<0)return;
+      var r=hd?d.hd:(c===null?null:d.f(c,e===null?c:e,p));
+      if(only&&(!r||r[1]===0))return;
+      var li=document.createElement('li');
+      li.innerHTML='<div class="dh"><b></b>'+(r?'<span class="st" data-s="'+r[1]+'">'+lab[r[1]]+'</span>':'')+'</div><p class="advice"></p>'+(d.nt?'<small></small>':'');
+      li.querySelector('b').textContent=d.n;li.querySelector('.advice').textContent=r?r[0]:'–';
+      if(d.nt)li.querySelector('small').textContent=d.nt;
+      lists[d.g].appendChild(li);any=true;
+    });
+    Object.keys(lists).forEach(function(k){$('g-'+k).hidden=!lists[k].children.length});
+    $('none').hidden=any;
+  }
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc)});
+  seg('sex',calc);
+  calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

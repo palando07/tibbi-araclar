@@ -8,6 +8,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | AF risk skorları (CHA₂DS₂-VASc / CHA₂DS₂-VA, HAS-BLED) | `af-skor.html` |
 | Elektrolit hesaplamaları (düzeltilmiş Ca, anyon açığı, düzeltilmiş Na) | `elektrolit.html` |
 | Kreatinin klerensi (Cockcroft-Gault) | `kreatinin-klerensi.html` |
+| Böbrekte ilaç dozu (CrCl'ye göre antibiyotik, NOAK, sık ilaçlar) | `bobrek-ilac-dozu.html` |
 | Child-Pugh | `child-pugh.html` |
 | Wells skoru (pulmoner emboli) | `wells-pe.html` |
 | MELD-Na | `meld-na.html` |
