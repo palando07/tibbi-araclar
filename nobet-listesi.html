@@ -131,15 +131,24 @@ textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       <div><b id="n-crit">0</b><span>kritik hasta</span></div>
     </div>
     <div class="row" style="flex-wrap:wrap">
+      <button type="button" class="btn ghost" id="b-qr">QR ile devret</button>
       <button type="button" class="btn ghost" id="b-share">Devret (paylaş)</button>
       <button type="button" class="btn ghost" id="b-copy">Kopyala</button>
       <button type="button" class="btn ghost" id="b-in">Devir al</button>
       <button type="button" class="btn ghost" id="b-clear">Nöbeti bitir</button>
     </div>
+    <div class="confirm" id="qr" hidden style="border-color:var(--accent);align-items:center">
+      <p class="advice" style="font-weight:600;text-align:center">Devralan kişi bu kodu Nöbet uygulamasındaki "QR okut" ile okutsun</p>
+      <div id="qr-img" style="background:#fff;padding:10px;border-radius:10px;width:100%;max-width:340px"></div>
+      <p class="note" id="qr-s" style="text-align:center"></p>
+      <button type="button" class="btn ghost" id="qr-no">Kapat</button>
+    </div>
     <div class="confirm" id="imp" hidden style="border-color:var(--accent)">
       <label for="imp-t" class="advice" style="font-weight:600">Önceki nöbetçinin gönderdiği devir metnini yapıştırın</label>
       <textarea id="imp-t" rows="7" placeholder="Nöbet devri – …&#10;Yatak 12 (A.K.) – KRİTİK: Pnömoni&#10;  [ ] K kontrolü"></textarea>
       <p class="note" id="imp-s"></p>
+      <button type="button" class="btn ghost" id="cam-b">QR okut (kamera)</button>
+      <div id="cam" hidden style="position:relative"><video id="cam-v" playsinline muted style="width:100%;border-radius:10px;background:#000"></video><p class="note" id="cam-s">QR kodu çerçeveye getirin…</p></div>
       <div class="row" style="flex-wrap:wrap"><button type="button" class="btn" id="imp-ok" disabled>Listeye ekle</button><button type="button" class="btn ghost" id="imp-no">Vazgeç</button></div>
       <p class="note">Aynı yatak numarası listenizde varsa o hasta gelen bilgiyle güncellenir. Tamamlanmış işler aktarılmaz.</p>
     </div>
@@ -261,10 +270,60 @@ textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     });
     return out;
   }
+  // QR: listedeki hastalar ve bekleyen işler, sunucuya gitmeyen # kısmında taşınır
+  var QURL=location.origin+location.pathname;
+  function bin(b){var s='';for(var i=0;i<b.length;i++)s+=String.fromCharCode(b[i]);return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+  function unbin(t){t=t.replace(/-/g,'+').replace(/_/g,'/');var s=atob(t),b=new Uint8Array(s.length);for(var i=0;i<s.length;i++)b[i]=s.charCodeAt(i);return b}
+  function pipe(bytes,T){return new Response(new Blob([bytes]).stream().pipeThrough(new T('deflate-raw'))).arrayBuffer().then(function(a){return new Uint8Array(a)})}
+  // Sıkıştırma destekleniyorsa "z=", değilse "d=" ile gönderilir
+  function encodeList(){var raw=new TextEncoder().encode(JSON.stringify(rows()));
+    if(!window.CompressionStream)return Promise.resolve('d='+bin(raw));
+    return pipe(raw,CompressionStream).then(function(z){return z.length<raw.length?'z='+bin(z):'d='+bin(raw)},function(){return 'd='+bin(raw)})}
+  function decodeCode(kind,code){
+    if(kind==='d')return Promise.resolve(unpackRows(JSON.parse(new TextDecoder().decode(unbin(code)))));
+    if(!window.DecompressionStream)return Promise.reject(new Error('eski'));
+    return pipe(unbin(code),DecompressionStream).then(function(b){return unpackRows(JSON.parse(new TextDecoder().decode(b)))})}
+  function rows(){return sorted().map(function(p){return[p.bed,p.ini,p.dx,p.pr,p.tasks.filter(function(t){return !t.d}).map(function(t){return t.t})]})}
+  function unpackRows(a){if(!Array.isArray(a))throw 0;
+    return a.map(function(r){return{bed:String(r[0]).slice(0,8),ini:String(r[1]||'').slice(0,5),dx:String(r[2]||'').replace(/\b\d{11}\b/g,'').slice(0,80),pr:[0,1,2].indexOf(r[3])>=0?r[3]:0,
+      tasks:(r[4]||[]).map(function(t){return{id:id(),t:String(t).slice(0,80),d:false}})}})}
+  // Metin içinde #d=… veya #z=… kodunu bulup listeye çevirir (Promise)
+  function fromText(t){var m=String(t).match(/#([dz])=([A-Za-z0-9_-]+)/);return m?decodeCode(m[1],m[2]):Promise.reject(new Error('kod yok'))}
+  $('b-qr').onclick=function(){
+    if(!data.patients.length){toast('Listede hasta yok');return}
+    $('imp').hidden=true;$('confirm').hidden=true;
+    var box=$('qr-img');box.innerHTML='';$('qr-s').textContent='Hazırlanıyor…';$('qr').hidden=false;
+    encodeList().then(function(code){
+      try{var q=qrcode(0,'L');q.addData(QURL+'#'+code);q.make();var im=new Image();im.src=q.createDataURL(8,2);im.alt='Nöbet devri QR kodu';
+        im.style.cssText='width:100%;height:auto;display:block;image-rendering:pixelated';box.appendChild(im);
+        $('qr-s').textContent=data.patients.length+' hasta. Kod telefon kamerasıyla da okutulabilir; o zaman sayfa tarayıcıda açılır.'}
+      catch(e){$('qr-s').textContent='Liste QR koda sığmayacak kadar uzun; "Devret (paylaş)" ile gönderin.'}
+    });
+  };
+  $('qr-no').onclick=function(){$('qr').hidden=true;$('qr-img').innerHTML=''};
+  var stream=null,raf=0,cv=document.createElement('canvas'),cx=cv.getContext('2d',{willReadFrequently:true}),bd=null;
+  function camStop(){if(raf)cancelAnimationFrame(raf);raf=0;if(stream)stream.getTracks().forEach(function(t){t.stop()});stream=null;$('cam').hidden=true;$('cam-b').hidden=false}
+  function got(text){if(!/#[dz]=/.test(text)){$('cam-s').textContent='Bu bir nöbet devri kodu değil, tekrar deneyin.';return false}
+    camStop();fromText(text).then(function(l){pending=l;showPending()},function(){$('imp-s').textContent='Kod okunamadı; "Devret (paylaş)" ile metin olarak isteyin.'});return true}
+  function scan(){var v=$('cam-v');
+    if(v.readyState>=2){
+      if(bd){bd.detect(v).then(function(r){if(r.length&&got(r[0].rawValue))return;raf=requestAnimationFrame(scan)}).catch(function(){bd=null;raf=requestAnimationFrame(scan)});return}
+      if(window.jsQR){var w=v.videoWidth,h=v.videoHeight,k=Math.min(1,640/Math.max(w,h));cv.width=w*k|0;cv.height=h*k|0;cx.drawImage(v,0,0,cv.width,cv.height);
+        var r=jsQR(cx.getImageData(0,0,cv.width,cv.height).data,cv.width,cv.height,{inversionAttempts:'dontInvert'});if(r&&got(r.data))return}}
+    raf=requestAnimationFrame(scan)}
+  $('cam-b').onclick=function(){
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('Bu cihazda kamera açılamıyor');return}
+    if('BarcodeDetector' in window){try{bd=new BarcodeDetector({formats:['qr_code']})}catch(e){bd=null}}
+    if(!bd&&!window.jsQR){var sc=document.createElement('script');sc.src='lib/jsQR.js';document.head.appendChild(sc)}
+    navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false}).then(function(s){stream=s;var v=$('cam-v');v.srcObject=s;v.play();$('cam').hidden=false;$('cam-b').hidden=true;$('cam-s').textContent='QR kodu çerçeveye getirin…';scan()},
+      function(){toast('Kamera izni verilmedi')});
+  };
   var pending=[];
-  $('b-in').onclick=function(){$('imp').hidden=false;$('confirm').hidden=true;$('imp-t').focus()};
-  $('imp-no').onclick=function(){$('imp').hidden=true;$('imp-t').value='';pending=[];$('imp-s').textContent='';$('imp-ok').disabled=true};
-  $('imp-t').oninput=function(){pending=parse($('imp-t').value);var n=0;pending.forEach(function(p){n+=p.tasks.length});
+  function showPending(){var n=0;pending.forEach(function(p){n+=p.tasks.length});
+    $('imp-s').textContent=pending.length?pending.length+' hasta, '+n+' bekleyen iş bulundu.':'';$('imp-ok').disabled=!pending.length}
+  $('b-in').onclick=function(){$('imp').hidden=false;$('confirm').hidden=true;$('qr').hidden=true};
+  $('imp-no').onclick=function(){camStop();$('imp').hidden=true;$('imp-t').value='';pending=[];$('imp-s').textContent='';$('imp-ok').disabled=true};
+  $('imp-t').oninput=function(){var tv=$('imp-t').value;if(/#[dz]=/.test(tv)){fromText(tv).then(function(l){pending=l;showPending()},function(){pending=[];showPending()});return}pending=parse(tv);var n=0;pending.forEach(function(p){n+=p.tasks.length});
     $('imp-s').textContent=pending.length?pending.length+' hasta, '+n+' bekleyen iş bulundu.':($('imp-t').value.trim()?'Metinde "Yatak …" ile başlayan satır bulunamadı.':'');
     $('imp-ok').disabled=!pending.length};
   $('imp-ok').onclick=function(){
@@ -272,7 +331,7 @@ textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     pending.forEach(function(q){var ex=data.patients.filter(function(p){return p.bed===q.bed})[0];
       if(ex){ex.ini=q.ini||ex.ini;ex.dx=q.dx||ex.dx;ex.pr=q.pr;var have={};ex.tasks.forEach(function(t){have[t.t]=1});q.tasks.forEach(function(t){if(!have[t.t])ex.tasks.push(t)});upd++}
       else{q.id=id();data.patients.push(q);add++}});
-    save();render();$('imp-no').onclick();toast(add+' hasta eklendi'+(upd?', '+upd+' güncellendi':''));
+    save();render();$('imp-no').onclick();window.scrollTo(0,0);toast(add+' hasta eklendi'+(upd?', '+upd+' güncellendi':''));
   };
   $('b-share').onclick=function(){
     if(!data.patients.length){toast('Listede hasta yok');return}
@@ -289,6 +348,9 @@ textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   $('b-clear-no').onclick=function(){$('confirm').hidden=true};
   $('b-clear-yes').onclick=function(){data={patients:[]};save();render();$('confirm').hidden=true;toast('Liste temizlendi')};
   save();render();
+  function fromHash(){if(!/#[dz]=/.test(location.hash))return;var h=location.hash;history.replaceState(null,'',location.pathname);
+    fromText(h).then(function(l){pending=l;if(pending.length){$('imp').hidden=false;$('qr').hidden=true;showPending();window.scrollTo(0,0);toast('Devir kodu okundu; kontrol edip listeye ekleyin')}},function(){toast('Devir kodu okunamadı')})}
+  window.addEventListener('hashchange',fromHash);fromHash();
 
 })();
 </script>
@@ -300,6 +362,7 @@ textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   document.getElementById('kur-kapat').onclick=function(){k.hidden=true;try{localStorage.setItem(key,'1')}catch(e){}};
 })();
 </script>
+<script src="lib/qrcode.js"></script>
 <script src="ortak.js"></script>
 </body>
 </html>
