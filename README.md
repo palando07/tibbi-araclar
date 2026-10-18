@@ -27,5 +27,6 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | FIB-4 | `fib-4.html` |
 | Levotiroksin dozu | `levotiroksin.html` |
 | STOP-BANG | `stop-bang.html` |
+| Nöbet takip listesi (veriler yalnız cihazda, localStorage) | `nobet-listesi.html` |
 
 Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz. Hiçbir hasta verisi kaydedilmez. Ortak kod (Kopyala düğmesi, çevrimdışı çalışma) `ortak.js` dosyasındadır.

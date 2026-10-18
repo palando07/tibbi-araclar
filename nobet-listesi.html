@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nöbet Takip Listesi</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Tıbbi Araçlar</a>
+    <h1>Nöbet Takip Listesi</h1>
+    <p>Hastalar ve yapılacaklar; yalnızca bu telefonda saklanır</p>
+  </header>
+<style>
+input[type=text]{font:500 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input[type=text]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{border:0;background:var(--accent);color:#fff;font:600 .95rem var(--font-body);padding:11px 16px;border-radius:10px;cursor:pointer}
+.btn.ghost{background:var(--bg);color:var(--accent);border:1px solid var(--line)}
+.btn.danger{background:var(--high)}
+.btn:focus-visible,.chip:focus-visible,.icon:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:8px;align-items:stretch}
+.row>input{flex:1}
+.stats{display:flex;gap:18px;flex-wrap:wrap}
+.stats b{font:700 1.8rem/1 var(--font-num);display:block}
+.stats span{font-size:.8rem;color:var(--muted)}
+.pt{border-left:5px solid var(--line)}
+.pt[data-pr="1"]{border-left-color:var(--warn)}
+.pt[data-pr="2"]{border-left-color:var(--high)}
+.pthead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bed{font:700 1.3rem var(--font-num);background:var(--accent-soft);color:var(--accent);padding:2px 10px;border-radius:8px}
+.ini{font-weight:700;font-size:1.1rem}
+.dx{color:var(--muted);font-size:.9rem;flex-basis:100%}
+.sp{flex:1}
+.icon{border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:8px;padding:6px 10px;font:600 .8rem var(--font-body);cursor:pointer}
+.tasks{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.task{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--bg)}
+.task:last-child{border-bottom:0}
+.task input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.task label{flex:1;min-width:0;cursor:pointer;word-break:break-word}
+.task.done label{text-decoration:line-through;color:var(--muted)}
+.task .x{border:0;background:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:0 4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+details summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:.9rem}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 11px;font:500 .85rem var(--font-body);cursor:pointer}
+.empty{color:var(--muted);text-align:center;margin:8px 0}
+.confirm{display:flex;flex-direction:column;gap:10px;border:1px solid var(--high);border-radius:10px;padding:12px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:600;font-size:.9rem}
+</style>
+  <section class="card">
+    <div class="stats">
+      <div><b id="n-pt">0</b><span>hasta</span></div>
+      <div><b id="n-open">0</b><span>bekleyen iş</span></div>
+      <div><b id="n-crit">0</b><span>kritik hasta</span></div>
+    </div>
+    <div class="row" style="flex-wrap:wrap">
+      <button type="button" class="btn ghost" id="b-copy">Devir metnini kopyala</button>
+      <button type="button" class="btn ghost" id="b-clear">Nöbeti bitir</button>
+    </div>
+    <div class="confirm" id="confirm" hidden>
+      <p class="advice">Tüm hastalar ve yapılacaklar bu telefondan silinecek. Geri alınamaz.</p>
+      <div class="row"><button type="button" class="btn danger" id="b-clear-yes">Evet, listeyi sil</button><button type="button" class="btn ghost" id="b-clear-no">Vazgeç</button></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Hasta ekle</h2>
+    <form id="f-add" class="grid" autocomplete="off">
+      <div class="field"><label for="a-bed">Yatak no</label><input id="a-bed" type="text" inputmode="text" maxlength="8" placeholder="12"></div>
+      <div class="field"><label for="a-ini">Baş harfler</label><input id="a-ini" type="text" maxlength="5" placeholder="A.K." autocapitalize="characters"></div>
+      <div class="field" style="grid-column:1/-1"><label for="a-dx">Kısa not <span>tanı, durum</span></label><input id="a-dx" type="text" maxlength="80" placeholder="Pnömoni, 2. gün antibiyotik"></div>
+      <button type="submit" class="btn" style="grid-column:1/-1">Hastayı ekle</button>
+    </form>
+    <p class="note">Ad, soyad, TC kimlik veya protokol numarası yazmayın. Liste yalnızca bu telefonda saklanır, internete gönderilmez.</p>
+    <p class="err" id="err" style="color:var(--high);margin:0;font-size:.85rem"></p>
+  </section>
+
+  <div id="list" style="display:flex;flex-direction:column;gap:20px"></div>
+  <p class="empty" id="empty">Henüz hasta yok. Yukarıdan ilk hastanızı ekleyin.</p>
+  <p class="note" id="store-note"></p>
+  <div class="toast" id="toast" hidden></div>
+
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var KEY='nobet-listesi-v1', CHIPS=['Kontrol hemogram','K kontrolü','Kan şekeri takibi','Kan kültürü','Konsültasyon','Görüntüleme','Tansiyon takibi','İdrar çıkışı takibi','İlaç düzenleme'];
+  var PR=[['Stabil','0'],['Dikkat','1'],['Kritik','2']];
+  var data={patients:[]}, okStore=true, openChips={};
+  try{var raw=localStorage.getItem(KEY);if(raw)data=JSON.parse(raw)||data}catch(e){okStore=false}
+  if(!data.patients)data.patients=[];
+  if(navigator.storage&&navigator.storage.persist){try{navigator.storage.persist()}catch(e){}}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(data));okStore=true}catch(e){okStore=false}
+    $('store-note').textContent=okStore?'':'Uyarı: bu tarayıcıda kayıt yapılamıyor (gizli sekme olabilir). Sayfayı kapatınca liste silinir.'}
+  function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+  function toast(t){var e=$('toast');e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){e.hidden=true},1800)}
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+  function bedKey(p){var n=parseFloat(p.bed);return isNaN(n)?[1e9,p.bed]:[n,p.bed]}
+  function sorted(){return data.patients.slice().sort(function(a,b){if(b.pr!==a.pr)return b.pr-a.pr;var x=bedKey(a),y=bedKey(b);return x[0]-y[0]||String(x[1]).localeCompare(String(y[1]),'tr')})}
+  function find(pid){return data.patients.filter(function(p){return p.id===pid})[0]}
+
+  function addTask(p,text){text=text.trim();if(!text)return;p.tasks.push({id:id(),t:text,d:false});save();render()}
+
+  function card(p){
+    var c=el('section','card pt');c.dataset.pr=p.pr;
+    var h=el('div','pthead');h.appendChild(el('span','bed',p.bed));h.appendChild(el('span','ini',p.ini));h.appendChild(el('span','sp'));
+    var prb=el('button','icon',PR[p.pr][0]);prb.type='button';prb.title='Önceliği değiştir';
+    prb.onclick=function(){p.pr=(p.pr+1)%3;save();render()};h.appendChild(prb);
+    var del=el('button','icon','Sil');del.type='button';
+    del.onclick=function(){if(del.dataset.sure){data.patients=data.patients.filter(function(q){return q!==p});save();render();toast('Hasta silindi')}else{del.dataset.sure='1';del.textContent='Emin misiniz?';del.style.color='var(--high)';setTimeout(function(){if(del.isConnected){delete del.dataset.sure;del.textContent='Sil';del.style.color=''}},3000)}};
+    h.appendChild(del);
+    if(p.dx)h.appendChild(el('span','dx',p.dx));
+    c.appendChild(h);
+    if(p.tasks.length){var ts=el('div','tasks');
+      p.tasks.forEach(function(t){var r=el('div','task'+(t.d?' done':''));var cb=el('input');cb.type='checkbox';cb.id='t-'+t.id;cb.checked=t.d;
+        cb.onchange=function(){t.d=cb.checked;save();render()};
+        var lb=el('label',null,t.t);lb.htmlFor=cb.id;
+        var x=el('button','x','×');x.type='button';x.setAttribute('aria-label','İşi sil');x.onclick=function(){p.tasks=p.tasks.filter(function(q){return q!==t});save();render()};
+        r.appendChild(cb);r.appendChild(lb);r.appendChild(x);ts.appendChild(r)});
+      c.appendChild(ts)}
+    var f=el('form','row');var inp=el('input');inp.type='text';inp.placeholder='Yapılacak iş ekle';inp.maxLength=80;inp.id='new-'+p.id;inp.setAttribute('aria-label','Yapılacak iş');
+    var b=el('button','btn','Ekle');b.type='submit';f.appendChild(inp);f.appendChild(b);
+    f.onsubmit=function(e){e.preventDefault();addTask(p,inp.value);var n=$('new-'+p.id);if(n)n.focus()};
+    c.appendChild(f);
+    var ch=el('div','chips');CHIPS.forEach(function(t){var k=el('button','chip','+ '+t);k.type='button';k.onclick=function(){addTask(p,t)};ch.appendChild(k)});
+    var dt=el('details');var sm=el('summary',null,'Hızlı ekle');dt.appendChild(sm);dt.appendChild(ch);
+    if(openChips[p.id])dt.open=true;dt.ontoggle=function(){openChips[p.id]=dt.open};
+    c.appendChild(dt);
+    return c;
+  }
+
+  function render(){
+    var L=$('list');L.innerHTML='';var list=sorted();
+    list.forEach(function(p){L.appendChild(card(p))});
+    $('empty').hidden=list.length>0;
+    var open=0,crit=0;data.patients.forEach(function(p){if(p.pr===2)crit++;p.tasks.forEach(function(t){if(!t.d)open++})});
+    $('n-pt').textContent=data.patients.length;$('n-open').textContent=open;$('n-crit').textContent=crit;
+  }
+
+  $('f-add').onsubmit=function(e){e.preventDefault();
+    var bed=$('a-bed').value.trim(),ini=$('a-ini').value.trim().toLocaleUpperCase('tr'),dx=$('a-dx').value.trim();
+    if(!bed){$('err').textContent='Yatak numarasını yazın.';return}
+    if(/[a-zçğıöşü]{3,}\s+[a-zçğıöşü]{3,}/i.test(ini)||ini.replace(/[^A-ZÇĞİÖŞÜ]/g,'').length>3){$('err').textContent='Baş harfler en fazla 3 harf olmalı; ad soyad yazmayın.';return}
+    if(/\b\d{11}\b/.test(dx)){$('err').textContent='Notta TC kimlik numarasına benzeyen 11 haneli sayı var; lütfen silin.';return}
+    $('err').textContent='';
+    data.patients.push({id:id(),bed:bed,ini:ini,dx:dx,pr:0,tasks:[]});save();render();
+    $('a-bed').value='';$('a-ini').value='';$('a-dx').value='';$('a-bed').focus();toast('Hasta eklendi');
+  };
+
+  function handoff(){
+    var d=new Date(),lines=['Nöbet devri – '+d.toLocaleDateString('tr-TR')+' '+d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),''];
+    sorted().forEach(function(p){
+      lines.push('Yatak '+p.bed+(p.ini?' ('+p.ini+')':'')+(p.pr?' – '+PR[p.pr][0].toLocaleUpperCase('tr'):'')+(p.dx?': '+p.dx:''));
+      var open=p.tasks.filter(function(t){return !t.d}),done=p.tasks.filter(function(t){return t.d});
+      open.forEach(function(t){lines.push('  [ ] '+t.t)});done.forEach(function(t){lines.push('  [x] '+t.t)});
+      if(!p.tasks.length)lines.push('  Bekleyen iş yok');lines.push('')});
+    return lines.join('\n').trim();
+  }
+  $('b-copy').onclick=function(){
+    if(!data.patients.length){toast('Listede hasta yok');return}
+    var t=handoff();
+    function fb(){var ta=el('textarea');ta.value=t;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Devir metni kopyalandı')}catch(e){}document.body.removeChild(ta)}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){toast('Devir metni kopyalandı')},fb);else fb();
+  };
+  $('b-clear').onclick=function(){$('confirm').hidden=false};
+  $('b-clear-no').onclick=function(){$('confirm').hidden=true};
+  $('b-clear-yes').onclick=function(){data={patients:[]};save();render();$('confirm').hidden=true;toast('Liste temizlendi')};
+  save();render();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
