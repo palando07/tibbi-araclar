@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tip 2 Diyabet Tedavisi</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Tip 2 Diyabet Tedavisi</h1>
+    <p>HbA1c hedefi, ek hastalığa göre ilaç seçimi ve dikkat edilecekler</p>
+  </header>
+<style>
+.cls{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cl{padding:12px 14px;border-bottom:1px solid var(--line);background:var(--bg);display:flex;flex-direction:column;gap:4px}
+.cl:last-child{border-bottom:0}
+.cl .sub{border-top:0;padding-top:0;align-items:center}
+.cl .sub span:first-child{font-weight:700}
+.cl small{color:var(--muted);font-size:.82rem;line-height:1.4}
+.st{display:inline-block;padding:2px 10px;border-radius:999px;font:700 .75rem var(--font-body);color:#fff;white-space:nowrap}
+.st[data-s=pri]{background:var(--ok)}.st[data-s=ok]{background:var(--muted)}.st[data-s=warn]{background:var(--warn)}.st[data-s=ki]{background:var(--high)}
+ol.rec{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:10px}
+ol.rec li{padding-left:2px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem;color:var(--fg)}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.card h3{margin:6px 0 0;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+</style>
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="a1c">HbA1c <span>%</span></label><input id="a1c" type="number" inputmode="decimal" step="any" value="8.6"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" type="number" inputmode="numeric" step="1" value="62"></div>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" type="number" inputmode="decimal" step="any" value="52"></div>
+      <div class="field"><label for="bmi">VKİ <span>kg/m²</span></label><input id="bmi" type="number" inputmode="decimal" step="any" value="32"></div>
+      <div class="field"><label for="uacr">İdrar albümin/kreatinin <span>mg/g</span></label><input id="uacr" type="number" inputmode="decimal" step="any" value="120"></div>
+    </div>
+    <h3>Ek hastalıklar</h3>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="ascvd" checked><span class="txt">Aterosklerotik KV hastalık<small>geçirilmiş MI, revaskülarizasyon, inme/TİA, periferik arter hastalığı</small></span></label>
+      <label class="item"><input type="checkbox" id="hrisk"><span class="txt">Yüksek KV risk (ASKVH yok)<small>≥ 55 yaş + 2 risk faktörü veya hedef organ hasarı (LVH, ≥ %50 darlık, albüminüri)</small></span></label>
+      <label class="item"><input type="checkbox" id="hf"><span class="txt">Kalp yetmezliği<small>HFrEF veya HFpEF</small></span></label>
+      <label class="item"><input type="checkbox" id="masld"><span class="txt">MASLD / MASH<small>metabolik ilişkili yağlı karaciğer hastalığı</small></span></label>
+    </div>
+    <h3>Hastaya özel durumlar</h3>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="hypo"><span class="txt">Hipoglisemi riski yüksek<small>tekrarlayan hipoglisemi, farkında olmama, yalnız yaşama, sürücülük</small></span></label>
+      <label class="item"><input type="checkbox" id="frail"><span class="txt">Kırılgan / sınırlı yaşam beklentisi<small>ileri yaş, demans, çoklu ağır hastalık</small></span></label>
+      <label class="item"><input type="checkbox" id="cata"><span class="txt">Katabolik bulgular<small>kilo kaybı, poliüri-polidipsi, ketozis veya glukoz ≥ 300 mg/dL</small></span></label>
+      <label class="item"><input type="checkbox" id="preg"><span class="txt">Gebelik veya gebelik planı</span></label>
+      <label class="item"><input type="checkbox" id="panc"><span class="txt">Pankreatit öyküsü</span></label>
+      <label class="item"><input type="checkbox" id="mtc"><span class="txt">Medüller tiroid kanseri / MEN2 öyküsü<small>kişisel veya ailesel</small></span></label>
+      <label class="item"><input type="checkbox" id="dka"><span class="txt">Ketoasidoz öyküsü</span></label>
+      <label class="item"><input type="checkbox" id="geni"><span class="txt">Tekrarlayan genital mantar enfeksiyonu</span></label>
+      <label class="item"><input type="checkbox" id="cost"><span class="txt">Maliyet / geri ödeme kısıtlı</span></label>
+    </div>
+    <h3>Şu an kullandığı ilaçlar</h3>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="u-met" checked><span class="txt">Metformin</span></label>
+      <label class="item"><input type="checkbox" id="u-su"><span class="txt">Sülfonilüre</span></label>
+      <label class="item"><input type="checkbox" id="u-dpp"><span class="txt">DPP-4 inhibitörü</span></label>
+      <label class="item"><input type="checkbox" id="u-sglt"><span class="txt">SGLT2 inhibitörü</span></label>
+      <label class="item"><input type="checkbox" id="u-glp"><span class="txt">GLP-1 RA veya tirzepatid</span></label>
+      <label class="item"><input type="checkbox" id="u-pio"><span class="txt">Pioglitazon</span></label>
+      <label class="item"><input type="checkbox" id="u-ins"><span class="txt">İnsülin</span></label>
+    </div>
+    <p class="note">Örnek hasta doldurulmuştur: 62 yaş, HbA1c %8,6, geçirilmiş MI, eGFR 52, albüminüri, VKİ 32, metformin kullanıyor. Tip 1 diyabet, LADA ve monogenik diyabet için değildir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Kişiye özel HbA1c hedefi</span>
+    <div class="res"><span class="num" id="tgt">–</span><span class="pill" id="pl"></span></div>
+    <div class="sub"><span>Mevcut HbA1c</span><b id="cur">–</b></div>
+    <div class="sub"><span>Hedefe uzaklık</span><b id="gap">–</b></div>
+    <p class="advice" id="tadv"></p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Tedavi önerisi</h2>
+    <ol class="rec" id="rec"></ol>
+    <p class="note">Organ koruyucu ilaçlar (SGLT2i, GLP-1 RA) ilgili hastalık varsa HbA1c ve metformin kullanımından bağımsız olarak önerilir.</p>
+  </section>
+
+  <section class="card">
+    <h2>İlaç sınıfları bu hasta için</h2>
+    <div class="cls" id="cls"></div>
+    <p class="note"><span class="st" data-s="pri">Öncelikli</span> <span class="st" data-s="ok">Uygun</span> <span class="st" data-s="warn">Dikkat</span> <span class="st" data-s="ki">Kullanılmamalı</span></p>
+  </section>
+
+  <section class="card">
+    <h2>Unutulmaması gerekenler</h2>
+    <ul class="chk" id="chk"></ul>
+  </section>
+
+  <p class="note">Kaynaklar: ADA Standards of Care in Diabetes 2025; ADA/EASD Uzlaşı Raporu 2022; KDIGO Diyabet ve KBH 2022; TEMD Diabetes Mellitus Tanı ve Tedavi Kılavuzu. SGK geri ödeme koşulları (özellikle GLP-1 RA, SGLT2i ve DPP-4i için) reçete öncesinde SUT'tan ayrıca kontrol edilmelidir. Bu araç klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz.</p>
+
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var c=function(id){return $(id).checked};
+  function li(list,title,text){var l=document.createElement('li');var b=document.createElement('b');b.textContent=title;l.appendChild(b);
+    if(text){var p=document.createElement('p');p.className='advice';p.textContent=text;l.appendChild(p)}list.appendChild(l)}
+  var LBL={pri:'Öncelikli',ok:'Uygun',warn:'Dikkat',ki:'Kullanılmamalı'};
+  function calc(){
+    var a1c=v('a1c'),age=v('age'),egfr=v('egfr'),bmi=v('bmi'),uacr=v('uacr');
+    var rec=$('rec'),cls=$('cls'),chk=$('chk');rec.innerHTML='';cls.innerHTML='';chk.innerHTML='';
+    if(a1c===null||age===null||egfr===null){$('tgt').textContent='–';$('cur').textContent='–';$('gap').textContent='–';pill('pl','');$('tadv').textContent='HbA1c, yaş ve eGFR girin.';return}
+    var ascvd=c('ascvd'),hrisk=c('hrisk'),hf=c('hf'),masld=c('masld'),hypo=c('hypo'),frail=c('frail'),cata=c('cata'),preg=c('preg'),
+        panc=c('panc'),mtc=c('mtc'),dka=c('dka'),geni=c('geni'),cost=c('cost');
+    var alb=uacr!==null&&uacr>=30, ckd=egfr<60||alb, obese=bmi!==null&&bmi>=30;
+    var uMet=c('u-met'),uSu=c('u-su'),uDpp=c('u-dpp'),uSglt=c('u-sglt'),uGlp=c('u-glp'),uPio=c('u-pio'),uIns=c('u-ins');
+
+    // 1) HbA1c hedefi
+    var t=7,why='Çoğu erişkin için genel hedef.';
+    if(preg){t=6.5;why='Gebelikte hipoglisemi olmadan ulaşılabiliyorsa < %6–6,5; değilse < %7.'}
+    else if(frail){t=8;why='Kırılgan veya sınırlı yaşam beklentisi olan hastada hipoglisemiden kaçınmak öncelikli; < %8 yeterli.'}
+    else if(hypo||age>=65){t=7.5;why=(hypo?'Hipoglisemi riski yüksek':'65 yaş ve üzeri')+' hastada < %7–7,5 hedeflenir.'}
+    else if(age<40&&!ascvd&&!hf){t=6.5;why='Genç, hipoglisemi riski düşük hastada hipoglisemi olmadan ulaşılabiliyorsa < %6,5.'}
+    var gap=a1c-t;
+    $('tgt').textContent='< %'+String(t).replace('.',',');$('cur').textContent='%'+f1(a1c);
+    $('gap').textContent=gap>0?'+'+f1(gap)+' puan':'hedefte';
+    if(gap<=0)pill('pl','Hedefte','var(--ok)');else if(gap<1.5)pill('pl','Hedefin üzerinde','var(--warn)');else pill('pl','Belirgin yüksek','var(--high)');
+    $('tadv').textContent=why+(gap>=1.5?' HbA1c hedefin ≥ 1,5 puan üzerinde: tek ilaç yerine kombinasyon tedavisi düşünülmelidir.':'');
+
+    // 2) Öneriler
+    var needIns=a1c>=10||cata;
+    if(preg)li(rec,'Gebelik: tedavinin temeli insülin','SGLT2i, GLP-1 RA, tirzepatid, DPP-4i ve pioglitazon gebelikte kullanılmaz; gebelik planlanıyorsa kesilmelidir. Metformin seçilmiş hastalarda kullanılabilir. Perinatoloji/endokrinoloji ile birlikte izleyin.');
+    if(needIns&&!preg)li(rec,'İnsülin başlanmasını değerlendirin',(cata?'Katabolik bulgular var. ':'')+(a1c>=10?'HbA1c ≥ %10. ':'')+'Bazal insülin 10 ünite veya 0,1–0,2 ünite/kg/gün ile başlanır, açlık glukozuna göre 3 günde bir titre edilir. GLP-1 RA ile kombinasyon insülin dozunu ve kilo artışını azaltır. Glukotoksisite düzeldikçe insülin azaltılabilir.');
+    if(!preg){
+      if(hf)li(rec,'SGLT2 inhibitörü: kalp yetmezliği nedeniyle','Empagliflozin veya dapagliflozin; HFrEF ve HFpEF\'te hastaneye yatışı ve KV ölümü azaltır. HbA1c\'den bağımsız önerilir.'+(egfr<20?' eGFR < 20 olduğu için başlanması önerilmez.':''));
+      if(ckd&&egfr>=20)li(rec,'SGLT2 inhibitörü: kronik böbrek hastalığı nedeniyle','Dapagliflozin, empagliflozin veya kanagliflozin; eGFR ≥ 20 ise başlanır, diyalize kadar sürdürülebilir. eGFR < 45\'te glukoz düşürücü etkisi azalır ama böbrek ve kalp koruması sürer.');
+      if(ascvd||hrisk)li(rec,'GLP-1 RA ve/veya SGLT2i: '+(ascvd?'aterosklerotik KV hastalık':'yüksek KV risk')+' nedeniyle','KV yararı kanıtlanmış GLP-1 RA (semaglutid, liraglutid, dulaglutid) veya SGLT2i (empagliflozin, kanagliflozin, dapagliflozin). HbA1c hedefteyse bile önerilir.'+(egfr<20?' eGFR < 20: SGLT2i yeni başlanmaz; GLP-1 RA tercih edin.':'')+(mtc?' MTK/MEN2 öyküsü nedeniyle GLP-1 RA kullanılmamalı; SGLT2i tercih edin.':''));
+      if(alb&&!mtc)li(rec,'GLP-1 RA: albüminürik KBH','Semaglutid böbrek sonlanımlarını azaltır (FLOW). SGLT2i\'ye ek olarak düşünülebilir.');
+      if(obese&&!mtc)li(rec,'Kilo yönetimi: semaglutid veya tirzepatid','VKİ '+f1(bmi)+'. Kilo kaybı etkisi en güçlü ilaçlar bunlardır; %5–15 kilo kaybı glisemi, tansiyon ve lipidleri iyileştirir.');
+      if(masld)li(rec,'MASLD / MASH','GLP-1 RA (semaglutid), tirzepatid veya pioglitazon'+(hf?' (kalp yetmezliği olduğu için pioglitazon hariç)':'')+' tercih edilebilir. FIB-4 ile fibrozis riskini değerlendirin.');
+      if(!uMet&&egfr>=30)li(rec,'Metformin','Kontrendikasyon yoksa temel tedavi; düşük maliyetli ve hipoglisemi yapmaz. 500 mg ile başlayıp GİS toleransına göre artırın'+(egfr<45?'. eGFR 30–44 arasında yeni başlanması önerilmez; kullanıyorsa günlük doz en fazla 1000 mg.':' (en fazla 2000–2550 mg/gün).'));
+      if(uMet&&egfr<30)li(rec,'Metformini kesin','eGFR < 30 mL/dk/1,73 m²: laktik asidoz riski nedeniyle kontrendike.');
+      if(uMet&&egfr>=30&&egfr<45)li(rec,'Metformin dozunu azaltın','eGFR 30–44: günlük doz en fazla 1000 mg.');
+      if(uDpp&&uGlp)li(rec,'DPP-4 inhibitörünü kesin','GLP-1 RA ile birlikte kullanımı ek fayda sağlamaz.');
+      if(uPio&&hf)li(rec,'Pioglitazonu kesin','Kalp yetmezliğinde sıvı retansiyonu ve dekompansasyon riski.');
+      if(uSu&&(hypo||frail||age>=65))li(rec,'Sülfonilüreyi gözden geçirin','Hipoglisemi riski yüksek/yaşlı hastada dozu azaltın ya da hipoglisemi yapmayan bir ilaçla değiştirin; kullanılacaksa gliklazid tercih edilir, glibenklamidden kaçının.');
+      if(gap>0&&!needIns){
+        var opt=[];
+        if(!uGlp&&!mtc)opt.push('GLP-1 RA / tirzepatid (yüksek etkinlik)');
+        if(!uSglt&&egfr>=45)opt.push('SGLT2i');
+        if(!uDpp&&!uGlp)opt.push('DPP-4i (hipoglisemi yok, kilo nötr)');
+        if(!uPio&&!hf)opt.push('pioglitazon');
+        if(!uSu&&!(hypo||frail))opt.push('sülfonilüre (gliklazid)');
+        if(!uIns)opt.push('bazal insülin');
+        li(rec,'HbA1c hedefe ulaşmadıysa tedaviyi yoğunlaştırın',(cost?'Maliyet önemliyse sülfonilüre (gliklazid), pioglitazon veya insan insülini uygun seçeneklerdir. ':'')+'Seçenekler: '+opt.join(', ')+'. Her ekleme sonrası 3 ayda HbA1c ile değerlendirin.');
+      }
+      if(gap<=0&&!(hf||ckd||ascvd||hrisk||obese||masld))li(rec,'Mevcut tedaviyi sürdürün','HbA1c hedefte. 3–6 ayda bir HbA1c ile izleyin.');
+    }
+
+    // 3) İlaç sınıfları
+    var rows=[];
+    function row(n,s,why){rows.push([n,s,why])}
+    row('Metformin',egfr<30?'ki':(egfr<45||preg)?'warn':'ok',egfr<30?'eGFR < 30: kontrendike.':egfr<45?'eGFR 30–44: yeni başlanmaz, en fazla 1000 mg/gün.':preg?'Gebelikte seçilmiş hastalarda.':'Yüksek etkinlik, hipoglisemi yok, kilo nötr/hafif kayıp. B12 eksikliği; kontrastlı tetkik ve akut hastalıkta ara verin.');
+    row('SGLT2 inhibitörü',preg?'ki':egfr<20?'warn':(hf||ckd||ascvd||hrisk)?'pri':(dka||geni)?'warn':'ok',
+      preg?'Gebelikte kullanılmaz.':egfr<20?'eGFR < 20: başlanmaz; kullanıyorsa diyalize kadar sürdürülebilir.':
+      (dka?'Ketoasidoz öyküsü: öglisemik DKA riski. ':'')+(geni?'Tekrarlayan genital enfeksiyon riski. ':'')+'Kalp ve böbrek koruması; kilo kaybı, hipoglisemi yok. Ameliyattan 3 gün önce kesin; dehidratasyon ve akut hastalıkta ara verin.'+(age>=75||frail?' Yaşlıda volüm kaybına dikkat.':''));
+    row('GLP-1 RA',preg||mtc?'ki':panc?'warn':(ascvd||hrisk||obese||masld||alb)?'pri':'ok',
+      preg?'Gebelikte kullanılmaz.':mtc?'MTK/MEN2 öyküsünde kontrendike.':(panc?'Pankreatit öyküsünde dikkatli kullanın. ':'')+'Yüksek etkinlik, belirgin kilo kaybı, KV yarar (semaglutid, liraglutid, dulaglutid). GİS yan etkileri; gastroparezide kaçının; semaglutid ile hızlı HbA1c düşüşünde retinopati izleyin.');
+    row('Tirzepatid',preg||mtc?'ki':panc?'warn':(obese||masld)?'pri':'ok',
+      preg?'Gebelikte kullanılmaz.':mtc?'MTK/MEN2 öyküsünde kontrendike.':'GIP/GLP-1 agonisti; HbA1c ve kilo üzerine en güçlü etkili ilaçlardan. Yan etkiler GLP-1 RA ile benzer.');
+    row('DPP-4 inhibitörü',preg||uGlp?'ki':(hf||panc)?'warn':'ok',
+      preg?'Gebelikte kullanılmaz.':uGlp?'GLP-1 RA ile birlikte kullanılmaz.':(hf?'Kalp yetmezliğinde saksagliptin ve alogliptinden kaçının. ':'')+(panc?'Pankreatit öyküsünde dikkat. ':'')+'Orta etkinlik, hipoglisemi yok, kilo nötr. Linagliptin dışındakilerde böbreğe göre doz ayarı gerekir.');
+    row('Pioglitazon',hf||preg?'ki':masld?'pri':'ok',
+      hf?'Kalp yetmezliğinde kontrendike.':preg?'Gebelikte kullanılmaz.':'Yüksek etkinlik, düşük maliyet, MASH\'te yararlı. Ödem, kilo artışı, kırık riski; mesane kanseri öyküsünde kaçının.');
+    row('Sülfonilüre',preg?'warn':(hypo||frail||age>=65||egfr<30)?'warn':'ok',
+      preg?'Gebelikte insülin tercih edilir.':(hypo||frail||age>=65||egfr<30?'Hipoglisemi riski artmış. ':'')+'Yüksek etkinlik, düşük maliyet; hipoglisemi ve kilo artışı. Gliklazid tercih edilir, glibenklamidden kaçının.');
+    row('İnsülin',(needIns||preg)?'pri':'ok',(preg?'Gebelikte tercih edilen tedavi. ':'')+'En yüksek etkinlik. Hipoglisemi ve kilo artışı; hasta ve yakınına hipoglisemi eğitimi verin.');
+    rows.forEach(function(r){var d=document.createElement('div');d.className='cl';
+      d.innerHTML='<div class="sub"><span></span><span class="st"></span></div><small></small>';
+      d.querySelector('.sub span').textContent=r[0];var s=d.querySelector('.st');s.dataset.s=r[1];s.textContent=LBL[r[1]];d.querySelector('small').textContent=r[2];cls.appendChild(d)});
+
+    // 4) Unutulmaması gerekenler
+    var L=[];
+    L.push(ascvd?'Yüksek yoğunluklu statin; LDL hedefi < 55 mg/dL (ESC) / < 70 mg/dL (ADA). Gerekirse ezetimib ekleyin.':age>=40&&age<=75?'Statin: 40–75 yaş arası en az orta yoğunlukta; ek risk faktörü varsa yüksek yoğunlukta.':'Statin ihtiyacını kardiyovasküler riske göre değerlendirin (PREVENT hesaplayıcısı).');
+    if(ascvd)L.push('Aspirin 75–162 mg/gün (aterosklerotik KV hastalık nedeniyle sekonder koruma).');
+    L.push('Tansiyon hedefi < 130/80 mmHg.'+(alb||ckd?' Albüminüri/KBH var: ACE inhibitörü veya ARB en yüksek tolere edilen dozda.':''));
+    if(alb&&egfr>=25)L.push('Albüminürik KBH: maksimum RAS blokajına rağmen albüminüri sürüyorsa finerenon düşünün (eGFR ≥ 25, potasyum normal).');
+    L.push('Yılda en az bir kez: idrar albümin/kreatinin oranı, eGFR, göz dibi muayenesi, ayak muayenesi (monofilament), lipid profili.');
+    if(uMet||(!uMet&&egfr>=30))L.push('Metformin kullananlarda periyodik B12 düzeyi.');
+    L.push('Hasta gün kuralları: kusma, ishal, dehidratasyon veya ameliyat öncesinde metformin ve SGLT2i\'ye ara verilir.');
+    if(uSu||uIns||needIns)L.push('Hipoglisemi belirtileri ve 15 g hızlı karbonhidrat kuralı konusunda eğitim; ağır hipoglisemi riskinde glukagon.');
+    L.push('Aşılar: yıllık grip, pnömokok, hepatit B (60 yaş altı), COVID-19, 50 yaş üstünde zona.');
+    if(masld||obese)L.push('MASLD taraması: FIB-4 hesaplayın; > 1,3 ise elastografi ile ileri değerlendirme.');
+    L.push('Sigarayı bırakma, haftada en az 150 dakika egzersiz, beslenme danışmanlığı ve diyabet eğitimi.');
+    if(age>=65||frail)L.push('Yaşlı hastada bilişsel durum, düşme riski ve çoklu ilaç kullanımını gözden geçirin; tedaviyi sadeleştirme düşünün.');
+    if(!preg&&age<50)L.push('Doğurganlık çağındaki kadında gebelik planını sorun; gebelikte kullanılmayan ilaçlar için kontrasepsiyon danışmanlığı.');
+    L.forEach(function(x){var l=document.createElement('li');l.textContent=x;chk.appendChild(l)});
+  }
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
+  calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

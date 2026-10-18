@@ -24,7 +24,7 @@
     card.querySelectorAll('.pill').forEach(function(p){
       if (shown(p) && !p.closest('.res, .big') && head.indexOf(txt(p)) < 0) head.push(txt(p));
     });
-    lines.push(txt(title) + ': ' + head.join(' · '));
+    lines.push(txt(title) + (head.length ? ': ' + head.join(' · ') : ''));
     card.querySelectorAll('.sub').forEach(function(s){
       if (!shown(s)) return;
       var c = s.children;
@@ -33,7 +33,11 @@
     card.querySelectorAll('table.t tbody tr').forEach(function(tr){
       var c = tr.cells; lines.push(txt(c[0]) + ': ' + Array.prototype.slice.call(c, 1).map(txt).join(', '));
     });
-    card.querySelectorAll('.advice, .stage-text').forEach(function(a){ if (shown(a)) lines.push(txt(a)); });
+    card.querySelectorAll('ol li, ul li').forEach(function(li, i){
+      var b = li.querySelector('b'), a = li.querySelector('.advice');
+      lines.push((i + 1) + '. ' + (b ? txt(b) + (a ? ': ' + txt(a) : '') : txt(li)));
+    });
+    card.querySelectorAll('.advice, .stage-text').forEach(function(a){ if (shown(a) && !a.closest('li')) lines.push(txt(a)); });
     return lines.join('\n');
   }
 
