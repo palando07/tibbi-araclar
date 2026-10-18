@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CURB-65</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#0f6e8c; --accent-soft:#e2f0f4;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#4fb3d1; --accent-soft:#183540; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#4fb3d1; --accent-soft:#183540; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Tıbbi Araçlar</a>
+    <h1>CURB-65</h1>
+    <p>Toplum kökenli pnömonide ciddiyet ve yatış kararı</p>
+  </header>
+
+  <section class="card">
+    <div class="items">
+      <label class="item"><input type="checkbox" id="c" data-p="1"><span class="txt">Konfüzyon<small>yeni başlayan dezoryantasyon</small></span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="u" data-p="1" checked><span class="txt">Üre &gt; 42 mg/dL<small>BUN &gt; 19 mg/dL veya üre &gt; 7 mmol/L</small></span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="r" data-p="1"><span class="txt">Solunum sayısı ≥ 30/dk</span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="b" data-p="1"><span class="txt">Düşük tansiyon<small>sistolik &lt; 90 veya diyastolik ≤ 60 mmHg</small></span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="a" data-p="1" checked><span class="txt">Yaş ≥ 65</span><span class="pts">+1</span></label>
+    </div>
+    <p class="note">Örnek olarak iki madde işaretlenmiştir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">CURB-65</span>
+    <div class="res"><span class="num" id="sc">–</span><span class="of">/ 5</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="adv"></p>
+    <div class="sub"><span>30 günlük mortalite</span><b id="mort">–</b></div>
+    <p class="note">Skor klinik kararın yerini tutmaz; oksijen ihtiyacı, eşlik eden hastalıklar ve sosyal durum da yatış kararını etkiler. Kaynak: Lim WS ve ark., Thorax 2003; BTS 2009.</p>
+  </section>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var mort=['%0,7','%3,2','%13','%17','%41,5','%57'];
+  function calc(){
+    var s=0;document.querySelectorAll('.item input').forEach(function(el){if(el.checked)s+=parseFloat(el.dataset.p)});
+    $('sc').textContent=s;$('mort').textContent=mort[s];
+    if(s<=1){pill('pl','Düşük risk','var(--ok)');$('adv').textContent='Ayaktan tedavi düşünülebilir.'}
+    else if(s===2){pill('pl','Orta risk','var(--warn)');$('adv').textContent='Kısa süreli yatış veya yakın gözetimli ayaktan tedavi düşünülmelidir.'}
+    else{pill('pl','Ağır pnömoni','var(--high)');$('adv').textContent='Hastaneye yatış önerilir.'+(s>=4?' Yoğun bakım değerlendirmesi yapılmalıdır.':'')}
+  }
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
+</body>
+</html>
