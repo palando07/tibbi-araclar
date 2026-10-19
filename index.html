@@ -32,6 +32,14 @@ a.tool .go{color:var(--accent);font-size:1.4rem;font-weight:700}
 h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:12px 0 0}
 .group{display:flex;flex-direction:column;gap:10px}
 .empty{color:var(--muted);margin:0}
+.quick{display:flex;flex-direction:column;gap:10px}
+.trow{display:flex;gap:8px;align-items:stretch}
+.trow>a.tool{flex:1;min-width:0}
+.star{flex:none;width:48px;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:14px;font-size:1.3rem;cursor:pointer;line-height:1}
+.star[aria-pressed=true]{color:#d9a21b}
+.star:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+#fav a.tool,#son a.tool{padding:12px 16px}
+#fav a.tool span,#son a.tool span{display:none}
 </style>
 </head>
 <body>
@@ -39,6 +47,8 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
   <h1>Vizit</h1>
   <p class="sub">Dahiliye pratiği için hesaplayıcılar</p>
   <input class="search" id="q" type="search" placeholder="Ara: sodyum, siroz, pnömoni…" aria-label="Hesaplayıcı ara" autocomplete="off">
+  <section class="quick" id="fav" hidden><h2>Favoriler</h2><div class="items group-items" style="display:flex;flex-direction:column;gap:8px"></div></section>
+  <section class="quick" id="son" hidden><h2>Son kullanılanlar</h2><div class="items" style="display:flex;flex-direction:column;gap:8px"></div></section>
   <section class="group">
     <h2>Böbrek ve elektrolit</h2>
     <a class="tool" href="egfr.html" data-k="gfr böbrek kreatinin ckd kbh">
@@ -130,6 +140,10 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
   </section>
   <section class="group">
     <h2>Enfeksiyon ve acil</h2>
+    <a class="tool" href="acil-tedavi.html" data-k="acil tedavi hiperkalemi potasyum dka ketoasidoz hipoglisemi hiponatremi hipertonik salin hiperkalsemi adrenal kriz hidrokortizon">
+      <div><strong>Acil tedavi rehberi</strong><span>Hiperkalemi, DKA, hipoglisemi, hiponatremi, hiperkalsemi, adrenal kriz</span></div>
+      <div class="go">›</div>
+    </a>
     <a class="tool" href="ampirik-antibiyotik.html" data-k="antibiyotik ampirik enfeksiyon pnömoni zatürre idrar yolu sistit piyelonefrit selülit sepsis nötropeni menenjit clostridium difficile intraabdominal">
       <div><strong>Ampirik antibiyotik</strong><span>Sık enfeksiyonlarda kılavuza göre başlangıç tedavisi</span></div>
       <div class="go">›</div>
@@ -175,12 +189,38 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
 </div>
 <script>
 (function(){
+  // Favoriler ve son kullanılanlar: yalnızca bu cihazda saklanır
+  var FK='vizit-favoriler',SK='vizit-son';
+  function rd(k){try{return JSON.parse(localStorage.getItem(k))||[]}catch(e){return[]}}
+  function wr(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  var tools={};
+  document.querySelectorAll('.group a.tool').forEach(function(a){
+    var h=a.getAttribute('href');tools[h]=a;
+    var row=document.createElement('div');row.className='trow';a.parentNode.insertBefore(row,a);row.appendChild(a);
+    var b=document.createElement('button');b.type='button';b.className='star';b.textContent='★';
+    b.setAttribute('aria-label',a.querySelector('strong').textContent+' favorilere ekle');
+    b.onclick=function(){var f=rd(FK),i=f.indexOf(h);if(i<0)f.push(h);else f.splice(i,1);wr(FK,f);draw()};
+    row.appendChild(b);
+    a.addEventListener('click',function(){var s=rd(SK).filter(function(x){return x!==h});s.unshift(h);wr(SK,s.slice(0,4))});
+  });
+  function fill(id,list){var g=document.getElementById(id),box=g.querySelector('.items');box.innerHTML='';
+    list.forEach(function(h){if(!tools[h])return;var c=tools[h].cloneNode(true);c.removeAttribute('data-k');box.appendChild(c)});
+    g.hidden=!box.children.length}
+  function draw(){var f=rd(FK);
+    document.querySelectorAll('.star').forEach(function(b){var h=b.previousSibling.getAttribute('href'),on=f.indexOf(h)>=0;b.setAttribute('aria-pressed',on);
+      b.setAttribute('aria-label',b.previousSibling.querySelector('strong').textContent+(on?' favorilerden çıkar':' favorilere ekle'))});
+    fill('fav',f);fill('son',rd(SK).filter(function(h){return f.indexOf(h)<0}).slice(0,3));}
+  draw();
+  window.addEventListener('pageshow',draw);
+})();
+(function(){
   var q=document.getElementById('q');
   var norm=function(s){return s.toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i')};
   q.addEventListener('input',function(){
     var w=norm(q.value.trim()), any=false;
+    document.querySelectorAll('.quick').forEach(function(g){g.style.display=w?'none':''});
     document.querySelectorAll('.group').forEach(function(g){
-      var vis=0;g.querySelectorAll('a.tool').forEach(function(a){var m=!w||norm(a.textContent+' '+a.dataset.k).indexOf(w)>=0;a.hidden=!m;if(m)vis++});
+      var vis=0;g.querySelectorAll('a.tool').forEach(function(a){var m=!w||norm(a.textContent+' '+a.dataset.k).indexOf(w)>=0;(a.closest('.trow')||a).hidden=!m;if(m)vis++});
       g.hidden=!vis;if(vis)any=true});
     document.getElementById('empty').hidden=any;
   });

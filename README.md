@@ -14,6 +14,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Child-Pugh | `child-pugh.html` |
 | Wells skoru (pulmoner emboli) | `wells-pe.html` |
 | MELD-Na | `meld-na.html` |
+| Acil tedavi rehberi (hiperkalemi, DKA, hipoglisemi, hiponatremi, hiperkalsemi, adrenal kriz) | `acil-tedavi.html` |
 | Ampirik antibiyotik (10 sık enfeksiyon, risk ve alerjiye göre) | `ampirik-antibiyotik.html` |
 | CURB-65 | `curb-65.html` |
 | qSOFA | `qsofa.html` |

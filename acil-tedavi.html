@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Acil Tedavi Rehberi</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Acil Tedavi Rehberi</h1>
+    <p>Hiperkalemi, DKA, hipoglisemi, hiponatremi, hiperkalsemi ve adrenal krizde adım adım tedavi</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.link{color:var(--accent);font-weight:600}
+</style>
+  <section class="card">
+    <h2>Acil durum</h2>
+    <div class="field"><label for="dz">Tablo</label>
+      <select id="dz">
+        <option value="hk">Hiperkalemi</option>
+        <option value="dka">Diyabetik ketoasidoz</option>
+        <option value="hipo">Hipoglisemi</option>
+        <option value="hna">Semptomatik hiponatremi</option>
+        <option value="hca">Hiperkalsemi</option>
+        <option value="adr">Adrenal kriz</option>
+      </select>
+    </div>
+    <div class="grid">
+      <div class="field" id="w-wt"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field" id="w-k"><label for="k">Potasyum <span>mEq/L</span></label><input id="k" type="number" inputmode="decimal" step="any" value="6.8"></div>
+      <div class="field" id="w-glu"><label for="glu">Kan şekeri <span>mg/dL</span></label><input id="glu" type="number" inputmode="numeric" step="1" value="480"></div>
+      <div class="field" id="w-ph"><label for="ph">pH</label><input id="ph" type="number" inputmode="decimal" step="any" value="7.15"></div>
+      <div class="field" id="w-na"><label for="na">Sodyum <span>mEq/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="118"></div>
+      <div class="field" id="w-ca"><label for="ca">Düzeltilmiş kalsiyum <span>mg/dL</span></label><input id="ca" type="number" inputmode="decimal" step="any" value="14.2"></div>
+      <div class="field" id="w-egfr"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" type="number" inputmode="decimal" step="any" value="60"></div>
+    </div>
+    <div class="items" id="opts">
+      <label class="item" id="w-ekg"><input type="checkbox" id="ekg"><span class="txt">EKG değişikliği var<small>sivri T, PR uzaması, geniş QRS, bradikardi, aritmi</small></span></label>
+      <label class="item" id="w-bil"><input type="checkbox" id="bil"><span class="txt">Bilinç bozuk veya yutamıyor</span></label>
+      <label class="item" id="w-su"><input type="checkbox" id="su"><span class="txt">Sülfonilüre kullanıyor</span></label>
+      <label class="item" id="w-ag"><input type="checkbox" id="ag"><span class="txt">Ağır semptom<small>kusma, nöbet, GKS ≤ 8, kardiyorespiratuvar bozulma</small></span></label>
+      <label class="item" id="w-ods"><input type="checkbox" id="ods"><span class="txt">Osmotik demiyelinizasyon riski yüksek<small>Na ≤ 105, alkolizm, malnütrisyon, hipokalemi, karaciğer hastalığı</small></span></label>
+      <label class="item" id="w-kky"><input type="checkbox" id="kky"><span class="txt">Kalp yetmezliği veya hipervolemi</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2 id="t">Adımlar</h2>
+    <ol class="rec" id="st"></ol>
+  </section>
+
+  <section class="card">
+    <h2>İzlem ve dikkat</h2>
+    <ul class="chk" id="nt"></ul>
+  </section>
+
+  <p class="note">Tablo değiştirildiğinde alanlara o tablo için örnek değerler gelir; kendi hastanızın değerlerini girin.</p>
+  <p class="note">Kaynaklar: UK Kidney Association 2020 (hiperkalemi); ADA/EASD/JBDS/AACE/DTS 2024 hiperglisemik kriz uzlaşısı; ADA Standards of Care 2025 (hipoglisemi); ESE/ESICM/ERA-EDTA 2014 (hiponatremi); Endocrine Society ve UpToDate özetleri (hiperkalsemi, adrenal kriz). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var g1=function(x){return (Math.round(x*10)/10).toString().replace('.',',')};
+  var r0=function(x){return Math.round(x)};
+  var D={
+  hk:{t:'Hiperkalemi',f:['wt','k','glu','egfr'],o:['ekg'],run:function(p){
+    var s=[],n=[],K=p.k;
+    if(K===null)return{s:[['Potasyum değerini girin','']],n:[]};
+    if(K<5.5)return{s:[['Potasyum '+g1(K)+' mEq/L: hiperkalemi yok','']],n:[]};
+    var sev=K>=6.5||p.ekg?'Ağır':K>=6.0?'Orta':'Hafif';
+    s.push(['Önce doğrulayın; EKG çekin'+(K>=6.0||p.ekg?' ve kardiyak monitöre alın':''),'Hemoliz şüphesinde (zor kan alma, trombositoz, lökositoz) tekrar ölçün; ama EKG değişikliği varsa tedaviyi geciktirmeyin. Düzey: '+sev+'.']);
+    if(p.ekg||K>=6.5)s.push(['Kalsiyum glukonat %10, 30 mL IV, 5–10 dakikada','Membranı stabilize eder, potasyumu düşürmez. 5–10 dakika sonra EKG düzelmezse tekrarlayın. Digoksin kullananda daha yavaş (20–30 dakika) verin.']);
+    if(K>=6.0){var u=p.egfr!==null&&p.egfr<30||p.wt!==null&&p.wt<60?5:10;
+      s.push(['Kısa etkili insülin '+u+' ünite IV + 25 g glukoz (%50 dekstroz 50 mL veya %10 dekstroz 250 mL) 15 dakikada','Potasyumu 15–30 dakikada 0,6–1 mEq/L düşürür, etkisi 4–6 saat sürer.'+(u===5?' Böbrek yetmezliği veya düşük kilo nedeniyle 5 ünite seçildi (hipoglisemi riski).':'')+(p.glu!==null&&p.glu<126?' Kan şekeri 126 mg/dL altında: ardından %10 dekstroz 50 mL/saat, 5 saat.':'')]);}
+    if(K>=6.5)s.push(['Salbutamol 10–20 mg nebül','İnsüline ek olarak verilir. Taşiaritmi veya iskemik kalp hastalığında dikkat.']);
+    s.push(['Potasyum yükselten ilaçları kesin','ACE inhibitörü, ARB, spironolakton, NSAİİ, trimetoprim, heparin, potasyum desteği, beta bloker.']);
+    s.push(['Potasyumu vücuttan uzaklaştırın','Potasyum bağlayıcı: sodyum zirkonyum siklosilikat 10 g 3×1 (48 saate kadar) veya kalsiyum/sodyum polistiren sülfonat 15 g 3–4×1. Volüm uygunsa furosemid 40–80 mg IV.']);
+    if(K>=6.5||p.egfr!==null&&p.egfr<15)s.push(['Hemodiyaliz endikasyonunu değerlendirin','Tedaviye dirençli hiperkalemi, ağır böbrek yetmezliği veya oligüri varsa nefroloji ile görüşün.']);
+    if(p.ph!==null&&p.ph<7.2)s.push(['Metabolik asidoz varsa sodyum bikarbonat','Tek başına etkisi sınırlı; asidozu olan hastada insüline ek olarak düşünülür.']);
+    n=['Potasyumu insülin-glukozdan 1 saat sonra, sonra 2, 4, 6 ve 24. saatlerde ölçün.','İnsülin verildiyse kan şekerini ilk 6 saat saatlik izleyin (geç hipoglisemi).','Nedeni araştırın: akut böbrek hasarı, ilaçlar, rabdomiyoliz, tümör lizisi, DKA, hipoaldosteronizm.'];
+    return{s:s,n:n}}},
+  dka:{t:'Diyabetik ketoasidoz',f:['wt','glu','k','ph'],o:[],run:function(p){
+    var s=[],w=p.wt,K=p.k;
+    s.push(['Tanıyı doğrulayın','Glukoz ≥ 200 mg/dL (veya bilinen diyabet), keton (β-hidroksibütirat ≥ 3 mmol/L veya idrarda ++), pH < 7,3 veya HCO₃ < 18. SGLT2 inhibitörü kullananda glukoz normal olabilir (öglisemik DKA).']);
+    s.push(['Sıvı: %0,9 NaCl (veya dengeli kristaloid) ilk saatte 1–1,5 L'+(w?' (15–20 mL/kg = '+r0(15*w)+'–'+r0(20*w)+' mL)':''),'Sonra hemodinami ve idrar çıkışına göre 250–500 mL/saat. Kalp veya böbrek yetmezliğinde daha dikkatli.']);
+    if(K!==null&&K<3.5)s.push(['Potasyum '+g1(K)+': İNSÜLİNİ BAŞLAMAYIN','Önce saatte 10–20 mEq KCl verin; K ≥ 3,5 olunca insüline başlayın.']);
+    else if(K!==null&&K<=5.0)s.push(['Potasyum '+g1(K)+': her litre sıvıya 20–30 mEq KCl ekleyin','Hedef K 4–5 mEq/L.']);
+    else if(K!==null)s.push(['Potasyum '+g1(K)+': şimdilik potasyum vermeyin','2 saatte bir kontrol edin; insülinle hızla düşecektir.']);
+    var ins=w?g1(0.1*w):null;
+    s.push(['İnsülin infüzyonu: kısa etkili insülin 0,1 ünite/kg/saat'+(ins?' = '+ins+' ünite/saat':''),'50 ünite / 50 mL SF ile 1 mL = 1 ünite. Bolus isteğe bağlı (0,1 ünite/kg). Glukoz saatte 50–75 mg/dL düşmüyorsa hızı artırın.'+(K!==null&&K<3.5?' Potasyum 3,5 üzerine çıkana kadar bekleyin.':'')]);
+    s.push(['Glukoz < 250 mg/dL olunca %5–10 dekstroz ekleyin','İnsülini 0,05 ünite/kg/saate'+(w?' ('+g1(0.05*w)+' ünite/saat)':'')+' azaltın ama kesmeyin; ketoasidoz düzelene kadar glukozu 150–200 mg/dL arasında tutun.']);
+    if(p.ph!==null&&p.ph<7.0)s.push(['pH '+String(p.ph).replace('.',',')+' < 7,0: sodyum bikarbonat','100 mEq NaHCO₃ 400 mL suda + 20 mEq KCl, 2 saatte. pH ≥ 7,0 olunca kesin.']);
+    s.push(['Düzelme ve SC insüline geçiş','pH ≥ 7,3, HCO₃ ≥ 18 ve keton < 0,6 mmol/L, hasta yiyebiliyor. IV insülini kesmeden 1–2 saat önce SC bazal insülin yapın (ör. 0,2–0,3 ünite/kg glarjin'+(w?' = '+r0(0.2*w)+'–'+r0(0.3*w)+' ünite':'')+').']);
+    return{s:s,n:['Kan şekeri saatlik; Na, K, Cl, venöz pH, HCO₃ ve keton 2–4 saatte bir.','Düzeltilmiş sodyumu izleyin; hızlı osmolalite düşüşü serebral ödem riski taşır.','Tetikleyiciyi arayın: enfeksiyon, insülin atlama, MI, pankreatit, SGLT2 inhibitörü.','Fosfor < 1 mg/dL ise veya kalp/solunum yetmezliği varsa fosfor replasmanı.']}}},
+  hipo:{t:'Hipoglisemi',f:['glu','wt'],o:['bil','su'],run:function(p){
+    var s=[],G=p.glu;
+    if(G!==null&&G>=70)return{s:[['Kan şekeri '+G+' mg/dL: hipoglisemi yok','Belirti varsa tekrar ölçün.']],n:[]};
+    var lvl=G===null?'':G<54?' (düzey 2, klinik olarak anlamlı)':' (düzey 1)';
+    if(!p.bil){s.push(['Bilinç açık: 15–20 g hızlı emilen karbonhidrat ağızdan'+lvl,'Ör. 3–4 glukoz tableti, 150–200 mL meyve suyu veya 3 tatlı kaşığı şekerli su.']);
+      s.push(['15 dakika sonra tekrar ölçün','Hâlâ < 70 mg/dL ise aynı dozu tekrarlayın. Düzelince kompleks karbonhidratlı ara öğün veya yemek verin.']);}
+    else{s.push(['Bilinç bozuk veya yutamıyor: %50 dekstroz 50 mL (25 g) IV','Ya da %10 dekstroz 150–250 mL IV. Damar yolu yoksa glukagon 1 mg IM/SC (veya 3 mg intranazal).']);
+      s.push(['Ardından %10 dekstroz infüzyonu 50–100 mL/saat','Hasta yiyebilene ve kan şekeri stabil olana kadar.']);
+      s.push(['Alkolizm veya malnütrisyon şüphesinde tiamin 100 mg IV','Glukozla birlikte veya hemen önce.']);}
+    if(p.su)s.push(['Sülfonilüreye bağlı: en az 24 saat (gliklazid/glibenklamidde 72 saate kadar) izlem','Dirençli olgularda oktreotid 50–100 µg SC 6–8 saatte bir. Glukagon tek başına önerilmez.']);
+    s.push(['Nedeni bulun ve tedaviyi düzeltin','Öğün atlama, insülin dozu, böbrek veya karaciğer yetmezliği, sepsis, alkol, adrenal yetmezlik. İnsülin kullanan hastada dozu %10–20 azaltın.']);
+    return{s:s,n:['Kan şekerini 15 dakika sonra, sonra 1 saat boyunca sık, ardından 2–4 saatte bir izleyin.','Gece hipoglisemisinde bazal insülini gözden geçirin.','Hastaya ve yakınına hipoglisemi belirtileri ve 15-15 kuralı anlatılmalı.']}}},
+  hna:{t:'Semptomatik hiponatremi',f:['na','wt'],o:['ag','ods'],run:function(p){
+    var s=[],N=p.na,lim=p.ods?8:10;
+    if(N!==null&&N>=135)return{s:[['Sodyum '+N+' mEq/L: hiponatremi yok','']],n:[]};
+    if(p.ag){s.push(['%3 NaCl 150 mL IV, 20 dakikada','20 dakika sonra Na bakın. Na 5 mEq/L artana kadar en fazla 2 kez daha tekrarlayın (toplam 3 doz).']);
+      s.push(['Na 5 mEq/L arttıktan veya belirtiler düzeldikten sonra %3 NaCl\'yi kesin','Nedene yönelik tedaviye geçin; ilk 24 saatte toplam artış '+lim+' mEq/L\'yi geçmesin.']);}
+    else{s.push(['Orta şiddette belirti (bulantı, konfüzyon, baş ağrısı): %3 NaCl 150 mL IV tek doz, 20 dakikada','Ardından nedene yönelik tedavi; Na\'yı 4 ve 8. saatlerde bakın.']);
+      s.push(['Belirti yoksa veya hafifse acil hipertonik salin gerekmez','Hipovolemide %0,9 NaCl, SIADH\'de sıvı kısıtlaması, ilaçları gözden geçirin.']);}
+    s.push(['Düzeltme sınırı: ilk 24 saatte en fazla '+lim+' mEq/L'+(N!==null?' (hedef üst sınır '+(N+lim)+' mEq/L)':''),'Sonraki her 24 saatte en fazla 8 mEq/L.'+(p.ods?' Osmotik demiyelinizasyon riski yüksek olduğu için sınır 8 mEq/L alındı.':'')]);
+    s.push(['Aşırı düzeltmede','Hipertonik salini kesin; %5 dekstroz (≈ 10 mL/kg 1 saatte'+(p.wt?' = '+r0(10*p.wt)+' mL':'')+') ve desmopressin 2 µg IV ile sodyumu geri düşürün.']);
+    return{s:s,n:['Na\'yı ilk saatlerde 2–4 saatte bir ölçün; idrar çıkışı aniden artarsa (su diürezi) daha sık.','Tanı için serum ozmolalitesi, idrar ozmolalitesi ve idrar Na; volüm durumunu değerlendirin.','Sodyum açığı ve sıvı seçimi için Vizit\'teki "Sodyum ve su açığı" aracını kullanabilirsiniz.']}}},
+  hca:{t:'Hiperkalsemi',f:['ca','wt','egfr'],o:['kky'],run:function(p){
+    var s=[],C=p.ca,w=p.wt;
+    if(C!==null&&C<=10.5)return{s:[['Düzeltilmiş kalsiyum '+g1(C)+' mg/dL: hiperkalsemi yok','']],n:[]};
+    var sev=C===null?'':C<12?'Hafif':C<14?'Orta':'Ağır';
+    if(C!==null&&C<12){s.push(['Hafif hiperkalsemi: acil tedavi genellikle gerekmez','Tiyazid, lityum, kalsiyum ve D vitamini desteklerini kesin; bol sıvı alımı; dehidratasyondan kaçının.']);}
+    else{
+      s.push(['IV %0,9 NaCl: 200–300 mL/saat ile başlayın','İdrar çıkışı 100–150 mL/saat olacak şekilde ayarlayın.'+(p.kky?' Kalp yetmezliği / hipervolemi var: daha düşük hız ve yakın volüm izlemi.':'')]);
+      s.push(['Kalsitonin 4 IU/kg SC/IM 12 saatte bir'+(w?' = '+r0(4*w)+' IU':''),'Etkisi 4–6 saatte başlar, 48 saat sonra taşiflaksi gelişir; bisfosfonat etkisini gösterene kadar köprü tedavi.']);
+      if(p.egfr!==null&&p.egfr<30)s.push(['eGFR < 30: zoledronik asit yerine denosumab 60–120 mg SC düşünün','Denosumabla hipokalsemi riski; nefrolojiyle birlikte karar verin. Pamidronat dikkatle ve yavaş verilebilir.']);
+      else s.push(['Zoledronik asit 4 mg IV, en az 15 dakikada','Etkisi 2–4 günde başlar. Alternatif: pamidronat 60–90 mg IV 2–4 saatte. Öncesinde hidrasyon şart.']);
+      s.push(['D vitamini aracılı (granülomatöz hastalık, lenfoma) şüphesinde prednizolon 40–60 mg/gün','1,25-(OH)₂ D vitamini yüksekse etkilidir.']);
+      if(C>=18||p.egfr!==null&&p.egfr<15)s.push(['Hemodiyaliz düşünün','Kalsiyum ≥ 18 mg/dL ve nörolojik bulgu, ya da ağır böbrek yetmezliği varsa.']);
+      s.push(['Loop diüretik yalnızca volüm yerine konduktan sonra ve hipervolemide','Rutin furosemid önerilmez.']);}
+    return{s:s,n:['Düzey: '+sev+'. Nedeni araştırın: PTH (yüksekse primer hiperparatiroidi), PTH baskılıysa PTHrP, 25-OH ve 1,25-(OH)₂ D vitamini, protein elektroforezi, görüntüleme.','Kalsiyum, böbrek fonksiyonu ve elektrolitleri 12–24 saatte bir izleyin; magnezyum ve fosforu kontrol edin.','Albümin düşükse düzeltilmiş kalsiyum veya iyonize kalsiyum kullanın.']}}},
+  adr:{t:'Adrenal kriz',f:['wt','na','k','glu'],o:[],run:function(p){
+    var s=[];
+    s.push(['Hidrokortizon 100 mg IV bolus; tanı testlerini beklemeyin','Mümkünse önce kortizol ve ACTH için kan alın, ama tedaviyi geciktirmeyin.']);
+    s.push(['Sonra hidrokortizon 200 mg/24 saat','Sürekli infüzyon veya 50 mg IV 6 saatte bir. Bu dozda ayrıca mineralokortikoid gerekmez.']);
+    s.push(['%0,9 NaCl ilk saatte 1 L'+(p.wt?' (yaklaşık 15–20 mL/kg)':''),'Sonra hemodinamiye göre; hipoglisemi varsa %5 dekstroz eklenir.'+(p.glu!==null&&p.glu<70?' Kan şekeri düşük: dekstroz verin.':'')]);
+    s.push(['Tetikleyiciyi tedavi edin','Enfeksiyon, gastroenterit, cerrahi, ilaç kesilmesi (uzun süreli steroid), antikoagülana bağlı adrenal kanama.']);
+    s.push(['Düzeldikçe doz azaltma','1–3 günde oral hidrokortizon idame dozuna (15–25 mg/gün, bölünmüş) inin; primer yetmezlikte fludrokortizon 50–100 µg/gün ekleyin.']);
+    var n=['Hiponatremi, hiperkalemi ve hipoglisemi tipik bulgulardır; normal olmaları tanıyı dışlamaz.','Hastaya steroid acil kartı ve hasta gün kuralları (ateşte dozu 2 katına çıkarma) anlatılmalı.'];
+    if(p.na!==null&&p.na<125)n.push('Kronik ağır hiponatremide hidrokortizonla birlikte sodyum hızlı yükselebilir; düzeltme hızını izleyin.');
+    return{s:s,n:n}}}
+  };
+  var EX={hk:{wt:70,k:6.8,glu:150,egfr:45},dka:{wt:70,glu:480,k:4.6,ph:7.15},hipo:{wt:70,glu:48},hna:{wt:70,na:118},hca:{wt:70,ca:14.2,egfr:60},adr:{wt:70,na:128,k:5.4,glu:65}};
+  var ALLF=['wt','k','glu','ph','na','ca','egfr'],ALLO=['ekg','bil','su','ag','ods','kky'];
+  function build(){var d=D[$('dz').value],ex=EX[$('dz').value];
+    Object.keys(ex).forEach(function(f){$(f).value=ex[f]});ALLO.forEach(function(o){$(o).checked=false});
+    ALLF.forEach(function(f){$('w-'+f).hidden=d.f.indexOf(f)<0});
+    ALLO.forEach(function(o){$('w-'+o).hidden=d.o.indexOf(o)<0});$('opts').hidden=!d.o.length;calc()}
+  function calc(){var d=D[$('dz').value],p={};
+    ALLF.forEach(function(f){p[f]=d.f.indexOf(f)>=0?v(f):null});ALLO.forEach(function(o){p[o]=d.o.indexOf(o)>=0&&$(o).checked});
+    var r=d.run(p),ol=$('st'),ul=$('nt');ol.innerHTML='';ul.innerHTML='';$('t').textContent=d.t+': adımlar';
+    r.s.forEach(function(x){var li=document.createElement('li'),b=document.createElement('b');b.textContent=x[0];li.appendChild(b);
+      if(x[1]){var a=document.createElement('p');a.className='advice';a.textContent=x[1];li.appendChild(a)}ol.appendChild(li)});
+    r.n.forEach(function(x){var li=document.createElement('li');li.textContent=x;ul.appendChild(li)});
+    ul.closest('section').hidden=!r.n.length}
+  $('dz').addEventListener('change',build);
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
+  build();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
