@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kan Gazı Yorumu</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Kan Gazı Yorumu</h1>
+    <p>Asit-baz bozukluğu, kompanzasyon, anyon açığı ve delta oranı</p>
+  </header>
+<style>
+.card h3{margin:6px 0 0;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.big{font-size:1.15rem;font-weight:700;margin:0;line-height:1.35}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;font-size:.92rem}
+.sub{align-items:flex-start}
+.sub b{white-space:normal;text-align:right;max-width:60%}
+</style>
+  <section class="card">
+    <h2>Kan gazı</h2>
+    <div class="grid">
+      <div class="field"><label for="ph">pH</label><input id="ph" type="number" inputmode="decimal" step="any" value="7.25"></div>
+      <div class="field"><label for="pco2">pCO₂ <span>mmHg</span></label><input id="pco2" type="number" inputmode="decimal" step="any" value="28"></div>
+      <div class="field"><label for="hco3">HCO₃ <span>mEq/L</span></label><input id="hco3" type="number" inputmode="decimal" step="any" value="12"></div>
+    </div>
+    <h3>Elektrolitler (anyon açığı için)</h3>
+    <div class="grid">
+      <div class="field"><label for="na">Sodyum <span>mEq/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="140"></div>
+      <div class="field"><label for="cl">Klor <span>mEq/L</span></label><input id="cl" type="number" inputmode="decimal" step="any" value="105"></div>
+      <div class="field"><label for="alb">Albümin <span>g/dL</span></label><input id="alb" type="number" inputmode="decimal" step="any" value="4.0"></div>
+    </div>
+    <h3>Oksijenizasyon (isteğe bağlı)</h3>
+    <div class="grid">
+      <div class="field"><label for="po2">pO₂ <span>mmHg</span></label><input id="po2" type="number" inputmode="decimal" step="any" value=""></div>
+      <div class="field"><label for="fio2">FiO₂ <span>%</span></label><input id="fio2" type="number" inputmode="decimal" step="any" value="21"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" type="number" inputmode="decimal" step="any" value=""></div>
+    </div>
+    <p class="note">Örnek değerler doldurulmuştur. Venöz gazda pH arterden yaklaşık 0,03 düşük, pCO₂ 4–5 mmHg yüksektir; pO₂ yorumlanmaz.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Yorum</span>
+    <div class="res"><span class="pill" id="pl"></span></div>
+    <p class="big advice" id="main">–</p>
+    <div class="sub"><span>Kompanzasyon</span><b id="comp">–</b></div>
+    <div class="sub" id="ag-r"><span>Anyon açığı (albümine göre)</span><b id="ag">–</b></div>
+    <div class="sub" id="dr-r"><span>Delta oranı</span><b id="dr">–</b></div>
+    <div class="sub" id="aa-r" hidden><span>A-a gradyenti</span><b id="aa">–</b></div>
+    <p class="advice" id="adv"></p>
+  </section>
+
+  <section class="card" id="dd-c">
+    <h2>Ayırıcı tanı</h2>
+    <div id="dd"></div>
+  </section>
+
+  <section class="card">
+    <h2>Kullanılan formüller</h2>
+    <p class="f">Metabolik asidoz (Winter): beklenen pCO₂ = 1,5 × HCO₃ + 8 ± 2</p>
+    <p class="f">Metabolik alkaloz: beklenen pCO₂ = 0,7 × HCO₃ + 21 ± 2</p>
+    <p class="f">Solunumsal asidoz: her 10 mmHg pCO₂ artışında HCO₃ akutta 1, kronikte 3,5 artar</p>
+    <p class="f">Solunumsal alkaloz: her 10 mmHg pCO₂ azalışında HCO₃ akutta 2, kronikte 4 azalır</p>
+    <p class="f">Anyon açığı = Na − (Cl + HCO₃); düzeltilmiş: + 2,5 × (4 − albümin); normal 12 ± 2, &gt; 14 yüksek kabul edilmiştir</p>
+    <p class="f">Delta oranı = (AA − 12) / (24 − HCO₃) · A-a = FiO₂ × 713 − pCO₂ / 0,8 − pO₂; beklenen ≈ yaş / 4 + 4</p>
+  </section>
+
+  <p class="note">Kaynaklar: Berend K ve ark., N Engl J Med 2014; Seifter JL, N Engl J Med 2014; Rastegar A, J Am Soc Nephrol 2007 (delta oranı). Bu araç klinik karar desteği içindir; klinik tabloyla birlikte yorumlayın.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var g1=function(x){return (Math.round(x*10)/10).toString().replace('.',',')};
+  var DD={
+    hag:['Ketoasidoz (diyabetik, alkolik, açlık)','Laktik asidoz (şok, sepsis, metformin, iskemi)','Böbrek yetmezliği (üremi)','Toksik alkoller: metanol, etilen glikol (ozmolar açığa bakın)','Salisilat zehirlenmesi','D-laktat (kısa barsak), 5-oksoprolin (parasetamol)'],
+    nag:['İshal, ileostomi, pankreatik fistül','Renal tübüler asidoz (tip 1, 2, 4)','Aşırı serum fizyolojik (hiperkloremik)','Karbonik anhidraz inhibitörü (asetazolamid)','Ayırım için idrar anyon açığı: Na + K − Cl; negatifse GİS, pozitifse renal kayıp'],
+    malk:['İdrar Cl < 20 (salin yanıtlı): kusma, nazogastrik aspirasyon, diüretik sonrası, kontraksiyon','İdrar Cl > 20 (salin yanıtsız): aktif diüretik, primer hiperaldosteronizm, Cushing, Bartter/Gitelman, ağır hipokalemi','Alkali yüklenmesi, süt-alkali sendromu'],
+    racid:['Santral: sedatif / opioid, beyin sapı lezyonu','Nöromüsküler: Guillain-Barré, miyastenia, ALS, hipokalemi, hipofosfatemi','Akciğer ve göğüs duvarı: KOAH, ağır astım, obezite hipoventilasyon, kifoskolyoz','Hava yolu obstrüksiyonu'],
+    ralk:['Hipoksemi: pnömoni, pulmoner emboli, ödem','Sepsis (erken dönem), ateş','Karaciğer yetmezliği, gebelik','Salisilat (erken), ağrı, anksiyete','Santral sinir sistemi lezyonları, mekanik ventilasyonda aşırı solunum']
+  };
+  function calc(){
+    var ph=v('ph'),pc=v('pco2'),hc=v('hco3'),na=v('na'),cl=v('cl'),alb=v('alb'),po2=v('po2'),fi=v('fio2'),age=v('age');
+    var dd=[],adv=[];
+    if(ph===null||pc===null||hc===null){$('main').textContent='pH, pCO₂ ve HCO₃ girin.';pill('pl','');['comp','ag','dr'].forEach(function(i){$(i).textContent='–'});$('adv').textContent='';$('dd-c').hidden=true;return}
+    // Henderson-Hasselbalch tutarlılığı
+    var phc=6.1+Math.log10(hc/(0.03*pc));
+    if(Math.abs(phc-ph)>0.05)adv.push('Uyarı: değerler birbiriyle uyumsuz (hesaplanan pH '+phc.toFixed(2).replace('.',',')+'). Örnek veya giriş hatası olabilir.');
+    var main='',comp='–',kind='';
+    var ag=null,cag=null;
+    if(na!==null&&cl!==null){ag=na-(cl+hc);cag=alb!==null?ag+2.5*(4-alb):ag}
+    var hag=cag!==null&&cag>14;
+    function pco2Check(exp){var lo=exp-2,hi=exp+2;
+      var r=' (beklenen pCO₂ '+g1(lo)+'–'+g1(hi)+')';
+      return pc>hi?['pCO₂ beklenenden yüksek: eşlik eden solunumsal asidoz'+r,'solunumsal asidoz','racid']:pc<lo?['pCO₂ beklenenden düşük: eşlik eden solunumsal alkaloz'+r,'solunumsal alkaloz','ralk']:['Solunumsal kompanzasyon uygun'+r,null,null]}
+    if(ph<7.35){
+      pill('pl','Asidemi','var(--high)');
+      if(hc<22){kind='macid';main='Metabolik asidoz';var c=pco2Check(1.5*hc+8);comp=c[0];if(c[2]){main+=' + '+c[1];dd.push(c[2])}
+        if(pc>45)main='Karışık: metabolik ve solunumsal asidoz';}
+      else if(pc>45){kind='racid';main='Solunumsal asidoz';var dP=(pc-40)/10,ea=24+dP,ec=24+3.5*dP;
+        comp='Akut beklenen HCO₃ ≈ '+g1(ea)+', kronik ≈ '+g1(ec)+'. ';
+        comp+=hc<ea-2?'HCO₃ beklenenden düşük: eşlik eden metabolik asidoz':hc<=ea+2?'Akut solunumsal asidozla uyumlu':hc<=ec+2?(hc<ec-2?'Akut üzerine kronik (kısmi kompanzasyon)':'Kronik solunumsal asidozla uyumlu'):'HCO₃ beklenenden yüksek: eşlik eden metabolik alkaloz';
+        if(hc>ec+2)dd.push('malk');}
+      else{main='Asidemi var ama birincil bozukluk belirlenemedi; değerleri kontrol edin.';}
+      if(kind==='macid')dd.unshift(hag?'hag':'nag');
+      if(kind==='racid')dd.unshift('racid');
+    }else if(ph>7.45){
+      pill('pl','Alkalemi','var(--low)');
+      if(hc>26){kind='malk';main='Metabolik alkaloz';var c2=pco2Check(0.7*hc+21);comp=c2[0];if(c2[2]){main+=' + '+c2[1];dd.push(c2[2])}
+        if(pc<35)main='Karışık: metabolik ve solunumsal alkaloz';dd.unshift('malk')}
+      else if(pc<35){kind='ralk';main='Solunumsal alkaloz';var dP2=(40-pc)/10,ea2=24-2*dP2,ec2=24-4*dP2;
+        comp='Akut beklenen HCO₃ ≈ '+g1(ea2)+', kronik ≈ '+g1(ec2)+'. ';
+        comp+=hc>ea2+2?'HCO₃ beklenenden yüksek: eşlik eden metabolik alkaloz':hc>=ea2-2?'Akut solunumsal alkalozla uyumlu':hc>=ec2-2?'Kronik solunumsal alkalozla uyumlu':'HCO₃ beklenenden düşük: eşlik eden metabolik asidoz';
+        dd.unshift('ralk');if(hc>ea2+2)dd.push('malk');if(hc<ec2-2)dd.push(hag?'hag':'nag');}
+      else main='Alkalemi var ama birincil bozukluk belirlenemedi; değerleri kontrol edin.';
+    }else{
+      if(hc<22&&pc<35){pill('pl','pH normal','var(--warn)');main='pH normal ama HCO₃ ve pCO₂ düşük: karışık metabolik asidoz + solunumsal alkaloz';dd.push(hag?'hag':'nag','ralk')}
+      else if(hc>26&&pc>45){pill('pl','pH normal','var(--warn)');main='pH normal ama HCO₃ ve pCO₂ yüksek: karışık metabolik alkaloz + solunumsal asidoz (ör. KOAH + diüretik)';dd.push('malk','racid')}
+      else if(hag){pill('pl','pH normal','var(--warn)');main='pH normal ama anyon açığı yüksek: gizli yüksek anyon açıklı asidoz + metabolik alkaloz olabilir';dd.push('hag','malk')}
+      else{pill('pl','Normal','var(--ok)');main='Asit-baz dengesi normal'}
+    }
+    $('main').textContent=main;$('comp').textContent=comp;
+    // Anyon açığı ve delta oranı
+    if(ag!==null){$('ag-r').hidden=false;$('ag').textContent=g1(cag)+' mEq/L'+(alb!==null&&alb!==4?' (ölçülen '+g1(ag)+')':'')+(hag?' · yüksek':cag>12?' · sınırda':' · normal')}
+    else{$('ag-r').hidden=false;$('ag').textContent='Na ve Cl girin'}
+    if(hag&&hc<24){var dr=(cag-12)/(24-hc);$('dr-r').hidden=false;
+      $('dr').textContent=g1(dr)+' · '+(dr<0.4?'normal anyon açıklı asidoz baskın':dr<0.8?'yüksek + normal anyon açıklı asidoz birlikte':dr<=2?'saf yüksek anyon açıklı asidoz':'eşlik eden metabolik alkaloz (veya kronik solunumsal asidoz)');
+      if(dr<0.8&&dd.indexOf('nag')<0)dd.push('nag');if(dr>2&&dd.indexOf('malk')<0)dd.push('malk');
+      adv.push('Yüksek anyon açığında ozmolar açığa bakın: ölçülen ozmolalite − (2 × Na + glukoz/18 + BUN/2,8); > 10 ise toksik alkol düşünün. Laktat ve keton ölçün.');}
+    else{$('dr-r').hidden=true}
+    // Oksijenizasyon
+    if(po2!==null&&fi!==null){var PA=fi/100*713-pc/0.8,aa=PA-po2,exp=age!==null?age/4+4:null;$('aa-r').hidden=false;
+      $('aa').textContent=g1(aa)+' mmHg'+(exp!==null?' (beklenen < '+g1(exp)+')':'')+(exp!==null&&aa>exp?' · artmış':'')+' · P/F '+Math.round(po2/(fi/100));
+      if(exp!==null&&aa>exp)adv.push('A-a gradyenti artmış: V/Q uyumsuzluğu, şant veya difüzyon bozukluğu (pnömoni, emboli, ödem, ARDS).');
+      else if(pc>45&&exp!==null)adv.push('A-a gradyenti normal: hipoksemi hipoventilasyona bağlı olabilir.');}
+    else $('aa-r').hidden=true;
+    $('adv').textContent=adv.join(' ');
+    // Ayırıcı tanı
+    var T={hag:'Yüksek anyon açıklı metabolik asidoz',nag:'Normal anyon açıklı (hiperkloremik) metabolik asidoz',malk:'Metabolik alkaloz',racid:'Solunumsal asidoz',ralk:'Solunumsal alkaloz'};
+    var box=$('dd');box.innerHTML='';var seen={};
+    dd.forEach(function(k){if(seen[k])return;seen[k]=1;var h=document.createElement('h3');h.textContent=T[k];box.appendChild(h);
+      var ul=document.createElement('ul');ul.className='chk';DD[k].forEach(function(t){var li=document.createElement('li');li.textContent=t;ul.appendChild(li)});box.appendChild(ul)});
+    $('dd-c').hidden=!dd.length;
+  }
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc)});
+  calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
