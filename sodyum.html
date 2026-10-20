@@ -15,17 +15,17 @@
 :root{
   --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
   --accent:#8c1c2c; --accent-soft:#f6e7e9;
-  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
   --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-num:ui-monospace,"SF Mono",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
 }
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
@@ -145,14 +145,14 @@ table.t th.n{text-align:right}
       $('mode').textContent='Sodyum açığı';$('main').textContent=Math.round(tbw*chg);$('mainu').textContent='mEq';
       pill('pl','Hiponatremi','var(--low)');
       $('adv').textContent='Sodyumu 24 saatte '+chg+' mEq/L artırmak için gereken sodyum miktarı. Tabloda her sıvıyla gereken hacim ve infüzyon hızı var.';
-      $('warn').textContent='Ozmotik demiyelinizasyon riski: ilk 24 saatte artış 10 mEq/L\'yi, yüksek riskli hastada (Na ≤ 105, hipokalemi, alkolizm, malnütrisyon, karaciğer hastalığı) 8 mEq/L\'yi geçmemelidir. Ağır semptomlu hastada 150 mL %3 NaCl 20 dakikada verilip gerekirse tekrarlanır.'+(chg>10?' Girdiğiniz hedef değişim güvenli sınırın üzerinde.':'');
+      $('warn').textContent='Ozmotik demiyelinizasyon riski: ilk 24 saatte artış 10 mEq/L\'yi, sonraki her 24 saatte 8 mEq/L\'yi; yüksek riskli hastada (Na ≤ 105, hipokalemi, alkolizm, malnütrisyon, karaciğer hastalığı) 24 saatte 8 mEq/L\'yi geçmemelidir. Ağır semptomlu hastada 150 mL %3 NaCl 20 dakikada verilip gerekirse tekrarlanır.'+(chg>10?' Girdiğiniz hedef değişim güvenli sınırın üzerinde.':'');
       $('formula').textContent='Sodyum açığı = TVS × (hedef Na − Na) · 1 L sıvının etkisi = (sıvıdaki Na − serum Na) / (TVS + 1)';
     }else{
       var fwd=tbw*(na/140-1);
       $('mode').textContent='Serbest su açığı';$('main').textContent=f1(fwd);$('mainu').textContent='L';
       pill('pl','Hipernatremi','var(--high)');
       $('adv').textContent='Sodyumu 140 mEq/L\'ye indirmek için gereken toplam su. Tabloda 24 saatte '+chg+' mEq/L düşürmek için gereken hacim ve hız var; devam eden kayıpları (günde yaklaşık 1–1,5 L) ekleyin.';
-      $('warn').textContent='Kronik (48 saatten uzun süren) hipernatremide sodyum 24 saatte 10 mEq/L\'den hızlı düşürülmemelidir; hızlı düşüş beyin ödemine yol açabilir.'+(chg>12?' Girdiğiniz hedef değişim güvenli sınırın üzerinde.':'');
+      $('warn').textContent='Kronik (48 saatten uzun süren) hipernatremide sodyum 24 saatte 10 mEq/L\'den hızlı düşürülmemelidir; hızlı düşüş beyin ödemine yol açabilir.'+(chg>10?' Girdiğiniz hedef değişim güvenli sınırın üzerinde.':'');
       $('formula').textContent='Serbest su açığı = TVS × (Na / 140 − 1) · 1 L sıvının etkisi = (sıvıdaki Na − serum Na) / (TVS + 1)';
     }
   }

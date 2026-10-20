@@ -111,6 +111,8 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     <ul class="chk">
       <li>Metadona geçiş doğrusal değildir (yüksek dozda oran 1:10–1:20); algoloji veya palyatif bakım ile planlayın.</li>
       <li>Fentanil bandına geçişte önceki uzun etkili opioid 12 saat daha devam eder (12 saatlik preparat bant yapıştırılırken son kez verilir). Bant etkisi 12–24 saatte başlar; doz artışı en erken 3 günde.</li>
+      <li>MME katsayıları risk karşılaştırması içindir; CDC bunların opioid rotasyonunda doğrudan kullanılmamasını belirtir. Hesaplanan doz yalnızca başlangıç tahminidir; çapraz tolerans indirimi ve yakın titrasyon şarttır.</li>
+      <li>Sürekli IV fentanil infüzyonu için katsayı kaynaklarda 2,4–4,75 MME/(mcg/saat) arasında değişir; burada en temkinli değer olan 2,4 (IV fentanil → bant 1:1) kullanıldı. IV fentanilden başka opioide geçişte hesaplanan doz düşük kalabilir; yanıta göre titre edin.</li>
       <li>Fentanil bandı opioid-naif hastada ve akut ağrıda kullanılmaz; ateş ve ısıtıcı emilimi artırır.</li>
       <li>Kurtarma dozu: günlük dozun %10–15’i hızlı etkili opioid, gerektiğinde 1–4 saatte bir.</li>
       <li>Böbrek yetmezliğinde (eGFR &lt; 30) morfin, kodein, tramadol ve petidin metabolitleri birikir; fentanil, buprenorfin veya düşük doz oksikodon/hidromorfon tercih edilir.</li>
@@ -120,7 +122,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     </ul>
   </section>
 
-  <p class="note">Dönüşüm oranları yaklaşıktır ve kişiler arası fark büyüktür; yeni opioidde sık değerlendirip titre edin. Kaynaklar: CDC 2022 opioid reçeteleme kılavuzu (MME katsayıları), fentanil bant prospektüs dönüşüm tablosu, ESMO 2018 kanser ağrısı kılavuzu. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Dönüşüm oranları yaklaşıktır ve kişiler arası fark büyüktür; yeni opioidde sık değerlendirip titre edin. Kaynaklar: CDC 2022 opioid reçeteleme kılavuzu (MME katsayıları), Durogesic DTrans AB/UK kısa ürün bilgisi (rotasyon tablosu); Kornick CA ve ark. (IV fentanilden banda 1:1); ESAIC IV/oral analjezik dönüşüm tabloları; ESMO 2018 kanser ağrısı kılavuzu. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -137,17 +139,17 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
    {n:'Morfin oral',f:1,u:'mg/gün',div:'4 saatte bir hızlı etkili veya 12 saatte bir yavaş salınımlı',bt:1},
    {n:'Morfin IV/SC',f:3,u:'mg/gün',div:'4 saatte bir bolus veya sürekli infüzyon (günlük doz ÷ 24 = mg/saat)',bt:1},
    {n:'Oksikodon oral',f:1.5,u:'mg/gün',div:'12 saatte bir yavaş salınımlı',bt:1},
-   {n:'Hidromorfon oral',f:4,u:'mg/gün',div:'4 saatte bir hızlı etkili veya günde 1 yavaş salınımlı',bt:1},
+   {n:'Hidromorfon oral',f:5,u:'mg/gün',div:'4 saatte bir hızlı etkili veya günde 1 yavaş salınımlı',bt:1},
    {n:'Tapentadol oral',f:0.4,u:'mg/gün',div:'12 saatte bir yavaş salınımlı',max:500,bt:1},
    {n:'Tramadol oral',f:0.2,u:'mg/gün',div:'6 saatte bir veya 12 saatte bir yavaş salınımlı',max:400,bt:1},
    {n:'Tramadol IV',f:0.3,u:'mg/gün',div:'6–8 saatte bir, yavaş IV',max:400,bt:1},
    {n:'Kodein oral',f:0.15,u:'mg/gün',div:'4–6 saatte bir',max:240,bt:1},
    {n:'Petidin IV/IM',f:0.4,u:'mg/gün',div:'3–4 saatte bir; kronik kullanım önerilmez',max:600,bt:1},
-   {n:'Fentanil IV infüzyon',f:7.2,u:'mcg/saat',div:'sürekli infüzyon',bt:0},
+   {n:'Fentanil IV infüzyon',f:2.4,ft:4.75,u:'mcg/saat',div:'sürekli infüzyon',bt:0,iv:1},
    {n:'Fentanil transdermal bant',f:2.4,u:'mcg/saat',div:'72 saatte bir bant değişimi',bt:0,patch:1}];
   var s=$('src');D.forEach(function(d,i){var o=document.createElement('option');o.value=i;o.textContent=d.n+' ('+d.u+')';if(d.n==='Tramadol oral')o.selected=true;s.appendChild(o)});
-  // manufacturer table (oral morphine mg/day -> patch mcg/h)
-  function patch(m){if(m<60)return null;if(m<135)return 25;if(m<225)return 50;if(m<315)return 75;if(m<405)return 100;return 25*(Math.floor((m-45)/90)+1)}
+  // AB/UK SmPC rotation table (≈150:1; oral morphine mg/day -> patch mcg/h)
+  function patch(m){if(m<90)return 12;if(m<135)return 25;if(m<225)return 50;if(m<315)return 75;if(m<405)return 100;return 25*(Math.floor((m-45)/90)+1)}
   function calc(){var d=D[s.value],x=v('dose'),red=+segVal('red'),tb=$('tb');tb.innerHTML='';$('u-dose').textContent=d.u;
     $('l-dose').firstChild.textContent=d.u==='mcg/saat'?'Hız ':'Günlük toplam doz ';
     if(x===null||x<=0){$('mme').textContent='–';pill('pl','');$('adv').textContent='';return}
@@ -156,8 +158,8 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     $('adv').textContent=mme>=90?'Yüksek doz: aşırı doz riski belirgin artmıştır; endikasyonu ve faydayı yeniden değerlendirin, nalokson hazır olsun.':mme>=50?'Orta-yüksek doz: risk artar; nalokson bulundurun, sedatif birlikte kullanımından kaçının.':'';
     var t=mme*(1-red/100);
     D.forEach(function(o,i){if(i===+s.value)return;var tr=document.createElement('tr'),c1=o.n,c2,c3;
-      if(o.patch){var p=patch(mme);c2=p?p+' mcg/saat':'Uygun değil';c3=p?'Prospektüs tablosuna göre; tablo temkinli olduğundan ek indirim uygulanmadı. 72 saatte bir':'Oral morfin eşdeğeri 60 mg/gün altında bant önerilmez'}
-      else if(o.u==='mcg/saat'){var h=t/o.f;c2=fm(h,0)+' mcg/saat';c3=o.div+'; kurtarma: saatlik dozun %50–100’ü bolus'}
+      if(o.patch){var p=patch(mme);c2=p+' mcg/saat';c3='AB/UK prospektüs rotasyon tablosuna göre (≈ 150:1); tablo temkinli olduğundan ek indirim uygulanmadı. 72 saatte bir'+(d.iv?'. IV fentanilden banda geçişte 1:1 (mcg/saat) de kullanılır: ≈ '+fm(x,0)+' mcg/saat':'')+(mme<60?'. Opioid-toleranslı olmayan hastada bant önerilmez':'')}
+      else if(o.u==='mcg/saat'){var h=t/(o.ft||o.f);c2=fm(h,0)+' mcg/saat';c3=o.div+(o.ft?'; fentanile geçişte temkinli katsayı (4,75) kullanıldı':'')+'; kurtarma: saatlik dozun %50–100’ü bolus'}
       else{var dd=t/o.f;c2=fm(dd)+' mg/gün';c3=o.div+(o.bt?'; kurtarma ≈ '+fm(dd*0.1,1)+'–'+fm(dd*0.15,1)+' mg':'');
         if(o.max&&dd>o.max){c2+=' (en fazla '+o.max+')';c3='Günlük üst sınır aşılıyor; bu ilaç uygun değil'}}
       [c1,c2,c3].forEach(function(z,j){var td=document.createElement('td');td.textContent=z;tr.appendChild(td)});tb.appendChild(tr)});

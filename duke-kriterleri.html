@@ -79,15 +79,19 @@ details p{margin:8px 0 0}
   </header>
 
   <section class="card">
+    <h2>Patolojik kriter</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="P1" data-p=""><span class="txt">Patolojik kanıt<small>vejetasyon, apse veya emboli örneğinde kültür veya histolojiyle mikroorganizma ya da histolojik olarak aktif endokardit; tek başına kesin tanı koydurur</small></span></label>
+    </div>
     <h2>Majör kriterler</h2>
     <div class="items">
       <label class="item"><input type="checkbox" id="M1" data-p="" checked><span class="txt">Mikrobiyolojik<small>tipik mikroorganizma 2 ayrı kan kültüründe, sürekli pozitif kültür veya tek kültürde Coxiella burnetii / faz I IgG &gt; 1:800</small></span></label>
-      <label class="item"><input type="checkbox" id="M2" data-p=""><span class="txt">Görüntüleme<small>ekokardiyografide vejetasyon, apse, psödoanevrizma, perforasyon veya yeni protez kapak ayrışması; ya da BT / PET-BT ile endokardiyal tutulum</small></span></label>
+      <label class="item"><input type="checkbox" id="M2" data-p=""><span class="txt">Görüntüleme<small>ekokardiyografide vejetasyon, apse, psödoanevrizma, perforasyon veya yeni protez kapak ayrışması; ya da kardiyak BT, ¹⁸F-FDG PET/BT veya WBC SPECT/BT ile endokardiyal tutulum</small></span></label>
     </div>
     <h2>Minör kriterler</h2>
     <div class="items">
       <label class="item"><input type="checkbox" id="m1" data-p="" checked><span class="txt">Predispozisyon<small>yatkınlık yaratan kalp hastalığı veya damar içi madde kullanımı</small></span></label>
-      <label class="item"><input type="checkbox" id="m2" data-p="" checked><span class="txt">Ateş ≥ 38 °C</span></label>
+      <label class="item"><input type="checkbox" id="m2" data-p="" checked><span class="txt">Ateş &gt; 38 °C</span></label>
       <label class="item"><input type="checkbox" id="m3" data-p=""><span class="txt">Vasküler bulgular<small>majör arteriyel emboli, septik pulmoner infarkt, mikotik anevrizma, intrakraniyal kanama, konjonktival peteşi, Janeway lezyonları</small></span></label>
       <label class="item"><input type="checkbox" id="m4" data-p=""><span class="txt">İmmünolojik bulgular<small>glomerülonefrit, Osler nodülleri, Roth lekeleri, romatoid faktör</small></span></label>
       <label class="item"><input type="checkbox" id="m5" data-p=""><span class="txt">Mikrobiyolojik kanıt<small>majör kriteri karşılamayan pozitif kan kültürü veya uyumlu serolojik kanıt</small></span></label>
@@ -99,7 +103,7 @@ details p{margin:8px 0 0}
     <span class="lbl">Sonuç</span>
     <div class="res"><span class="num" id="sc">–</span><span class="pill" id="pl"></span></div>
     <p class="advice" id="adv"></p>
-    <p class="note">Kesin: 2 majör, 1 majör + 3 minör veya 5 minör. Olası: 1 majör + 1 minör veya 3 minör. Reddedilmiş: kriterler karşılanmıyorsa veya klinik tablo başka bir tanıyla açıklanıyorsa ya da ≤ 4 gün antibiyotikle düzeliyorsa. Kaynak: Li JS ve ark., Clin Infect Dis 2000; 2023 ESC Endokardit Kılavuzu.</p>
+    <p class="note">Kesin: patolojik kriter veya 2 majör, 1 majör + 3 minör, 5 minör. Olası: 1 majör + 1 minör veya 3 minör. Reddedilmiş: kriterler karşılanmıyorsa veya klinik tablo başka bir tanıyla açıklanıyorsa ya da ≤ 4 gün antibiyotikle düzeliyorsa. Kaynak: Li JS ve ark., Clin Infect Dis 2000; 2023 ESC Endokardit Kılavuzu.</p>
   </section>
 </div>
 <script>
@@ -114,7 +118,8 @@ details p{margin:8px 0 0}
   function calc(){
     var M=0,m=0;['M1','M2'].forEach(function(i){if($(i).checked)M++});['m1','m2','m3','m4','m5'].forEach(function(i){if($(i).checked)m++});
     $('sc').textContent=M+' majör, '+m+' minör';
-    if(M>=2||(M===1&&m>=3)||m>=5){pill('pl','Kesin endokardit','var(--high)');$('adv').textContent='Kesin infektif endokardit kriterlerini karşılıyor.'}
+    if($('P1').checked){pill('pl','Kesin endokardit','var(--high)');$('adv').textContent='Patolojik kriter: kesin infektif endokardit (klinik kriterlerden bağımsız).'}
+    else if(M>=2||(M===1&&m>=3)||m>=5){pill('pl','Kesin endokardit','var(--high)');$('adv').textContent='Kesin infektif endokardit kriterlerini karşılıyor.'}
     else if((M===1&&m>=1)||m>=3){pill('pl','Olası endokardit','var(--warn)');$('adv').textContent='Olası infektif endokardit. Tekrar kan kültürü, transözofageal eko veya PET-BT ile değerlendirmeyi sürdürün.'}
     else{pill('pl','Kriterler karşılanmıyor','var(--ok)');$('adv').textContent='Duke kriterlerine göre endokardit tanısı için yeterli bulgu yok; klinik şüphe sürüyorsa yeniden değerlendirin.'}
   }

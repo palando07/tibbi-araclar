@@ -110,6 +110,9 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
     <h2>Girişimin kanama riski</h2>
     <div class="seg wrapseg"><button type="button" data-g="br" data-v="0" aria-pressed="false">Minimal</button><button type="button" data-g="br" data-v="1" aria-pressed="true">Düşük–orta</button><button type="button" data-g="br" data-v="2" aria-pressed="false">Yüksek</button></div>
     <p class="note" id="brn"></p>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="nx"><span class="txt">Spinal/epidural anestezi veya lomber ponksiyon<small>DOAK için ASRA süreleri kullanılır</small></span></label>
+    </div>
   </section>
 
   <section class="card" id="trc">
@@ -119,8 +122,10 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
       <label class="item" id="w-av"><input type="checkbox" id="av"><span class="txt">Mekanik aort kapak + ek risk<small>eski tip (kafesli top, tek disk) kapak, AF, önceki inme/TİA, düşük EF</small></span></label>
       <label class="item" id="w-st"><input type="checkbox" id="st"><span class="txt">Son 3 ayda iskemik inme veya TİA</span></label>
       <label class="item" id="w-vt"><input type="checkbox" id="vt"><span class="txt">Son 3 ayda VTE</span></label>
-      <label class="item" id="w-tf"><input type="checkbox" id="tf"><span class="txt">Ağır trombofili<small>antitrombin, protein C/S eksikliği, antifosfolipid sendromu, homozigot faktör V Leiden</small></span></label>
+      <label class="item" id="w-tf"><input type="checkbox" id="tf"><span class="txt">Ağır veya çoklu trombofili<small>antitrombin, protein C/S eksikliği, antifosfolipid sendromu, homozigot faktör V Leiden, birden fazla trombofili</small></span></label>
+      <label class="item" id="w-ca"><input type="checkbox" id="ca"><span class="txt">Yüksek VTE riskli aktif kanser</span></label>
       <label class="item" id="w-cv"><input type="checkbox" id="cv"><span class="txt">AF ve CHA₂DS₂-VASc ≥ 7 (veya 5–6 ve önceki inme)</span></label>
+      <label class="item" id="w-rh"><input type="checkbox" id="rh"><span class="txt">Romatizmal mitral kapak hastalığı (AF ile)</span></label>
     </div>
   </section>
 
@@ -135,11 +140,12 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
     <ul class="chk">
       <li><b>Minimal:</b> diş çekimi (1–3 diş), periodontal girişim, katarakt, küçük cilt girişimi, biyopsisiz tanısal endoskopi.</li>
       <li><b>Düşük–orta:</b> biyopsili endoskopi, kolonoskopi + küçük polipektomi, koroner anjiyografi, kalp pili, artroskopi, fıtık, kolesistektomi.</li>
-      <li><b>Yüksek:</b> spinal/epidural anestezi, lomber ponksiyon, majör abdominal/toraks/ortopedik cerrahi, böbrek veya karaciğer biyopsisi, TURP, büyük polipektomi, ERKP sfinkterotomi, nöroşirürji.</li>
+      <li><b>Yüksek:</b> majör abdominal/toraks/ortopedik cerrahi, böbrek veya karaciğer biyopsisi, TURP, büyük polipektomi, ERKP sfinkterotomi, nöroşirürji.</li>
+      <li><b>Spinal/epidural anestezi, lomber ponksiyon:</b> yukarıdaki kutuyu işaretleyin; DOAK için daha uzun ASRA süreleri uygulanır.</li>
     </ul>
   </section>
 
-  <p class="note">Kaynaklar: EHRA 2021 DOAK pratik rehberi; PAUSE çalışması (Douketis 2019); ACC 2017 periprosedürel antikoagülasyon uzlaşısı; ACCP 2022 perioperatif antitrombotik tedavi kılavuzu; BRIDGE (2015). Girişimi yapacak hekim ve anestezi ile birlikte karar verin. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: EHRA 2021 DOAK pratik rehberi; PAUSE çalışması (Douketis 2019); ACC 2017 periprosedürel antikoagülasyon uzlaşısı; ACCP 2022 perioperatif antitrombotik tedavi kılavuzu; BRIDGE (2015); ASRA 2018 bölgesel anestezi ve antitrombotik tedavi kılavuzu (4. baskı). Girişimi yapacak hekim ve anestezi ile birlikte karar verin. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -157,11 +163,11 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
   (function(){var d=new Date();d.setDate(d.getDate()+7);d.setHours(9,0,0,0);var z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);$('dt').value=z.toISOString().slice(0,16)})();
   function li(b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$('rx').appendChild(l)}
   var BRN=['Antikoagülan kesilmeden yapılabilir.','Yaklaşık 2 gün içinde kanama riski < %2.','Yaklaşık 2 gün içinde kanama riski ≥ %2 veya kanamanın ciddi sonuç doğuracağı bölge.'];
-  function calc(){var dr=$('dr').value,c=v('crcl'),w=v('wt'),br=+segVal('br');$('rx').innerHTML='';$('brn').textContent=BRN[br];
+  function calc(){var dr=$('dr').value,c=v('crcl'),w=v('wt'),br=+segVal('br'),nx=$('nx').checked;$('rx').innerHTML='';$('brn').textContent=BRN[br]+(nx&&br<2?' Nöroaksiyal girişim işaretli: yüksek kanama riski gibi planlanır.':'');if(nx)br=2;
     $('trc').hidden=dr!=='war';var NM={api:'Apiksaban',riv:'Rivaroksaban',edo:'Edoksaban',dab:'Dabigatran',war:'Varfarin',lmwh:'Terapötik DMAH'};$('t').textContent=NM[dr]+': plan';
     pill('pl','');
     if(dr==='war'){
-      var hi=['mv','av','st','vt','tf','cv'].some(function(i){return $(i).checked});
+      var hi=['mv','av','st','vt','tf','ca','cv','rh'].some(function(i){return $(i).checked});
       if(br===0){li('Varfarini kesmeyin','Girişimden önceki 1–3 gün içinde INR bakın; terapötik aralıkta olması yeterli (diş çekiminde traneksamik asit gargarası yardımcı olur).');return}
       var last=addD(-6);
       li('Son varfarin dozu: '+(last?fd(last):'girişimden 6 gün önce'),'Girişimden önceki 5 gün varfarin verilmez.');
@@ -171,7 +177,7 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
         li('Köprüleme: enoksaparin '+d+(c!==null&&c<30?' (CrCl < 30)':''),'Varfarin kesildikten 3 gün sonra, INR hedefin altına inince başlayın'+(addD(-3)?' ('+fd(addD(-3))+')':'')+'.');
         li('Son enoksaparin: girişimden 24 saat önce, günlük dozun yarısı'+(add(-24)?' ('+fd(add(-24),true)+')':''),'2×1 kullanıyorsa o sabahki dozu verip akşam dozunu atlayın.');
         li('Girişimden sonra enoksaparin',br===2?'Yüksek kanama riskinde 48–72 saat sonra terapötik doz; o zamana kadar gerekirse profilaktik doz.':'24 saat sonra terapötik doz.');
-        li('Varfarini yeniden başlatma','Hemostaz sağlanınca aynı akşam veya ertesi gün olağan dozla. INR 2 gün üst üste hedefte olunca enoksaparini kesin (en az 5 gün örtüşme).');}
+        li('Varfarini yeniden başlatma','Hemostaz sağlanınca 12–24 saat içinde olağan dozla. INR terapötik aralığa ulaşınca enoksaparini kesin.');}
       else{pill('pl','Köprüleme gerekmez','var(--ok)');
         li('Köprüleme yapmayın','AF’de köprüleme tromboemboliyi azaltmaz, kanamayı artırır (BRIDGE). Tromboz riski yüksekse yukarıdaki maddeleri işaretleyin.');
         li('Varfarini yeniden başlatma','Hemostaz sağlanınca aynı akşam veya ertesi gün olağan dozla. Yüksek kanama riskli girişimde bu arada profilaktik DMAH düşünülebilir.');}
@@ -186,15 +192,16 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
     if(c===null){li('Kreatinin klerensini girin','');return}
     var hrs,ci='';
     if(dr==='dab'){if(c<30){pill('pl','Dabigatran kontrendike','var(--high)');li('CrCl < 30: dabigatran kullanılmamalı','Hasta kullanıyorsa en az 96 saat önce kesin ve nefroloji/hematoloji ile görüşün.');return}
-      hrs=c>=80?(br===2?48:24):c>=50?(br===2?72:36):(br===2?96:48);}
+      hrs=nx?(c>=80?72:c>=50?96:120):c>=80?(br===2?48:24):c>=50?(br===2?72:36):(br===2?96:48);}
     else{if(c<15){pill('pl','CrCl < 15','var(--high)');li('CrCl < 15: bu DOAK önerilmez','Hasta kullanıyorsa en az 72 saat önce kesin; uzmana danışın.');return}
-      hrs=c>=30?(br===2?48:24):(br===2?48:36);}
+      hrs=nx?72:c>=30?(br===2?48:24):(br===2?48:36);}
     var last=add(-hrs);
-    li('Son doz: girişimden en az '+hrs+' saat önce'+(last?' (en geç '+fd(last,true)+')':''),(br===2?'Yüksek kanama riski':'Düşük–orta kanama riski')+', CrCl '+Math.round(c)+' mL/dk. Günde 2 dozlu ilaçta bu saatten sonraki dozlar atlanır.');
+    li('Son doz: girişimden en az '+hrs+' saat önce'+(last?' (en geç '+fd(last,true)+')':''),(nx?'Spinal/epidural anestezi veya lomber ponksiyon (ASRA)':br===2?'Yüksek kanama riski':'Düşük–orta kanama riski')+', CrCl '+Math.round(c)+' mL/dk. Günde 2 dozlu ilaçta bu saatten sonraki dozlar atlanır.'+(nx&&dr!=='dab'&&c<30?' CrCl < 30: ASRA bu durum için ayrı süre vermiyor; daha uzun ara düşünün, anesteziyle görüşün.':''));
     li('Köprüleme yapmayın','DOAK’ın etkisi hızla geçer; heparin köprülemesi kanamayı artırır.');
     li('Girişim öncesi düzey bakmaya gerek yok','Acil girişimde veya böbrek fonksiyonu kötüleşmişse ilaca özgü düzey (anti-Xa, dilüe trombin zamanı) düşünülebilir.');
     li('Yeniden başlama',br===2?'48–72 saat sonra tam doz'+(add(48)?' ('+fd(add(48),true)+' sonrası)':'')+'. Tromboz riski yüksekse arada 6–8. saatte profilaktik DMAH.':'Hemostaz sağlanınca 24 saat sonra tam doz'+(add(24)?' ('+fd(add(24),true)+')':'')+'.');
-    if(br===2)li('Nöroaksiyal anestezi','Kateter çekildikten en az 6 saat sonra DOAK başlanabilir.');
+    if(nx)li('Nöroaksiyal anestezi','Kateter DOAK alırken çekilmemeli; kateter çekildikten en az 6 saat sonra DOAK başlanabilir (ASRA).');
+    else if(br===2)li('Nöroaksiyal anestezi planlanırsa','Yukarıdaki spinal/epidural kutusunu işaretleyin: FXa inhibitörlerinde 72 saat, dabigatranda CrCl’ye göre 72–120 saat (ASRA).');
   }
   $('dr').addEventListener('change',calc);seg('br',calc);document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
 

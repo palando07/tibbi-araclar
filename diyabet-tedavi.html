@@ -207,7 +207,8 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
       if(alb&&!mtc)li(rec,'GLP-1 RA: albüminürik KBH','Semaglutid böbrek sonlanımlarını azaltır (FLOW). SGLT2i\'ye ek olarak düşünülebilir.');
       if(obese&&!mtc)li(rec,'Kilo yönetimi: semaglutid veya tirzepatid','VKİ '+f1(bmi)+'. Kilo kaybı etkisi en güçlü ilaçlar bunlardır; %5–15 kilo kaybı glisemi, tansiyon ve lipidleri iyileştirir.');
       if(masld)li(rec,'MASLD / MASH','GLP-1 RA (semaglutid), tirzepatid veya pioglitazon'+(hf?' (kalp yetmezliği olduğu için pioglitazon hariç)':'')+' tercih edilebilir. FIB-4 ile fibrozis riskini değerlendirin.');
-      if(!uMet&&egfr>=30)li(rec,'Metformin','Kontrendikasyon yoksa temel tedavi; düşük maliyetli ve hipoglisemi yapmaz. 500 mg ile başlayıp GİS toleransına göre artırın'+(egfr<45?'. eGFR 30–44 arasında yeni başlanması önerilmez; kullanıyorsa günlük doz en fazla 1000 mg.':' (en fazla 2000–2550 mg/gün).'));
+      if(!uMet&&egfr>=45)li(rec,'Metformin','Kontrendikasyon yoksa temel tedavi; düşük maliyetli ve hipoglisemi yapmaz. 500 mg ile başlayıp GİS toleransına göre artırın (en fazla 2000–2550 mg/gün).');
+      if(!uMet&&egfr>=30&&egfr<45)li(rec,'Metformine yeni başlamayın','eGFR 30–44: yeni başlanması önerilmez; kullanıyorsa günlük doz en fazla 1000 mg.');
       if(uMet&&egfr<30)li(rec,'Metformini kesin','eGFR < 30 mL/dk/1,73 m²: laktik asidoz riski nedeniyle kontrendike.');
       if(uMet&&egfr>=30&&egfr<45)li(rec,'Metformin dozunu azaltın','eGFR 30–44: günlük doz en fazla 1000 mg.');
       if(uDpp&&uGlp)li(rec,'DPP-4 inhibitörünü kesin','GLP-1 RA ile birlikte kullanımı ek fayda sağlamaz.');
@@ -232,7 +233,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     row('Metformin',egfr<30?'ki':(egfr<45||preg)?'warn':'ok',egfr<30?'eGFR < 30: kontrendike.':egfr<45?'eGFR 30–44: yeni başlanmaz, en fazla 1000 mg/gün.':preg?'Gebelikte seçilmiş hastalarda.':'Yüksek etkinlik, hipoglisemi yok, kilo nötr/hafif kayıp. B12 eksikliği; kontrastlı tetkik ve akut hastalıkta ara verin.');
     row('SGLT2 inhibitörü',preg?'ki':egfr<20?'warn':(hf||ckd||ascvd||hrisk)?'pri':(dka||geni)?'warn':'ok',
       preg?'Gebelikte kullanılmaz.':egfr<20?'eGFR < 20: başlanmaz; kullanıyorsa diyalize kadar sürdürülebilir.':
-      (dka?'Ketoasidoz öyküsü: öglisemik DKA riski. ':'')+(geni?'Tekrarlayan genital enfeksiyon riski. ':'')+'Kalp ve böbrek koruması; kilo kaybı, hipoglisemi yok. Ameliyattan 3 gün önce kesin; dehidratasyon ve akut hastalıkta ara verin.'+(age>=75||frail?' Yaşlıda volüm kaybına dikkat.':''));
+      (dka?'Ketoasidoz öyküsü: öglisemik DKA riski. ':'')+(geni?'Tekrarlayan genital enfeksiyon riski. ':'')+'Kalp ve böbrek koruması; kilo kaybı, hipoglisemi yok. Ameliyattan 3 gün önce (ertugliflozin 4 gün) kesin; dehidratasyon ve akut hastalıkta ara verin.'+(age>=75||frail?' Yaşlıda volüm kaybına dikkat.':''));
     row('GLP-1 RA',preg||mtc?'ki':panc?'warn':(ascvd||hrisk||obese||masld||alb)?'pri':'ok',
       preg?'Gebelikte kullanılmaz.':mtc?'MTK/MEN2 öyküsünde kontrendike.':(panc?'Pankreatit öyküsünde dikkatli kullanın. ':'')+'Yüksek etkinlik, belirgin kilo kaybı, KV yarar (semaglutid, liraglutid, dulaglutid). GİS yan etkileri; gastroparezide kaçının; semaglutid ile hızlı HbA1c düşüşünde retinopati izleyin.');
     row('Tirzepatid',preg||mtc?'ki':panc?'warn':(obese||masld)?'pri':'ok',
@@ -250,12 +251,12 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
 
     // 4) Unutulmaması gerekenler
     var L=[];
-    L.push(ascvd?'Yüksek yoğunluklu statin; LDL hedefi < 55 mg/dL (ESC) / < 70 mg/dL (ADA). Gerekirse ezetimib ekleyin.':age>=40&&age<=75?'Statin: 40–75 yaş arası en az orta yoğunlukta; ek risk faktörü varsa yüksek yoğunlukta.':'Statin ihtiyacını kardiyovasküler riske göre değerlendirin (PREVENT hesaplayıcısı).');
+    L.push(ascvd?'Yüksek yoğunluklu statin; LDL’de ≥ %50 düşüş ve LDL < 55 mg/dL (ADA 2025 ve ESC). Gerekirse ezetimib veya PCSK9 inhibitörü ekleyin.':age>=40&&age<=75?'Statin: 40–75 yaş arası en az orta yoğunlukta; ek risk faktörü varsa yüksek yoğunlukta, LDL < 70 mg/dL.':'Statin ihtiyacını kardiyovasküler riske göre değerlendirin (PREVENT hesaplayıcısı).');
     if(ascvd)L.push('Aspirin 75–162 mg/gün (aterosklerotik KV hastalık nedeniyle sekonder koruma).');
     L.push('Tansiyon hedefi < 130/80 mmHg.'+(alb||ckd?' Albüminüri/KBH var: ACE inhibitörü veya ARB en yüksek tolere edilen dozda.':''));
     if(alb&&egfr>=25)L.push('Albüminürik KBH: maksimum RAS blokajına rağmen albüminüri sürüyorsa finerenon düşünün (eGFR ≥ 25, potasyum normal).');
     L.push('Yılda en az bir kez: idrar albümin/kreatinin oranı, eGFR, göz dibi muayenesi, ayak muayenesi (monofilament), lipid profili.');
-    if(uMet||(!uMet&&egfr>=30))L.push('Metformin kullananlarda periyodik B12 düzeyi.');
+    if(uMet||egfr>=45)L.push('Metformin kullananlarda periyodik B12 düzeyi.');
     L.push('Hasta gün kuralları: kusma, ishal, dehidratasyon veya ameliyat öncesinde metformin ve SGLT2i\'ye ara verilir.');
     if(uSu||uIns||needIns)L.push('Hipoglisemi belirtileri ve 15 g hızlı karbonhidrat kuralı konusunda eğitim; ağır hipoglisemi riskinde glukagon.');
     L.push('Aşılar: yıllık grip, pnömokok, hepatit B (60 yaş altı), COVID-19, 50 yaş üstünde zona.');

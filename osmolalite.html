@@ -15,17 +15,17 @@
 :root{
   --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
   --accent:#8c1c2c; --accent-soft:#f6e7e9;
-  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
   --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-num:ui-monospace,"SF Mono",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
 }
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
@@ -124,7 +124,7 @@ table.t th.n{text-align:right}
     $('osm').textContent=Math.round(o);$('eff').textContent=Math.round(eff)+' mOsm/kg';
     o<275?pill('pl','Düşük','var(--low)'):o>295?pill('pl','Yüksek','var(--high)'):pill('pl','Normal','var(--ok)');
     if(mos!==null){var g=mos-o;$('gap').textContent=f1(g)+' mOsm/kg';
-      $('adv').textContent=g>10?'Osmolar açık artmış: toksik alkol (metanol, etilen glikol), etanol, mannitol veya ağır ketoasidoz/laktik asidoz düşünülmelidir.':'Osmolar açık normal (≤ 10 mOsm/kg).'}
+      $('adv').textContent=g>10?'Osmolar açık artmış: toksik alkol (metanol, etilen glikol), etanol, mannitol veya ağır ketoasidoz/laktik asidoz düşünülmelidir.':'Osmolar açık normal (≤ 10 mOsm/kg). Geç başvuruda normal açık toksik alkol alımını dışlamaz; anyon açığına bakın.'}
     else{$('gap').textContent='ölçülen değer girin';$('adv').textContent=''}
   }
   seg('unit',function(){var n=segVal('unit');if(n!==unit){var x=v('ur');if(x!==null)$('ur').value=n==='bun'?f1(x/2.14).replace(',','.'):Math.round(x*2.14);unit=n;document.querySelector('label[for=ur]').innerHTML=(n==='bun'?'BUN':'Üre')+' <span>mg/dL</span>'}calc()});document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});

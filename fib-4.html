@@ -75,10 +75,11 @@ details p{margin:8px 0 0}
   <header>
     <a class="back" href="./">← Vizit</a>
     <h1>FIB-4 İndeksi</h1>
-    <p>Karaciğerde ileri fibrozis riski (MASLD, hepatit)</p>
+    <p>Karaciğerde ileri fibrozis riski (MASLD, viral hepatit)</p>
   </header>
 
   <section class="card">
+    <div class="field"><span class="lbl">Etiyoloji</span><div class="seg"><button type="button" data-g="et" data-v="masld" aria-pressed="true">MASLD</button><button type="button" data-g="et" data-v="vir" aria-pressed="false">Viral (HCV, HIV/HCV)</button></div></div>
     <div class="grid">
       <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" type="number" inputmode="numeric" step="1" value="58"></div>
       <div class="field"><label for="plt">Trombosit <span>×10³/µL</span></label><input id="plt" type="number" inputmode="decimal" step="any" value="160"></div>
@@ -93,7 +94,7 @@ details p{margin:8px 0 0}
     <div class="res"><span class="num" id="sc">–</span><span class="pill" id="pl"></span></div>
     <p class="advice" id="adv"></p>
     <p class="f">FIB-4 = (yaş × AST) / (trombosit × √ALT)</p>
-    <p class="note">Eşikler: 36–64 yaşta &lt; 1,30 düşük, 1,30–2,67 belirsiz, &gt; 2,67 yüksek risk. 65 yaş ve üzerinde düşük risk eşiği 2,0'dır. 35 yaş altında güvenilir değildir. Kaynak: Sterling RK ve ark., Hepatology 2006; McPherson S ve ark., Am J Gastroenterol 2017; EASL-EASD-EASO MASLD Kılavuzu 2024.</p>
+    <p class="note">Eşikler: MASLD'de &lt; 1,30 düşük (65 yaş ve üzerinde &lt; 2,0), 1,30–2,67 belirsiz, &gt; 2,67 yüksek risk. Viral hepatitte (HCV, HIV/HCV) &lt; 1,45 düşük, 1,45–3,25 belirsiz, &gt; 3,25 yüksek risk. 35 yaş ve altında güvenilir değildir. Kaynak: Sterling RK ve ark., Hepatology 2006 (formül; viral hepatit için 1,45/3,25 eşikleri); Shah AG ve ark., Clin Gastroenterol Hepatol 2009 (1,30/2,67 eşikleri); McPherson S ve ark., Am J Gastroenterol 2017; EASL-EASD-EASO MASLD Kılavuzu 2024.</p>
   </section>
 </div>
 <script>
@@ -109,12 +110,13 @@ details p{margin:8px 0 0}
     var age=v('age'),plt=v('plt'),ast=v('ast'),alt=v('alt');
     if(age===null||!plt||ast===null||!alt){$('sc').textContent='–';pill('pl','');$('adv').textContent='Dört değeri de girin.';return}
     var s=age*ast/(plt*Math.sqrt(alt));$('sc').textContent=s.toFixed(2).replace('.',',');
-    var low=age>=65?2.0:1.3;
-    if(age<36){pill('pl','Yaş < 36','var(--muted)');$('adv').textContent='35 yaş altında FIB-4 güvenilir değildir; elastografi gibi başka bir yöntem tercih edin.';return}
+    var vir=segVal('et')==='vir',low=vir?1.45:age>=65?2.0:1.3,high=vir?3.25:2.67;
+    if(age<36){pill('pl','Yaş ≤ 35','var(--muted)');$('adv').textContent='35 yaş ve altında FIB-4 güvenilir değildir; elastografi gibi başka bir yöntem tercih edin.';return}
     if(s<low){pill('pl','Düşük risk','var(--ok)');$('adv').textContent='İleri fibrozis olası değil. Risk faktörleri sürüyorsa 1–3 yılda bir tekrarlayın.'}
-    else if(s<=2.67){pill('pl','Belirsiz','var(--warn)');$('adv').textContent='Sonuç belirsiz. Elastografi (FibroScan) veya ELF testi ile ikinci basamak değerlendirme önerilir.'}
+    else if(s<=high){pill('pl','Belirsiz','var(--warn)');$('adv').textContent='Sonuç belirsiz. Elastografi (FibroScan) veya ELF testi ile ikinci basamak değerlendirme önerilir.'}
     else{pill('pl','Yüksek risk','var(--high)');$('adv').textContent='İleri fibrozis olasılığı yüksek. Hepatoloji/gastroenteroloji değerlendirmesi önerilir.'}
   }
+  seg('et',calc);
   document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
   calc();
 })();

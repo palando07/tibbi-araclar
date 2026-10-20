@@ -68,6 +68,7 @@ details p{margin:8px 0 0}
 .f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
 .seg.wrapseg{flex-wrap:wrap}
 .seg button{min-width:0}
+#ch{white-space:normal;text-align:right;min-width:0}
 </style>
 </head>
 <body>
@@ -151,7 +152,8 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
     if(bl===2){pill('pl','Majör kanama','var(--high)');showSched=false;
       li('Varfarini kesin','');
       var u=I<4?25:I<=6?35:50,tot=w?Math.min(u*w,u===25?2500:u===35?3500:5000):null;
-      li('4 faktörlü protrombin kompleks konsantresi (PCC) '+u+' IU/kg'+(tot?' = '+fm(tot,0)+' IU':''),'INR 2–4: 25, 4–6: 35, > 6: 50 IU/kg (en fazla 100 kg üzerinden). Alternatif sabit doz 1000–1500 IU. 15–30 dakika sonra INR kontrol.');
+      if(I<2)li('4 faktörlü protrombin kompleks konsantresi (PCC) '+u+' IU/kg'+(tot?' = '+fm(tot,0)+' IU':'')+' veya sabit 1000 IU (protokole göre)','INR < 2: prospektüste bu INR için PCC dozu tanımlı değil; birçok protokol 25 IU/kg veya sabit 1000 IU kullanır. Kanamayı varfarin etkisi açıklamayabilir; PCC kararını hematolojiyle verin. 15–30 dakika sonra INR kontrol.');
+      else li('4 faktörlü protrombin kompleks konsantresi (PCC) '+u+' IU/kg'+(tot?' = '+fm(tot,0)+' IU':''),'INR 2–4: 25, 4–6: 35, > 6: 50 IU/kg (en fazla 100 kg üzerinden). Alternatif sabit doz 1000–1500 IU. 15–30 dakika sonra INR kontrol.');
       li('K vitamini 5–10 mg yavaş IV (20–30 dakikada)','PCC etkisi geçici; K vitamini 6–12 saatte etki eder.');
       li('PCC yoksa taze donmuş plazma 10–15 mL/kg'+(w?' = '+fm(10*w,0)+'–'+fm(15*w,0)+' mL':''),'Volüm yüküne dikkat; INR’yi tam düzeltmeyebilir.');
       li('Kanama odağını kontrol edin','Endoskopi, cerrahi, girişimsel radyoloji; transfüzyon ve destek.');$('sc').hidden=true;return}

@@ -84,19 +84,19 @@ details p{margin:8px 0 0}
       </div>
     </div>
     <div class="items">
-      <label class="item"><input type="checkbox" id="stroke"><span class="txt">İnme, TİA veya sistemik emboli öyküsü</span></label>
+      <label class="item"><input type="checkbox" id="stroke"><span class="txt">İskemik inme, TİA veya sistemik emboli öyküsü<small>CHA₂DS₂-VA için; HAS-BLED inme maddesi aşağıda ayrıca işaretlenir</small></span></label>
     </div>
   </section>
 
   <section class="card" aria-live="polite">
     <h2>CHA₂DS₂-VASc</h2>
     <div class="items">
-      <label class="item"><input type="checkbox" id="c-chf"><span class="txt">Konjestif kalp yetmezliği<small>veya sol ventrikül disfonksiyonu</small></span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="c-chf"><span class="txt">Konjestif kalp yetmezliği<small>LVEF’den bağımsız kalp yetmezliği bulguları veya asemptomatik LVEF ≤ %40</small></span><span class="pts">+1</span></label>
       <label class="item"><input type="checkbox" id="c-htn" checked><span class="txt">Hipertansiyon</span><span class="pts">+1</span></label>
       <label class="item auto"><input type="checkbox" id="c-age" disabled><span class="txt" id="c-age-txt">Yaş</span><span class="pts" id="c-age-pts">+0</span></label>
       <label class="item"><input type="checkbox" id="c-dm" checked><span class="txt">Diabetes mellitus</span><span class="pts">+1</span></label>
       <label class="item auto"><input type="checkbox" id="c-st" disabled><span class="txt">İnme / TİA / emboli</span><span class="pts">+2</span></label>
-      <label class="item"><input type="checkbox" id="c-vasc"><span class="txt">Vasküler hastalık<small>geçirilmiş MI, periferik arter hastalığı, aortik plak</small></span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="c-vasc"><span class="txt">Vasküler hastalık<small>koroner arter hastalığı (geçirilmiş MI, angina, revaskülarizasyon, görüntülemede anlamlı KAH), periferik arter hastalığı, kompleks aortik plak</small></span><span class="pts">+1</span></label>
       <label class="item auto"><input type="checkbox" id="c-sex" disabled><span class="txt">Kadın cinsiyet</span><span class="pts">+1</span></label>
     </div>
     <div class="res">
@@ -114,7 +114,7 @@ details p{margin:8px 0 0}
       <label class="item"><input type="checkbox" id="h-h"><span class="txt">Kontrolsüz hipertansiyon<small>sistolik &gt; 160 mmHg</small></span><span class="pts">+1</span></label>
       <label class="item"><input type="checkbox" id="h-ren"><span class="txt">Böbrek fonksiyon bozukluğu<small>diyaliz, transplant, kreatinin &gt; 2,26 mg/dL</small></span><span class="pts">+1</span></label>
       <label class="item"><input type="checkbox" id="h-liv"><span class="txt">Karaciğer fonksiyon bozukluğu<small>siroz veya bilirubin &gt; 2×, AST/ALT/ALP &gt; 3× üst sınır</small></span><span class="pts">+1</span></label>
-      <label class="item auto"><input type="checkbox" id="h-st" disabled><span class="txt">İnme öyküsü</span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="h-st"><span class="txt">İnme öyküsü<small>iskemik veya hemorajik; TİA ve sistemik emboli sayılmaz</small></span><span class="pts">+1</span></label>
       <label class="item"><input type="checkbox" id="h-b"><span class="txt">Kanama öyküsü veya yatkınlığı<small>majör kanama, anemi, trombositopeni</small></span><span class="pts">+1</span></label>
       <label class="item"><input type="checkbox" id="h-l"><span class="txt">Labil INR<small>terapötik aralıkta kalma &lt; %60 (yalnız varfarin kullananlarda)</small></span><span class="pts">+1</span></label>
       <label class="item auto"><input type="checkbox" id="h-e" disabled><span class="txt">Yaş &gt; 65</span><span class="pts">+1</span></label>
@@ -149,7 +149,7 @@ details p{margin:8px 0 0}
     $('c-age-txt').textContent=age>=75?'Yaş ≥ 75':age>=65?'Yaş 65–74':'Yaş < 65';
     $('c-age-pts').textContent='+'+agePts;
     $('c-st').checked=stroke; $('c-sex').checked=sex==='f';
-    $('h-st').checked=stroke; $('h-e').checked=age>65;
+    $('h-e').checked=age>65;
 
     var va=chk('c-chf')+chk('c-htn')+agePts+chk('c-dm')+(stroke?2:0)+chk('c-vasc');
     $('cva').textContent=va; $('cvasc').textContent=va+(sex==='f'?1:0);
@@ -161,7 +161,7 @@ details p{margin:8px 0 0}
     else{p.textContent='Düşük risk';p.style.background='var(--ok)';
       adv.textContent='İnme önlemi için antikoagülan gerekmez; risk faktörleri periyodik olarak yeniden değerlendirilmelidir.'}
 
-    var hb=chk('h-h')+chk('h-ren')+chk('h-liv')+(stroke?1:0)+chk('h-b')+chk('h-l')+(age>65?1:0)+chk('h-dr')+chk('h-al');
+    var hb=chk('h-h')+chk('h-ren')+chk('h-liv')+chk('h-st')+chk('h-b')+chk('h-l')+(age>65?1:0)+chk('h-dr')+chk('h-al');
     $('hb').textContent=hb;
     var hp=$('h-pill'), ha=$('h-adv');
     if(hb>=3){hp.textContent='Yüksek kanama riski';hp.style.background='var(--high)';

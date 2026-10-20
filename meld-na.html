@@ -84,9 +84,11 @@ details p{margin:8px 0 0}
       <div class="field"><label for="bil">Total bilirubin <span>mg/dL</span></label><input id="bil" type="number" inputmode="decimal" step="any" value="3.5"></div>
       <div class="field"><label for="inr">INR</label><input id="inr" type="number" inputmode="decimal" step="any" value="1.8"></div>
       <div class="field"><label for="na">Sodyum <span>mEq/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="130"></div>
+      <div class="field"><label for="alb">Albümin <span>g/dL · MELD 3.0</span></label><input id="alb" type="number" inputmode="decimal" step="any" value="3.0"></div>
     </div>
+    <div class="field"><span class="lbl">Cinsiyet <span>(MELD 3.0)</span></span><div class="seg"><button type="button" data-g="sex" data-v="m" aria-pressed="true">Erkek</button><button type="button" data-g="sex" data-v="f" aria-pressed="false">Kadın</button></div></div>
     <div class="items">
-      <label class="item"><input type="checkbox" id="dia"><span class="txt">Son 1 haftada en az 2 kez diyaliz veya 24 saat CVVHD<small>işaretlenirse kreatinin 4,0 alınır</small></span></label>
+      <label class="item"><input type="checkbox" id="dia"><span class="txt">Son 1 haftada en az 2 kez diyaliz veya 24 saat CVVHD<small>işaretlenirse kreatinin MELD-Na'da 4,0, MELD 3.0'da 3,0 alınır</small></span></label>
     </div>
     <p class="note">Değerler örnek olarak doldurulmuştur.</p>
   </section>
@@ -97,7 +99,15 @@ details p{margin:8px 0 0}
     <p class="advice" id="adv"></p>
     <div class="sub"><span>MELD (sodyumsuz)</span><b id="meld">–</b></div>
     <p class="f">MELD = 10 × (0,957 ln Cr + 0,378 ln bilirubin + 1,120 ln INR + 0,643) · MELD &gt; 11 ise MELD-Na = MELD + 1,32 × (137 − Na) − 0,033 × MELD × (137 − Na)</p>
-    <p class="note">Alt sınırlar: kreatinin, bilirubin ve INR 1,0'ın altındaysa 1,0 alınır; kreatinin en fazla 4,0; sodyum 125–137 aralığına sınırlanır. Mortalite oranları yaklaşık değerlerdir. Kaynak: Kim WR ve ark., NEJM 2008; UNOS 2016.</p>
+    <p class="note">Alt sınırlar: kreatinin, bilirubin ve INR 1,0'ın altındaysa 1,0 alınır; kreatinin en fazla 4,0; sodyum 125–137 aralığına sınırlanır. MELD(i) önce tam sayıya yuvarlanır; sodyum düzeltmesi bu değer 11'in üzerindeyse uygulanır (UNOS). Mortalite oranları yaklaşık değerlerdir. Kaynak: Kim WR ve ark., NEJM 2008; UNOS 2016.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">MELD 3.0</span>
+    <div class="res"><span class="num" id="sc3">–</span><span class="of">/ 40</span></div>
+    <p class="advice" id="adv3"></p>
+    <p class="f">MELD 3.0 = 1,33 (kadın) + 4,56 ln bilirubin + 0,82 × (137 − Na) − 0,24 × (137 − Na) × ln bilirubin + 9,09 ln INR + 11,14 ln Cr + 1,85 × (3,5 − albümin) − 1,83 × (3,5 − albümin) × ln Cr + 6</p>
+    <p class="note">Sınırlar: kreatinin, bilirubin ve INR en az 1,0; kreatinin en fazla 3,0 (diyalizde 3,0); sodyum 125–137; albümin 1,5–3,5 g/dL; sonuç tam sayıya yuvarlanır, en fazla 40. ABD'de (OPTN) Temmuz 2023'ten beri organ dağılımında MELD-Na yerine MELD 3.0 kullanılmaktadır; MELD-Na Türkiye'de ve literatürde hâlâ yaygındır. Kaynak: Kim WR ve ark., Gastroenterology 2021;161:1887; OPTN/SRTR 2023 Yıllık Veri Raporu.</p>
   </section>
 </div>
 <script>
@@ -110,11 +120,18 @@ details p{margin:8px 0 0}
   function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
 
   function calc(){
-    var cr=v('cr'),bil=v('bil'),inr=v('inr'),na=v('na');
-    if(cr===null||bil===null||inr===null||na===null){$('sc').textContent='–';$('meld').textContent='–';pill('pl','');$('adv').textContent='Dört değeri de girin.';return}
+    var cr=v('cr'),bil=v('bil'),inr=v('inr'),na=v('na'),alb=v('alb');
+    if(cr===null||bil===null||inr===null||na===null){$('sc').textContent='–';$('meld').textContent='–';pill('pl','');$('adv').textContent='Dört değeri de girin.';$('sc3').textContent='–';$('adv3').textContent='Kreatinin, bilirubin, INR, sodyum ve albümini girin.';return}
+    var cr0=cr;
     if($('dia').checked)cr=4;
     cr=Math.min(Math.max(cr,1),4);bil=Math.max(bil,1);inr=Math.max(inr,1);na=Math.min(Math.max(na,125),137);
-    var m=Math.round(10*(0.957*Math.log(cr)+0.378*Math.log(bil)+1.12*Math.log(inr)+0.643)*10)/10;
+    // MELD 3.0 (Kim 2021; OPTN)
+    if(alb===null){$('sc3').textContent='–';$('adv3').textContent='MELD 3.0 için albümini girin.'}
+    else{var c3=$('dia').checked?3:Math.min(Math.max(cr0,1),3),a3=Math.min(Math.max(alb,1.5),3.5),lb=Math.log(bil),lc=Math.log(c3);
+      var m3=(segVal('sex')==='f'?1.33:0)+4.56*lb+0.82*(137-na)-0.24*(137-na)*lb+9.09*Math.log(inr)+11.14*lc+1.85*(3.5-a3)-1.83*(3.5-a3)*lc+6;
+      m3=Math.min(Math.max(Math.round(m3),6),40);$('sc3').textContent=m3;
+      $('adv3').textContent='ABD transplant listesinde (OPTN) güncel dağılım skoru.'}
+    var m=Math.round(10*(0.957*Math.log(cr)+0.378*Math.log(bil)+1.12*Math.log(inr)+0.643));
     var mn=m>11?m+1.32*(137-na)-0.033*m*(137-na):m;
     mn=Math.min(Math.round(mn),40);m=Math.min(Math.round(m),40);
     $('sc').textContent=mn;$('meld').textContent=m;
@@ -122,6 +139,7 @@ details p{margin:8px 0 0}
     pill('pl',mn<10?'< 10':mn<20?'10–19':mn<30?'20–29':mn<40?'30–39':'≥ 40',t[1]);
     $('adv').textContent='Tahmini 3 aylık mortalite yaklaşık '+t[0]+'.'+(mn>=15?' MELD-Na ≥ 15 olan hastada karaciğer transplantasyonu için sevk düşünülmelidir.':'');
   }
+  seg('sex',calc);
   document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
   calc();
 })();

@@ -143,7 +143,7 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
     <div class="res"><span class="num" id="ps">–</span><span class="of">/ 20</span><span class="pill" id="ppl"></span></div>
     <div class="sub"><span>Profilaksisiz 90 günde VTE</span><b id="pr">–</b></div>
     <span class="lbl">IMPROVE kanama riski</span>
-    <div class="res"><span class="num" id="is">–</span><span class="of">/ 33</span><span class="pill" id="ipl"></span></div>
+    <div class="res"><span class="num" id="is">–</span><span class="of">/ 30,5</span><span class="pill" id="ipl"></span></div>
     <div class="sub"><span>14 günde majör kanama</span><b id="ir">–</b></div>
     <p class="advice" id="adv"></p>
     <ol class="rec" id="rx"></ol>
@@ -156,11 +156,11 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
       <li>Heparin kullananda trombositi başlangıçta ve 5–14. günler arasında izleyin (HIT).</li>
       <li>Epidural/spinal kateter: profilaktik enoksaparinden 12 saat sonra kateter çekilir, çekildikten 4 saat sonra doz yapılır.</li>
       <li>Zaten tam doz antikoagülan alan hastada ayrıca profilaksi gerekmez.</li>
-      <li>Kompresyon çorabı (GCS) tek başına önerilmez; mekanik yöntemde aralıklı pnömatik kompresyon tercih edilir.</li>
+      <li>Mekanik profilakside aralıklı pnömatik kompresyon veya kompresyon çorabı kullanılabilir (ASH 2018). Akut inmede kompresyon çorabı yerine aralıklı pnömatik kompresyon kullanın.</li>
     </ul>
   </section>
 
-  <p class="note">Kaynaklar: Barbar S ve ark. J Thromb Haemost 2010 (Padua); Decousus H ve ark. Chest 2011 (IMPROVE); ASH 2018 hastanede yatan medikal hastada VTE profilaksisi kılavuzu; ACCP 2012. Cerrahi hastada Caprini kullanılır. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: Barbar S ve ark. J Thromb Haemost 2010 (Padua); Decousus H ve ark. Chest 2011 (IMPROVE); ASH 2018 hastanede yatan medikal hastada VTE profilaksisi kılavuzu; ACCP 2012; fondaparinuks (Arixtra) AB ürün bilgisi. Cerrahi hastada Caprini kullanılır. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -198,7 +198,7 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
     else if(low)li('Enoksaparin 20–30 mg SC günde 1 (ağırlık < 50 kg)','Düşük kiloda birikim ve kanama riski artar.');
     else li('Enoksaparin 40 mg SC günde 1','Alternatif: tinzaparin 4500 IU, dalteparin 5000 IU günde 1.');
     li('veya UFH 5000 ünite SC 2–3×1',r?'Böbrek yetmezliğinde güvenli seçenek.':'Böbrek yetmezliği yoksa DMAH tercih edilir (daha az HIT, günde tek doz).');
-    if(!r)li('veya fondaparinuks 2,5 mg SC günde 1','HIT öyküsünde seçenek. CrCl 30–50’de dikkat, < 30’da kontrendike.');
+    if(!r)li('veya fondaparinuks '+(g!==null&&g<=50?'1,5':'2,5')+' mg SC günde 1'+(g!==null&&g<=50?' (CrCl 20–50)':''),'HIT öyküsünde seçenek. CrCl 20–50’de 1,5 mg günde 1; CrCl < 20’de kontrendike (ABD prospektüsü: < 30’da kontrendike).');
   }
   seg('sx',calc);document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
 

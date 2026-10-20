@@ -113,7 +113,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     <table class="t"><thead><tr><th>İlaç</th><th>Eşdeğer</th><th>Mineralokortikoid</th><th>Etki süresi</th></tr></thead><tbody id="pt"></tbody></table>
   </section>
 
-  <p class="note">Eşdeğerlik glukokortikoid (antiinflamatuvar) etkiye göredir; mineralokortikoid etki farklıdır. Deksametazon ve betametazon mineralokortikoid etki taşımaz, adrenal yetmezlikte tek başına yeterli değildir. Kaynaklar: Liu D ve ark. Allergy Asthma Clin Immunol 2013; ESE/Endocrine Society 2024 glukokortikoid kaynaklı adrenal yetmezlik kılavuzu; ACR 2022 glukokortikoid osteoporozu kılavuzu. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Eşdeğerlik glukokortikoid (antiinflamatuvar) etkiye göredir; mineralokortikoid etki farklıdır. Deksametazon ve betametazon mineralokortikoid etki taşımaz, adrenal yetmezlikte tek başına yeterli değildir. Kaynaklar: Liu D ve ark. Allergy Asthma Clin Immunol 2013; ESE/Endocrine Society 2024 glukokortikoid kaynaklı adrenal yetmezlik kılavuzu; ACR 2022 glukokortikoid osteoporozu kılavuzu; BNF sistemik kortikosteroid tablosu (deflazakort). Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -129,7 +129,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
    {n:'Prednizolon',e:5,m:'0,8',h:'12–36 saat',x:'Deltacortril'},
    {n:'Prednizon',e:5,m:'0,8',h:'12–36 saat',x:'karaciğerde prednizolona dönüşür'},
    {n:'Metilprednizolon',e:4,m:'0,5',h:'12–36 saat',x:'Prednol, Depo-Medrol'},
-   {n:'Deflazakort',e:6,m:'≈ 0',h:'12–36 saat',x:'Flantadin'},
+   {n:'Deflazakort',e:6,m:'≈ 0',h:'< 12 saat',x:'Flantadin'},
    {n:'Hidrokortizon',e:20,m:'1',h:'8–12 saat',x:'fizyolojik kortizol'},
    {n:'Kortizon asetat',e:25,m:'0,8',h:'8–12 saat',x:''},
    {n:'Triamsinolon',e:4,m:'0',h:'12–36 saat',x:''},
@@ -146,7 +146,8 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     D.forEach(function(x,i){var tr=document.createElement('tr');if(+s.value===i)tr.className='cur';
       [x.n,fm(pe/5*x.e)+' mg'].forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.appendChild(td)});tb.appendChild(tr)});
     var w=wk===null?0:wk;
-    if(w>=3&&pe>=5||w>=12)li('HPA baskılanması olası: 3 haftadan uzun kullanımda ani kesmeyin, azaltarak bırakın. Prednizolon 5 mg civarına inince sabah kortizolüyle adrenal fonksiyonu değerlendirin.');
+    if(w>=3&&pe>=5)li('HPA baskılanması olası: 3 haftadan uzun kullanımda ani kesmeyin, azaltarak bırakın. Prednizolon 5 mg civarına inince sabah kortizolüyle adrenal fonksiyonu değerlendirin.');
+    else if(w>=3)li('Fizyolojik doz düzeyinde veya altında (prednizolon < 5 mg/gün) HPA baskılanması riski düşüktür; uzun kullanımdan sonra yine de ani kesmek yerine azaltarak bırakmak ve adrenal yetmezlik belirtilerine dikkat etmek uygundur.');
     else li('3 haftadan kısa kullanımda genellikle azaltmadan kesilebilir (son 1 yılda tekrarlayan kür yoksa).');
     if(w>=3&&pe>=5)li('Stres durumunda (ateşli hastalık, cerrahi) ek doz gerekir: ateşte günlük dozu 2 katına çıkarın; majör cerrahide indüksiyonda hidrokortizon 100 mg IV, sonra 200 mg/24 saat.');
     if(pe>=2.5&&w>=12)li('Osteoporoz önlemi: kalsiyum ve D vitamini; FRAX (glukokortikoid düzeltmeli) ve kemik mineral yoğunluğu ile kırık riskini değerlendirin; orta-yüksek riskte bisfosfonat.');

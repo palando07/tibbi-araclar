@@ -15,17 +15,17 @@
 :root{
   --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
   --accent:#8c1c2c; --accent-soft:#f6e7e9;
-  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
   --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-num:ui-monospace,"SF Mono",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
 }
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
@@ -96,7 +96,7 @@ details p{margin:8px 0 0}
     <div class="sub"><span>Framingham</span><b id="fra">–</b></div>
     <div class="sub"><span>Hodges</span><b id="hod">–</b></div>
     <p class="f">RR = 60 / nabız (sn) · Bazett: QT / √RR · Fridericia: QT / ∛RR · Framingham: QT + 154 × (1 − RR) · Hodges: QT + 1,75 × (nabız − 60)</p>
-    <p class="note">Büyük sonuç nabız 60–90 arasındayken Bazett, dışındayken Fridericia ile verilir; Bazett yüksek nabızda QTc'yi olduğundan uzun, düşük nabızda kısa gösterir. Uzun QTc: erkekte &gt; 450, kadında &gt; 460 ms. QTc ≥ 500 ms veya ilaçla &gt; 60 ms artış torsades de pointes riskini belirgin artırır.</p>
+    <p class="note">Büyük sonuç nabız 60–90 arasındayken Bazett, dışındayken Fridericia ile verilir; Bazett yüksek nabızda QTc'yi olduğundan uzun, düşük nabızda kısa gösterir. Uzun QTc: erkekte ≥ 450, kadında ≥ 460 ms. Kısa QTc: ≤ 390 ms (AHA 2009). QTc ≥ 500 ms veya ilaçla &gt; 60 ms artış torsades de pointes riskini belirgin artırır.</p>
   </section>
 </div>
 <script>
@@ -116,8 +116,8 @@ details p{margin:8px 0 0}
     var useB=hr>=60&&hr<=90, m=useB?b:fr;$('lbl').textContent='QTc ('+(useB?'Bazett':'Fridericia')+')';$('main').textContent=Math.round(m);
     var lim=f?460:450;
     if(m>=500){pill('pl','Belirgin uzun','var(--high)');$('adv').textContent='Torsades de pointes riski yüksek. QT uzatan ilaçları gözden geçirin, potasyum ve magnezyumu düzeltin, monitörize izlem düşünün.'}
-    else if(m>lim){pill('pl','Uzun','var(--warn)');$('adv').textContent='QT uzatan ilaçları ve elektrolitleri (K, Mg, Ca) gözden geçirin.'}
-    else if(m<340){pill('pl','Kısa','var(--low)');$('adv').textContent='Kısa QT; hiperkalsemi, digoksin veya kısa QT sendromu açısından değerlendirin.'}
+    else if(m>=lim){pill('pl','Uzun','var(--warn)');$('adv').textContent='QT uzatan ilaçları ve elektrolitleri (K, Mg, Ca) gözden geçirin.'}
+    else if(m<=390){pill('pl','Kısa','var(--low)');$('adv').textContent='QTc ≤ 390 ms kısa kabul edilir (AHA 2009). Hiperkalsemi, digoksin; QTc < 340 ms (kadın) / < 330 ms (erkek) ise kısa QT sendromunu düşünün.'}
     else{pill('pl','Normal','var(--ok)');$('adv').textContent=''}
   }
   seg('sex',calc);document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});

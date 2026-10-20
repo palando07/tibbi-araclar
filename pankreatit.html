@@ -101,7 +101,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
       <div class="field" id="w-ast"><label for="ast" id="l-ast">AST <span id="u-ast">U/L</span></label><input id="ast" type="number" inputmode="decimal" step="any" value="120" placeholder=""></div>
     </div>
     <div class="items">
-      <label class="item" id="w-men"><input type="checkbox" id="men"><span class="txt">Bilinç bozukluğu<small>GKS < 15</small></span></label>
+      <label class="item" id="w-men"><input type="checkbox" id="men"><span class="txt">Bilinç bozukluğu<small>GKS < 15 (dezoryantasyon, letarji, somnolans, stupor, koma)</small></span></label>
       <label class="item" id="w-sirs"><input type="checkbox" id="sirs" checked><span class="txt">SIRS (en az 2 kriter)<small>ateş > 38 veya < 36 °C · nabız > 90 · solunum > 20 veya PaCO₂ < 32 · lökosit > 12.000 veya < 4.000</small></span></label>
       <label class="item" id="w-ple"><input type="checkbox" id="ple"><span class="txt">Plevral efüzyon<small>görüntülemede</small></span></label>
     </div>
@@ -188,7 +188,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     var m=r<=2?'%0–3':r<=4?'≈ %15':r<=6?'≈ %40':'≈ %100';$('rm').textContent=any48?m:'48. saat değerleri gerekli';
     pill('rpl',r>=3?'Ağır pankreatit':any48?'Hafif':'',r>=3?'var(--high)':'var(--ok)');
     var of=segVal('of'),loc=$('loc').checked,a,ac,ad;
-    if(of==='2'){a='Ağır';ac='var(--high)';ad='Kalıcı organ yetmezliği: mortalite %15–30 (enfekte nekrozla daha yüksek). Yoğun bakım izlemi.'}
+    if(of==='2'){a='Ağır';ac='var(--high)';ad='Kalıcı organ yetmezliği: bildirilen mortalite %36–50 (enfekte nekrozla daha da yüksek). Yoğun bakım izlemi.'}
     else if(of==='1'||loc){a='Orta ağır';ac='var(--warn)';ad='Geçici organ yetmezliği veya lokal/sistemik komplikasyon: mortalite düşük, yatış süresi uzar.'}
     else{a='Hafif';ac='var(--ok)';ad='Organ yetmezliği ve komplikasyon yok: genellikle ilk hafta içinde düzelir, mortalite çok düşük.'}
     pill('apl',a,ac);$('aadv').textContent=ad;

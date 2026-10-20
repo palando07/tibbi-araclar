@@ -15,17 +15,17 @@
 :root{
   --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
   --accent:#8c1c2c; --accent-soft:#f6e7e9;
-  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
   --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-num:ui-monospace,"SF Mono",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
 }
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
@@ -96,6 +96,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;fo
       <div class="field"><label for="na">Sodyum <span>mEq/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="140"></div>
       <div class="field"><label for="cl">Klor <span>mEq/L</span></label><input id="cl" type="number" inputmode="decimal" step="any" value="105"></div>
       <div class="field"><label for="alb">Albümin <span>g/dL</span></label><input id="alb" type="number" inputmode="decimal" step="any" value="4.0"></div>
+      <div class="field"><label for="nag">Normal anyon açığı <span>mEq/L · laboratuvarınız</span></label><input id="nag" type="number" inputmode="decimal" step="any" value="12"></div>
     </div>
     <h3>Oksijenizasyon (isteğe bağlı)</h3>
     <div class="grid">
@@ -113,6 +114,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;fo
     <div class="sub"><span>Kompanzasyon</span><b id="comp">–</b></div>
     <div class="sub" id="ag-r"><span>Anyon açığı (albümine göre)</span><b id="ag">–</b></div>
     <div class="sub" id="dr-r"><span>Delta oranı</span><b id="dr">–</b></div>
+    <p class="note" id="dr-n" hidden>Delta oranı yol göstericidir; bireysel değişkenlik büyüktür (DKA'da 0–2,8). Tek başına karışık bozukluk tanısı koydurmaz (Rastegar 2007).</p>
     <div class="sub" id="aa-r" hidden><span>A-a gradyenti</span><b id="aa">–</b></div>
     <p class="advice" id="adv"></p>
   </section>
@@ -125,14 +127,14 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;fo
   <section class="card">
     <h2>Kullanılan formüller</h2>
     <p class="f">Metabolik asidoz (Winter): beklenen pCO₂ = 1,5 × HCO₃ + 8 ± 2</p>
-    <p class="f">Metabolik alkaloz: beklenen pCO₂ = 0,7 × HCO₃ + 21 ± 2</p>
+    <p class="f">Metabolik alkaloz: beklenen pCO₂ ≈ 0,7 × HCO₃ + 20 (± 5); kompanzasyonla pCO₂ genellikle 55 mmHg'yi geçmez</p>
     <p class="f">Solunumsal asidoz: her 10 mmHg pCO₂ artışında HCO₃ akutta 1, kronikte 3,5 artar</p>
-    <p class="f">Solunumsal alkaloz: her 10 mmHg pCO₂ azalışında HCO₃ akutta 2, kronikte 4 azalır</p>
-    <p class="f">Anyon açığı = Na − (Cl + HCO₃); düzeltilmiş: + 2,5 × (4 − albümin); normal 12 ± 2, &gt; 14 yüksek kabul edilmiştir</p>
-    <p class="f">Delta oranı = (AA − 12) / (24 − HCO₃) · A-a = FiO₂ × 713 − pCO₂ / 0,8 − pO₂; beklenen ≈ yaş / 4 + 4</p>
+    <p class="f">Solunumsal alkaloz: her 10 mmHg pCO₂ azalışında HCO₃ akutta 2, kronikte 4–5 azalır</p>
+    <p class="f">Anyon açığı = Na − (Cl + HCO₃); düzeltilmiş: + 2,5 × (4 − albümin); normal değer laboratuvara bağlıdır (iyon seçici elektrotla ≈ 3–11, ort. ≈ 6–10 mEq/L); kendi laboratuvarınızın değerini girin (varsayılan 12). Normal + 2 üzeri yüksek kabul edilir</p>
+    <p class="f">Delta oranı = (AA − normal AA) / (24 − HCO₃) · A-a = FiO₂ × 713 − pCO₂ / 0,8 − pO₂; beklenen ≈ yaş / 4 + 4</p>
   </section>
 
-  <p class="note">Kaynaklar: Berend K ve ark., N Engl J Med 2014; Seifter JL, N Engl J Med 2014; Rastegar A, J Am Soc Nephrol 2007 (delta oranı). Bu araç klinik karar desteği içindir; klinik tabloyla birlikte yorumlayın.</p>
+  <p class="note">Kaynaklar: Berend K ve ark., N Engl J Med 2014; Seifter JL, N Engl J Med 2014; Kraut JA, Madias NE, Clin J Am Soc Nephrol 2007 (anyon açığı); Rastegar A, J Am Soc Nephrol 2007 (delta oranının sınırlılıkları); Brandis K, Acid-base Physiology ve MSD/Merck Manual (kompanzasyon kuralları). Bu araç klinik karar desteği içindir; klinik tabloyla birlikte yorumlayın.</p>
 </div>
 <script>
 (function(){
@@ -152,17 +154,18 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;fo
     ralk:['Hipoksemi: pnömoni, pulmoner emboli, ödem','Sepsis (erken dönem), ateş','Karaciğer yetmezliği, gebelik','Salisilat (erken), ağrı, anksiyete','Santral sinir sistemi lezyonları, mekanik ventilasyonda aşırı solunum']
   };
   function calc(){
-    var ph=v('ph'),pc=v('pco2'),hc=v('hco3'),na=v('na'),cl=v('cl'),alb=v('alb'),po2=v('po2'),fi=v('fio2'),age=v('age');
+    var ph=v('ph'),pc=v('pco2'),hc=v('hco3'),na=v('na'),cl=v('cl'),alb=v('alb'),po2=v('po2'),fi=v('fio2'),age=v('age'),nag=v('nag');
+    if(nag===null)nag=12;
     var dd=[],adv=[];
-    if(ph===null||pc===null||hc===null){$('main').textContent='pH, pCO₂ ve HCO₃ girin.';pill('pl','');['comp','ag','dr'].forEach(function(i){$(i).textContent='–'});$('adv').textContent='';$('dd-c').hidden=true;return}
+    if(ph===null||pc===null||hc===null){$('main').textContent='pH, pCO₂ ve HCO₃ girin.';pill('pl','');['comp','ag','dr'].forEach(function(i){$(i).textContent='–'});$('adv').textContent='';$('dr-n').hidden=true;$('dd-c').hidden=true;return}
     // Henderson-Hasselbalch tutarlılığı
     var phc=6.1+Math.log10(hc/(0.03*pc));
     if(Math.abs(phc-ph)>0.05)adv.push('Uyarı: değerler birbiriyle uyumsuz (hesaplanan pH '+phc.toFixed(2).replace('.',',')+'). Örnek veya giriş hatası olabilir.');
     var main='',comp='–',kind='';
     var ag=null,cag=null;
     if(na!==null&&cl!==null){ag=na-(cl+hc);cag=alb!==null?ag+2.5*(4-alb):ag}
-    var hag=cag!==null&&cag>14;
-    function pco2Check(exp){var lo=exp-2,hi=exp+2;
+    var hag=cag!==null&&cag>nag+2;
+    function pco2Check(exp,tol,cap){var hi=exp+(tol||2),lo=exp-(tol||2);if(cap){hi=Math.min(hi,cap);lo=Math.min(lo,hi)}
       var r=' (beklenen pCO₂ '+g1(lo)+'–'+g1(hi)+')';
       return pc>hi?['pCO₂ beklenenden yüksek: eşlik eden solunumsal asidoz'+r,'solunumsal asidoz','racid']:pc<lo?['pCO₂ beklenenden düşük: eşlik eden solunumsal alkaloz'+r,'solunumsal alkaloz','ralk']:['Solunumsal kompanzasyon uygun'+r,null,null]}
     if(ph<7.35){
@@ -178,12 +181,12 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;fo
       if(kind==='racid')dd.unshift('racid');
     }else if(ph>7.45){
       pill('pl','Alkalemi','var(--low)');
-      if(hc>26){kind='malk';main='Metabolik alkaloz';var c2=pco2Check(0.7*hc+21);comp=c2[0];if(c2[2]){main+=' + '+c2[1];dd.push(c2[2])}
+      if(hc>26){kind='malk';main='Metabolik alkaloz';var c2=pco2Check(0.7*hc+20,5,55);comp=c2[0];if(c2[2]){main+=' + '+c2[1];dd.push(c2[2])}
         if(pc<35)main='Karışık: metabolik ve solunumsal alkaloz';dd.unshift('malk')}
-      else if(pc<35){kind='ralk';main='Solunumsal alkaloz';var dP2=(40-pc)/10,ea2=24-2*dP2,ec2=24-4*dP2;
-        comp='Akut beklenen HCO₃ ≈ '+g1(ea2)+', kronik ≈ '+g1(ec2)+'. ';
-        comp+=hc>ea2+2?'HCO₃ beklenenden yüksek: eşlik eden metabolik alkaloz':hc>=ea2-2?'Akut solunumsal alkalozla uyumlu':hc>=ec2-2?'Kronik solunumsal alkalozla uyumlu':'HCO₃ beklenenden düşük: eşlik eden metabolik asidoz';
-        dd.unshift('ralk');if(hc>ea2+2)dd.push('malk');if(hc<ec2-2)dd.push(hag?'hag':'nag');}
+      else if(pc<35){kind='ralk';main='Solunumsal alkaloz';var dP2=(40-pc)/10,ea2=24-2*dP2,ec2=24-4*dP2,ec2b=24-5*dP2;
+        comp='Akut beklenen HCO₃ ≈ '+g1(ea2)+', kronik ≈ '+g1(ec2b)+'–'+g1(ec2)+'. ';
+        comp+=hc>ea2+2?'HCO₃ beklenenden yüksek: eşlik eden metabolik alkaloz':hc>=ea2-2?'Akut solunumsal alkalozla uyumlu':hc>=ec2b-2?'Kronik solunumsal alkalozla uyumlu':'HCO₃ beklenenden düşük: eşlik eden metabolik asidoz';
+        dd.unshift('ralk');if(hc>ea2+2)dd.push('malk');if(hc<ec2b-2)dd.push(hag?'hag':'nag');}
       else main='Alkalemi var ama birincil bozukluk belirlenemedi; değerleri kontrol edin.';
     }else{
       if(hc<22&&pc<35){pill('pl','pH normal','var(--warn)');main='pH normal ama HCO₃ ve pCO₂ düşük: karışık metabolik asidoz + solunumsal alkaloz';dd.push(hag?'hag':'nag','ralk')}
@@ -193,13 +196,13 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;fo
     }
     $('main').textContent=main;$('comp').textContent=comp;
     // Anyon açığı ve delta oranı
-    if(ag!==null){$('ag-r').hidden=false;$('ag').textContent=g1(cag)+' mEq/L'+(alb!==null&&alb!==4?' (ölçülen '+g1(ag)+')':'')+(hag?' · yüksek':cag>12?' · sınırda':' · normal')}
+    if(ag!==null){$('ag-r').hidden=false;$('ag').textContent=g1(cag)+' mEq/L'+(alb!==null&&alb!==4?' (ölçülen '+g1(ag)+')':'')+(hag?' · yüksek':cag>nag?' · sınırda':' · normal')}
     else{$('ag-r').hidden=false;$('ag').textContent='Na ve Cl girin'}
-    if(hag&&hc<24){var dr=(cag-12)/(24-hc);$('dr-r').hidden=false;
+    if(hag&&hc<24){var dr=(cag-nag)/(24-hc);$('dr-r').hidden=false;$('dr-n').hidden=false;
       $('dr').textContent=g1(dr)+' · '+(dr<0.4?'normal anyon açıklı asidoz baskın':dr<0.8?'yüksek + normal anyon açıklı asidoz birlikte':dr<=2?'saf yüksek anyon açıklı asidoz':'eşlik eden metabolik alkaloz (veya kronik solunumsal asidoz)');
       if(dr<0.8&&dd.indexOf('nag')<0)dd.push('nag');if(dr>2&&dd.indexOf('malk')<0)dd.push('malk');
       adv.push('Yüksek anyon açığında ozmolar açığa bakın: ölçülen ozmolalite − (2 × Na + glukoz/18 + BUN/2,8); > 10 ise toksik alkol düşünün. Laktat ve keton ölçün.');}
-    else{$('dr-r').hidden=true}
+    else{$('dr-r').hidden=true;$('dr-n').hidden=true}
     // Oksijenizasyon
     if(po2!==null&&fi!==null){var PA=fi/100*713-pc/0.8,aa=PA-po2,exp=age!==null?age/4+4:null;$('aa-r').hidden=false;
       $('aa').textContent=g1(aa)+' mmHg'+(exp!==null?' (beklenen < '+g1(exp)+')':'')+(exp!==null&&aa>exp?' · artmış':'')+' · P/F '+Math.round(po2/(fi/100));

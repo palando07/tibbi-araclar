@@ -123,9 +123,10 @@ input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       cag>12?pill('ag-pill','Yüksek','var(--high)'):cag<8?pill('ag-pill','Düşük','var(--low)'):pill('ag-pill','Normal','var(--ok)');
       if(cag>12&&hco3<24){
         var dr=(cag-12)/(24-hco3);$('dr').textContent=f1(dr);$('dr-row').hidden=false;
-        $('dr-txt').textContent=dr<1?'Delta oranı < 1: yüksek anyon açıklı asidoza eşlik eden normal anyon açıklı asidoz düşünülebilir.'
-          :dr>2?'Delta oranı > 2: eşlik eden metabolik alkaloz veya önceden var olan yüksek bikarbonat düşünülebilir.'
-          :'Delta oranı 1–2: saf yüksek anyon açıklı metabolik asidozla uyumlu.';
+        $('dr-txt').textContent=dr<0.4?'Delta oranı < 0,4: normal anyon açıklı (hiperkloremik) asidoz ağırlıklı.'
+          :dr<0.8?'Delta oranı 0,4–0,8: yüksek ve normal anyon açıklı asidoz birlikte düşünülebilir.'
+          :dr<=2?'Delta oranı 0,8–2: saf yüksek anyon açıklı metabolik asidozla uyumlu (DKA\'da sıklıkla ~1, laktik asidozda ~1,6).'
+          :'Delta oranı > 2: eşlik eden metabolik alkaloz veya önceden var olan yüksek bikarbonat (ör. kronik solunumsal asidoz) düşünülebilir.';
       }else{$('dr-row').hidden=true;$('dr-txt').textContent=''}
     }else{$('ag').textContent='–';$('cag').textContent='–';pill('ag-pill','');$('dr-row').hidden=true;$('dr-txt').textContent=''}
 

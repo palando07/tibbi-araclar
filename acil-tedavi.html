@@ -128,7 +128,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
   </section>
 
   <p class="note">Tablo değiştirildiğinde alanlara o tablo için örnek değerler gelir; kendi hastanızın değerlerini girin.</p>
-  <p class="note">Kaynaklar: UK Kidney Association 2020 (hiperkalemi); ADA/EASD/JBDS/AACE/DTS 2024 hiperglisemik kriz uzlaşısı; ADA Standards of Care 2025 (hipoglisemi); ESE/ESICM/ERA-EDTA 2014 (hiponatremi); Endocrine Society ve UpToDate özetleri (hiperkalsemi, adrenal kriz). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: UK Kidney Association 2026 güncellemesi (hiperkalemi); ADA/EASD/JBDS/AACE/DTS 2024 hiperglisemik kriz uzlaşısı; ADA Standards of Care 2025 (hipoglisemi); ESE/ESICM/ERA-EDTA 2014 ve Society for Endocrinology 2022 (hiponatremi); Endocrine Society ve UpToDate özetleri (hiperkalsemi, adrenal kriz). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -148,12 +148,13 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     if(K<5.5)return{s:[['Potasyum '+g1(K)+' mEq/L: hiperkalemi yok','']],n:[]};
     var sev=K>=6.5||p.ekg?'Ağır':K>=6.0?'Orta':'Hafif';
     s.push(['Önce doğrulayın; EKG çekin'+(K>=6.0||p.ekg?' ve kardiyak monitöre alın':''),'Hemoliz şüphesinde (zor kan alma, trombositoz, lökositoz) tekrar ölçün; ama EKG değişikliği varsa tedaviyi geciktirmeyin. Düzey: '+sev+'.']);
-    if(p.ekg||K>=6.5)s.push(['Kalsiyum glukonat %10, 30 mL IV, 5–10 dakikada','Membranı stabilize eder, potasyumu düşürmez. 5–10 dakika sonra EKG düzelmezse tekrarlayın. Digoksin kullananda daha yavaş (20–30 dakika) verin.']);
+    if(p.ekg)s.push(['Kalsiyum glukonat %10, 30 mL IV, 5–10 dakikada','Membranı stabilize eder, potasyumu düşürmez. 5–10 dakika sonra EKG düzelmezse tekrarlayın. Digoksin kullananda daha yavaş (20–30 dakika) verin.']);
+    else if(K>=6.5)s.push(['EKG değişikliği yok: kalsiyum rutin değil','UKKA IV kalsiyumu yalnız EKG değişikliği varsa önerir. Sürekli kardiyak monitör; EKG değişirse kalsiyum glukonat %10, 30 mL IV verin.']);
     if(K>=6.0){var u=p.egfr!==null&&p.egfr<30||p.wt!==null&&p.wt<60?5:10;
-      s.push(['Kısa etkili insülin '+u+' ünite IV + 25 g glukoz (%50 dekstroz 50 mL veya %10 dekstroz 250 mL) 15 dakikada','Potasyumu 15–30 dakikada 0,6–1 mEq/L düşürür, etkisi 4–6 saat sürer.'+(u===5?' Böbrek yetmezliği veya düşük kilo nedeniyle 5 ünite seçildi (hipoglisemi riski).':'')+(p.glu!==null&&p.glu<126?' Kan şekeri 126 mg/dL altında: ardından %10 dekstroz 50 mL/saat, 5 saat.':'')]);}
+      s.push(['Kısa etkili insülin '+u+' ünite IV + 25 g glukoz (%50 dekstroz 50 mL veya %10 dekstroz 250 mL) 15 dakikada','Potasyumu 15–30 dakikada 0,6–1 mEq/L düşürür, etkisi 4–6 saat sürer.'+(u===5?' Böbrek yetmezliği veya düşük kilo nedeniyle 5 ünite seçildi (hipoglisemi riski). UKKA herkese 10 ünite ve glukoz izlemi önerir; bazı merkezler böbrek yetmezliğinde 5 ünite kullanır, bu dozla K düşüşü daha az olabilir.':'')+(p.glu!==null&&p.glu<126?' Kan şekeri 126 mg/dL altında: ardından %10 dekstroz 50 mL/saat, 5 saat.':'')]);}
     if(K>=6.5)s.push(['Salbutamol 10–20 mg nebül','İnsüline ek olarak verilir. Taşiaritmi veya iskemik kalp hastalığında dikkat.']);
     s.push(['Potasyum yükselten ilaçları kesin','ACE inhibitörü, ARB, spironolakton, NSAİİ, trimetoprim, heparin, potasyum desteği, beta bloker.']);
-    s.push(['Potasyumu vücuttan uzaklaştırın','Potasyum bağlayıcı: sodyum zirkonyum siklosilikat 10 g 3×1 (48 saate kadar) veya kalsiyum/sodyum polistiren sülfonat 15 g 3–4×1. Volüm uygunsa furosemid 40–80 mg IV.']);
+    s.push(['Potasyumu vücuttan uzaklaştırın','Potasyum bağlayıcı: sodyum zirkonyum siklosilikat 10 g 3×1 (72 saate kadar); alternatif patiromer 8,4 g/gün. Polistiren sülfonat akut tedavide artık rutin önerilmez. Volüm uygunsa furosemid 40–80 mg IV.']);
     if(K>=6.5||p.egfr!==null&&p.egfr<15)s.push(['Hemodiyaliz endikasyonunu değerlendirin','Tedaviye dirençli hiperkalemi, ağır böbrek yetmezliği veya oligüri varsa nefroloji ile görüşün.']);
     if(p.ph!==null&&p.ph<7.2)s.push(['Metabolik asidoz varsa sodyum bikarbonat','Tek başına etkisi sınırlı; asidozu olan hastada insüline ek olarak düşünülür.']);
     n=['Potasyumu insülin-glukozdan 1 saat sonra, sonra 2, 4, 6 ve 24. saatlerde ölçün.','İnsülin verildiyse kan şekerini ilk 6 saat saatlik izleyin (geç hipoglisemi).','Nedeni araştırın: akut böbrek hasarı, ilaçlar, rabdomiyoliz, tümör lizisi, DKA, hipoaldosteronizm.'];
@@ -161,7 +162,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
   dka:{t:'Diyabetik ketoasidoz',f:['wt','glu','k','ph'],o:[],run:function(p){
     var s=[],w=p.wt,K=p.k;
     s.push(['Tanıyı doğrulayın','Glukoz ≥ 200 mg/dL (veya bilinen diyabet), keton (β-hidroksibütirat ≥ 3 mmol/L veya idrarda ++), pH < 7,3 veya HCO₃ < 18. SGLT2 inhibitörü kullananda glukoz normal olabilir (öglisemik DKA).']);
-    s.push(['Sıvı: %0,9 NaCl (veya dengeli kristaloid) ilk saatte 1–1,5 L'+(w?' (15–20 mL/kg = '+r0(15*w)+'–'+r0(20*w)+' mL)':''),'Sonra hemodinami ve idrar çıkışına göre 250–500 mL/saat. Kalp veya böbrek yetmezliğinde daha dikkatli.']);
+    s.push(['Sıvı: %0,9 NaCl veya dengeli kristaloid, ilk 2–4 saatte 500–1000 mL/saat','Sonra hemodinami ve idrar çıkışına göre ayarlayın. Yaşlı, kalp veya böbrek yetmezliğinde daha küçük bolus (ör. 250 mL) ve yakın izlem.']);
     if(K!==null&&K<3.5)s.push(['Potasyum '+g1(K)+': İNSÜLİNİ BAŞLAMAYIN','Önce saatte 10–20 mEq KCl verin; K ≥ 3,5 olunca insüline başlayın.']);
     else if(K!==null&&K<=5.0)s.push(['Potasyum '+g1(K)+': her litre sıvıya 20–30 mEq KCl ekleyin','Hedef K 4–5 mEq/L.']);
     else if(K!==null)s.push(['Potasyum '+g1(K)+': şimdilik potasyum vermeyin','2 saatte bir kontrol edin; insülinle hızla düşecektir.']);
@@ -169,7 +170,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     s.push(['İnsülin infüzyonu: kısa etkili insülin 0,1 ünite/kg/saat'+(ins?' = '+ins+' ünite/saat':''),'50 ünite / 50 mL SF ile 1 mL = 1 ünite. Bolus isteğe bağlı (0,1 ünite/kg). Glukoz saatte 50–75 mg/dL düşmüyorsa hızı artırın.'+(K!==null&&K<3.5?' Potasyum 3,5 üzerine çıkana kadar bekleyin.':'')]);
     s.push(['Glukoz < 250 mg/dL olunca %5–10 dekstroz ekleyin','İnsülini 0,05 ünite/kg/saate'+(w?' ('+g1(0.05*w)+' ünite/saat)':'')+' azaltın ama kesmeyin; ketoasidoz düzelene kadar glukozu 150–200 mg/dL arasında tutun.']);
     if(p.ph!==null&&p.ph<7.0)s.push(['pH '+String(p.ph).replace('.',',')+' < 7,0: sodyum bikarbonat','100 mEq NaHCO₃ 400 mL suda + 20 mEq KCl, 2 saatte. pH ≥ 7,0 olunca kesin.']);
-    s.push(['Düzelme ve SC insüline geçiş','pH ≥ 7,3, HCO₃ ≥ 18 ve keton < 0,6 mmol/L, hasta yiyebiliyor. IV insülini kesmeden 1–2 saat önce SC bazal insülin yapın (ör. 0,2–0,3 ünite/kg glarjin'+(w?' = '+r0(0.2*w)+'–'+r0(0.3*w)+' ünite':'')+').']);
+    s.push(['Düzelme ve SC insüline geçiş','pH ≥ 7,3, HCO₃ ≥ 18 ve keton < 0,6 mmol/L, hasta yiyebiliyor. IV insülini kesmeden 1–2 saat önce SC bazal insülin yapın (ör. 0,15–0,3 ünite/kg glarjin'+(w?' = '+r0(0.15*w)+'–'+r0(0.3*w)+' ünite':'')+'). Önceden bazal insülin kullanıyorsa olağan dozuna devam.']);
     return{s:s,n:['Kan şekeri saatlik; Na, K, Cl, venöz pH, HCO₃ ve keton 2–4 saatte bir.','Düzeltilmiş sodyumu izleyin; hızlı osmolalite düşüşü serebral ödem riski taşır.','Tetikleyiciyi arayın: enfeksiyon, insülin atlama, MI, pankreatit, SGLT2 inhibitörü.','Fosfor < 1 mg/dL ise veya kalp/solunum yetmezliği varsa fosfor replasmanı.']}}},
   hipo:{t:'Hipoglisemi',f:['glu','wt'],o:['bil','su'],run:function(p){
     var s=[],G=p.glu;
@@ -187,11 +188,11 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     var s=[],N=p.na,lim=p.ods?8:10;
     if(N!==null&&N>=135)return{s:[['Sodyum '+N+' mEq/L: hiponatremi yok','']],n:[]};
     if(p.ag){s.push(['%3 NaCl 150 mL IV, 20 dakikada','20 dakika sonra Na bakın. Na 5 mEq/L artana kadar en fazla 2 kez daha tekrarlayın (toplam 3 doz).']);
-      s.push(['Na 5 mEq/L arttıktan veya belirtiler düzeldikten sonra %3 NaCl\'yi kesin','Nedene yönelik tedaviye geçin; ilk 24 saatte toplam artış '+lim+' mEq/L\'yi geçmesin.']);}
-    else{s.push(['Orta şiddette belirti (bulantı, konfüzyon, baş ağrısı): %3 NaCl 150 mL IV tek doz, 20 dakikada','Ardından nedene yönelik tedavi; Na\'yı 4 ve 8. saatlerde bakın.']);
+      s.push(['Na 5 mEq/L artıp belirtiler düzelince %3 NaCl\'yi kesin','Na 5 mEq/L arttığı halde belirtiler sürüyorsa %3 NaCl\'ye saatte ek 1 mEq/L artış hedefiyle devam edin; belirtiler düzelince, toplam artış 10 mEq/L olunca veya Na 130 mEq/L\'ye ulaşınca kesin ve başka nedenleri araştırın. İlk 24 saatte toplam artış '+lim+' mEq/L\'yi geçmesin.']);}
+    else{s.push(['Orta şiddette belirti (bulantı, konfüzyon, baş ağrısı): %3 NaCl 150 mL IV tek doz, 20 dakikada','Ardından nedene yönelik tedavi; Na\'yı 1., 6. ve 12. saatlerde bakın (24 saatte ~5 mEq/L artış hedefi).']);
       s.push(['Belirti yoksa veya hafifse acil hipertonik salin gerekmez','Hipovolemide %0,9 NaCl, SIADH\'de sıvı kısıtlaması, ilaçları gözden geçirin.']);}
     s.push(['Düzeltme sınırı: ilk 24 saatte en fazla '+lim+' mEq/L'+(N!==null?' (hedef üst sınır '+(N+lim)+' mEq/L)':''),'Sonraki her 24 saatte en fazla 8 mEq/L.'+(p.ods?' Osmotik demiyelinizasyon riski yüksek olduğu için sınır 8 mEq/L alındı.':'')]);
-    s.push(['Aşırı düzeltmede','Hipertonik salini kesin; %5 dekstroz (≈ 10 mL/kg 1 saatte'+(p.wt?' = '+r0(10*p.wt)+' mL':'')+') ve desmopressin 2 µg IV ile sodyumu geri düşürün.']);
+    s.push(['Aşırı düzeltmede','Hipertonik salini kesin; %5 dekstroz (≈ 10 mL/kg 1 saatte'+(p.wt?' = '+r0(10*p.wt)+' mL':'')+') ve desmopressin 2 µg IV (8 saatten sık değil) ile sodyumu geri düşürün.']);
     return{s:s,n:['Na\'yı ilk saatlerde 2–4 saatte bir ölçün; idrar çıkışı aniden artarsa (su diürezi) daha sık.','Tanı için serum ozmolalitesi, idrar ozmolalitesi ve idrar Na; volüm durumunu değerlendirin.','Sodyum açığı ve sıvı seçimi için Vizit\'teki "Sodyum ve su açığı" aracını kullanabilirsiniz.']}}},
   hca:{t:'Hiperkalsemi',f:['ca','wt','egfr'],o:['kky'],run:function(p){
     var s=[],C=p.ca,w=p.wt;

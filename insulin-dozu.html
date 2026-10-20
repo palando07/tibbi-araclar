@@ -15,17 +15,17 @@
 :root{
   --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
   --accent:#8c1c2c; --accent-soft:#f6e7e9;
-  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
   --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-num:ui-monospace,"SF Mono",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
 }}
 :root[data-theme="dark"]{
   --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
-  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
 }
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
@@ -164,7 +164,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     </ul>
   </section>
 
-  <p class="note">Kaynaklar: ADA Standards of Care 2025, Bölüm 16 (Hastanede diyabet bakımı); Umpierrez GE ve ark., Diabetes Care 2007 (RABBIT-2) ve 2013 (Basal Plus); Clore JN, Endocr Pract 2009 (steroid). Bu araç klinik karar desteği içindir; dozlar hastanın yanıtına göre her gün yeniden değerlendirilmelidir.</p>
+  <p class="note">Kaynaklar: ADA Standards of Care 2026, Bölüm 16 (Hastanede diyabet bakımı); Umpierrez GE ve ark., Endocrine Society hastanede hiperglisemi kılavuzu 2012; Umpierrez GE ve ark., Diabetes Care 2007 (RABBIT-2) ve 2013 (Basal Plus); Clore JN, Endocr Pract 2009 (steroid). Bu araç klinik karar desteği içindir; dozlar hastanın yanıtına göre her gün yeniden değerlendirilmelidir.</p>
 </div>
 <script>
 (function(){
@@ -180,14 +180,14 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     var wt=v('wt'),age=v('age'),egfr=v('egfr'),bg=v('bg'),eat=segVal('eat')==='1';
     var t1=$('t1').checked,home=$('home').checked,hypo=$('hypo').checked,ster=$('ster').checked;
     $('home-f').hidden=!home;$('ster-f').hidden=!ster;$('ster-n').hidden=!ster;$('ster-c').hidden=!ster;
-    var sens=(age!==null&&age>=70)||(egfr!==null&&egfr<45)||hypo;
+    var sens=(age!==null&&age>=70)||(egfr!==null&&egfr<60)||hypo;
     var tdd=null,fx='',why='';
     if(home&&v('htdd')!==null&&v('htdd')>0){
       var h=v('htdd'),red=sens||!eat;tdd=red?h*0.8:h;
       fx='Evdeki doz '+r0(h)+' ünite'+(red?' × 0,8 (yaşlı, böbrek, hipoglisemi riski veya yetersiz beslenme nedeniyle %20 azaltıldı)':'');
     }else if(wt!==null&&wt>0&&bg!==null){
       var k=sens?0.3:bg>200?0.5:0.4;tdd=wt*k;
-      why=sens?'70 yaş üstü, eGFR < 45 veya hipoglisemi riski':bg>200?'kan şekeri 201–400 mg/dL':'kan şekeri 140–200 mg/dL';
+      why=sens?'70 yaş ve üstü, eGFR < 60 veya hipoglisemi riski; kılavuz 0,2–0,3 ünite/kg':bg>200?'kan şekeri 201–400 mg/dL':'kan şekeri 140–200 mg/dL';
       fx=f1(wt).replace(',0','')+' kg × '+String(k).replace('.',',')+' ünite/kg ('+why+')';
     }
     var sc=$('sc');sc.innerHTML='';

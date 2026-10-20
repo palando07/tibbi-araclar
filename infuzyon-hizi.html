@@ -88,6 +88,7 @@ table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.0
 table.t td:last-child,table.t th:last-child{text-align:right}
 table.t td{font-variant-numeric:tabular-nums}
 table.t tr.cur td{font-weight:700;color:var(--accent)}
+#bol{white-space:normal;text-align:right;min-width:0}
 </style>
   <section class="card">
     <h2>İlaç ve hazırlık</h2>
@@ -135,7 +136,7 @@ table.t tr.cur td{font-weight:700;color:var(--accent)}
   </section>
 
   <p class="note">Hazırlıklar 50 mL perfüzör veya serum için örnektir; hastanenizin standart sulandırmasını girin. Ampul içeriği firmaya göre değişebilir, kutuyu kontrol edin.</p>
-  <p class="note">Kaynaklar: Surviving Sepsis Campaign 2021, ESC 2020/2023, ACC/AHA, Raschke 1993 (heparin nomogramı), prospektüs bilgileri. Hesap sonucunu uygulamadan önce ikinci bir kişiyle doğrulayın. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: Surviving Sepsis Campaign 2021, ESC 2020/2023, ESC 2021 kalp yetmezliği, ACC/AHA, Raschke 1993 (heparin nomogramı), prospektüs ve KÜB bilgileri (propofol SmPC). Hesap sonucunu uygulamadan önce ikinci bir kişiyle doğrulayın. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -188,7 +189,7 @@ table.t tr.cur td{font-weight:700;color:var(--accent)}
     nt:['Kan şekerini saatlik ölçün; potasyum < 3,5 iken başlamayın.','Setin ilk 20 mL’sini atın (insülin plastiğe tutunur).','Ayrıntılı DKA şeması için Acil tedavi rehberine bakın.']},
    {n:'Furosemid',u:'mg/saat',au:'mg',a:100,v:50,d:10,r:[5,40],mx:40,tab:[5,10,15,20,30,40],
     p:'Ör. 10 ampul (20 mg/2 mL) SF ile 50 mL’ye (2 mg/mL).',
-    bol:function(){return 'İnfüzyondan önce 40 mg IV (veya evdeki günlük oral dozun 1–2,5 katı)'},
+    bol:function(){return 'İnfüzyondan önce 20–40 mg IV (kronik diüretik kullananda günlük oral dozun 1–2 katı)'},
     nt:['Hedef idrar: ilk 6 saatte > 100–150 mL/saat veya 2. saatte spot idrar Na > 50–70 mEq/L (ESC 2021).','Bolus hızı 4 mg/dk’yı geçmemeli (ototoksisite).','K, Mg, kreatinin ve volümü günlük izleyin.']},
    {n:'Pantoprazol',u:'mg/saat',au:'mg',a:80,v:50,d:8,r:[8,8],mx:8,tab:[4,8],
     p:'Ör. 2 flakon (40 mg) SF ile 50 mL’ye (1,6 mg/mL).',
@@ -202,9 +203,9 @@ table.t tr.cur td{font-weight:700;color:var(--accent)}
     p:'Ör. 50 mg midazolam SF ile 50 mL’ye (1 mg/mL).',
     bol:function(w){return 'Gerekirse 0,01–0,05 mg/kg'+(w?' = '+fm(0.01*w,1)+'–'+fm(0.05*w,1)+' mg':'')+' yavaş IV'},
     nt:['Yaşlı, karaciğer ve böbrek yetmezliğinde birikir; en düşük dozu kullanın.','Günlük sedasyon arası (RASS hedefi) önerilir.','Antidot: flumazenil 0,2 mg IV.']},
-   {n:'Propofol (%1)',u:'mcg/kg/dk',au:'mg',a:500,v:50,d:20,r:[5,50],mx:80,tab:[5,10,20,30,40,50,67],
+   {n:'Propofol (%1)',u:'mcg/kg/dk',au:'mg',a:500,v:50,d:20,r:[5,50],mx:66.7,tab:[5,10,20,30,40,50,66.7],
     p:'%1 propofol dilüsyonsuz (10 mg/mL).',
-    nt:['Hipotansiyon ve bradikardi; entübe olmayan hastada solunum depresyonu.','1 mL = 1,1 kcal yağ; trigliseridi 48 saatte bir izleyin.','> 4 mg/kg/saat (≈ 67 mcg/kg/dk) ve > 48 saatte propofol infüzyon sendromu riski.','Açılan şişe 12 saatte değiştirilmeli.']}
+    nt:['Hipotansiyon ve bradikardi; entübe olmayan hastada solunum depresyonu.','1 mL = 1,1 kcal yağ; trigliseridi 48 saatte bir izleyin.','> 4 mg/kg/saat (≈ 66,7 mcg/kg/dk) ve > 48 saatte propofol infüzyon sendromu riski. En fazla 4 mg/kg/saat, en çok 7 gün.','Şişe ve infüzyon seti açıldıktan sonra en geç 12 saatte değiştirilmeli.']}
   ];
   var sel=$('dr');D.forEach(function(d,i){var o=document.createElement('option');o.value=i;o.textContent=d.n+' ('+d.u+')';sel.appendChild(o)});
   function setDrug(){var d=D[sel.value];$('amt').value=d.a;$('vol').value=d.v;$('dose').value=d.d;$('u-amt').textContent=d.au;$('u-dose').textContent=d.u;$('prep').textContent=d.p;

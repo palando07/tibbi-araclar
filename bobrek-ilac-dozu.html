@@ -132,6 +132,7 @@ ul.drugs small{color:var(--muted);font-size:.82rem;line-height:1.4}
   </section>
   <section class="card grp" id="g-ak" aria-live="polite">
     <h2>Antikoagülanlar</h2>
+    <p class="note" id="aknote" hidden></p>
     <ul class="drugs" id="l-ak"></ul>
   </section>
   <section class="card grp" id="g-dm" aria-live="polite">
@@ -148,7 +149,7 @@ ul.drugs small{color:var(--muted);font-size:.82rem;line-height:1.4}
   </section>
   <p class="note" id="none" hidden>Aramaya uyan ilaç yok.</p>
 
-  <p class="note">Dozlar erişkin, olağan endikasyon dozlarıdır; ilacın kendi prospektüsüne ve hastane formülerine göre doğrulayın. İlaç dozlamasında Cockcroft-Gault kullanılır; metformin ve DPP-4 inhibitörleri için eGFR kullanılmıştır. Kaynaklar: ürün bilgileri (FDA/EMA), Sanford Guide, ESC 2024 AF kılavuzu (NOAK dozları), KDIGO 2022. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Dozlar erişkin, olağan endikasyon dozlarıdır; ilacın kendi prospektüsüne ve hastane formülerine göre doğrulayın. İlaç dozlamasında Cockcroft-Gault kullanılır (NOAK'larda gerçek kiloyla); metformin ve sitagliptin için eGFR kullanılmıştır. Kaynaklar: ürün bilgileri (FDA/EMA/MHRA), Sanford Guide, ESC 2024 AF kılavuzu ve 2021 EHRA rehberi (NOAK dozları), NHS England NOAK CrCl konsensüsü, ASHP/IDSA 2020 vankomisin konsensüsü, ACR 2020 gut kılavuzu, KDIGO 2022. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -166,58 +167,59 @@ ul.drugs small{color:var(--muted);font-size:.82rem;line-height:1.4}
   {g:'ab',n:'Ertapenem',f:function(c){return c>30?['1 g 24 saatte bir',0]:['500 mg 24 saatte bir',1]},hd:['500 mg 24 saatte bir, diyalizden sonra',1]},
   {g:'ab',n:'Seftriakson',f:function(){return['1–2 g 24 saatte bir',0]},hd:['1–2 g 24 saatte bir',0],nt:'Böbrek yetmezliğinde doz ayarı gerekmez; eşlik eden ağır karaciğer yetmezliğinde en fazla 2 g/gün.'},
   {g:'ab',n:'Sefazolin',f:function(c){return c>=35?['1–2 g 8 saatte bir',0]:c>10?['0,5–1 g 12 saatte bir',1]:['0,5–1 g 24 saatte bir',1]},hd:['2 g her diyalizden sonra (haftada 3 kez)',1]},
-  {g:'ab',n:'Seftazidim',f:function(c){return c>50?['2 g 8 saatte bir',0]:c>30?['1 g 12 saatte bir',1]:c>15?['1 g 24 saatte bir',1]:c>=6?['500 mg 24 saatte bir',1]:['500 mg 48 saatte bir',1]},hd:['1 g yükleme, sonra her diyalizden sonra 1 g',1]},
+  {g:'ab',n:'Seftazidim',f:function(c){return c>50?['2 g 8 saatte bir',0]:c>30?['1 g 12 saatte bir (ağır enfeksiyonda %50 artırılabilir, ör. 1,5 g)',1]:c>15?['1 g 24 saatte bir (ağır enfeksiyonda %50 artırılabilir, ör. 1,5 g)',1]:c>=6?['500 mg 24 saatte bir (ağır enfeksiyonda %50 artırılabilir, ör. 750 mg)',1]:['500 mg 48 saatte bir (ağır enfeksiyonda %50 artırılabilir, ör. 750 mg)',1]},hd:['1 g yükleme, sonra her diyalizden sonra 1 g',1],nt:'Böbrek basamakları olağan 1 g dozuna göredir (FDA etiketi); ağır enfeksiyonda (ör. Pseudomonas) basamak dozu %50 artırılabilir.'},
   {g:'ab',n:'Sefepim',f:function(c){return c>60?['2 g 8 saatte bir',0]:c>=30?['2 g 12 saatte bir',1]:c>10?['2 g 24 saatte bir',1]:['1 g 24 saatte bir',1]},hd:['1. gün 1 g, sonra 500 mg–1 g 24 saatte bir (diyaliz günü diyalizden sonra)',1],nt:'Doz azaltılmazsa nörotoksisite (ensefalopati, nöbet) gelişebilir.'},
   {g:'ab',n:'Ampisilin-sulbaktam',f:function(c){return c>=30?['1,5–3 g 6 saatte bir',0]:c>=15?['1,5–3 g 12 saatte bir',1]:['1,5–3 g 24 saatte bir',1]},hd:['1,5–3 g 24 saatte bir, diyalizden sonra',1]},
   {g:'ab',n:'Amoksisilin-klavulanat (ağızdan)',k:'augmentin',f:function(c){return c>=30?['875/125 mg 12 saatte bir veya 500/125 mg 8 saatte bir',0]:c>=10?['500/125 mg 12 saatte bir',1]:['500/125 mg 24 saatte bir',1]},hd:['500/125 mg 24 saatte bir; diyaliz sırasında ve sonrasında ek doz',1],nt:'875/125 mg tablet CrCl < 30 mL/dk olduğunda kullanılmaz.'},
   {g:'ab',n:'Levofloksasin',f:function(c){return c>=50?['750 mg 24 saatte bir',0]:c>=20?['750 mg 48 saatte bir',1]:['750 mg yükleme, sonra 500 mg 48 saatte bir',1]},hd:['750 mg yükleme, sonra 500 mg 48 saatte bir',1],nt:'500 mg rejiminde: CrCl 20–49 için 500 mg yükleme, sonra 250 mg 24 saatte bir.'},
-  {g:'ab',n:'Siprofloksasin',f:function(c){return c>=50?['Ağızdan 500–750 mg 12 saatte bir; IV 400 mg 8–12 saatte bir',0]:c>=30?['Ağızdan 250–500 mg 12 saatte bir; IV 400 mg 12 saatte bir',1]:['Ağızdan 250–500 mg 18–24 saatte bir; IV 200–400 mg 18–24 saatte bir',1]},hd:['Ağızdan 250–500 mg 24 saatte bir, diyalizden sonra',1]},
+  {g:'ab',n:'Siprofloksasin',f:function(c){return c>=50?['Ağızdan 500–750 mg 12 saatte bir; IV 400 mg 8–12 saatte bir',0]:c>=30?['Ağızdan 250–500 mg 12 saatte bir; IV olağan doz (400 mg 8–12 saatte bir, ayar gerekmez)',1]:['Ağızdan 250–500 mg 18 saatte bir; IV 200–400 mg 18–24 saatte bir',1]},hd:['Ağızdan 250–500 mg 24 saatte bir, diyalizden sonra',1]},
   {g:'ab',n:'Trimetoprim-sülfametoksazol',k:'bactrim kemoprim',f:function(c){return c>30?['1 forte tablet (160/800 mg) 12 saatte bir; PCP tedavisinde 15–20 mg/kg/gün TMP',0]:c>=15?['1 forte tablet (160/800 mg) 24 saatte bir; PCP tedavisinde 7,5–10 mg/kg/gün TMP (dozun %50\'si)',1]:['Önerilmez',2]},hd:['Önerilmez; zorunluysa diyalizden sonra dozun %50\'si',2],nt:'Hiperkalemi ve kreatinin artışı (tübüler sekresyon) izleyin.'},
   {g:'ab',n:'Klaritromisin',f:function(c){return c>=30?['500 mg 12 saatte bir',0]:['250 mg 12 saatte bir veya 500 mg 24 saatte bir',1]},hd:['250 mg 12 saatte bir veya 500 mg 24 saatte bir',1]},
-  {g:'ab',n:'Nitrofurantoin',f:function(c){return c>=30?['100 mg 12 saatte bir (5 gün)',0]:['Kullanmayın',2]},hd:['Kullanmayın',2],nt:'Böbrek yetmezliğinde etkisiz kalır, periferik nöropati riski artar.'},
-  {g:'ab',n:'Vankomisin',f:function(c,e,p){var w=p.wt,m=function(k){return w?' ('+Math.round(w*k/250)*250+' mg)':''};
-    return c>=90?['Yükleme 25 mg/kg'+m(25)+', idame 15 mg/kg'+m(15)+' 8–12 saatte bir',0]:c>=50?['Yükleme 25 mg/kg'+m(25)+', idame 15 mg/kg'+m(15)+' 12 saatte bir',1]:c>=20?['Yükleme 25 mg/kg'+m(25)+', idame 15 mg/kg'+m(15)+' 24 saatte bir',1]:['Yükleme 25 mg/kg'+m(25)+', sonra 15 mg/kg'+m(15)+' 48–72 saatte bir, düzeye göre',1]},hd:['Yükleme 25 mg/kg, sonra her diyalizden sonra 500–1000 mg; diyaliz öncesi düzeye göre',1],nt:'Gerçek kiloyla hesaplanır, yükleme en fazla 3 g. 4. dozdan önce düzey bakın; hedef AUC 400–600 veya çukur 15–20 mg/L.'},
+  {g:'ab',n:'Nitrofurantoin',f:function(c){return c>=45?['100 mg 12 saatte bir (5 gün)',0]:c>=30?['Yalnızca dirençli alt ÜSE\'de: 100 mg 12 saatte bir, kısa kür (3–7 gün), dikkatle (MHRA)',1]:['Kullanmayın',2]},hd:['Kullanmayın',2],nt:'Böbrek yetmezliğinde etkisiz kalır, periferik nöropati riski artar. Eşik MHRA\'ya göre 45 mL/dk; kaynaklara göre 30–60 arasında değişir.'},
+  {g:'ab',n:'Vankomisin',f:function(c,e,p){var w=p.wt,m=function(k){return w?' ('+Math.round(w*k/250)*250+' mg)':''},ml=function(){var x=Math.round(w*25/250)*250;return w?' ('+(x>3000?'3000 mg, üst sınır':x+' mg')+')':''};
+    return c>=90?['Yükleme 25 mg/kg'+ml()+', idame 15 mg/kg'+m(15)+' 8–12 saatte bir',0]:c>=50?['Yükleme 25 mg/kg'+ml()+', idame 15 mg/kg'+m(15)+' 12 saatte bir',1]:c>=20?['Yükleme 25 mg/kg'+ml()+', idame 15 mg/kg'+m(15)+' 24 saatte bir',1]:['Yükleme 25 mg/kg'+ml()+', sonra 15 mg/kg'+m(15)+' 48–72 saatte bir, düzeye göre',1]},hd:['Yükleme 25 mg/kg, sonra her diyalizden sonra 500–1000 mg; diyaliz öncesi düzeye göre',1],nt:'Gerçek kiloyla hesaplanır, yükleme 20–35 mg/kg (en fazla 3 g). AUC/MIC 400–600 hedefiyle izleyin (2 düzey veya Bayesian); yalnız çukur düzeyle izlem önerilmez. HD\'de diyaliz öncesi düzey 15–20 mg/L.'},
   {g:'av',n:'Asiklovir (IV)',f:function(c){return c>50?['5–10 mg/kg 8 saatte bir',0]:c>=25?['5–10 mg/kg 12 saatte bir',1]:c>=10?['5–10 mg/kg 24 saatte bir',1]:['2,5–5 mg/kg 24 saatte bir',1]},hd:['2,5–5 mg/kg 24 saatte bir, diyalizden sonra',1],nt:'Obezde ideal kiloyla hesaplayın. Bol hidrasyon; kristal nefropatisi riski.'},
   {g:'av',n:'Flukonazol',f:function(c){return c>50?['Yükleme 800 mg, sonra 400 mg/gün (kandidemi)',0]:['Yükleme 800 mg, sonra 200 mg/gün (dozun %50\'si)',1]},hd:['Her diyalizden sonra 400 mg (tam doz)',1]},
   {g:'av',n:'Oseltamivir (tedavi)',k:'tamiflu',f:function(c){return c>60?['75 mg 12 saatte bir',0]:c>30?['30 mg 12 saatte bir',1]:c>10?['30 mg 24 saatte bir',1]:['Önerilmez (diyalize girmeyenlerde)',2]},hd:['30 mg her diyalizden sonra',1]},
   {g:'ak',n:'Enoksaparin (tedavi)',k:'clexane',f:function(c){return c>=30?['1 mg/kg 12 saatte bir',0]:['1 mg/kg 24 saatte bir',1]},hd:['Önerilmez; anfraksiyone heparin tercih edin',2],nt:'Anti-Xa düzeyi ile izlem düşünülebilir.'},
   {g:'ak',n:'Enoksaparin (profilaksi)',k:'clexane',f:function(c){return c>=30?['40 mg 24 saatte bir',0]:['30 mg 24 saatte bir',1]},hd:['Anfraksiyone heparin 5000 ünite 8–12 saatte bir tercih edin',2]},
-  {g:'ak',n:'Apiksaban (AF)',k:'eliquis noak',f:function(c,e,p){
+  {g:'ak',n:'Apiksaban (AF)',k:'eliquis noak',w:'act',f:function(c,e,p){
     if(c<15)return['Önerilmez',2];
     var n=(p.age>=80?1:0)+(p.wt<=60?1:0)+(p.scr>=1.5?1:0);
     if(n>=2)return['2,5 mg 12 saatte bir ('+n+' doz azaltma ölçütü)',1];
     if(c<30)return['2,5 mg 12 saatte bir',1];
     return['5 mg 12 saatte bir',0]},hd:['Avrupa\'da önerilmez',2],nt:'2,5 mg ölçütleri (en az 2): yaş ≥ 80, kilo ≤ 60 kg, kreatinin ≥ 1,5 mg/dL. VTE tedavisinde böbreğe göre doz ayarı yoktur.'},
-  {g:'ak',n:'Rivaroksaban (AF)',k:'xarelto noak',f:function(c){return c>50?['20 mg 24 saatte bir, yemekle',0]:c>=15?['15 mg 24 saatte bir, yemekle',1]:['Kullanmayın',2]},hd:['Kullanmayın',2]},
-  {g:'ak',n:'Dabigatran (AF)',k:'pradaxa noak',f:function(c,e,p){return c<30?['Kontrendike',2]:p.age>=80?['110 mg 12 saatte bir (yaş ≥ 80)',1]:c<=50?['150 mg 12 saatte bir; kanama riski yüksekse 110 mg',1]:['150 mg 12 saatte bir',0]},hd:['Kontrendike',2]},
-  {g:'ak',n:'Edoksaban (AF)',k:'lixiana noak',f:function(c,e,p){return c<15?['Kullanmayın',2]:c<=50?['30 mg 24 saatte bir',1]:p.wt<=60?['30 mg 24 saatte bir (kilo ≤ 60 kg)',1]:['60 mg 24 saatte bir',0]},hd:['Kullanmayın',2]},
+  {g:'ak',n:'Rivaroksaban (AF)',k:'xarelto noak',w:'act',f:function(c){return c>50?['20 mg 24 saatte bir, yemekle',0]:c>=15?['15 mg 24 saatte bir, yemekle',1]:['Kullanmayın',2]},hd:['Kullanmayın',2]},
+  {g:'ak',n:'Dabigatran (AF)',k:'pradaxa noak',w:'act',f:function(c,e,p){return c<30?['Kontrendike',2]:p.age>=80?['110 mg 12 saatte bir (yaş ≥ 80)',1]:c<=50?['150 mg 12 saatte bir; kanama riski yüksekse 110 mg',1]:['150 mg 12 saatte bir',0]},hd:['Kontrendike',2],nt:'110 mg×2: yaş ≥ 80 veya verapamil. Düşünülmeli: 75–80 yaş, CrCl 30–50, yüksek kanama riski, gastrit/özofajit.'},
+  {g:'ak',n:'Edoksaban (AF)',k:'lixiana noak',w:'act',f:function(c,e,p){return c<15?['Kullanmayın',2]:c<=50?['30 mg 24 saatte bir',1]:p.wt<=60?['30 mg 24 saatte bir (kilo ≤ 60 kg)',1]:['60 mg 24 saatte bir',0]},hd:['Kullanmayın',2],nt:'30 mg ölçütleri (en az 1): CrCl 15–50, kilo ≤ 60 kg, siklosporin/dronedaron/eritromisin/ketokonazol. CrCl > 95 mL/dk: etkinlik azalabilir (ABD\'de kullanılmaz, AB\'de dikkatli değerlendirme).'},
   {g:'dm',n:'Metformin',e:1,f:function(c,e){return e>=45?['Olağan doz (en fazla 2000–2550 mg/gün)',0]:e>=30?['En fazla 1000 mg/gün; yeni başlanmaz',1]:['Kontrendike',2]},hd:['Kontrendike',2],nt:'eGFR ile değerlendirilir. Kontrastlı tetkik ve akut hastalıkta ara verin.'},
   {g:'dm',n:'Sitagliptin',e:1,k:'januvia',f:function(c,e){return e>=45?['100 mg/gün',0]:e>=30?['50 mg/gün',1]:['25 mg/gün',1]},hd:['25 mg/gün',1]},
-  {g:'dm',n:'Vildagliptin',e:1,k:'galvus',f:function(c,e){return e>=50?['50 mg 12 saatte bir',0]:['50 mg 24 saatte bir',1]},hd:['50 mg 24 saatte bir',1]},
+  {g:'dm',n:'Vildagliptin',k:'galvus',f:function(c){return c>=50?['50 mg 12 saatte bir',0]:['50 mg 24 saatte bir',1]},hd:['50 mg 24 saatte bir',1]},
   {g:'dm',n:'Linagliptin',k:'trajenta',f:function(){return['5 mg/gün',0]},hd:['5 mg/gün',0],nt:'Böbrek yetmezliğinde doz ayarı gerekmez.'},
   {g:'dm',n:'Gliklazid',k:'diamicron sülfonilüre',f:function(c){return c>=30?['Olağan doz; hipoglisemi açısından dikkat',c<60?1:0]:['Kullanmayın; insülin veya linagliptin tercih edin',2]},hd:['Kullanmayın',2]},
   {g:'nr',n:'Gabapentin',k:'neurontin',f:function(c){return c>=60?['900–3600 mg/gün, 3 doza bölünmüş',0]:c>=30?['400–1400 mg/gün, 2 doza bölünmüş',1]:c>=15?['200–700 mg/gün, tek doz',1]:['100–300 mg/gün, tek doz',1]},hd:['100–300 mg/gün + her diyalizden sonra 125–350 mg',1]},
   {g:'nr',n:'Pregabalin',k:'lyrica',f:function(c){return c>=60?['150–600 mg/gün, 2–3 doza bölünmüş',0]:c>=30?['75–300 mg/gün, 2–3 doza bölünmüş',1]:c>=15?['25–150 mg/gün, 1–2 doz',1]:['25–75 mg/gün, tek doz',1]},hd:['25–75 mg/gün + her diyalizden sonra ek doz',1]},
   {g:'nr',n:'Levetirasetam',k:'keppra',f:function(c){return c>80?['500–1500 mg 12 saatte bir',0]:c>=50?['500–1000 mg 12 saatte bir',1]:c>=30?['250–750 mg 12 saatte bir',1]:['250–500 mg 12 saatte bir',1]},hd:['500–1000 mg 24 saatte bir + diyalizden sonra 250–500 mg',1]},
-  {g:'nr',n:'Tramadol',f:function(c){return c>=30?['50–100 mg 4–6 saatte bir, en fazla 400 mg/gün',0]:['12 saatte bir, en fazla 200 mg/gün',1]},hd:['12 saatte bir, en fazla 200 mg/gün; diyaliz günü diyalizden sonra',1],nt:'Nöbet ve serotonin sendromu riski; yaşlıda dikkat.'},
+  {g:'nr',n:'Tramadol',f:function(c){return c>=30?['50–100 mg 4–6 saatte bir, en fazla 400 mg/gün',0]:['50–100 mg 12 saatte bir, en fazla 200 mg/gün',1]},hd:['50–100 mg 12 saatte bir, en fazla 200 mg/gün; diyaliz günü olağan saatinde verilebilir',1],nt:'Nöbet ve serotonin sendromu riski; yaşlıda dikkat.'},
   {g:'nr',n:'Morfin',f:function(c){return c>=50?['Olağan doz',0]:c>=30?['Dozu %25–50 azaltın, aralığı uzatın',1]:['Kaçının (aktif metabolit birikir); fentanil tercih edin',2]},hd:['Kaçının; fentanil tercih edin',2]},
-  {g:'dg',n:'Allopurinol',f:function(c){return c>=30?['100 mg/gün ile başlayın, ürik aside göre titre edin',0]:['50 mg/gün ile başlayın, yavaş titre edin',1]},hd:['50–100 mg, diyalizden sonra',1],nt:'Başlangıç dozu düşük tutulur; ürik asit hedefine göre yavaşça artırılabilir.'},
-  {g:'dg',n:'Kolşisin',f:function(c){return c>=30?['0,5 mg günde 1–2 kez',0]:['Dozu azaltın (ör. 0,5 mg gün aşırı); atak tedavisi 2 haftadan sık tekrarlanmaz',1]},hd:['Kaçının (diyalizle uzaklaşmaz)',2],nt:'Klaritromisin, siklosporin gibi CYP3A4/P-gp inhibitörleriyle birlikte kullanmayın.'},
+  {g:'dg',n:'Allopurinol',f:function(c){return c>=60?['100 mg/gün ile başlayın, ürik aside göre titre edin',0]:['≤ 50 mg/gün ile başlayın, 2–5 haftada bir yavaş titre edin',1]},hd:['50–100 mg, diyalizden sonra',1],nt:'Başlangıç dozu düşük tutulur; ürik asit hedefine göre yavaşça artırılabilir.'},
+  {g:'dg',n:'Kolşisin',f:function(c){return c>=60?['0,5 mg günde 1–2 kez',0]:c>=30?['En fazla 0,5 mg/gün; yan etki izlemi',1]:['Kontrendike (AB SmPC)',2]},hd:['Kaçının (diyalizle uzaklaşmaz)',2],nt:'Klaritromisin, siklosporin gibi CYP3A4/P-gp inhibitörleriyle birlikte kullanmayın. AB SmPC\'ye göredir; FDA etiketi daha esnektir (CrCl < 30\'da profilakside 0,3 mg/gün başlangıç).'},
   {g:'dg',n:'Digoksin',f:function(c){return c>=50?['0,125–0,25 mg/gün',0]:['0,0625–0,125 mg/gün veya gün aşırı',1]},hd:['0,0625 mg gün aşırı',1],nt:'Düzey izleyin (hedef 0,5–0,9 ng/mL); hipokalemi toksisiteyi artırır.'},
   {g:'dg',n:'Spironolakton',f:function(c){return c>=50?['25–50 mg/gün',0]:c>=30?['12,5–25 mg/gün veya gün aşırı',1]:['Kaçının (hiperkalemi)',2]},hd:['Kaçının',2],nt:'Potasyum > 5,0 mEq/L ise başlamayın.'},
   {g:'dg',n:'NSAİİ (ibuprofen, diklofenak, naproksen)',k:'nsaid nsaii',f:function(c){return c>=60?['En düşük doz, en kısa süre',0]:c>=30?['Mümkünse kaçının; kısa süre, kreatinin ve potasyum izlemi',1]:['Kaçının',2]},hd:['Kaçının (rezidüel idrar varsa)',2]},
-  {g:'dg',n:'Famotidin',f:function(c){return c>=50?['20–40 mg 12–24 saatte bir',0]:['20 mg/gün veya 40 mg gün aşırı',1]},hd:['20 mg/gün',1],nt:'Yaşlıda böbrek yetmezliğinde konfüzyon yapabilir.'}
+  {g:'dg',n:'Famotidin',f:function(c){return c>=60?['20–40 mg 12–24 saatte bir',0]:c>=30?['En fazla 20 mg/gün veya 40 mg gün aşırı',1]:['En fazla 20 mg gün aşırı',1]},hd:['20 mg gün aşırı',1],nt:'Yaşlıda böbrek yetmezliğinde konfüzyon yapabilir.'}
   ];
   var lab={0:'Normal doz',1:'Doz ayarı',2:'Kaçının'};
   function low(s){return s.toLocaleLowerCase('tr').replace(/ı/g,'i').normalize('NFD').replace(/[̀-ͯ]/g,'')}
   function calc(){
     var age=v('age'),wt=v('wt'),ht=v('ht'),scr=v('scr'),f=segVal('sex')==='f',hd=$('hd').checked;
-    var c=null,e=null,wl='';
+    var c=null,cAct=null,e=null,wl='';
     if(age!==null&&wt!==null&&scr!==null&&scr>0&&age>=18){
       var use=wt;wl='gerçek kilo';
       if(ht!==null&&ht>=152.4){var ibw=(f?45.5:50)+0.91*(ht-152.4),abw=ibw+0.4*(wt-ibw);
         if(wt<ibw){use=wt;wl='gerçek kilo'}else if(wt>1.2*ibw){use=abw;wl='düzeltilmiş kilo ('+Math.round(abw)+' kg)'}else{use=ibw;wl='ideal kilo ('+Math.round(ibw)+' kg)'}}
       c=(140-age)*use/(72*scr)*(f?0.85:1);
+      cAct=(140-age)*wt/(72*scr)*(f?0.85:1);
       var k=f?0.7:0.9,a=f?-0.241:-0.302,r=scr/k;
       e=142*Math.pow(Math.min(r,1),a)*Math.pow(Math.max(r,1),-1.2)*Math.pow(0.9938,age)*(f?1.012:1);
     }
@@ -226,13 +228,13 @@ ul.drugs small{color:var(--muted);font-size:.82rem;line-height:1.4}
       $('crcl').textContent=hd?'HD':Math.round(c);$('egfr').textContent=(hd||e===null)?'–':Math.round(e)+' mL/dk/1,73 m²';
       if(hd)pill('pl','Hemodiyaliz','var(--high)');
       else c>=60?pill('pl','≥ 60','var(--ok)'):c>=30?pill('pl','30–59','var(--warn)'):pill('pl','< 30','var(--high)');
-      $('wnote').textContent=hd?'Hemodiyaliz dozları gösteriliyor.':'Hesapta '+wl+' kullanıldı. Kilo seçimi: gerçek kilo idealin altındaysa gerçek, idealin %120\'sinin üstündeyse düzeltilmiş, aradaysa ideal kilo.';
+      $('wnote').textContent=hd?'Hemodiyaliz dozları gösteriliyor.':'Hesapta '+wl+' kullanıldı. Kilo seçimi: gerçek kilo idealin altındaysa gerçek, idealin %120\'sinin üstündeyse düzeltilmiş, aradaysa ideal kilo. NOAK\'larda gerçek kiloyla CrCl: '+Math.round(cAct)+' mL/dk.';
     }
     var q=low($('q').value.trim()),only=$('only').checked,p={age:age,wt:wt,scr:scr},any=false;
     var lists={};document.querySelectorAll('ul.drugs').forEach(function(u){u.innerHTML='';lists[u.id.slice(2)]=u});
     D.forEach(function(d){
       if(q&&low(d.n+' '+(d.k||'')).indexOf(q)<0)return;
-      var r=hd?d.hd:(c===null?null:d.f(c,e===null?c:e,p));
+      var cc=d.w==='act'?cAct:c,r=hd?d.hd:(c===null?null:d.f(cc,e===null?c:e,p));
       if(only&&(!r||r[1]===0))return;
       var li=document.createElement('li'),u=d.f(120,120,{age:50,wt:p.wt||70,scr:0.9})[0],ch=r&&r[0]!==u;
       li.innerHTML='<div class="dh"><b></b>'+(r?'<span class="st" data-s="'+r[1]+'">'+lab[r[1]]+'</span>':'')+'</div>'+
@@ -242,6 +244,7 @@ ul.drugs small{color:var(--muted);font-size:.82rem;line-height:1.4}
       if(d.nt)li.querySelector('small').textContent=d.nt;
       lists[d.g].appendChild(li);any=true;
     });
+    $('aknote').hidden=hd||c===null;if(c!==null)$('aknote').textContent='NOAK dozları gerçek kiloyla hesaplanan Cockcroft-Gault\'a göredir: CrCl '+Math.round(cAct)+' mL/dk (diğer ilaçlarda '+Math.round(c)+' mL/dk).';
     Object.keys(lists).forEach(function(k){$('g-'+k).hidden=!lists[k].children.length});
     $('none').hidden=any;
   }

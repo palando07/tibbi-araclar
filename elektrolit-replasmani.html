@@ -153,7 +153,7 @@ details p{margin:8px 0 0}
     </ul>
   </section>
 
-  <p class="note">Kaynaklar: Kraft MD ve ark., Am J Health Syst Pharm 2005 (elektrolit replasmanı); Brown KA ve ark., JPEN 2006 (fosfor); Cooper MS, Gittoes NJ, BMJ 2008 (hipokalsemi); UpToDate özetleri. %7,5 KCl ampul 10 mL = 10 mEq; %10 kalsiyum glukonat 10 mL = 93 mg elemental kalsiyum. Hastanenizdeki ampul konsantrasyonlarını kontrol edin. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: Kraft MD ve ark., Am J Health Syst Pharm 2005 (elektrolit replasmanı); Brown KA ve ark., JPEN 2006 (fosfor); Cooper MS, Gittoes NJ, BMJ 2008 ve Society for Endocrinology acil rehberi (hipokalsemi); Potassium Phosphates Injection FDA etiketi (en yüksek doz ve hız); UpToDate özetleri. %7,5 KCl ampul 10 mL = 10 mEq; %10 kalsiyum glukonat 10 mL = 93 mg elemental kalsiyum. Hastanenizdeki ampul konsantrasyonlarını kontrol edin. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -213,14 +213,16 @@ details p{margin:8px 0 0}
       if(P>=2.5)set('pp',g1(P),0,'','','','','Replasman gerekmez.');
       else{
         var pl=P>=2.0?1:P>=1.0?2:3,r=[[0,0],[0.08,0.16],[0.16,0.32],[0.32,0.64]][pl],f3=ckd?0.5:1;
-        var mm=wt?' = '+Math.round(r[0]*wt*f3)+'–'+Math.min(Math.round(r[1]*wt*f3),pl===3?50:45)+' mmol':'';
+        var cap=45,pa=Math.min(Math.round(r[0]*wt*f3),cap),pb=Math.min(Math.round(r[1]*wt*f3),cap);
+        var mm=wt?' = '+(pa===pb?pa:pa+'–'+pb)+' mmol'+(Math.round(r[1]*wt*f3)>cap?' (tek dozda en fazla 45 mmol)':''):'';
+        var kp=wt?' Potasyum fosfat olarak verilirse bu doz yaklaşık '+(pa===pb?Math.round(pa*4.4/3):Math.round(pa*4.4/3)+'–'+Math.round(pb*4.4/3))+' mEq K içerir.':'';
         var oralP=pl===1&&po;
         set('pp',g1(P),pl,oralP?'Ağızdan (tercih)':'IV',
           oralP?'Fosfor 250–500 mg günde 3 kez (veya IV '+String(r[0]).replace('.',',')+'–'+String(r[1]).replace('.',',')+' mmol/kg)':
             String(r[0]*f3).replace('.',',')+'–'+String(r[1]*f3).replace('.',',')+' mmol/kg'+mm+' sodyum veya potasyum fosfat',
-          oralP?'—':'4–6 saatte infüzyon',
+          oralP?'—':'4–6 saatte infüzyon; potasyum fosfatta periferden en fazla 6,8 mmol P/saat (10 mEq K/saat), santralden en fazla 15 mmol P/saat',
           'Ertesi gün P, Ca ve K bakın',
-          'K ≥ 4 mEq/L ise sodyum fosfat seçin (potasyum fosfat ayrıca K içerir). Hiperkalsemide IV fosfor vermeyin; kalsiyum fosfat çökmesi riski.'+renal);
+          'K ≥ 4 mEq/L ise sodyum fosfat seçin. Potasyum fosfat her 3 mmol P için 4,4 mEq K içerir; aynı anda KCl veriyorsanız toplam K hızını hesaba katın.'+(oralP?'':kp+' Tek IV doz en fazla 45 mmol P; obezde ideal veya düzeltilmiş kilo kullanın.')+' Hiperkalsemide IV fosfor vermeyin; kalsiyum fosfat çökmesi riski.'+renal);
       }
     }
     // Kalsiyum
@@ -229,13 +231,13 @@ details p{margin:8px 0 0}
       var cc=A!==null?C+0.8*(4-A):C;
       if(cc>=8.5)set('cc',g1(cc),0,'','','','',cc>10.5?'Kalsiyum yüksek; replasman gerekmez.':'Replasman gerekmez.');
       else{
-        var cl=cc>=7.5?1:cc>=7.0?2:3,ivc=sym||cl>=2;
+        var cl=cc>=7.5?1:cc>=7.0?2:3,ivc=sym||cc<7.6,esrd=eg!==null&&eg<15;
         var lo=wt?Math.round(0.5*wt):null,hi=wt?Math.round(1.5*wt):null;
         set('cc',g1(cc),cl,ivc?'IV':'Ağızdan',
           ivc?'Kalsiyum glukonat %10, 10–20 mL (1–2 g) 50–100 mL SF içinde; ardından infüzyon':'Elemental kalsiyum 1–2 g/gün, bölünmüş dozlarla (ör. kalsiyum karbonat)',
-          ivc?'Bolus 10–20 dakikada; infüzyon 0,5–1,5 mg/kg/saat elemental Ca'+(wt?' ('+lo+'–'+hi+' mg/saat = %10 glukonattan '+g1(lo/9.3)+'–'+g1(hi/9.3)+' mL/saat)':''):'—',
+          ivc?'Bolus 10–20 dakikada; infüzyon 0,5–1,5 mg/kg/saat elemental Ca'+(wt?' ('+lo+'–'+hi+' mg/saat = %10 glukonattan '+g1(lo/9.3)+'–'+g1(hi/9.3)+' mL/saat)':'')+'. Standart hazırlık: 100 mL %10 glukonat + 900 mL SF/%5 dekstroz = 1 L, yaklaşık 0,93 mg/mL elemental Ca'+(wt?'; bu çözeltiden '+Math.round(lo/0.93)+'–'+Math.round(hi/0.93)+' mL/saat':''):'—',
           ivc?'4–6 saatte bir Ca bakın':'1 hafta içinde Ca bakın',
-          (A!==null?'Albümine göre düzeltildi (ölçülen '+g1(C)+' mg/dL). Şüphede iyonize kalsiyum bakın. ':'')+(lowMg?'Magnezyum düşük: önce magnezyumu düzeltin. ':'')+'Nedeni araştırın: PTH, 25-OH D vitamini, magnezyum, fosfor, böbrek fonksiyonu.'+(ivc?' QT izleyin.':''));
+          (A!==null?'Albümine göre düzeltildi (ölçülen '+g1(C)+' mg/dL). Şüphede iyonize kalsiyum bakın. ':'')+(lowMg?'Magnezyum düşük: önce magnezyumu düzeltin. ':'')+'Nedeni araştırın: PTH, 25-OH D vitamini, magnezyum, fosfor, böbrek fonksiyonu.'+(ivc?' QT izleyin.':'')+(ivc&&esrd?' eGFR < 15 / diyaliz: büyük hacimli kalsiyum infüzyonundan kaçının, nefroloji ile görüşün.':''));
       }
     }
   }
