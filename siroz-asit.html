@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Siroz ve Asit</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Siroz ve Asit</h1>
+    <p>Asit sıvısı yorumu (SAAG, SBP, ikincil peritonit), SBP tedavisi ve profilaksisi, parasentez albümini, diüretik ve HRS-AKI</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="salb">Serum albümin <span>g/dL</span></label><input id="salb" type="number" inputmode="decimal" step="any" value="2.8"></div>
+      <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" type="number" inputmode="decimal" step="any" value="1.3"></div>
+      <div class="field"><label for="bun">BUN <span>mg/dL</span></label><input id="bun" type="number" inputmode="decimal" step="any" value="32"></div>
+      <div class="field"><label for="bil">Total bilirubin <span>mg/dL</span></label><input id="bil" type="number" inputmode="decimal" step="any" value="3.4"></div>
+      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="131"></div>
+      <div class="field"><label for="ctp">Child-Pugh puanı <span>5–15</span></label><input id="ctp" type="number" inputmode="decimal" step="1" value="10"></div>
+    </div>
+    <p class="note">BUN yerine üre biliniyorsa: BUN = üre ÷ 2,14.</p>
+  </section>
+
+  <section class="card">
+    <h2>Asit sıvısı</h2>
+    <div class="grid">
+      <div class="field"><label for="aalb">Asit albümin <span>g/dL</span></label><input id="aalb" type="number" inputmode="decimal" step="any" value="0.9"></div>
+      <div class="field"><label for="atp">Asit total protein <span>g/dL</span></label><input id="atp" type="number" inputmode="decimal" step="any" value="1.2"></div>
+    </div>
+    <span class="lbl">Nötrofil (PMN) sayısı</span>
+    <div class="seg"><button type="button" data-g="pm" data-v="pmn" aria-pressed="true">PMN girilecek</button><button type="button" data-g="pm" data-v="wbc" aria-pressed="false">Lökosit + % nötrofil</button></div>
+    <div class="grid">
+      <div class="field" id="w-pmn"><label for="pmn">PMN <span>/mm³</span></label><input id="pmn" type="number" inputmode="decimal" step="any" value="420"></div>
+      <div class="field" id="w-wbc" hidden><label for="wbc">Lökosit <span>/mm³</span></label><input id="wbc" type="number" inputmode="decimal" step="any" value="900"></div>
+      <div class="field" id="w-pct" hidden><label for="pct">Nötrofil <span>%</span></label><input id="pct" type="number" inputmode="decimal" step="any" value="45"></div>
+    </div>
+    <span class="lbl">Asit kültürü</span>
+    <div class="seg wrapseg"><button type="button" data-g="cx" data-v="u" aria-pressed="true">Bekleniyor</button><button type="button" data-g="cx" data-v="n" aria-pressed="false">Negatif</button><button type="button" data-g="cx" data-v="m" aria-pressed="false">Tek etken</button><button type="button" data-g="cx" data-v="p" aria-pressed="false">Polimikrobiyal</button></div>
+    <span class="lbl">Ateş, karın ağrısı veya hassasiyeti</span>
+    <div class="seg"><button type="button" data-g="sy" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="sy" data-v="1" aria-pressed="true">Var</button></div>
+    <h3>İkincil peritonit için (isteğe bağlı)</h3>
+    <div class="grid">
+      <div class="field"><label for="glu">Asit glukoz <span>mg/dL</span></label><input id="glu" type="number" inputmode="decimal" step="any" value="96"></div>
+      <div class="field"><label for="ldh">Asit LDH <span>U/L</span></label><input id="ldh" type="number" inputmode="decimal" step="any" value="140"></div>
+      <div class="field"><label for="uln">Serum LDH üst sınırı <span>U/L</span></label><input id="uln" type="number" inputmode="decimal" step="any" value="250"></div>
+      <div class="field"><label for="pmn48">48. saat PMN <span>/mm³</span></label><input id="pmn48" type="number" inputmode="decimal" step="any" value="" placeholder="tekrar parasentez"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Asit sıvısı yorumu</h2>
+    <span class="lbl">SAAG (serum − asit albümin)</span>
+    <div class="res"><span class="num" id="saag">–</span><span class="of">g/dL</span><span class="pill" id="saagp"></span></div>
+    <div class="sub"><span>PMN</span><b id="pmno">–</b></div>
+    <div class="sub"><span>Asit total protein</span><b id="tpo">–</b></div>
+    <div class="sub"><span>Runyon ölçütleri (protein, glukoz, LDH)</span><b id="runo">–</b></div>
+    <div class="sub" id="s48" hidden><span>48. saatte PMN değişimi</span><b id="d48">–</b></div>
+    <div class="res"><span class="pill" id="dxp"></span></div>
+    <ol class="rec" id="rxA"></ol>
+  </section>
+
+  <section class="card">
+    <h2>SBP tedavisi</h2>
+    <span class="lbl">Enfeksiyonun edinildiği yer</span>
+    <div class="seg wrapseg"><button type="button" data-g="acq" data-v="c" aria-pressed="true">Toplum</button><button type="button" data-g="acq" data-v="n" aria-pressed="false">Nozokomiyal / ÇİD riski</button><button type="button" data-g="acq" data-v="pt" aria-pressed="false">Yakın pip-tazo</button></div>
+    <p class="note">ÇİD: çoklu ilaca dirençli mikroorganizma. Nozokomiyal veya sağlık bakımıyla ilişkili enfeksiyon, yakın zamanda geniş spektrumlu antibiyotik, sepsis/şok ya da ÇİD risk faktörü varsa ikinci seçeneği kullanın.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>SBP: antibiyotik ve albümin</h2>
+    <div class="res"><span class="pill" id="sbpp"></span></div>
+    <table class="t">
+      <thead><tr><th>Albümin</th><th>Doz</th><th>%20 albümin</th></tr></thead>
+      <tbody>
+        <tr><td>1. gün <small>1,5 g/kg, ilk 6 saatte</small></td><td id="a1">–</td><td id="a1v">–</td></tr>
+        <tr><td>3. gün <small>1 g/kg</small></td><td id="a3">–</td><td id="a3v">–</td></tr>
+      </tbody>
+    </table>
+    <div class="sub"><span>Albüminden fayda en çok beklenen hasta</span><b id="benef">–</b></div>
+    <ol class="rec" id="rxS"></ol>
+    <p class="note">%20 albümin: 100 mL = 20 g, 50 mL = 10 g. AASLD 2021 albümini tüm SBP hastalarına önerir; kreatinin &gt; 1 mg/dL, BUN &gt; 30 mg/dL veya bilirubin &gt; 4 mg/dL (AASLD 2009; AASLD 2021 metninde &gt; 5) olanlarda fayda en belirgindir. Kılavuzlarda albümin için üst doz sınırı verilmez.</p>
+  </section>
+
+  <section class="card">
+    <h2>SBP profilaksisi</h2>
+    <span class="lbl">Daha önce SBP geçirdi mi?</span>
+    <div class="seg"><button type="button" data-g="psbp" data-v="0" aria-pressed="true">Hayır</button><button type="button" data-g="psbp" data-v="1" aria-pressed="false">Evet</button></div>
+    <span class="lbl">Üst GİS kanaması</span>
+    <div class="seg"><button type="button" data-g="gib" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="gib" data-v="1" aria-pressed="false">Var</button></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Profilaksi kararı</h2>
+    <div class="res"><span class="pill" id="prp"></span></div>
+    <div class="sub"><span>Asit protein &lt; 1,5 g/dL</span><b id="plo">–</b></div>
+    <div class="sub"><span>Böbrek: Kr &gt; 1,2 · BUN &gt; 25 · Na &lt; 130</span><b id="pre">–</b></div>
+    <div class="sub"><span>Karaciğer: Child-Pugh &gt; 9 ve bilirubin &gt; 3</span><b id="pli">–</b></div>
+    <ol class="rec" id="rxP"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Büyük hacimli parasentez</h2>
+    <div class="grid">
+      <div class="field"><label for="lit">Boşaltılan asit <span>L</span></label><input id="lit" type="number" inputmode="decimal" step="any" value="8"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Parasentez sonrası albümin</h2>
+    <div class="res"><span class="num" id="lvp">–</span><span class="of">g albümin</span><span class="pill" id="lvpp"></span></div>
+    <table class="t" id="lvpt">
+      <thead><tr><th>Doz</th><th>Albümin</th><th>%20 albümin</th></tr></thead>
+      <tbody>
+        <tr><td>6 g/L <small>AASLD alt sınır</small></td><td id="l6">–</td><td id="l6v">–</td></tr>
+        <tr><td>8 g/L <small>AASLD üst sınır, EASL</small></td><td id="l8">–</td><td id="l8v">–</td></tr>
+      </tbody>
+    </table>
+    <p class="advice" id="lvpa"></p>
+  </section>
+
+  <section class="card">
+    <h2>Diüretik ve tuz kısıtlaması</h2>
+    <table class="t">
+      <thead><tr><th>Basamak</th><th>Spironolakton</th><th>Furosemid</th></tr></thead>
+      <tbody>
+        <tr><td>Başlangıç</td><td>100 mg/gün</td><td>40 mg/gün</td></tr>
+        <tr><td>2</td><td>200 mg</td><td>80 mg</td></tr>
+        <tr><td>3</td><td>300 mg</td><td>120 mg</td></tr>
+        <tr><td>En yüksek</td><td>400 mg</td><td>160 mg</td></tr>
+      </tbody>
+    </table>
+    <ul class="chk">
+      <li>Dozlar 100:40 oranı korunarak birlikte artırılır (AASLD 2009: 3–5 günde bir; AASLD 2021: en az 72 saat arayla).</li>
+      <li>EASL: ilk kez gelişen orta (evre 2) asitte yalnız spironolakton 100 mg/gün başlanır, 72 saatte bir 100 mg artırılır (en çok 400 mg). Haftada &lt; 2 kg kilo kaybı veya hiperkalemi olursa furosemid 40 mg/gün eklenir, 40 mg basamaklarla en çok 160 mg. Uzun süreli veya tekrarlayan asitte baştan kombinasyon.</li>
+      <li>Kilo kaybı en çok 0,5 kg/gün (ödem yoksa), 1 kg/gün (ödem varsa).</li>
+      <li>Diüretiği kesin: Na &lt; 125 mmol/L, AKI, ensefalopatinin kötüleşmesi veya kısıtlayıcı kas krampları. K &lt; 3 mmol/L ise furosemidi, K &gt; 6 mmol/L ise spironolaktonu kesin.</li>
+      <li>Tuz: orta düzey sodyum kısıtlaması. EASL 80–120 mmol/gün (4,6–6,9 g tuz); AASLD 2 g (90 mmol) sodyum/gün. &lt; 40 mmol/gün çok düşük sodyumlu diyetten kaçının.</li>
+      <li>Hiponatremi yoksa sıvı kısıtlaması gerekmez.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Refrakter asit</h2>
+    <p class="advice">Sodyum kısıtlaması ve diüretiğe rağmen mobilize edilemeyen ya da büyük hacimli parasentezden sonra erken tekrarlayan asit. Diüretiğe dirençli (en yüksek dozda yanıt yok) ve diüretiğe dayanıksız (yan etki en yüksek doza izin vermiyor) olarak ikiye ayrılır.</p>
+    <ul class="chk">
+      <li>Sodyum kısıtlaması (88 mmol veya 2000 mg/gün) ve en az 1 hafta en yüksek doz diüretik: spironolakton 400 mg/gün (veya amilorid 30 mg/gün) + furosemid 160 mg/gün.</li>
+      <li>Yanıtsızlık: 4 günde ortalama kilo kaybı &lt; 0,8 kg ve idrar sodyumu alınan sodyumdan az.</li>
+      <li>Erken tekrar: mobilizasyondan sonra 4 hafta içinde evre 2–3 asidin yeniden ortaya çıkması.</li>
+      <li>Diüretiğe bağlı komplikasyon (dayanıksız asit): kreatininde &gt; %100 artışla &gt; 2 mg/dL, K &lt; 3 veya &gt; 6 mmol/L, Na’da &gt; 10 mmol/L düşüş veya &lt; 125 mmol/L, hepatik ensefalopati.</li>
+      <li>Tanı için tüm ölçütler karşılanmalı. İlk basamak tekrarlayan büyük hacimli parasentez + albümin (8 g/L); karaciğer nakli açısından değerlendirin. Diüretikle idrar sodyumu &gt; 30 mmol/gün değilse diüretiği kesin (EASL).</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>AKI ve HRS-AKI</h2>
+    <div class="grid">
+      <div class="field"><label for="bcr">Bazal kreatinin <span>mg/dL</span></label><input id="bcr" type="number" inputmode="decimal" step="any" value="0.8"></div>
+    </div>
+    <p class="note">Güncel kreatinin ve ağırlık “Hasta” kartından alınır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>AKI evresi ve HRS-AKI tedavisi</h2>
+    <div class="res"><span class="num" id="akn">–</span><span class="pill" id="akp"></span></div>
+    <div class="sub"><span>Kreatinin artışı</span><b id="akd">–</b></div>
+    <div class="sub"><span>Bazale oran</span><b id="akr">–</b></div>
+    <ol class="rec" id="rxH"></ol>
+    <p class="note">ICA evreleri (AASLD 2021): Evre 1 kreatinin artışı ≥ 0,3 mg/dL ile 2 kata kadar; Evre 2 2–3 kat; Evre 3 &gt; 3 kat veya kreatinin &gt; 4 mg/dL. AKI: 48 saatte ≥ 0,3 mg/dL veya 7 günde ≥ %50 artış; ICA-ADQI 2024’te idrar çıkışı ≤ 0,5 mL/kg/saat (≥ 6 saat) de ölçüttür.</p>
+  </section>
+
+  <p class="note">Kaynaklar: Biggins SW ve ark. AASLD 2021 asit, SBP ve hepatorenal sendrom rehberi, Hepatology 2021;74:1014–48 (SAAG, protein, PMN, bakterasit, ampirik antibiyotik ve süre, 48. saat parasentezi, SBP albümini, profilaksi, 6–8 g/L parasentez albümini, diüretik dozları, tuz, refrakter asit, AKI evreleri ve HRS-AKI ölçütleri); EASL 2018 dekompanse siroz klinik uygulama kılavuzu, J Hepatol 2018;69:406–60 (SAAG ≥ 1,1, PMN &gt; 250, protein &lt; 1,5 g/dL, tuz 80–120 mmol, diüretik basamakları ve kesme ölçütleri, 8 g/L albümin); Runyon BA, AASLD 2009 asit rehberi (ikincil peritonit, 100:40 oranı, SBP albümin ölçütleri, norfloksasin 400 mg/gün); Akriviadis EA, Runyon BA. Gastroenterology 1990;98:127–33 (ikincil peritonit ölçütleri, 48. saat parasentezi); Sort P ve ark. N Engl J Med 1999;341:403–9 (albümin 1,5 + 1 g/kg); Nadim MK ve ark. ICA-ADQI 2024, J Hepatol 2024;81:163–83 (HRS-AKI tanısı, terlipressin, norepinefrin, albümin 20–40 g/gün). Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var f2=function(x){return x.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})};
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  // %20 albümin: 100 mL = 20 g, 50 mL = 10 g; en az israfla birleşim
+  function vials(g){if(!(g>0))return '–';var n100=Math.floor(g/20),r=g-n100*20,n50=0;
+    if(r>1e-9){if(r<=10)n50=1;else n100+=1}
+    var parts=[];if(n100)parts.push(n100+' × 100 mL');if(n50)parts.push(n50+' × 50 mL');
+    return parts.join(' + ')+' = '+fm(n100*20+n50*10)+' g'}
+  var yn=function(b){return b===null?'veri yok':b?'evet':'hayır'};
+
+  function calc(){
+    var wt=v('wt'),salb=v('salb'),cr=v('cr'),bun=v('bun'),bil=v('bil'),na=v('na'),ctp=v('ctp');
+    var aalb=v('aalb'),tp=v('atp'),mode=segVal('pm'),cx=segVal('cx'),sy=segVal('sy')==='1';
+    $('w-pmn').hidden=mode!=='pmn';$('w-wbc').hidden=$('w-pct').hidden=mode==='pmn';
+    var pmn=mode==='pmn'?v('pmn'):(v('wbc')!==null&&v('pct')!==null?v('wbc')*v('pct')/100:null);
+    var glu=v('glu'),ldh=v('ldh'),uln=v('uln'),p48=v('pmn48');
+
+    // 1) Asit sıvısı
+    $('rxA').innerHTML='';
+    var saag=salb!==null&&aalb!==null?salb-aalb:null;
+    if(saag===null){$('saag').textContent='–';pill('saagp','','')}
+    else{$('saag').textContent=f2(saag);
+      if(saag>=1.1)pill('saagp','≥ 1,1: portal hipertansiyon','var(--warn)');else pill('saagp','< 1,1: portal hipertansiyon dışı','var(--low)')}
+    $('pmno').textContent=pmn===null?'–':fm(Math.round(pmn),0)+' /mm³'+(mode==='wbc'?' (hesaplanan)':'');
+    $('tpo').textContent=tp===null?'–':fm(tp,2)+' g/dL';
+    var rc=0,ra=0;
+    if(tp!==null){ra++;if(tp>1)rc++}
+    if(glu!==null){ra++;if(glu<50)rc++}
+    if(ldh!==null&&uln!==null){ra++;if(ldh>uln)rc++}
+    $('runo').textContent=ra?rc+' / 3'+(ra<3?' ('+ra+' ölçüldü)':''):'–';
+    var drop=null;$('s48').hidden=!(p48!==null&&pmn);
+    if(p48!==null&&pmn){drop=(pmn-p48)/pmn*100;$('d48').textContent=(drop>=0?'%'+fm(drop,0)+' azalma':'%'+fm(-drop,0)+' artış')}
+
+    if(saag!==null){
+      if(saag>=1.1){
+        if(tp!==null&&tp>2.5)li('rxA','Yüksek SAAG + yüksek protein (> 2,5 g/dL)','Kardiyak kaynağı destekler (sağ kalp yetmezliğinde karaciğer tutulumu).');
+        else li('rxA','Yüksek SAAG'+(tp!==null?' + düşük protein (≤ 2,5 g/dL)':''),'Portal hipertansiyon (~%97 doğruluk); sirozla uyumlu. Masif karaciğer metastazı da yüksek SAAG yapabilir.');
+      }else li('rxA','Düşük SAAG','Portal hipertansiyon dışlanır: peritoneal karsinomatoz, tüberküloz peritonit ve diğer nedenler. Sitoloji; pankreatik köken düşünülüyorsa amilaz.');
+    }
+    if(tp!==null&&tp<1.5)li('rxA','Asit protein < 1,5 g/dL','SBP için risk faktörü; birincil profilaksi ölçütlerine bakın.');
+
+    var sbp=pmn!==null&&pmn>250,poly=cx==='p',pos=cx==='m'||cx==='p';
+    var sec=sbp&&(rc>=2||poly),treat=false,dx;
+    if(pmn===null){dx=null;pill('dxp','','')}
+    else if(sec){dx='sec';treat=true;pill('dxp','İkincil peritonit şüphesi','var(--high)');
+      li('rxA','PMN > 250 + '+(rc>=2?rc+' Runyon ölçütü':'')+(rc>=2&&poly?' + ':'')+(poly?'polimikrobiyal kültür':''),'Acil görüntüleme (BT, gerekirse suda çözünen kontrastlı grafi), cerrahi konsültasyon. Üçüncü kuşak sefalosporine anaerop kapsamı ekleyin.');}
+    else if(sbp){dx='sbp';treat=true;pill('dxp','SBP (PMN > 250/mm³)','var(--high)');
+      li('rxA','SBP tanısı','Kültür sonucunu beklemeden ampirik antibiyotik + albümin başlayın (aşağıda). 48 saat sonra tanısal parasentezi tekrarlayın.');}
+    else if(pos){dx='bact';treat=sy;pill('dxp','Bakterasit (PMN ≤ 250, kültür +)','var(--warn)');
+      li('rxA',sy?'Bakterasit + enfeksiyon belirtisi':'Belirtisiz bakterasit',sy?'Ateş veya karın ağrısı/hassasiyeti varsa SBP gibi ampirik tedavi edin (AASLD 2009).':'Antibiyotik gerekmez; çoğu kendiliğinden geçer veya kontaminasyondur. SBP’ye ilerleme açısından tanısal parasentezi tekrarlayın.');}
+    else if(sy&&cx==='u'){dx='sym';treat=true;pill('dxp','PMN ≤ 250, belirti var','var(--warn)');
+      li('rxA','PMN ≤ 250 ama ateş veya karın ağrısı/hassasiyeti var','Kültür sonuçlanana kadar ampirik antibiyotik önerilir (AASLD 2009).');}
+    else{dx='no';pill('dxp','SBP yok','var(--ok)');li('rxA','PMN ≤ 250/mm³','SBP tanısı için PMN > 250/mm³ gerekir. Kültür sonucunu takip edin.')}
+    if(ra>0&&!sbp&&rc>=2)li('rxA','Runyon ölçütlerinden '+rc+' tanesi pozitif','Ölçütler nötrositik asitte (PMN > 250) yorumlanır.');
+    if(drop!==null&&sbp){if(drop<25)li('rxA','48. saatte PMN düşüşü < %25: tedavi başarısız','Antibiyotiği genişletin ve ikincil peritoniti görüntülemeyle araştırın.');
+      else li('rxA','48. saatte PMN düşüşü ≥ %25','Tedaviye yanıt var; 5–7 güne tamamlayın.')}
+
+    // 2) SBP tedavisi
+    $('rxS').innerHTML='';
+    var acq=segVal('acq');
+    if(dx==='sbp'||dx==='sec')pill('sbpp','Tedavi endike','var(--high)');
+    else if(treat)pill('sbpp','Ampirik antibiyotik önerilir','var(--warn)');
+    else pill('sbpp','Şu an SBP yok: doz bilgi amaçlı','var(--ok)');
+    var d1=wt?1.5*wt:null,d3=wt?wt:null;
+    $('a1').textContent=d1?fm(d1)+' g':'–';$('a1v').textContent=vials(d1);
+    $('a3').textContent=d3?fm(d3)+' g':'–';$('a3v').textContent=vials(d3);
+    var bf=[];if(cr!==null&&cr>1)bf.push('Kr > 1');if(bun!==null&&bun>30)bf.push('BUN > 30');if(bil!==null&&bil>4)bf.push('bilirubin > 4');
+    $('benef').textContent=bf.length?'evet ('+bf.join(', ')+')':'hayır';
+    if(acq==='c')li('rxS','IV üçüncü kuşak sefalosporin','Örneğin sefotaksim 2 g IV 12 saatte bir. Toplumda edinilmiş SBP’de ilk seçenek.');
+    else if(acq==='n')li('rxS','Piperasilin/tazobaktam','Nozokomiyal veya ÇİD riski: geniş spektrum ilk seçenek; yerel direnç verisine göre uyarlayın.');
+    else li('rxS','Meropenem','Yakın zamanda veya halen piperasilin/tazobaktam almış hastada.');
+    if(dx==='sec')li('rxS','İkincil peritonit şüphesinde anaerop kapsamı ekleyin','Görüntüleme ve cerrahi değerlendirme.');
+    li('rxS','Süre 5–7 gün','48. saatte tanısal parasentez: PMN düşüşü < %25 ise başarısızlık.');
+    li('rxS','Albümin 1. gün '+(d1?fm(d1)+' g':'1,5 g/kg')+', 3. gün '+(d3?fm(d3)+' g':'1 g/kg'),'Antibiyotiğe ek olarak; HRS-AKI sıklığını azaltır ve sağkalımı artırır.');
+    li('rxS','Hipotansiyon (OAB < 65 mmHg) veya AKI gelişirse non-selektif beta blokeri geçici kesin');
+
+    // 3) Profilaksi
+    $('rxP').innerHTML='';
+    var psbp=segVal('psbp')==='1',gib=segVal('gib')==='1';
+    var low=tp===null?null:tp<1.5;
+    var ren=(cr!==null&&cr>1.2)||(bun!==null&&bun>25)||(na!==null&&na<130);
+    var renK=cr===null&&bun===null&&na===null?null:ren;
+    var liv=ctp===null||bil===null?null:(ctp>9&&bil>3);
+    $('plo').textContent=yn(low);$('pre').textContent=yn(renK);$('pli').textContent=yn(liv);
+    var prim=low&&(ren||liv);
+    if(psbp)pill('prp','İkincil profilaksi endike','var(--high)');
+    else if(prim)pill('prp','Birincil profilaksi düşünülmeli','var(--warn)');
+    else pill('prp','Birincil profilaksi ölçütü yok','var(--ok)');
+    if(psbp)li('rxP','İkincil profilaksi: uzun süreli, her gün','Norfloksasin 400 mg/gün PO; alternatif siprofloksasin 500 mg/gün PO.');
+    else if(prim)li('rxP','Birincil profilaksi (seçilmiş hastada)','Asit protein < 1,5 g/dL ve böbrek işlev bozukluğu veya ileri karaciğer yetmezliği. Norfloksasin 400 mg/gün PO veya TMP-SMX (AASLD 2009).');
+    else li('rxP','Profilaksi gerekmiyor','Asit proteini < 1,5 g/dL ve ek ölçütlerden biri birlikte olmalı.');
+    if(gib)li('rxP','Üst GİS kanaması: seftriakson 1 g IV 24 saatte bir','En çok 7 gün; asit protein düzeyinden bağımsız.');
+
+    // 4) Parasentez
+    var L=v('lit');
+    if(L===null||L<=0){$('lvp').textContent='–';pill('lvpp','','');$('lvpa').textContent='';$('l6').textContent=$('l8').textContent=$('l6v').textContent=$('l8v').textContent='–'}
+    else{var g6=6*L,g8=8*L;
+      $('l6').textContent=fm(g6)+' g';$('l8').textContent=fm(g8)+' g';$('l6v').textContent=vials(g6);$('l8v').textContent=vials(g8);
+      if(L>5){$('lvp').textContent=fm(g6)+'–'+fm(g8);
+        pill('lvpp',L>8?'> 8 L: PPCD riski artar':'> 5 L: albümin önerilir',L>8?'var(--high)':'var(--warn)');
+        $('lvpa').textContent='Boşaltılan her litre için 6–8 g albümin (AASLD); EASL 8 g/L önerir. Albümini parasentez sırasında/sonrasında verin.'+(L>8?' Tek seansta > 8 L boşaltmada parasentez sonrası dolaşım bozukluğu riski artar.':'')}
+      else{$('lvp').textContent='–';pill('lvpp','≤ 5 L','var(--ok)');
+        $('lvpa').textContent='Büyük hacimli parasentez > 5 L olarak tanımlanır; AASLD albümini > 5 L için önerir. ≤ 5 L’de parasentez sonrası dolaşım bozukluğu riski düşüktür, ancak EASL yine de albümini genel olarak önerir. Tablo bilgi amaçlıdır.'}}
+
+    // 5) AKI / HRS-AKI
+    $('rxH').innerHTML='';
+    var b=v('bcr');
+    if(b===null||cr===null||b<=0){$('akn').textContent='–';pill('akp','','');$('akd').textContent=$('akr').textContent='–'}
+    else{var dd=cr-b,r=cr/b,st=0;
+      if(dd>=0.3||r>=1.5){st=(r>3||cr>4)?3:(r>=2?2:1)}
+      $('akd').textContent=(dd>=0?'+':'')+fm(dd,2)+' mg/dL';$('akr').textContent=fm(r,2)+' kat';
+      $('akn').textContent=st?'Evre '+st:'AKI yok';
+      pill('akp',st?'ICA-AKI':'Ölçüt karşılanmadı',st===3?'var(--high)':st?'var(--warn)':'var(--ok)');
+      if(st){
+        li('rxH','Tetikleyicileri düzeltin','Diüretik ve nefrotoksikleri (NSAİİ, aminoglikozit, iyotlu kontrast) kesin; hipotansiyonda beta blokeri kesmeyi düşünün.');
+        li('rxH','Volüm: albümin 1 g/kg/gün × 2 gün'+(wt?' = '+fm(wt)+' g/gün':''),'AASLD 2021 HRS-AKI algoritması. ICA-ADQI 2024 sabit 48 saat albümini şart koşmaz; volüm durumu belirsizse sıvı yüklemesi: 250–500 mL kristaloid veya 1–1,5 g/kg %20–25 albümin'+(wt?' ('+fm(wt)+'–'+fm(1.5*wt)+' g)':'')+'.');
+        li('rxH','HRS-AKI ölçütleri (ICA-ADQI 2024)','Asitli siroz; ICA-AKI ölçütleri; yeterli volüm resüsitasyonundan sonra 24 saatte kreatinin ve/veya idrar çıkışında düzelme yok; AKI için güçlü başka açıklama yok (şok, nefrotoksik ilaç, yapısal böbrek hasarı: proteinüri > 500 mg/gün, mikrohematüri > 50 eritrosit/BBA, anormal böbrek USG).');
+        li('rxH','Terlipressin','İnfüzyon 2 mg/gün ile başlanır; kreatinin %25 düşmezse 24 saatte bir en az 2 mg/gün artırılır, en çok 12 mg/gün. Alternatif IV bolus 1–2 mg 6 saatte bir. Sürekli infüzyonun yan etkisi daha azdır; volüm yükünde dikkat (iskemi, akciğer ödemi).');
+        li('rxH','Vazokonstriktörle birlikte albümin 20–40 g/gün','%20–25 albümin; volüm durumuna göre her gün ayarlayın, sıvı yükü veya akciğer ödeminde kesin.');
+        li('rxH','Alternatif: norepinefrin 0,5–3 mg/saat','OAB > 10 mmHg artmazsa 4 saatte bir 0,5 mg/saat artırın (en çok 3 mg/saat).');
+        li('rxH','Vazokonstriktörü durdurma','Kreatinin bazalin 0,3 mg/dL yakınına inince, en çok 14 gün, ciddi yan etki, en yüksek tolere edilen dozda 48 saatte düzelme yoksa, RRT veya nakil başlayınca.');
+      }else li('rxH','AKI ölçütü karşılanmadı','48 saatte ≥ 0,3 mg/dL veya 7 günde ≥ %50 kreatinin artışı yok; idrar çıkışını da izleyin.');
+    }
+  }
+  ['pm','cx','sy','acq','psbp','gib'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

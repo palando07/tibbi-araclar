@@ -11,10 +11,12 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Kan gazı yorumu (asit-baz, kompanzasyon, anyon açığı, delta oranı, A-a) | `kan-gazi.html` |
 | Kreatinin klerensi (Cockcroft-Gault) | `kreatinin-klerensi.html` |
 | Böbrekte ilaç dozu (CrCl'ye göre antibiyotik, NOAK, sık ilaçlar) | `bobrek-ilac-dozu.html` |
+| Siroz ve asit (SAAG, SBP, parasentez, diüretik, HRS-AKI) | `siroz-asit.html` |
 | Child-Pugh | `child-pugh.html` |
 | Wells skoru (pulmoner emboli) | `wells-pe.html` |
 | MELD-Na | `meld-na.html` |
 | Acil tedavi rehberi (hiperkalemi, DKA, hipoglisemi, hiponatremi, hiperkalsemi, adrenal kriz) | `acil-tedavi.html` |
+| Hipertansif acil (hedef tansiyon ve IV ilaç) | `hipertansif-acil.html` |
 | İnfüzyon hızı (doz ↔ mL/saat, heparin aPTT ayarı) | `infuzyon-hizi.html` |
 | Steroid eşdeğeri | `steroid-esdegeri.html` |
 | Pankreatit skorları (BISAP, Ranson, Revize Atlanta) | `pankreatit.html` |
@@ -39,6 +41,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Ortalama arter basıncı | `ortalama-arter-basinci.html` |
 | R faktör | `r-faktor.html` |
 | FIB-4 | `fib-4.html` |
+| Tiroid testi yorumu | `tiroid-testi.html` |
 | Levotiroksin dozu | `levotiroksin.html` |
 | STOP-BANG | `stop-bang.html` |
 | Tip 2 diyabet tedavisi (HbA1c hedefi, ilaç seçimi) | `diyabet-tedavi.html` |

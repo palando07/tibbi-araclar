@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hipertansif Acil</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.tr-no{color:var(--high);font-weight:700}
+table.t{width:100%;border-collapse:collapse;font-size:.88rem}
+table.t th,table.t td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
+table.t th:first-child,table.t td:first-child{text-align:left}
+table.t th{color:var(--muted);font-weight:600;font-size:.78rem}
+table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Hipertansif Acil</h1>
+    <p>Klinik tabloya göre kan basıncı hedefi, zamanlama ve IV ilaç dozları; ortalama arter basıncı ve hedef OAB hesabı</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="field"><label for="dz">Klinik tablo</label>
+      <select id="dz">
+        <option value="iv">Akut organ hasarı yok (ağır / kontrolsüz HT, ivedi durum)</option>
+        <option value="mal">Malign hipertansiyon (± TMA / akut böbrek hasarı)</option>
+        <option value="ens">Hipertansif ensefalopati</option>
+        <option value="ais">Akut iskemik inme – trombolitik/trombektomi yok</option>
+        <option value="ait">Akut iskemik inme – trombolitik/trombektomi planlı</option>
+        <option value="ich">Akut intraserebral kanama</option>
+        <option value="aks">Akut koroner sendrom</option>
+        <option value="apo">Akut kardiyojenik akciğer ödemi</option>
+        <option value="dis">Akut aort diseksiyonu</option>
+        <option value="pre">Ağır preeklampsi / eklampsi / HELLP</option>
+        <option value="sym">Sempatomimetik kriz / feokromositoma</option>
+      </select>
+    </div>
+    <div class="grid">
+      <div class="field"><label for="sbp">Sistolik <span>mmHg</span></label><input id="sbp" type="number" inputmode="numeric" step="1" value="200"></div>
+      <div class="field"><label for="dbp">Diyastolik <span>mmHg</span></label><input id="dbp" type="number" inputmode="numeric" step="1" value="115"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field" id="w-hr"><label for="hr">Nabız <span>/dk</span></label><input id="hr" type="number" inputmode="numeric" step="1" value="100"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2 id="t">Sonuç</h2>
+    <div class="res"><span class="num" id="map">–</span><span class="of">mmHg OAB</span><span class="pill" id="pl" hidden></span></div>
+    <div id="rows"></div>
+    <p class="f" id="fx"></p>
+    <ol class="rec" id="st"></ol>
+    <div id="tw" hidden>
+      <p class="note" id="tcap"></p>
+      <table class="t" id="tb"><thead><tr><th>µg/kg/dk</th><th>mg/saat</th><th>mL/saat (10 mg/mL)</th></tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Kontrendikasyon ve dikkat</h2>
+    <ul class="chk" id="nt"></ul>
+  </section>
+
+  <p class="note">Tablo değiştirildiğinde alanlara örnek değerler gelir; kendi hastanızın değerlerini girin. OAB = DKB + (SKB − DKB) / 3. <span class="tr-no">Türkiye'de bulunmayabilir</span> işaretli ilaçlar için ilacabak.com ve TİTCK KÜB/KT kayıtlarında Türkiye'de satışta ürün bulunamadı; kılavuzda geçtikleri için bilgi amaçlı gösterilir. Sodyum nitroprussid (Nipruss) ilaç listesinde görünmekle birlikte temini hastaneye göre değişebilir.</p>
+  <p class="note">Kaynaklar: van den Born BH ve ark. ESC Council on Hypertension position document on the management of hypertensive emergencies, Eur Heart J Cardiovasc Pharmacother 2019 (hedefler, zamanlama, ilaç seçimi ve IV doz tablosu; tablo 4 için yayımlanmış düzeltme vardır); 2024 ESC Yüksek Kan Basıncı ve Hipertansiyon Kılavuzu (≥ 180/110 mmHg'de hipertansif acil değerlendirmesi); AHA/ASA akut iskemik inme kılavuzu 2018/2019 (185/110, 180/105, 220/120 eşikleri ve tablo 5 dozları); ESO 2025 akut inmede kan basıncı kılavuzu; AHA/ASA 2022 spontan intraserebral kanama kılavuzu; INTERACT3 (Lancet 2023); ACOG Committee Opinion 767 (gebelikte ağır hipertansiyon, labetalol/hidralazin/nifedipin algoritması, magnezyum sülfat); AHA/ACC 2014 NSTE-AKS (nitrat ve PDE-5 inhibitörü); KÜB/SmPC: Brevibloc (esmolol), Ebrasel/Ebrantil (urapidil), nikardipin 1 mg/mL, fentolamin (FDA etiketi); Türkiye piyasa bilgisi ilacabak.com ve TİTCK KÜB/KT kayıtları (Ekim 2026). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var nf=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var r0=function(x){return Math.round(x)};
+  var NO=' — Türkiye\'de bulunmayabilir';
+  var HIGH='var(--high)',WARN='var(--warn)',OK='var(--ok)';
+
+  /* İlaç metinleri: [başlık, açıklama] */
+  var DR={
+    esm:function(w){return ['Esmolol (Brevibloc Premiks 10 mg/mL): yükleme 0,5–1 mg/kg'+(w?' = '+r0(0.5*w)+'–'+r0(w)+' mg':'')+' 1 dakikada; infüzyon 50–300 µg/kg/dk'+(w?' = '+nf(0.05*w*60,0)+'–'+nf(0.3*w*60,0)+' mg/saat ('+nf(0.05*w*6,1)+'–'+nf(0.3*w*6,1)+' mL/saat)':''),
+      'Etki 1–2 dakikada başlar, 10–30 dakika sürer. Adımlar 50 → 100 → 150 → 200 → 250 → 300 µg/kg/dk; her adım öncesi 500 µg/kg yükleme 1 dakikada, her adım 4 dakika. 300 µg/kg/dk üstü çalışılmamıştır; 24 saati aşan infüzyonda dikkat.']},
+    ntg:function(){return ['Nitrogliserin (Perlinganit 1 mg/mL): 5 µg/dk ile başlayın, 5 dakikada bir 5 µg/dk artırın; aralık 5–200 µg/dk',
+      'Dilüsyonsuz 1 mg/mL ile 5 µg/dk = 0,3 mL/saat, 200 µg/dk = 12 mL/saat. Etki 1–5 dakikada, süre 3–5 dakika. Baş ağrısı ve refleks taşikardi yapar.']},
+    nic:function(){return ['Nikardipin (Nicarflex Premiks 0,1 mg/mL; Ninax 2,5 mg/mL): 5 mg/saat başlayın, 5–15 dakikada bir 2,5 mg/saat artırın; en fazla 15 mg/saat',
+      '0,1 mg/mL premiks ile 5 mg/saat = 50 mL/saat, 15 mg/saat = 150 mL/saat. KÜB: 3–5 mg/saat ile başlayıp 15 dakikada bir 0,5–1 mg/saat artırılabilir; hedefe ulaşınca 2–4 mg/saat idame. Santral kateter yoksa 0,1–0,2 mg/mL\'ye sulandırın; bolus önerilmez. Etki 5–15 dakikada başlar.']},
+    ura:function(){return ['Urapidil (Ebrasel 25 mg/5 mL): 10–50 mg yavaş IV (ESC tablosu: 12,5–25 mg bolus); etki 5 dakikada, yanıta göre tekrarlanır',
+      'İnfüzyon: başlangıç 2 mg/dk, idame ortalama 9 mg/saat (ESC tablosu 5–40 mg/saat). 250 mg / 500 mL (0,5 mg/mL) ile 9 mg/saat = 18 mL/saat. Parenteral tedavi en fazla 7 gün. Refleks taşikardi yapmaz.']},
+    lab:function(w){return ['Labetalol'+NO+': 0,25–0,5 mg/kg IV bolus'+(w?' = '+nf(0.25*w,1)+'–'+nf(0.5*w,1)+' mg':'')+'; infüzyon 2–4 mg/dk hedefe kadar, sonra 5–20 mg/saat',
+      'ESC belgesinde birçok tabloda birinci seçenek. Etki 5–10 dakikada, süre 3–6 saat.']},
+    snp:function(w){return ['Sodyum nitroprussid (Nipruss; temini değişken): 0,3–10 µg/kg/dk'+(w?' = '+nf(0.3*w,0)+'–'+nf(10*w,0)+' µg/dk':'')+'; 5 dakikada bir 0,5 µg/kg/dk artırın',
+      'Etki hemen başlar, 1–2 dakika sürer; arteriyel kateterle izlem. Siyanür toksisitesi riski; böbrek veya karaciğer yetmezliğinde dikkat.']},
+    meto:function(){return ['Metoprolol (Beloc 5 mg/5 mL): 2,5–5 mg IV 2 dakikada; 5 dakikada bir tekrarlanabilir, en fazla 15 mg',
+      'Etki 1–2 dakikada başlar, 5–8 saat sürer; uzun etkili olduğu için aşırı düşüşte geri döndürmek zordur.']},
+    cle:function(){return ['Klevidipin'+NO+': 1–2 mg/saat; 2–5 dakikada bir dozu iki katına çıkarın, en fazla 21 mg/saat','Etki 2–3 dakikada başlar, 5–15 dakika sürer.']},
+    phen:function(){return ['Fentolamin'+NO+': 5 mg IV, gerektikçe tekrarlanır','Koroner arter hastalığı veya miyokard infarktüsü öyküsünde kontrendike; taşiaritmi ve göğüs ağrısı yapabilir.']},
+    mg:function(){return ['Magnezyum sülfat (%15, 10 mL ampul = 1,5 g): yükleme 4–6 g IV 20–30 dakikada (= '+nf(4/0.15,1)+'–'+nf(6/0.15,0)+' mL %15), idame 1–2 g/saat',
+      'Nöbet profilaksisi ve tedavisi; antihipertansifi geciktirmeyin. Miyastenia graviste kontrendike; böbrek yetmezliği ve akciğer ödeminde dikkat (refleks, solunum, idrar çıkışı izlemi). Damar yolu yoksa %50 çözeltiden 10 g IM (her kalçaya 5 g).']}
+  };
+  function c(id,w){return DR[id](w)}
+
+  function mapRows(m,pa,pb,lbl){var a=m*(1-pa),b=m*(1-pb);
+    return [['Ortalama arter basıncı',r0(m)+' mmHg'],[lbl,r0(b)+'–'+r0(a)+' mmHg (%'+r0(pa*100)+'–'+r0(pb*100)+' düşüş)']]}
+
+  var D={
+  iv:{t:'Akut organ hasarı yok',run:function(p){var s=[],n=[],rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg']];
+    var g3=p.sbp>=180||p.dbp>=110;
+    rows.push(['Hedef','Kontrollü, kademeli düşüş; hızlı düşürmeyin']);
+    s.push([g3?'KB ≥ 180/110 mmHg: önce akut organ hasarını dışlayın':'KB 180/110 mmHg altında','Hemoglobin, trombosit, kreatinin, elektrolitler, LDH, haptoglobin, idrar tetkiki (sediment), EKG ve fundoskopi; gerekirse troponin, periferik yayma (şistosit), akciğer grafisi, ekokardiyografi, beyin görüntüleme. Organ hasarı varsa tabloyu değiştirin. KB\'yi her iki koldan ve tekrar tekrar ölçün; çoğu kez ilaçsız da düşer.']);
+    s.push(['Oral tedavi; IV ilaç gerekmez','Seçenekler: kaptopril, oral labetalol'+NO+', uzun etkili nifedipin. Hangisinin daha iyi olduğuna dair veri sınırlı. Kullandığı ilaçları ve uyumu gözden geçirin; ilacı bırakmışsa yeniden başlayın.']);
+    s.push(['Kısa etkili nifedipin kullanmayın','Kontrolsüz ve hızlı KB düşüşü kardiyovasküler komplikasyonlara yol açabilir.']);
+    s.push(['İlaç verdikten sonra en az 2 saat gözlem','Etkinlik ve güvenliği değerlendirin; sonra taburcu edilebilir.']);
+    s.push(['Yakın izlem','Hedef KB\'ye ulaşana kadar en az ayda bir kontrol; uzun dönem izlem sürsün.']);
+    n=['Bu tablo hipertansif acil değildir; ESC "ivedi durum" terimini kullanmamayı tercih eder.','Hızlı düşürmeden kaçının: özellikle yaşlıda ve serebrovasküler hastalıkta hipoperfüzyon riski.'];
+    return{pl:g3?['Hipertansif acil değil',WARN]:['Ağır HT sınırının altında',OK],rows:rows,s:s,n:n}}},
+  mal:{t:'Malign hipertansiyon',run:function(p){var w=p.wt,rows=mapRows(p.map,.2,.25,'Hedef OAB');rows.push(['Süre','Birkaç saat içinde']);
+    var s=[['OAB\'yi birkaç saatte %20–25 düşürün','Tipik olarak KB > 200/120 mmHg ve ileri retinopati (alev hemorajisi, eksüda, papil ödemi). TMA için: hemoglobin, trombosit, LDH, haptoglobin, periferik yaymada şistosit, kreatinin, idrar sedimenti.'],
+      c('ura'),c('nic'),c('snp',w),c('lab',w),
+      ['Hasta çoğu kez volüm açığındadır','Basınç natriürezi nedeniyle; ani KB düşüşünde IV serum fizyolojik ile düzeltilebilir.'],
+      ['Oral tedaviye geçiş','RAS blokerine yanıt öngörülemez; IV ilk seçenek değildir. Oral ACE inhibitörü kullanılacaksa çok düşük dozla başlayın.']];
+    return{pl:['Hipertansif acil',HIGH],rows:rows,s:s,n:['OAB\'de %50\'yi aşan düşüş iskemik inme ve ölümle ilişkilendirilmiştir.','Urapidil: aort koarktasyonu ve AV şantta (diyaliz şantı hariç) kontrendike.','Nikardipin: ağır aort darlığı, kararsız angina ve MI sonrası ilk 8 günde kontrendike.','Malign hipertansiyona bağlı TMA genellikle KB düşürmeyle 24–48 saatte düzelir; düzelmezse TTP ve HÜS\'ü düşünün (başka tedavi gerekir).']}}},
+  ens:{t:'Hipertansif ensefalopati',run:function(p){var w=p.wt,rows=mapRows(p.map,.2,.25,'Hedef OAB');rows.push(['Süre','Hemen']);
+    var s=[['OAB\'yi hemen %20–25 düşürün','Yakın hemodinamik izlem yapılabilen birimde; beyin görüntülemesiyle inme ve kanamayı dışlayın.'],
+      c('nic'),c('snp',w),c('lab',w)];
+    return{pl:['Hipertansif acil',HIGH],rows:rows,s:s,n:['Labetalol kılavuzda tercih edilir (serebral kan akımını korur, kafa içi basıncı artırmaz); Türkiye\'de bulunmuyorsa nikardipin ilk seçenektir.','OAB\'de %50\'yi aşan düşüşten kaçının.','Klonidin sedasyon yapar ve nörolojik değerlendirmeyi bozar; geri tepme hipertansiyonu.']}}},
+  ais:{t:'İskemik inme (reperfüzyon yok)',run:function(p){var w=p.wt,need=p.sbp>220||p.dbp>120,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg']];
+    if(need){rows.push(['Hedef OAB',r0(p.map*.85)+' mmHg (%15 düşüş)']);rows.push(['Süre','İlk 24 saat'])}
+    else rows.push(['Hedef','Acil düşürme gerekmez (eşik > 220/120)']);
+    var s=need?[['KB > 220/120 mmHg: OAB\'yi ilk 24 saatte yaklaşık %15 düşürün','Daha büyük ve hızlı düşüşten kaçının; penumbra perfüzyonu KB\'ye bağımlıdır.'],
+      c('nic'),['Labetalol'+NO+': 10 mg IV, ardından 2–8 mg/dk infüzyon','AHA/ASA seçeneği.'],c('cle'),
+      ['KB kontrol edilemezse veya DKB > 140 mmHg: sodyum nitroprussid'+(w?' 0,3–10 µg/kg/dk = '+nf(0.3*w,0)+'–'+nf(10*w,0)+' µg/dk':''),'Nipruss; temini değişken.']]
+      :[['KB ≤ 220/120 mmHg: acil antihipertansif önerilmez','Başka bir endikasyon (AKS, akciğer ödemi, aort diseksiyonu, preeklampsi) yoksa; KB\'yi izleyin.'],
+      ['Reperfüzyon adayıysa','"Trombolitik/trombektomi planlı" tablosunu seçin: hedef < 185/110 mmHg.']];
+    return{pl:need?['Acil KB düşürme gerekli',HIGH]:['Acil KB düşürme önerilmez',OK],rows:rows,s:s,n:['Sedasyon yapan ve uzun etkili ilaçlardan kaçının; nörolojik muayeneyi sık tekrarlayın.','Nikardipin: ağır aort darlığı, kararsız angina ve MI sonrası ilk 8 günde kontrendike.']}}},
+  ait:{t:'İskemik inme (reperfüzyon planlı)',run:function(p){var w=p.wt,hi=p.sbp>185||p.dbp>110,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Trombolitik öncesi','< 185/110 mmHg'],['Trombolitik sırasında ve sonraki 24 saat','< 180/105 mmHg']];
+    var s=[[hi?'KB '+r0(p.sbp)+'/'+r0(p.dbp)+': trombolitikten önce < 185/110 mmHg\'ye indirin':'KB hedefte (< 185/110); trombolitik verilebilir','KB 185/110 altına indirilemezse trombolitik uygulanmaz. Uygulama sırasında ve sonraki 24 saat < 180/105 mmHg tutun; KB\'yi sık ölçün.'],
+      c('nic'),['Labetalol'+NO+': 10–20 mg IV 1–2 dakikada; 1 kez tekrarlanabilir','AHA/ASA seçeneği.'],c('cle'),
+      ['Başarılı trombektomi sonrası','İlk 24 saatte sistolik KB\'yi yoğun şekilde < 140 mmHg\'ye düşürmeyin (ESO 2025).']];
+    return{pl:hi?['Trombolitik öncesi düşürün',HIGH]:['Trombolitik için uygun KB',OK],rows:rows,s:s,n:['Nikardipin: ağır aort darlığı, kararsız angina ve MI sonrası ilk 8 günde kontrendike.','Tedaviye rağmen KB yükselirse ölçüm sıklığını artırın ve tedaviyi yoğunlaştırın.']}}},
+  ich:{t:'İntraserebral kanama',run:function(p){var w=p.wt,S=p.sbp,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg']],s=[],pl;
+    if(S>220){rows.push(['Hedef','Dikkatli, kademeli düşürme']);pl=['Hipertansif acil',HIGH];
+      s.push(['SKB > 220 mmHg: dikkatli düşürün','ATACH-2 post hoc analizinde SKB ≥ 220 olanlarda yoğun düşürmenin yararı görülmedi; büyük ve hızlı düşüşlerden kaçının. Sürekli IV infüzyon ve sık KB izlemi.'])}
+    else if(S>=150){rows.push(['Hedef SKB','130–140 mmHg ('+r0(S-140)+'–'+r0(S-130)+' mmHg düşüş)']);rows.push(['Süre','Hemen başlayın; INTERACT3: 1 saatte < 140']);pl=['Hipertansif acil',HIGH];
+      s.push(['SKB 150–220 mmHg: hedef 130–140 mmHg','Tedaviye hemen başlayın, dikkatli titre edin; KB\'yi düzgün ve sürekli kontrol altında tutun (dalgalanmadan kaçının). INTERACT3 paketinde hedef 1 saat içinde SKB < 140 mmHg.'])}
+    else{rows.push(['Hedef','Acil düşürme gerekmez; < 130 mmHg\'ye inmeyin']);pl=['Acil KB düşürme gerekmez',OK];
+      s.push(['SKB < 150 mmHg: ek düşürme gerekmez','SKB\'nin 130 mmHg altına inmesi zararlı olabilir.'])}
+    if(S>=150)s.push(c('nic'),c('ura'),c('lab',w));
+    s.push(['Kanamanın diğer bileşenleri','Antikoagülan geri döndürme, glukoz ve ateş kontrolü (INTERACT3 paketinin parçaları); beyin cerrahisi değerlendirmesi.']);
+    return{pl:pl,rows:rows,s:s,n:['Akut dönemde SKB\'yi < 130 mmHg\'ye düşürmek zararlı olabilir; kaçının.','Nikardipin: ağır aort darlığı, kararsız angina ve MI sonrası ilk 8 günde kontrendike.','Urapidil: aort koarktasyonu ve AV şantta kontrendike.']}}},
+  aks:{t:'Akut koroner sendrom',run:function(p){var w=p.wt,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Hedef SKB','< 140 mmHg'+(p.sbp>=140?' (en az '+r0(p.sbp-139)+' mmHg düşüş)':'')],['Süre','Hemen']];
+    var s=[['SKB\'yi hemen < 140 mmHg\'ye düşürün','Kalp hızını artırmadan art yükü azaltın.'],c('ntg'),
+      ['Taşikardi varsa nitrogliserine beta bloker ekleyin',c('meto')[0]+'. Alternatif: '+c('esm',w)[0]+'.'],c('ura'),c('lab',w)];
+    return{pl:['Hipertansif acil',HIGH],rows:rows,s:s,n:['Nitrogliserin: hipotansiyon, sağ ventrikül infarktı, belirgin bradikardi veya taşikardide ve son 24 saatte sildenafil/vardenafil, 48 saatte tadalafil alanlarda vermeyin.','Nitroprussid tercih edilmez: bölgesel koroner akımı azaltıp miyokard hasarını artırabilir.','Nikardipin kararsız angina ve MI sonrası ilk 8 günde kontrendike.','Beta bloker: bradikardi, 2.–3. derece AV blok, dekompanse kalp yetmezliği, kardiyojenik şok ve astımda kullanmayın.']}}},
+  apo:{t:'Kardiyojenik akciğer ödemi',run:function(p){var w=p.wt,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Hedef SKB','< 140 mmHg'+(p.sbp>=140?' (en az '+r0(p.sbp-139)+' mmHg düşüş)':'')],['Süre','Hemen']];
+    var s=[['SKB\'yi hemen < 140 mmHg\'ye düşürün','Ön ve art yükü azaltın; noninvaziv CPAP ödemi ve venöz dönüşü azaltır.'],
+      [c('ntg')[0]+' + IV loop diüretik',c('ntg')[1]+' Yüksek dozlar gerekebilir. Loop diüretik volüm yükünü azaltır.'],
+      c('snp',w),[c('ura')[0]+' + IV loop diüretik',c('ura')[1]+' Nitrogliserinle karşılaştırıldığında KB düşüşü daha iyi, refleks taşikardi yok.']];
+    return{pl:['Hipertansif acil',HIGH],rows:rows,s:s,n:['Nitroprussid ESC belgesinde ilk seçenektir (ön ve art yükü azaltır); Türkiye\'de temini değişken olduğu için nitrogliserin önde gösterildi.','Esmolol ve diğer beta blokerler dekompanse kalp yetmezliğinde kontrendike.','Nitrogliserin: hipotansiyon, sağ ventrikül infarktı ve son 24 saatte sildenafil/vardenafil, 48 saatte tadalafil kullanımında vermeyin.']}}},
+  dis:{t:'Akut aort diseksiyonu',run:function(p){var w=p.wt,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Hedef SKB','≤ 120 mmHg'+(p.sbp>120?' ('+r0(p.sbp-120)+' mmHg düşüş)':'')],['Hedef nabız','≤ 60/dk'+(p.hr!==null?' (şu an '+r0(p.hr)+')':'')],['Süre','Hemen']];
+    var s=[['SKB ≤ 120 mmHg ve nabız ≤ 60/dk: hemen','Aort duvarındaki gerilimi azaltır. Önce beta blokajla başlayın, gerekirse vazodilatör ekleyin. Acil kalp-damar cerrahisi konsültasyonu.'],
+      c('esm',w),['Hedef KB\'ye ulaşılmazsa vazodilatör ekleyin',c('ntg')[0]+'; ya da '+c('nic')[0]+'; ya da sodyum nitroprussid'+(w?' 0,3–10 µg/kg/dk = '+nf(0.3*w,0)+'–'+nf(10*w,0)+' µg/dk':'')+' (temini değişken).'],
+      c('meto'),c('lab',w)];
+    return{pl:['Hipertansif acil',HIGH],rows:rows,s:s,n:['Vazodilatörü beta blokajsız tek başına vermeyin: refleks taşikardi aort duvarı gerilimini artırır.','Esmolol kısa etkili olduğu için aşırı düşüşte hızla geri döner; metoprolol ve labetalolün uzun yarı ömrü bu açıdan dezavantajdır.','Esmolol: nabız < 50, hasta sinüs, 2.–3. derece AV blok, kardiyojenik şok, dekompanse KY, akut astım ve tedavi edilmemiş feokromositomada kontrendike.'],tbl:w}}},
+  pre:{t:'Ağır preeklampsi / eklampsi',run:function(p){var sev=p.sbp>=160||p.dbp>=110,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Hedef','< 160/105 mmHg'],['Süre','Ağır KB doğrulandıktan sonra 30–60 dakika içinde tedavi']];
+    var s=[[sev?'KB ≥ 160 ve/veya ≥ 110 mmHg (15 dakika sürüyorsa): acil tedavi':'KB ağır aralıkta değil (< 160/110)','Hedef < 160/105 mmHg. Kontrol sağlandıktan sonra KB\'yi 1 saat 10 dakikada bir, sonraki saat 15 dakikada bir, sonraki saat 30 dakikada bir ölçün. Fetal kalp hızını izleyin.'],
+      c('mg'),c('nic'),
+      ['Oral nifedipin (kısa etkili, Nidilat 10 mg kapsül): 10 mg ağızdan; 20 dakika sonra hâlâ ağırsa 20 mg, 20 dakika sonra yine 20 mg','Ardından da ağırsa IV ilaca geçin. Kapsül yutulur; delinmez, dil altı verilmez. ACOG\'a göre özellikle damar yolu yoksa birinci basamak; ESC belgesi ise ani düşüş nedeniyle kısa etkili nifedipini önermez.'],
+      ['Labetalol'+NO+': 20 mg IV 2 dakikada; 10 dakika sonra 40 mg, 10 dakika sonra 80 mg','Yine kontrol yoksa başka ilaca geçin. ESC: kümülatif doz 24 saatte 800 mg\'ı geçmesin (fetal bradikardi). Astım, kalp hastalığı ve kalp yetmezliğinde kaçının.'],
+      ['Hidralazin'+NO+': 5–10 mg IV 2 dakikada; 20 dakika sonra 10 mg','24 saatte en fazla 25 mg. ESC belgesi artık önermiyor (perinatal olumsuz sonuçlar, maternal hipotansiyon).'],
+      ['Kesin tedavi doğumdur','Kadın doğum ve yoğun bakım ekibiyle birlikte yönetin.']];
+    return{pl:sev?['Hipertansif acil',HIGH]:['Ağır aralıkta değil',WARN],rows:rows,s:s,n:['Sodyum nitroprussid gebelikte kontrendike (fetal siyanür toksisitesi).','Urapidil: KÜB\'ye göre gebelikte zorunlu olmadıkça kullanılmaz.','Nikardipin: çoğul gebelikte kullanmayın; IV kullanımda ve beta-2 agonistle birlikte akciğer ödemi bildirilmiştir.','Magnezyum: miyastenia graviste kontrendike; böbrek yetmezliğinde düzey ve refleks izlemi.']}}},
+  sym:{t:'Sempatomimetik kriz / feokromositoma',run:function(p){var rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Hedef','Kaynakta sayısal hedef yok; organ hasarına göre']];
+    var s=[['Kokain / amfetamin: önce benzodiazepin','Ajitasyon ve sempatik aktivasyonu azaltır; KB çoğu kez bununla düşer. Koroner iskemi varsa nitrogliserin ve aspirin.'],
+      c('phen'),c('nic'),c('ura'),
+      ['Sodyum nitroprussid (Nipruss; temini değişken): 0,3–10 µg/kg/dk'+(p.wt?' = '+nf(0.3*p.wt,0)+'–'+nf(10*p.wt,0)+' µg/dk':''),'Feokromositomada perioperatif kullanılmıştır.']];
+    return{pl:['Organ hasarı varsa acil',HIGH],rows:rows,s:s,n:['Beta blokerler (labetalol dahil) kokaine bağlı koroner vazokonstriksiyonda göreli kontrendike.','Feokromositomada labetalol bazı olgularda hipertansiyonu ağırlaştırmıştır; alfa blokaj olmadan beta bloker vermeyin (esmolol tedavi edilmemiş feokromositomada kontrendike).','Fentolamin koroner arter hastalığında kontrendike.']}}}
+  };
+  var EX={iv:{sbp:200,dbp:115},mal:{sbp:230,dbp:135},ens:{sbp:240,dbp:140},ais:{sbp:230,dbp:125},ait:{sbp:195,dbp:112},ich:{sbp:190,dbp:100},aks:{sbp:190,dbp:110},apo:{sbp:210,dbp:120},dis:{sbp:180,dbp:100,hr:100},pre:{sbp:170,dbp:112,wt:75},sym:{sbp:220,dbp:120}};
+
+  function build(){var k=$('dz').value,ex=EX[k];
+    $('sbp').value=ex.sbp;$('dbp').value=ex.dbp;$('wt').value=ex.wt||70;if(ex.hr)$('hr').value=ex.hr;
+    $('w-hr').hidden=k!=='dis';calc()}
+  function li(ol,x){var l=document.createElement('li'),b=document.createElement('b');
+    var parts=x[0].split(NO);b.appendChild(document.createTextNode(parts[0]));
+    if(parts.length>1){var sp=document.createElement('span');sp.className='tr-no';sp.textContent=NO;b.appendChild(sp);b.appendChild(document.createTextNode(parts.slice(1).join(NO)))}
+    l.appendChild(b);if(x[1]){var a=document.createElement('p');a.className='advice';a.textContent=x[1];l.appendChild(a)}ol.appendChild(l)}
+  function calc(){var k=$('dz').value,d=D[k],p={sbp:v('sbp'),dbp:v('dbp'),wt:v('wt'),hr:k==='dis'?v('hr'):null};
+    if(p.wt!==null&&p.wt<=0)p.wt=null;
+    var ol=$('st'),ul=$('nt'),rows=$('rows');ol.innerHTML='';ul.innerHTML='';rows.innerHTML='';$('t').textContent=d.t;$('tw').hidden=true;
+    if(p.sbp===null||p.dbp===null||p.sbp<=p.dbp||p.dbp<=0){$('map').textContent='–';pill('pl','');$('fx').hidden=true;
+      li(ol,['Sistolik ve diyastolik basıncı girin','Sistolik, diyastolikten büyük olmalı.']);ul.closest('section').hidden=true;return}
+    p.map=p.dbp+(p.sbp-p.dbp)/3;
+    var r=d.run(p);
+    $('map').textContent=r0(p.map);pill('pl',r.pl[0],r.pl[1]);
+    $('fx').hidden=false;$('fx').textContent='OAB = '+r0(p.dbp)+' + ('+r0(p.sbp)+' − '+r0(p.dbp)+') / 3 = '+nf(p.map,1)+' mmHg';
+    r.rows.forEach(function(x){var s=document.createElement('div'),a=document.createElement('span'),b=document.createElement('b');s.className='sub';a.textContent=x[0];b.textContent=x[1];s.appendChild(a);s.appendChild(b);rows.appendChild(s)});
+    r.s.forEach(function(x){li(ol,x)});
+    r.n.forEach(function(x){var l=document.createElement('li');l.textContent=x;ul.appendChild(l)});
+    ul.closest('section').hidden=!r.n.length;
+    if(r.tbl){var tb=$('tb').tBodies[0];tb.innerHTML='';$('tw').hidden=false;
+      $('tcap').textContent='Esmolol infüzyon hızları, '+nf(r.tbl,1)+' kg (Brevibloc Premiks 10 mg/mL):';
+      [50,100,150,200,250,300].forEach(function(dz){var mgh=dz*r.tbl*60/1000,tr=document.createElement('tr');
+        [String(dz),nf(mgh,0),nf(mgh/10,1)].forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.appendChild(td)});tb.appendChild(tr)})}
+  }
+  $('dz').addEventListener('change',build);
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
+  build();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

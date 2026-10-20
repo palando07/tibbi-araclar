@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tiroid Testi Yorumu</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartları, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+/* Sayfaya özgü */
+.res .num.pat{font:700 1.3rem/1.25 var(--font-body);flex:1 1 100%;text-wrap:balance}
+.sub b.w{white-space:normal;text-align:right}
+.rng{display:grid;grid-template-columns:3.2em minmax(0,1fr) minmax(0,1fr);gap:8px 10px;align-items:center}
+.rng .h{font-size:.72rem;font-weight:600;color:var(--muted);letter-spacing:.04em}
+.rng b{font-size:.9rem}
+.rng input{font-size:1.05rem;padding:9px 10px}
+.st-hi{color:var(--high);font-weight:700}
+.st-lo{color:var(--low);font-weight:700}
+.st-n{color:var(--ok);font-weight:700}
+a.in{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Tiroid Testi Yorumu</h1>
+    <p>TSH, sT4 ve sT3 örüntüsü, ayırıcı tanı, istenecek testler ve tedavi eşikleri</p>
+  </header>
+
+  <section class="card">
+    <h2>Sonuçlar</h2>
+    <div class="grid">
+      <div class="field"><label for="tsh">TSH <span>mIU/L</span></label><input id="tsh" type="number" inputmode="decimal" step="any" value="7.8"></div>
+      <div class="field"><label for="ft4">sT4 <span>ng/dL</span></label><input id="ft4" type="number" inputmode="decimal" step="any" value="1.1"></div>
+      <div class="field"><label for="ft3">sT3 <span>pg/mL (isteğe bağlı)</span></label><input id="ft3" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" type="number" inputmode="numeric" step="1" value="58"></div>
+    </div>
+    <details>
+      <summary>Laboratuvar referans aralıkları</summary>
+      <div class="rng" style="margin-top:10px">
+        <span></span><span class="h">ALT SINIR</span><span class="h">ÜST SINIR</span>
+        <b>TSH</b><input id="tsl" type="number" inputmode="decimal" step="any" value="0.4" aria-label="TSH alt sınır"><input id="tsu" type="number" inputmode="decimal" step="any" value="4.0" aria-label="TSH üst sınır">
+        <b>sT4</b><input id="f4l" type="number" inputmode="decimal" step="any" value="0.8" aria-label="sT4 alt sınır"><input id="f4u" type="number" inputmode="decimal" step="any" value="1.8" aria-label="sT4 üst sınır">
+        <b>sT3</b><input id="f3l" type="number" inputmode="decimal" step="any" value="2.3" aria-label="sT3 alt sınır"><input id="f3u" type="number" inputmode="decimal" step="any" value="4.2" aria-label="sT3 üst sınır">
+      </div>
+      <p>Kendi laboratuvarınızın aralığını girin; yöntemler arası fark büyüktür.</p>
+    </details>
+    <p class="note">Değerler örnek olarak doldurulmuştur.</p>
+  </section>
+
+  <section class="card">
+    <h2>Klinik bağlam</h2>
+    <span class="lbl">Gebelik</span>
+    <div class="seg wrapseg"><button type="button" data-g="pr" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="pr" data-v="1" aria-pressed="false">1. tri</button><button type="button" data-g="pr" data-v="2" aria-pressed="false">2. tri</button><button type="button" data-g="pr" data-v="3" aria-pressed="false">3. tri</button></div>
+    <div class="items" id="w-prr" hidden>
+      <label class="item"><input type="checkbox" id="prr"><span class="txt">Girilen TSH aralığı gebeliğe özgü<small>laboratuvarın trimestere özgü aralığı</small></span></label>
+    </div>
+    <span class="lbl">İlaç ve durumlar</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="lt4"><span class="txt">Levotiroksin kullanıyor</span></label>
+      <label class="item"><input type="checkbox" id="atd"><span class="txt">Antitiroid ilaç kullanıyor<small>metimazol, propiltiourasil</small></span></label>
+      <label class="item"><input type="checkbox" id="nti"><span class="txt">Akut tiroid dışı hastalık / yatan hasta<small>sepsis, yoğun bakım, ağır sistemik hastalık</small></span></label>
+      <label class="item"><input type="checkbox" id="ami"><span class="txt">Amiodaron (güncel veya yakın zamanda)</span></label>
+      <label class="item"><input type="checkbox" id="bio"><span class="txt">Biotin kullanımı<small>saç-tırnak vitaminleri, yüksek doz takviye</small></span></label>
+      <label class="item"><input type="checkbox" id="kon"><span class="txt">Yakın zamanda iyotlu kontrast</span></label>
+      <label class="item"><input type="checkbox" id="hip"><span class="txt">Bilinen hipofiz / hipotalamus hastalığı</span></label>
+    </div>
+    <span class="lbl">Tedavi kararını etkileyenler</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="sym"><span class="txt">Belirgin semptom<small>hipotiroidi veya hipertiroidi bulguları</small></span></label>
+      <label class="item"><input type="checkbox" id="kal"><span class="txt">Kalp hastalığı<small>koroner hastalık, kalp yetmezliği, AF</small></span></label>
+      <label class="item"><input type="checkbox" id="ost"><span class="txt">Osteoporoz</span></label>
+      <label class="item"><input type="checkbox" id="pm"><span class="txt">Postmenopozal<small>östrojen veya bisfosfonat almıyor</small></span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Tiroid testi yorumu</span>
+    <div class="res"><span class="num pat" id="pat">–</span><span class="pill" id="pl"></span></div>
+    <table class="t" id="tbl">
+      <thead><tr><th>Test</th><th>Değer</th><th>Referans</th><th>Durum</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+    <div id="subs"></div>
+    <p class="advice" id="adv"></p>
+    <div id="w-dd"><span class="lbl">Ayırıcı tanı</span><ul class="chk" id="dd" style="margin-top:8px"></ul></div>
+    <div id="w-nx"><span class="lbl">İstenecek testler / izlem</span><ol class="rec" id="nx" style="margin-top:8px"></ol></div>
+    <div id="w-tx"><span class="lbl">Tedavi</span><ol class="rec" id="tx" style="margin-top:8px"></ol></div>
+    <div id="w-sh" hidden><span class="lbl">ATA 2016 subklinik hipertiroidi tedavi tablosu</span></div>
+    <p class="note" id="rnote"></p>
+  </section>
+
+  <section class="card">
+    <h2>Dikkat</h2>
+    <ul class="chk">
+      <li>TSH gün içinde belirgin dalgalanır (aynı kişide günlük %40–50’ye varan değişim); mümkünse sabah ölçün (TEMD 2025).</li>
+      <li>Tek bir anormal sonuçla tanı koymayın; özellikle subklinik değerleri tekrarlayarak doğrulayın.</li>
+      <li>Biotin kullanan hastada testi biotin en az 2 gün kesildikten sonra isteyin (TEMD 2025).</li>
+      <li>Yaşa göre TSH üst sınırı yükselir: NHANES III’te 97,5. persentil 20–29 yaşta 3,5, 50–70 yaşta 4,5, 80 yaş üzerinde 7,5 mIU/L (TEMD 2025).</li>
+      <li>Ağır hastalıkta (yoğun bakım) sT4 yöntemleri güvenilir değildir; tiroid hastalığından şüphe yoksa test istemeyin, gerekirse iyileşme sonrasında tekrarlayın.</li>
+      <li>Levotiroksin dozu için <a class="in" href="levotiroksin.html">Levotiroksin aracına</a> bakın.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: TEMD Tiroid Hastalıkları Tanı ve Tedavi Kılavuzu 2025, Bölüm 1 “Tiroid Fonksiyon Testleri” (kılavuzun diğer bölümlerine — subklinik hipo/hipertiroidi, gebelik, tiroid dışı hastalık — erişilemedi; bu konularda aşağıdaki kılavuzlar kullanıldı); Pearce SHS ve ark. 2013 ETA Subklinik Hipotiroidi Kılavuzu (Eur Thyroid J 2013); Biondi B ve ark. 2015 ETA Endojen Subklinik Hipertiroidi Kılavuzu (Eur Thyroid J 2015); Jonklaas J ve ark. ATA Hipotiroidi Tedavi Kılavuzu 2014 (Thyroid 2014); Ross DS ve ark. ATA Hipertiroidi ve Tirotoksikoz Kılavuzu 2016 (Thyroid 2016; subklinik hipertiroidi tedavi tablosu dahil); Alexander EK ve ark. ATA Gebelik Kılavuzu 2017 ve Korevaar TIM ve ark. ATA 2026 Prekonsepsiyon, Gebelik ve Postpartum Tiroid Kılavuzu (Thyroid 2026); Fleseriu M ve ark. Endocrine Society Hipopituitarizmde Hormon Replasmanı Kılavuzu 2016 (santral hipotiroidi). Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var fm=function(x){return x.toLocaleString('tr-TR',{maximumFractionDigits:2})};
+  var fr=function(x){return x.toLocaleString('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:2})};
+  var ck=function(id){return $(id).checked};
+  var C={hypo:'var(--low)',hyper:'var(--high)',sub:'var(--warn)',ok:'var(--ok)'};
+
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+  function recLi(list,b,a){var l=el('li');l.appendChild(el('b',null,b));if(a)l.appendChild(el('p','advice',a));list.appendChild(l)}
+  function st(x,lo,hi){return x<lo?'lo':x>hi?'hi':'n'}
+
+  // Örüntü sonucu: name, color, adv, dd[], nx[[b,a]], tx[[b,a]], subs[[k,v]]
+  function R(name,color,adv){return {name:name,color:color,adv:adv||'',dd:[],nx:[],tx:[],subs:[],top:[]}}
+
+  var LINK_LT4='Doz için Levotiroksin aracını kullanın. TSH ve T4 kararlı duruma yaklaşık 6 haftada ulaşır; doz değişikliğinden sonra kontrolü bu süre dolunca yapın (ATA 2014).';
+  var HYPER_NX=function(r,c,preg){
+    if(preg){r.nx.push(['TRAb (TSH reseptör antikoru)','Graves hastalığını hCG’ye bağlı gestasyonel geçici tirotoksikozdan ayırır; göz bulguları, guatr ve önceki öykü de yol gösterir (ATA 2026).']);
+      r.nx.push(['Gebelikte radyoaktif iyot uptake ve sintigrafi yapılmaz','Ayrım klinik, TRAb ve ultrasonla yapılır.']);return}
+    r.nx.push(['TRAb (TSH reseptör antikoru)','Graves hastalığı için; etiyoloji mutlaka belirlenmeli (ATA 2016).']);
+    r.nx.push(['Radyoaktif iyot uptake veya sintigrafi (Tc-99m / I-123)','Nodüler guatr veya toksik adenom düşünülüyorsa sintigrafi istenir; uptake düşükse tiroidit, iyot yükü veya ekzojen hormon düşünülür (ATA 2016).'+(c.kon?' İyotlu kontrasttan sonraki 1–2 ayda uptake yalancı düşük çıkabilir (ATA 2016).':'')+(c.ami?' Amiodaron (iyot yükü) altında uptake genellikle çok düşüktür.':'')]);
+    r.nx.push(['Tiroid ultrasonu (renkli Doppler)','Nodül ve kanlanma; uptake ölçülemiyorsa Graves ile tiroidit ayrımında yardımcı (ATA 2016).']);
+  };
+  var HYPER_DD=function(r,c){
+    r.dd.push('Graves hastalığı');r.dd.push('Toksik multinodüler guatr / toksik adenom');
+    r.dd.push('Tiroidit (sessiz, subakut, postpartum) — geçici, uptake düşük');
+    if(c.ami)r.dd.push('Amiodarona bağlı tirotoksikoz: amiodaron alanların %5–10’unda yıkıcı tiroidit gelişir (ATA 2016); iyot yüküyle hormon sentezi artışı da olabilir');
+    if(c.kon)r.dd.push('İyot yüküne bağlı hipertiroidi (iyotlu kontrast sonrası)');
+    r.dd.push('Ekzojen tiroid hormonu (iatrojenik veya gizli kullanım)');
+    r.dd.push('hCG aracılı (gebelik, trofoblastik hastalık)');
+    if(!c.bio)r.dd.push('Test interferansı: biotin, heterofil antikor');
+  };
+
+  function classify(x){
+    var c=x.c,T=x.T,F4=x.F4,F3=x.F3,tsh=x.tsh,age=x.age,preg=x.pr!=='0',r;
+    var hyperish=(T==='lo'||F4==='hi');
+
+    // 1) Biotin: TSH yalancı düşük, sT4 yalancı yüksek
+    if(c.bio&&hyperish){
+      r=R('Olası test interferansı (biotin)',C.sub,'Biotin, biotin–streptavidin kullanan immünoanalizlerde TSH’yi yalancı düşük, sT4’ü yalancı yüksek gösterebilir. Biotin sorgulanmadan düşük TSH ile tirotoksikoz tanısı konmamalıdır (TEMD 2025; ATA 2016).');
+      r.nx.push(['Biotini en az 2 gün kesip testi tekrarlayın (TEMD 2025)','Mümkünse biotin etkisinin olmadığı farklı bir yöntemle çalışılsın; laboratuvarla görüşün.']);
+      r.dd.push('Gerçek tirotoksikoz (tekrar testte devam ederse)');r.dd.push('Heterofil antikor interferansı');
+      return r;
+    }
+
+    if(T==='hi'){
+      if(F4==='lo'){
+        if(c.atd){r=R('Antitiroid ilaca bağlı hipotiroidi',C.hypo,'TSH yüksek, sT4 düşük: antitiroid ilaç dozu fazla.');
+          r.tx.push(['Antitiroid ilaç dozunu azaltın','sT4 ve T3 ile izleyin; TSH değişimleri sT4’ün gerisinden gelir (ATA 2016).']);r.dd.push('Antitiroid aşırı tedavi');r.dd.push('Graves sonrası kendiliğinden hipotiroidi (otoimmün tiroidit)');return r}
+        r=R(c.lt4?'Yetersiz levotiroksin replasmanı (aşikâr hipotiroidi)':preg?'Gebelikte aşikâr hipotiroidi':'Primer hipotiroidi (aşikâr)',C.hypo,'TSH yüksek, sT4 düşük: primer (tiroid kaynaklı) hipotiroidi.');
+        r.dd.push('Hashimoto (otoimmün) tiroiditi');r.dd.push('Tiroidektomi veya radyoaktif iyot sonrası');
+        r.dd.push('İlaçlar: amiodaron, lityum, tirozin kinaz ve immün kontrol noktası inhibitörleri');
+        r.dd.push('Tiroiditin hipotiroid fazı (geçici)');
+        if(c.hip&&tsh<=10)r.dd.push('Santral hipotiroidi: hafif olgularda TSH normal veya 5–10 mIU/L arasında olabilir (TEMD 2025)');
+        if(c.nti)r.dd.push('Tiroid dışı hastalığın iyileşme dönemi (TSH geçici yükselebilir); sT4 düşüklüğü eşlik ediyorsa gerçek hipotiroidi daha olası');
+        if(c.ami)r.dd.push('Amiodarona bağlı hipotiroidi (iyot yükü)');
+        if(!c.lt4)r.nx.push(['Anti-TPO','Otoimmün etiyolojiyi gösterir (TEMD 2025).']);
+        if(c.lt4){r.tx.push(['Levotiroksin dozunu artırın','Önce uyumu, alım zamanını (aç karnına) ve emilimi bozan ilaçları (kalsiyum, demir, PPI) sorgulayın. '+LINK_LT4])}
+        else r.tx.push(['Levotiroksin başlayın',LINK_LT4]);
+        if(preg){pregLT4(r,c.lt4,tsh)}
+        else r.tx.push(['Hedef TSH: referans aralığı','Genellikle 0,4–4,0 mIU/L; yaşlıda yaşa özgü aralık hedeflenir ve aşırı tedaviden kaçınılır (ATA 2014).']);
+        return r;
+      }
+      if(F4==='n'){
+        if(c.atd){r=R('Antitiroid ilaç dozu fazla (subklinik hipotiroidi)',C.sub,'Antitiroid tedavi altında TSH yükselmesi: doz fazla.');r.tx.push(['Antitiroid ilaç dozunu azaltın','sT4 ve T3 ile izleyin (ATA 2016).']);r.dd.push('Aşırı antitiroid tedavi');r.dd.push('Otoimmün tiroidite bağlı hipotiroidiye geçiş');return r}
+        if(c.lt4){r=R('Yetersiz levotiroksin replasmanı (subklinik)',C.sub,'Levotiroksin altında TSH yüksek, sT4 normal.');
+          r.dd.push('Uyumsuzluk veya düzensiz kullanım');r.dd.push('Alım zamanı (yemekle birlikte) veya emilim sorunu (çölyak, atrofik gastrit)');r.dd.push('Etkileşen ilaçlar: kalsiyum, demir, PPI, östrojen');r.dd.push('Kilo artışı, gebelik');
+          r.tx.push(['Dozu artırın veya alımı düzeltin',LINK_LT4]);
+          if(preg)pregLT4(r,true,tsh);else r.tx.push(['Hedef TSH: referans aralığı','Genellikle 0,4–4,0 mIU/L; yaşlıda yaşa özgü aralık (ATA 2014).']);return r}
+        if(preg){r=R('Gebelikte subklinik hipotiroidi',C.sub,'TSH gebeliğe özgü üst sınırın üzerinde, sT4 normal.');
+          r.dd.push('Otoimmün tiroidit');r.dd.push('Ölçüm farkı / geçici yükselme');
+          r.nx.push(['Kalıcılığı doğrulayın','Hafif yükseklikte (özellikle TSH < 6) tedaviden önce testi birkaç hafta içinde tekrarlayın (ATA 2026).']);
+          r.nx.push(['Anti-TPO','Etiyoloji, ilerleme ve postpartum tiroidit riski için yararlı; tek başına tedavi kararını belirlemez (ATA 2026).']);
+          if(tsh>10)r.tx.push(['Levotiroksin önerilir (TSH > 10)','ATA 2017: TSH > 10 ise anti-TPO’dan bağımsız tedavi önerilir. '+LINK_LT4]);
+          else if(x.pr==='1')r.tx.push(['1. trimesterde düşük doz levotiroksin düşünülebilir','Kalıcı yükseklikte ortak kararla 25–75 µg/gün başlanabilir; yarar tedavinin erken başlanmasıyla ilişkili (ATA 2026).']);
+          else r.tx.push(['Hafif olguda rutin tedavi gerekmeyebilir','İlk trimesterden sonra başlanan levotiroksinin hafif subklinik hipotiroidide gebelik sonuçlarını iyileştirdiği gösterilmedi (ATA 2026).']);
+          r.tx.push(['Tedavi edilirse hedef','TSH trimestere özgü aralıkta; levotiroksin alanlarda < 2,5 mIU/L hedeflenebilir. İlk yarıda yaklaşık 4 haftada bir TSH (ATA 2026).']);
+          return r}
+        var big=tsh>10;
+        r=R(c.nti?'Subklinik hipotiroidi veya tiroid dışı hastalık iyileşme dönemi':'Subklinik hipotiroidi',C.sub,'TSH yüksek, sT4 normal. ETA 2013 sınıflaması: TSH 4,0–10,0 hafif, > 10 belirgin yükselme.');
+        r.subs.push(['Derece',big?'Belirgin (TSH > 10)':'Hafif (TSH ≤ 10)']);
+        r.dd.push('Hashimoto tiroiditinin erken dönemi');r.dd.push('Tiroiditin iyileşme fazı (geçici)');
+        r.dd.push('Tiroid dışı hastalıktan iyileşme (geçici TSH yükselmesi)');
+        r.dd.push('İleri yaşa bağlı fizyolojik TSH artışı');
+        r.dd.push('Test interferansı (heterofil antikor) veya makro-TSH (%0,6–1,6; TEMD 2025)');
+        if(c.ami)r.dd.push('Amiodarona bağlı hipotiroidi');
+        if(c.kon)r.dd.push('İyot yüküne bağlı geçici hipotiroidi');
+        if(c.hip)r.dd.push('Santral hipotiroidi: TSH biyolojik olarak az aktif olabilir; hafif olgularda TSH 5–10 mIU/L arasında görülebilir (TEMD 2025)');
+        r.nx.push([c.nti?'İyileşmeden sonra TSH, sT4 ve anti-TPO tekrarı':'2–3 ay sonra TSH, sT4 ve anti-TPO tekrarı','Subklinik hipotiroidi tanısı tekrar ölçümle doğrulanır (ETA 2013). Yüksek titreli anti-TPO aşikâr hipotiroidiye ilerleme riskini gösterir (TEMD 2025).']);
+        if(age!==null&&age>=80&&tsh<=7.5)r.subs.push(['Yaşa göre','80 yaş üstü üst sınır ≈ 7,5 → normal olabilir']);
+        if(age===null||age<70){
+          if(big)r.tx.push(['Levotiroksin önerilir','65–70 yaş altında TSH > 10 ise semptom olmasa da tedavi önerilir (ETA 2013). '+LINK_LT4]);
+          else if(c.sym)r.tx.push(['Levotiroksin denemesi düşünülebilir','Semptomatik hastada TSH ≤ 10 iken deneme tedavisi; TSH normale geldiği halde semptom düzelmezse tedavi kesilir (ETA 2013).']);
+          else r.tx.push(['Tedavisiz izlem','Asemptomatik hafif TSH yüksekliğinde levotiroksin rutin önerilmez; TSH’yi izleyin (ETA 2013).']);
+        }else if(age>=80){
+          if(big)r.tx.push(['Bireysel karar','80 yaş üstünde TSH > 10 ise tedavi kararı semptom ve eşlik eden hastalıklara göre bireysel verilir; düşük dozla başlanır.']);
+          else r.tx.push(['Bekle-gör (tedavisiz izlem)','80–85 yaş üstünde TSH ≤ 10 ise tedavi etmeden izlem önerilir (ETA 2013).']);
+        }else{
+          r.tx.push(['Bireysel karar',(big?'TSH > 10: ':'')+'70–80 yaş arasında yaşa özgü TSH aralığı dikkate alınır; tedavi kararı semptom, kardiyovasküler risk ve hasta tercihine göre verilir (ETA 2013).']);
+        }
+        r.tx.push(['Tedavi edilirse hedef TSH','Çoğu erişkinde referans aralığının alt yarısı (0,4–2,5 mIU/L); yaşlıda daha yüksek hedef kabul edilir (ETA 2013). Başladıktan yaklaşık 2 ay sonra TSH, sonra en az yılda bir (ETA 2013).']);
+        return r;
+      }
+      // TSH yüksek, sT4 yüksek
+      r=R('Uygunsuz TSH: TSH yüksek, sT4 yüksek',C.sub,'Yüksek sT4’e rağmen TSH baskılanmamış. Önce ölçüm hatası ve ilaç etkisi dışlanmalı.');
+      if(c.lt4)r.dd.push('Düzensiz levotiroksin kullanımı (testten hemen önce yüksek doz alınması)');
+      r.dd.push('Test interferansı (heterofil antikor, biotin, makro-TSH)');
+      r.dd.push('TSH salgılayan hipofiz adenomu');r.dd.push('Tiroid hormonu direnci (THRB mutasyonu)');
+      if(c.ami)r.dd.push('Amiodaron etkisi (T4’ten T3’e dönüşümü azaltır; TEMD 2025)');
+      if(c.nti)r.dd.push('Tiroid dışı hastalık ve ilaçlar (geçici)');
+      r.nx.push(['Önce interferansı dışlayın','Biotini en az 2 gün kesip, mümkünse farklı yöntemle tekrarlayın; heterofil antikor için laboratuvarla görüşün (TEMD 2025).']);
+      r.nx.push(['sT3 (veya total T3)','Değerlendirmeyi tamamlar.']);
+      r.nx.push(['Doğrulanırsa: hipofiz MR ve alfa alt birim / TSH oranı','Hipofizde lezyon ve yüksek alfa alt birim/TSH oranı TSH salgılayan adenomu destekler (ATA 2016).']);
+      r.nx.push(['THRB gen analizi, aile taraması','Tiroid hormonu direncini destekler (ATA 2016). Endokrinolojiye yönlendirin.']);
+      return r;
+    }
+
+    if(T==='lo'){
+      if(F4==='hi'){
+        if(c.lt4){r=R('Levotiroksin fazlalığı (aşikâr tirotoksikoz)',C.hyper,'Levotiroksin altında TSH baskılı, sT4 yüksek.');
+          r.dd.push('Aşırı levotiroksin dozu');r.dd.push('Fazladan veya yanlış tablet alımı');r.dd.push('Altta yatan Graves / nodüler otonomi (nadir)');
+          r.tx.push(['Levotiroksin dozunu azaltın','Diferansiye tiroid kanserinde planlı TSH baskılaması yoksa. '+LINK_LT4]);
+          r.tx.push(['Semptomatikse beta bloker','Özellikle yaşlıda ve dinlenme nabzı > 90/dk ise (ATA 2016).']);return r}
+        if(c.atd){r=R('Antitiroid tedavide yetersiz kontrol',C.hyper,'Antitiroid ilaç altında sT4 hâlâ yüksek.');
+          r.dd.push('Yetersiz doz');r.dd.push('Uyumsuzluk');
+          r.tx.push(['Dozu gözden geçirin','sT4 ve T3 ile izleyin; T3 yüksekliği sT4 normale gelse de sürebilir (ATA 2016).']);
+          r.tx.push(['Semptomatikse beta bloker','Özellikle yaşlıda ve dinlenme nabzı > 90/dk ise (ATA 2016).']);return r}
+        if(preg){r=R('Gebelikte tirotoksikoz',C.hyper,'TSH düşük, sT4 yüksek. 1. trimesterde hCG’ye bağlı gestasyonel geçici tirotoksikoz ile Graves hastalığı ayrılmalı.');
+          r.dd.push('Gestasyonel geçici tirotoksikoz (hCG; hiperemezis, ikiz gebelik)');r.dd.push('Graves hastalığı');r.dd.push('Toksik nodül');r.dd.push('Trofoblastik hastalık');
+          HYPER_NX(r,c,true);
+          r.tx.push(['Gestasyonel geçici tirotoksikoz: destek tedavisi','Sıvı-elektrolit, antiemetik; antitiroid ilaç genellikle kullanılmaz. Ağır semptomda kısa süre en düşük doz beta bloker (ATA 2026).']);
+          r.tx.push(['Aşikâr Graves hipertiroidisi tedavi edilir','Gebelikte antitiroid ilaç seçimi ve izlemi için endokrinoloji ile birlikte planlayın (ATA 2026).']);return r}
+        r=R(c.ami?'Tirotoksikoz (amiodaron ilişkili olabilir)':'Primer hipertiroidi / tirotoksikoz',C.hyper,'TSH düşük, sT4 yüksek. Tedaviden önce etiyoloji belirlenmeli (ATA 2016).');
+        HYPER_DD(r,c);HYPER_NX(r,c,false);
+        if(F3===null)r.nx.unshift(['sT3','Tabloyu tamamlar; tedavi izleminde de gerekir (ATA 2016).']);
+        r.tx.push(['Semptomatikse beta bloker','Tüm semptomatik tirotoksikozda, özellikle yaşlıda ve dinlenme nabzı > 90/dk ise (ATA 2016).']);
+        r.tx.push(['Kesin tedavi etiyolojiye göre','Graves ve toksik nodülde antitiroid ilaç, radyoaktif iyot veya cerrahi; tiroiditte antitiroid ilaç yararsızdır, semptomatik tedavi yeterlidir. Endokrinolojiye yönlendirin.']);
+        if(c.ami)r.tx.push(['Amiodaron ilişkili tirotoksikoz','Tip ayrımı (iyot kaynaklı hormon sentezi / yıkıcı tiroidit) ve tedavi için endokrinoloji ile birlikte planlayın.']);
+        return r;
+      }
+      if(F4==='n'){
+        if(F3==='hi'&&!c.lt4){
+          r=R('T3 toksikozu',C.hyper,'TSH düşük, sT4 normal, sT3 yüksek: hafif hipertiroidide yalnız T3 yükselebilir (ATA 2016).');
+          HYPER_DD(r,c);HYPER_NX(r,c,preg);
+          r.tx.push(['Semptomatikse beta bloker','Özellikle yaşlıda ve dinlenme nabzı > 90/dk ise (ATA 2016).']);
+          r.tx.push(['Kesin tedavi etiyolojiye göre','Endokrinolojiye yönlendirin.']);return r}
+        if(c.lt4){r=R('Levotiroksin fazlalığı (subklinik)',C.sub,'Levotiroksin altında TSH düşük, sT4 normal.');
+          r.subs.push(['TSH',tsh<0.1?'< 0,1 (baskılı)':'0,1 ile alt sınır arası']);
+          r.dd.push('Fazla doz');r.dd.push('Diferansiye tiroid kanserinde planlı TSH baskılaması');
+          r.tx.push(['Planlı baskılama yoksa dozu azaltın','Özellikle yaşlıda, AF veya osteoporozda aşırı tedaviden kaçının (ATA 2014). '+LINK_LT4]);return r}
+        if(c.atd){r=R('Antitiroid tedavide TSH henüz düzelmemiş',C.sub,'sT4 normale gelmiş olabilir; TSH hipertiroidi düzeldikten sonra bir ay veya daha uzun süre baskılı kalabilir (ATA 2016).');
+          r.nx.push(['sT4 ve T3 ile izleyin','Bu dönemde dozu TSH’ye göre değil, sT4 ve T3’e göre ayarlayın (ATA 2016).']);
+          r.dd.push('TSH’nin gecikmeli toparlanması');r.dd.push('Devam eden hafif hipertiroidi (T3 yüksekliği)');return r}
+        if(preg){r=R('Gebelikte düşük TSH',C.sub,'Gebelikte TSH, hCG etkisiyle sıklıkla düşer; etki 1. trimester sonunda en yüksektir (ATA 2026).');
+          r.dd.push('Fizyolojik hCG etkisi');r.dd.push('Graves hastalığı (erken)');r.dd.push('Toksik nodül');
+          r.nx.push(['sT4/sT3 ile izlem; klinik şüphede TRAb','Yalnızca baskılı TSH Graves tanısı koydurmaz (ATA 2026).']);return r}
+        var g2=tsh<0.1;
+        r=R(c.nti?'Düşük TSH: tiroid dışı hastalık veya subklinik hipertiroidi':'Subklinik hipertiroidi — '+(g2?'evre 2':'evre 1'),C.sub,'TSH düşük, sT4'+(F3==='n'?' ve sT3':'')+' normal. ETA 2015: evre 1 TSH 0,1–0,39; evre 2 TSH < 0,1 mIU/L.');
+        r.subs.push(['Evre (ETA 2015)',g2?'Evre 2 (TSH < 0,1)':'Evre 1 (TSH 0,1–0,39)']);
+        r.dd.push('Graves hastalığı (erken)');r.dd.push('Toksik multinodüler guatr / toksik adenom');r.dd.push('Tiroidit (geçici)');
+        if(c.ami||c.kon)r.dd.push('İyot yüküne bağlı (amiodaron, kontrast)');
+        r.dd.push('Tiroid dışı hastalık, glukokortikoid veya dopamin etkisi');
+        r.dd.push('Yakın zamanda tedavi edilmiş hipertiroidi (TSH geç toparlanır)');
+        r.dd.push('Ekzojen tiroid hormonu');
+        if(F3===null)r.nx.push(['sT3 isteyin','T3 toksikozunu dışlamak için (ATA 2016).']);
+        r.nx.push([c.nti?'İyileşmeden sonra TSH, sT4 ve sT3 tekrarı':'TSH, sT4 ve sT3’ü tekrarlayın','Düşüklüğün kalıcı olduğu tekrar ölçümle doğrulanmalı (ETA 2015).']);
+        r.nx.push(['Kalıcıysa etiyoloji: TRAb, sintigrafi/uptake, ultrason','Graves, nodüler otonomi ve tiroidit ayrımı (ETA 2015; ATA 2016).'+(c.kon?' Kontrasttan sonraki 1–2 ayda uptake yalancı düşük çıkabilir (ATA 2016).':'')]);
+        var old=age!==null&&age>=65,risk=c.kal||c.ost||c.pm||c.sym;
+        var why=[];if(old)why.push('yaş ≥ 65');if(c.kal)why.push('kalp hastalığı');if(c.ost)why.push('osteoporoz');if(c.pm)why.push('postmenopoz');if(c.sym)why.push('semptom');
+        var w=why.length?' ('+why.join(', ')+')':'';
+        if(g2){
+          if(old||risk)r.tx.push(['Tedavi önerilir'+w,'Kalıcı evre 2’de: 65 yaş ve üstü, kalp hastalığı, osteoporoz, postmenopoz veya semptom varsa tedavi (ATA 2016; ETA 2015). Seçim etiyolojiye göre: antitiroid ilaç, radyoaktif iyot veya cerrahi.']);
+          else r.tx.push(['Tedavi düşünülebilir','65 yaş altı asemptomatik evre 2: ilerleme riski nedeniyle tedavi düşünülebilir (ATA 2016).']);
+        }else{
+          if(old||risk)r.tx.push(['Tedavi düşünülebilir'+w,'Evre 1’de 65 yaş ve üstü veya kalp hastalığı, osteoporoz, postmenopoz, semptom varsa tedavi düşünülebilir (ATA 2016; ETA 2015: AF riski).']);
+          else r.tx.push(['Tedavisiz izlem','65 yaş altı asemptomatik evre 1’de tedavi önerilmez; ilerleme riski düşük (ETA 2015; ATA 2016).']);
+        }
+        r.table=g2?2:1;
+        return r;
+      }
+      // TSH düşük, sT4 düşük
+      if(c.atd){r=R('Antitiroid aşırı tedavi (TSH henüz yükselmemiş)',C.hypo,'sT4 düşük; TSH hipertiroidi düzeldikten sonra bir ay veya daha uzun baskılı kalabilir (ATA 2016).');
+        r.tx.push(['Antitiroid ilaç dozunu azaltın','Bu dönemde dozu sT4 ve T3’e göre ayarlayın (ATA 2016).']);r.dd.push('Aşırı antitiroid tedavi');r.dd.push('Santral hipotiroidi (nadir)');return r}
+      if(c.nti&&!c.hip){r=R('Tiroid dışı hastalık (ötiroid hasta sendromu)',C.sub,'Ağır hastalıkta TSH normal veya düşük, T3 düşük; kritik hastada sT4 de düşebilir ve sT4 yöntemleri güvenilir değildir (TEMD 2025).');
+        r.dd.push('Tiroid dışı hastalık');r.dd.push('İlaçlar: glukokortikoid, dopamin');r.dd.push('Santral hipotiroidi (hipofiz hastalığı)');r.dd.push('Yakın zamanda tedavi edilmiş hipertiroidi');
+        r.nx.push(['İyileşmeden sonra tekrar','Tiroid hormonu tedavisi başlamadan önce testleri hastalık düzelince yineleyin.']);
+        r.nx.push(['Santral hipotiroidi şüphesi varsa','Sabah kortizolü ve diğer hipofiz hormonları.']);return r}
+      r=santral(R('Santral (hipofiz/hipotalamik) hipotiroidi',C.hypo,'sT4 düşük, TSH düşük: TSH sT4 düşüklüğüne uygun yanıt vermiyor (Endocrine Society 2016; TEMD 2025).'),c);
+      return r;
+    }
+
+    // TSH normal
+    if(F4==='lo'){
+      if(c.nti&&!c.hip){r=R('Tiroid dışı hastalık (ötiroid hasta sendromu)',C.sub,'Ağır hastalıkta TSH normal veya düşük, T3 düşük; kritik hastada sT4 de düşebilir ve sT4 yöntemleri güvenilir değildir (TEMD 2025).');
+        r.dd.push('Tiroid dışı hastalık');r.dd.push('Santral hipotiroidi');r.dd.push('Ölçüm sorunu');
+        r.nx.push(['İyileşmeden sonra tekrar','Bu tabloda tiroid hormonu başlamayın; tekrar ölçümle değerlendirin.']);return r}
+      r=santral(R(c.hip?'Santral hipotiroidi':'Olası santral hipotiroidi',C.hypo,'sT4 düşük, TSH normal: santral hipotiroidide TSH düşük, normal veya hafif yüksek olabilir (Endocrine Society 2016; TEMD 2025).'),c);
+      r.nx.unshift(['sT4’ü tekrarlayın','Mümkünse farklı yöntemle; tek düşük değerle tanı koymayın.']);
+      if(c.lt4)r.dd.unshift('Levotiroksin alımı / ölçüm zamanlaması ile ilgili geçici değer');
+      return r;
+    }
+    if(F4==='hi'){
+      if(c.lt4){r=R('Levotiroksin altında yüksek sT4, normal TSH',C.sub,'TSH normalse replasman genellikle yeterlidir; kan sabah dozundan sonra alınmışsa sT4 geçici yüksek çıkabilir.');
+        r.nx.push(['Kanı levotiroksin dozundan önce alıp tekrarlayın',null]);r.dd.push('Ölçüm zamanlaması');r.dd.push('Test interferansı');return r}
+      r=R(c.ami?'Amiodaron etkisi: yüksek sT4, normal TSH':'Yüksek sT4, normal TSH',C.sub,c.ami?'Amiodaron T4’ün T3’e dönüşümünü azaltır; sT4 yükselebilir (TEMD 2025). TSH normalse genellikle ötiroiddir; T3 yüksekliği amiodarona bağlı hipertiroidi lehinedir.':'TSH’nin baskılanmaması tirotoksikozla uyumsuz; önce ölçüm hatası ve ilaçlar dışlanmalı.');
+      r.dd.push('Test interferansı (heterofil antikor, biotin)');
+      if(c.ami)r.dd.push('Amiodaron etkisi');
+      if(c.nti)r.dd.push('Akut hastalık ve ilaçlar (geçici)');
+      r.dd.push('TSH salgılayan hipofiz adenomu');r.dd.push('Tiroid hormonu direnci');
+      r.nx.push(['sT3 ile birlikte tekrarlayın; interferansı dışlayın','Biotini en az 2 gün kesin; farklı yöntem (TEMD 2025).']);
+      r.nx.push(['Kalıcıysa: hipofiz MR, alfa alt birim / TSH oranı, THRB analizi','TSH salgılayan adenom ve tiroid hormonu direnci ayrımı (ATA 2016). Endokrinolojiye yönlendirin.']);
+      return r;
+    }
+    // TSH normal, sT4 normal
+    if(F3==='lo'){r=R(c.nti?'Düşük T3 sendromu (tiroid dışı hastalık)':'İzole sT3 düşüklüğü',C.sub,'TSH ve sT4 normal, sT3 düşük: ağır hastalık, açlık ve ilaçlar (amiodaron, propranolol, glukokortikoid) T4’ten T3’e dönüşümü azaltır (TEMD 2025).');
+      r.tx.push(['Tiroid hormonu tedavisi gerekmez','Altta yatan hastalık düzeldikten sonra gerekirse tekrarlayın.']);r.dd.push('Tiroid dışı hastalık');r.dd.push('Açlık / malnütrisyon');r.dd.push('İlaçlar');return r}
+    if(F3==='hi'){r=R('İzole sT3 yüksekliği',C.sub,'TSH ve sT4 normal: klinik olarak anlamlı tirotoksikoz beklenmez.');
+      r.dd.push('Ölçüm hatası / interferans');r.dd.push('T3 içeren preparat kullanımı');r.dd.push('İyot eksikliği');
+      r.nx.push(['Testi tekrarlayın',null]);return r}
+    r=R(c.lt4?'Ötiroid: yeterli levotiroksin replasmanı':c.atd?'Ötiroid (antitiroid tedavi altında)':'Normal tiroid fonksiyonu',C.ok,c.lt4?'TSH ve sT4 referans aralığında.':'TSH ve sT4 referans aralığında; primer tiroid disfonksiyonu beklenmez.');
+    if(c.lt4&&preg)pregLT4(r,true,tsh);
+    if(c.hip&&!c.lt4)r.nx.push(['Hipofiz hastalığında TSH yanıltıcı olabilir','Santral hipotiroidide sT4 alt-normal olabilir; sT4’ün aralık içindeki yerini klinikle birlikte değerlendirin.']);
+    if(c.hip&&c.lt4)r.nx.push(['Santral hipotiroidide hedef sT4’tür','sT4’ü referans aralığının orta–üst yarısında tutun; doz TSH’ye göre ayarlanmaz (Endocrine Society 2016).']);
+    if(c.atd)r.nx.push(['sT4 ve T3 ile izleme devam',null]);
+    return r;
+  }
+
+  function santral(r,c){
+    r.dd.push('Hipofiz veya hipotalamus hastalığı (adenom, cerrahi/radyoterapi sonrası, apopleksi, hipofizit)');
+    r.dd.push('Tiroid dışı hastalık');r.dd.push('İlaçlar: glukokortikoid, dopamin');
+    r.dd.push('Yakın zamanda tedavi edilmiş hipertiroidi (TSH geç toparlanır)');
+    r.nx.push(['Diğer hipofiz hormonları','Sabah kortizolü (± ACTH), LH/FSH ve testosteron/östradiol, prolaktin, IGF-1.']);
+    r.nx.push(['Hipofiz MR',null]);
+    r.tx.push(['Levotiroksin öncesi adrenal yetmezliği değerlendirin','Değerlendirilemiyorsa kesin değerlendirmeye kadar ampirik glukokortikoid (Endocrine Society 2016).']);
+    r.tx.push(['Levotiroksin dozunu sT4’e göre ayarlayın','sT4 referans aralığının orta–üst yarısında hedeflenir; TSH ile doz ayarlanmaz (Endocrine Society 2016; TEMD 2025).']);
+    return r;
+  }
+
+  function pregLT4(r,onLt4,tsh){
+    if(onLt4&&tsh>2.5)r.tx.push(['TSH > 2,5: levotiroksin dozunu artırın','Levotiroksin alan gebede hedef TSH < 2,5 mIU/L (ATA 2017; ATA 2026).']);
+    if(onLt4)r.tx.push(['Gebelikte levotiroksin','Gebelik doğrulanınca doz artırılır: ATA 2017 yaklaşık %20–30 (pratikte haftada 2 ek doz); ATA 2026 artışın bireyselleştirilmesini önerir. Hedef TSH trimestere özgü aralıkta ve < 2,5 mIU/L.']);
+    else r.tx.push(['Gebelikte hedef','Levotiroksin gecikmeden başlanır; hedef TSH trimestere özgü aralıkta ve < 2,5 mIU/L (ATA 2017; ATA 2026).']);
+    r.nx.push(['Gebelikte izlem','TSH ilk yarıda yaklaşık 4 haftada bir ve her doz değişikliğinden 4–6 hafta sonra; 3. trimesterde en az bir kez (ATA 2026).']);
+  }
+
+  function calc(){
+    var tsh=v('tsh'),f4=v('ft4'),f3=v('ft3'),age=v('age');
+    var tL=v('tsl'),tU=v('tsu'),a4=v('f4l'),b4=v('f4u'),a3=v('f3l'),b3=v('f3u');
+    var pr=segVal('pr');$('w-prr').hidden=pr==='0';
+    var c={};['lt4','atd','nti','ami','bio','kon','hip','sym','kal','ost','pm'].forEach(function(k){c[k]=ck(k)});
+    ['dd','nx','tx','tb','subs'].forEach(function(k){$(k).innerHTML=''});$('w-sh').hidden=true;
+    $('rnote').textContent='';
+    if(tsh===null||f4===null||tL===null||tU===null||a4===null||b4===null){
+      $('pat').textContent='–';pill('pl','');$('adv').textContent='TSH, sT4 ve referans aralıklarını girin.';
+      ['w-dd','w-nx','w-tx'].forEach(function(k){$(k).hidden=true});$('tbl').hidden=true;return}
+    // Gebelikte TSH aralığı
+    var eL=tL,eU=tU,rn='';
+    if(pr!=='0'){
+      if(ck('prr'))rn='TSH için laboratuvarın gebeliğe özgü aralığı kullanıldı.';
+      else if(pr==='1'){eL=0.1;eU=tU>4.5?tU-0.5:4.0;rn='Gebeliğe özgü aralık girilmediği için 1. trimester TSH aralığı ATA 2026’ya göre '+fr(eL)+'–'+fr(eU)+' mIU/L alındı (üst sınır 4,0; gebelik dışı üst sınır 4,5’in üzerindeyse ondan 0,5 düşük).';}
+      else rn='Uyarı: TSH aralığı gebeliğe özgü değil. Laboratuvarın trimestere özgü aralığını girip yukarıdaki kutuyu işaretleyin (ATA 2026).';
+    }
+    var has3=f3!==null&&a3!==null&&b3!==null;
+    var x={tsh:tsh,age:age,pr:pr,c:c,T:st(tsh,eL,eU),F4:st(f4,a4,b4),F3:has3?st(f3,a3,b3):null};
+    var r=classify(x);
+    $('pat').textContent=r.name;pill('pl',{'var(--low)':'Hipotiroid','var(--high)':'Tirotoksik','var(--warn)':'Değerlendir','var(--ok)':'Normal'}[r.color],r.color);
+    $('adv').textContent=r.adv;
+    // tablo
+    $('tbl').hidden=false;
+    var lab={lo:'↓ Düşük',hi:'↑ Yüksek',n:'Normal'};
+    function row(n,val,lo,hi,s,u){var tr=el('tr');tr.appendChild(el('td',null,n));var td=el('td',null,fm(val));td.appendChild(el('small',null,' '+u));tr.appendChild(td);tr.appendChild(el('td',null,fr(lo)+'–'+fr(hi)));tr.appendChild(el('td','st-'+s,lab[s]));$('tb').appendChild(tr)}
+    row('TSH',tsh,eL,eU,x.T,'mIU/L');row('sT4',f4,a4,b4,x.F4,'ng/dL');if(has3)row('sT3',f3,a3,b3,x.F3,'pg/mL');
+    r.subs.forEach(function(s){var d=el('div','sub');d.appendChild(el('span',null,s[0]));d.appendChild(el('b','w',s[1]));$('subs').appendChild(d)});
+    r.dd.forEach(function(t){$('dd').appendChild(el('li',null,t))});
+    r.nx.forEach(function(t){recLi($('nx'),t[0],t[1])});
+    r.tx.forEach(function(t){recLi($('tx'),t[0],t[1])});
+    var sh=$('w-sh');var old=sh.querySelector('table');if(old)sh.removeChild(old);sh.hidden=!r.table;if(r.table)sh.appendChild(shTable(r.table,x));
+    $('w-dd').hidden=!r.dd.length;$('w-nx').hidden=!r.nx.length;$('w-tx').hidden=!r.tx.length;
+    var notes=[];if(rn)notes.push(rn);
+    if(c.bio&&!(x.T==='lo'||x.F4==='hi'))notes.push('Biotin kullanımı: sonuçlar yanıltıcı olabilir; biotin en az 2 gün kesildikten sonra tekrar (TEMD 2025).');
+    if(c.nti&&r.color!==C.ok)notes.push('Akut hastalıkta tiroid testleri yanıltıcıdır; mümkünse iyileşme sonrasında tekrarlayın.');
+    if(age!==null&&age>=80&&x.T==='hi'&&tsh<=7.5&&!c.lt4&&pr==='0'&&r.subs.every(function(s){return s[0]!=='Yaşa göre'}))notes.push('80 yaş üzerinde TSH üst sınırı ≈ 7,5 mIU/L (NHANES III; TEMD 2025).');
+    $('rnote').textContent=notes.join(' ');
+  }
+
+  function shTable(g,x){
+    var t=el('table','t');t.style.marginTop='6px';t.style.tableLayout='fixed';
+    var th=el('thead'),h=el('tr');['Durum','TSH < 0,1','TSH 0,1–0,39'].forEach(function(s){h.appendChild(el('th',null,s))});th.appendChild(h);t.appendChild(th);
+    var tb=el('tbody');
+    var rows=[['Yaş ≥ 65','Tedavi','Tedavi düşünülebilir','old'],['< 65, kalp hastalığı','Tedavi','Tedavi düşünülebilir','kal'],['< 65, osteoporoz','Tedavi','Tedavi düşünülebilir','ost'],['< 65, postmenopoz','Tedavi','Tedavi düşünülebilir','pm'],['< 65, semptomatik','Tedavi','Tedavi düşünülebilir','sym'],['< 65, asemptomatik','Tedavi düşünülebilir','İzlem','none']];
+    var old=x.age!==null&&x.age>=65,c=x.c,any=c.kal||c.ost||c.pm||c.sym;
+    rows.forEach(function(rw){var tr=el('tr');[rw[0],rw[1],rw[2]].forEach(function(s){tr.appendChild(el('td',null,s))});
+      var cur=rw[3]==='old'?old:rw[3]==='none'?(!old&&!any):(!old&&c[rw[3]]);
+      if(cur)tr.className='cur';tb.appendChild(tr)});
+    t.appendChild(tb);return t;
+  }
+
+  seg('pr',calc);document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
