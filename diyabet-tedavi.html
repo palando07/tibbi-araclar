@@ -159,7 +159,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     <ul class="chk" id="chk"></ul>
   </section>
 
-  <p class="note">Kaynaklar: ADA Standards of Care in Diabetes 2025; ADA/EASD Uzlaşı Raporu 2022; KDIGO Diyabet ve KBH 2022; TEMD Diabetes Mellitus Tanı ve Tedavi Kılavuzu. SGK geri ödeme koşulları (özellikle GLP-1 RA, SGLT2i ve DPP-4i için) reçete öncesinde SUT'tan ayrıca kontrol edilmelidir. Bu araç klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz.</p>
+  <p class="note">Kaynaklar: ADA Standards of Care in Diabetes 2025; ADA/EASD Uzlaşı Raporu 2022; KDIGO Diyabet ve KBH 2022; TEMD Diabetes Mellitus Kılavuzu 2026. SGK geri ödeme koşulları (özellikle GLP-1 RA, SGLT2i ve DPP-4i için) reçete öncesinde SUT'tan ayrıca kontrol edilmelidir. Bu araç klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz.</p>
 
 </div>
 <script>
@@ -186,7 +186,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
 
     // 1) HbA1c hedefi
     var t=7,why='Çoğu erişkin için genel hedef.';
-    if(preg){t=6.5;why='Gebelikte hipoglisemi olmadan ulaşılabiliyorsa < %6–6,5; değilse < %7.'}
+    if(preg){t=6.5;why='Gebelikte < %6–6,5 (erken gebelikte < %6 olabilir); hipoglisemi riski yüksekse < %7 yeterli. Kendi kendine izlem hedefleri: açlık ve öğün öncesi < 95, 1. saat < 140, 2. saat < 120 mg/dL; insülin kullananda alt sınırlar 70, 110 ve 100 mg/dL. Gebelikte yalnız HbA1c’ye güvenmeyin (TEMD 2026).'}
     else if(frail){t=8;why='Kırılgan veya sınırlı yaşam beklentisi olan hastada hipoglisemiden kaçınmak öncelikli; < %8 yeterli.'}
     else if(hypo||age>=65){t=7.5;why=(hypo?'Hipoglisemi riski yüksek':'65 yaş ve üzeri')+' hastada < %7–7,5 hedeflenir.'}
     else if(age<40&&!ascvd&&!hf){t=6.5;why='Genç, hipoglisemi riski düşük hastada hipoglisemi olmadan ulaşılabiliyorsa < %6,5.'}

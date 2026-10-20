@@ -128,7 +128,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
   </section>
 
   <p class="note">Tablo değiştirildiğinde alanlara o tablo için örnek değerler gelir; kendi hastanızın değerlerini girin.</p>
-  <p class="note">Kaynaklar: UK Kidney Association 2026 güncellemesi (hiperkalemi); ADA/EASD/JBDS/AACE/DTS 2024 hiperglisemik kriz uzlaşısı; ADA Standards of Care 2025 (hipoglisemi); ESE/ESICM/ERA-EDTA 2014 ve Society for Endocrinology 2022 (hiponatremi); Endocrine Society ve UpToDate özetleri (hiperkalsemi, adrenal kriz). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: UK Kidney Association 2026 güncellemesi (hiperkalemi); TEMD Diabetes Mellitus Kılavuzu 2026 ve ADA/EASD/JBDS/AACE/DTS 2024 hiperglisemik kriz uzlaşısı (DKA); ADA Standards of Care 2025 (hipoglisemi); ESE/ESICM/ERA-EDTA 2014 ve Society for Endocrinology 2022 (hiponatremi); TEMD Osteoporoz ve Metabolik Kemik Hastalıkları Kılavuzu 2025 (hiperkalsemi); Endocrine Society (adrenal kriz). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -162,16 +162,16 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
   dka:{t:'Diyabetik ketoasidoz',f:['wt','glu','k','ph'],o:[],run:function(p){
     var s=[],w=p.wt,K=p.k;
     s.push(['Tanıyı doğrulayın','Glukoz ≥ 200 mg/dL (veya bilinen diyabet), keton (β-hidroksibütirat ≥ 3 mmol/L veya idrarda ++), pH < 7,3 veya HCO₃ < 18. SGLT2 inhibitörü kullananda glukoz normal olabilir (öglisemik DKA).']);
-    s.push(['Sıvı: %0,9 NaCl veya dengeli kristaloid, ilk 2–4 saatte 500–1000 mL/saat','Sonra hemodinami ve idrar çıkışına göre ayarlayın. Yaşlı, kalp veya böbrek yetmezliğinde daha küçük bolus (ör. 250 mL) ve yakın izlem.']);
-    if(K!==null&&K<3.5)s.push(['Potasyum '+g1(K)+': İNSÜLİNİ BAŞLAMAYIN','Önce saatte 10–20 mEq KCl verin; K ≥ 3,5 olunca insüline başlayın.']);
-    else if(K!==null&&K<=5.0)s.push(['Potasyum '+g1(K)+': her litre sıvıya 20–30 mEq KCl ekleyin','Hedef K 4–5 mEq/L.']);
+    s.push(['Sıvı: %0,9 NaCl, ilk 2–4 saatte 500–1000 mL/saat','Sonra hidrasyon ve idrar çıkışına göre ayarlayın; sıvı ve elektrolit açığını 24–48 saatte kapatın. Yaşlı, gebe, kalp veya böbrek yetmezliğinde daha küçük bolus (ör. 250 mL) ve yakın izlem.']);
+    if(K!==null&&K<3.5)s.push(['Potasyum '+g1(K)+': İNSÜLİNİ BAŞLAMAYIN','Önce saatte 10–20 mEq potasyum verin (2/3 KCl + 1/3 K₂PO₄); K > 3,5 olunca insüline başlayın. %7,5 KCl 1 ampul = 10 mEq.']);
+    else if(K!==null&&K<=5.0)s.push(['Potasyum '+g1(K)+': her litre sıvıya 10–20 mEq potasyum ekleyin','2/3 KCl + 1/3 K₂PO₄ (yalnız KCl hiperkloremik asidoz, yalnız K₂PO₄ hipokalsemi riski taşır). Hedef K 4–5 mEq/L; 2–4 saatte bir ölçün.']);
     else if(K!==null)s.push(['Potasyum '+g1(K)+': şimdilik potasyum vermeyin','2 saatte bir kontrol edin; insülinle hızla düşecektir.']);
     var ins=w?g1(0.1*w):null;
     s.push(['İnsülin infüzyonu: kısa etkili insülin 0,1 ünite/kg/saat'+(ins?' = '+ins+' ünite/saat':''),'50 ünite / 50 mL SF ile 1 mL = 1 ünite. Bolus isteğe bağlı (0,1 ünite/kg). Glukoz saatte 50–75 mg/dL düşmüyorsa hızı artırın.'+(K!==null&&K<3.5?' Potasyum 3,5 üzerine çıkana kadar bekleyin.':'')]);
-    s.push(['Glukoz < 250 mg/dL olunca %5–10 dekstroz ekleyin','İnsülini 0,05 ünite/kg/saate'+(w?' ('+g1(0.05*w)+' ünite/saat)':'')+' azaltın ama kesmeyin; ketoasidoz düzelene kadar glukozu 150–200 mg/dL arasında tutun.']);
-    if(p.ph!==null&&p.ph<7.0)s.push(['pH '+String(p.ph).replace('.',',')+' < 7,0: sodyum bikarbonat','100 mEq NaHCO₃ 400 mL suda + 20 mEq KCl, 2 saatte. pH ≥ 7,0 olunca kesin.']);
-    s.push(['Düzelme ve SC insüline geçiş','pH ≥ 7,3, HCO₃ ≥ 18 ve keton < 0,6 mmol/L, hasta yiyebiliyor. IV insülini kesmeden 1–2 saat önce SC bazal insülin yapın (ör. 0,15–0,3 ünite/kg glarjin'+(w?' = '+r0(0.15*w)+'–'+r0(0.3*w)+' ünite':'')+'). Önceden bazal insülin kullanıyorsa olağan dozuna devam.']);
-    return{s:s,n:['Kan şekeri saatlik; Na, K, Cl, venöz pH, HCO₃ ve keton 2–4 saatte bir.','Düzeltilmiş sodyumu izleyin; hızlı osmolalite düşüşü serebral ödem riski taşır.','Tetikleyiciyi arayın: enfeksiyon, insülin atlama, MI, pankreatit, SGLT2 inhibitörü.','Fosfor < 1 mg/dL ise veya kalp/solunum yetmezliği varsa fosfor replasmanı.']}}},
+    s.push(['Glukoz < 250 mg/dL olunca %5–10 dekstroz ekleyin (150–250 mL/saat)','İnsülini 0,02–0,05 ünite/kg/saate'+(w?' ('+g1(0.02*w)+'–'+g1(0.05*w)+' ünite/saat)':'')+' azaltın ama kesmeyin; ketoasidoz düzelene kadar glukozu 150–200 mg/dL arasında tutun.']);
+    if(p.ph!==null&&p.ph<7.0)s.push(['pH '+String(p.ph).replace('.',',')+' < 7,0: sodyum bikarbonat','100 mmol NaHCO₃ 400 mL izotonik sıvı içinde 200 mL/saat hızla. 2 saatte bir pH bakın; pH > 7,0 olana dek tekrarlayın, sonra vermeyin.']);
+    s.push(['Düzelme ve SC insüline geçiş','Glukoz < 200 mg/dL, venöz pH > 7,30, HCO₃ ≥ 18 ve keton < 0,6 mmol/L; hasta yiyebiliyor. Bazal-bolus SC insüline geçin; ilk SC dozdan sonra IV infüzyonu 1–2 saat daha sürdürün. Yeni tanı tip 1 diyabette toplam 0,5–0,8 ünite/kg/gün'+(w?' = '+r0(0.5*w)+'–'+r0(0.8*w)+' ünite/gün':'')+'. Önceden insülin kullanıyorsa olağan dozuna dönün.']);
+    return{s:s,n:['Kan şekeri saatlik; Na, K, Cl, venöz pH, HCO₃ ve keton 2–4 saatte bir.','Düzeltilmiş sodyumu izleyin; hızlı osmolalite düşüşü serebral ödem riski taşır.','Tetikleyiciyi arayın: enfeksiyon, insülin atlama, MI, pankreatit, SGLT2 inhibitörü.','Fosfat replasmanı çoğunlukla gerekmez; fosfat < 1,0 mg/dL ve kardiyak disfonksiyon veya solunum depresyonu varsa yapılabilir.']}}},
   hipo:{t:'Hipoglisemi',f:['glu','wt'],o:['bil','su'],run:function(p){
     var s=[],G=p.glu;
     if(G!==null&&G>=70)return{s:[['Kan şekeri '+G+' mg/dL: hipoglisemi yok','Belirti varsa tekrar ölçün.']],n:[]};
@@ -200,13 +200,14 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     var sev=C===null?'':C<12?'Hafif':C<14?'Orta':'Ağır';
     if(C!==null&&C<12){s.push(['Hafif hiperkalsemi: acil tedavi genellikle gerekmez','Tiyazid, lityum, kalsiyum ve D vitamini desteklerini kesin; bol sıvı alımı; dehidratasyondan kaçının.']);}
     else{
-      s.push(['IV %0,9 NaCl: 200–300 mL/saat ile başlayın','İdrar çıkışı 100–150 mL/saat olacak şekilde ayarlayın.'+(p.kky?' Kalp yetmezliği / hipervolemi var: daha düşük hız ve yakın volüm izlemi.':'')]);
-      s.push(['Kalsitonin 4 IU/kg SC/IM 12 saatte bir'+(w?' = '+r0(4*w)+' IU':''),'Etkisi 4–6 saatte başlar, 48 saat sonra taşiflaksi gelişir; bisfosfonat etkisini gösterene kadar köprü tedavi.']);
-      if(p.egfr!==null&&p.egfr<30)s.push(['eGFR < 30: zoledronik asit yerine denosumab 60–120 mg SC düşünün','Denosumabla hipokalsemi riski; nefrolojiyle birlikte karar verin. Pamidronat dikkatle ve yavaş verilebilir.']);
-      else s.push(['Zoledronik asit 4 mg IV, en az 15 dakikada','Etkisi 2–4 günde başlar. Alternatif: pamidronat 60–90 mg IV 2–4 saatte. Öncesinde hidrasyon şart.']);
-      s.push(['D vitamini aracılı (granülomatöz hastalık, lenfoma) şüphesinde prednizolon 40–60 mg/gün','1,25-(OH)₂ D vitamini yüksekse etkilidir.']);
-      if(C>=18||p.egfr!==null&&p.egfr<15)s.push(['Hemodiyaliz düşünün','Kalsiyum ≥ 18 mg/dL ve nörolojik bulgu, ya da ağır böbrek yetmezliği varsa.']);
-      s.push(['Loop diüretik yalnızca volüm yerine konduktan sonra ve hipervolemide','Rutin furosemid önerilmez.']);}
+      s.push(['IV %0,9 NaCl: önce 1–2 L hızlı, sonra 200–250 mL/saat (3–4 L/gün)','Hedef idrar 250–500 mL/saat (TEMD). Tek başına hidrasyonla normokalsemi zordur.'+(p.kky?' Kalp yetmezliği / hipervolemi var: daha yavaş verin, yakın volüm izlemi.':'')+(C!==null&&C>14?' Kalsiyum > 14 mg/dL: yatırarak acil tedavi.':'')]);
+      s.push(['Kalsitonin 6–8 IU/kg SC veya IM, 6–8 saatte bir'+(w?' = '+r0(6*w)+'–'+r0(8*w)+' IU':''),'Etkisi çok hızlı başlar, 3. günden sonra direnç gelişir; bisfosfonat etkisini gösterene kadar 1–3 gün. Ciddi dehidratasyonda IM önerilmez.'+(C!==null&&C>14?' Malignite hiperkalsemisinde Ca > 14 ise kalsitonin + IV bisfosfonat (veya denosumab) birlikte başlanır.':'')]);
+      if(p.egfr!==null&&p.egfr<30)s.push(['CrCl < 30: zoledronik asit kontrendike','Azaltılmış doz ve yavaş infüzyonla pamidronat 30–45 mg, 4 saatte; ciddi böbrek yetmezliği (kreatinin ≥ 4,5 mg/dL) veya bisfosfonat alerjisinde denosumab. Nefrolojiyle birlikte karar verin.']);
+      else s.push(['Zoledronik asit 4 mg, 100 mL SF içinde 15 dakikada (yeterli hidrasyondan sonra)','Olguların %80–100’ünde 3 günden kısa sürede normokalsemi. Alternatif: pamidronat 90 mg, 250 mL %5 dekstroz içinde 24 saatte (Ca > 14 ise). Böbrek fonksiyonu bozuksa zoledronik asit 2–4 mg 30–60 dakikada.']);
+      s.push(['Malignite hiperkalsemisinde dirençli veya bisfosfonat kontrendikeyse denosumab 120 mg SC','1., 8., 15. ve 29. günlerde. Hipokalsemi açısından izleyin.']);
+      s.push(['Multipl miyelom, lenfoma, lösemi, granülomatöz hastalık veya D vitamini zehirlenmesinde glukokortikoid','Hidrokortizon 200–300 mg/gün IV veya metilprednizolon 20–40 mg/gün, bulgular kaybolana kadar. Primer hiperparatiroidide etkisizdir.']);
+      s.push(['Hemodiyaliz düşünün','Koma, ciddi aritmi gibi şiddetli bulgular, kalp veya böbrek yetmezliği ya da hidrasyonun uygun olmadığı durumlarda; düşük veya sıfır kalsiyumlu diyalizat.']);
+      s.push(['Furosemid rutin önerilmez','Yalnız kalp veya böbrek yetmezliğinde, hidrasyona bağlı sıvı yükünü önlemek için; dehidratasyon riski taşır.']);}
     return{s:s,n:['Düzey: '+sev+'. Nedeni araştırın: PTH (yüksekse primer hiperparatiroidi), PTH baskılıysa PTHrP, 25-OH ve 1,25-(OH)₂ D vitamini, protein elektroforezi, görüntüleme.','Kalsiyum, böbrek fonksiyonu ve elektrolitleri 12–24 saatte bir izleyin; magnezyum ve fosforu kontrol edin.','Albümin düşükse düzeltilmiş kalsiyum veya iyonize kalsiyum kullanın.']}}},
   adr:{t:'Adrenal kriz',f:['wt','na','k','glu'],o:[],run:function(p){
     var s=[];
