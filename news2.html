@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NEWS2 Erken Uyarı Skoru</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>NEWS2 Erken Uyarı Skoru</h1>
+    <p>Vital bulgulardan klinik kötüleşme riski, izlem sıklığı ve yanıt düzeyi</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0;box-sizing:border-box}
+</style><style>table.t td:last-child,table.t th:last-child{text-align:right}</style>
+  <section class="card">
+    <h2>Vital bulgular</h2>
+    <div class="grid">
+      <div class="field" id="w-rr"><label for="rr" id="l-rr">Solunum sayısı <span id="u-rr">/dk</span></label><input id="rr" type="number" inputmode="decimal" step="any" value="22" placeholder=""></div>
+      <div class="field" id="w-sp"><label for="sp" id="l-sp">SpO₂ <span id="u-sp">%</span></label><input id="sp" type="number" inputmode="decimal" step="any" value="94" placeholder=""></div>
+      <div class="field" id="w-sbp"><label for="sbp" id="l-sbp">Sistolik kan basıncı <span id="u-sbp">mmHg</span></label><input id="sbp" type="number" inputmode="decimal" step="any" value="105" placeholder=""></div>
+      <div class="field" id="w-hr"><label for="hr" id="l-hr">Nabız <span id="u-hr">/dk</span></label><input id="hr" type="number" inputmode="decimal" step="any" value="104" placeholder=""></div>
+      <div class="field" id="w-tmp"><label for="tmp" id="l-tmp">Ateş <span id="u-tmp">°C</span></label><input id="tmp" type="number" inputmode="decimal" step="any" value="38.4" placeholder=""></div>
+    </div>
+    <h2>Oksijen</h2>
+    <div class="seg wrapseg"><button type="button" data-g="o2" data-v="0" aria-pressed="true">Oda havası</button><button type="button" data-g="o2" data-v="1" aria-pressed="false">Oksijen alıyor</button></div>
+    <h2>SpO₂ skalası</h2>
+    <div class="seg wrapseg"><button type="button" data-g="sc" data-v="1" aria-pressed="true">Skala 1 (hedef %94–98)</button><button type="button" data-g="sc" data-v="2" aria-pressed="false">Skala 2 (hiperkapnik, hedef %88–92)</button></div>
+    <p class="note">Skala 2 yalnız hiperkapnik solunum yetmezliği olan (çoğunlukla KOAH) ve hedefi hekimce %88–92 belirlenmiş hastada kullanılır.</p>
+    <h2>Bilinç (ACVPU)</h2>
+    <div class="seg wrapseg"><button type="button" data-g="cn" data-v="0" aria-pressed="true">Uyanık (A)</button><button type="button" data-g="cn" data-v="3" aria-pressed="false">Yeni konfüzyon, sese, ağrıya yanıt veya yanıtsız (C, V, P, U)</button></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">NEWS2</span>
+    <div class="res"><span class="num" id="sc">–</span><span class="of">/ 20</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="adv"></p>
+    <div class="sub"><span>En az izlem sıklığı</span><b id="fq">–</b></div>
+    <table class="t"><thead><tr><th>Parametre</th><th>Değer</th><th>Puan</th></tr></thead><tbody id="tb"></tbody></table>
+  </section>
+
+  <section class="card">
+    <h2>Dikkat</h2>
+    <ul class="chk">
+      <li>NEWS2 klinik değerlendirmenin yerini tutmaz; hekim veya hemşirenin endişesi tek başına çağrı nedenidir.</li>
+      <li>Yeni konfüzyon her zaman 3 puandır; enfeksiyon şüphesi olan hastada NEWS2 ≥ 5 sepsis açısından değerlendirmeyi tetikler.</li>
+      <li>Gebelikte ve 16 yaş altında kullanılmaz.</li>
+      <li>Skala 2’deki hastada oksijenle SpO₂ ≥ 93 puan alır (aşırı oksijenlenme); odada SpO₂ ≥ 93 puan almaz.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynak: Royal College of Physicians. National Early Warning Score (NEWS) 2, Aralık 2017. İzlem sıklığı ve yanıt düzeyleri hastanenizin protokolüne göre uyarlanabilir. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var fm=function(x){return x.toLocaleString('tr-TR',{maximumFractionDigits:1})};
+  function rr(x){return x<=8?3:x<=11?1:x<=20?0:x<=24?2:3}
+  function s1(x){return x<=91?3:x<=93?2:x<=95?1:0}
+  function s2(x,o){if(x<=83)return 3;if(x<=85)return 2;if(x<=87)return 1;if(x<=92||!o)return 0;return x<=94?1:x<=96?2:3}
+  function bp(x){return x<=90?3:x<=100?2:x<=110?1:x<=219?0:3}
+  function hr(x){return x<=40?3:x<=50?1:x<=90?0:x<=110?1:x<=130?2:3}
+  function tp(x){return x<=35?3:x<=36?1:x<=38?0:x<=39?1:2}
+  function calc(){var o=segVal('o2')==='1',sc2=segVal('sc')==='2',cn=+segVal('cn'),tb=$('tb');tb.innerHTML='';
+    var R=[['Solunum sayısı',v('rr'),rr,'/dk'],['SpO₂ (skala '+(sc2?2:1)+')',v('sp'),sc2?function(x){return s2(x,o)}:s1,'%'],['Sistolik KB',v('sbp'),bp,'mmHg'],['Nabız',v('hr'),hr,'/dk'],['Ateş',v('tmp'),tp,'°C']];
+    var tot=0,red=false,miss=false;
+    R.forEach(function(r){var p=r[1]===null?null:r[2](r[1]);if(p===null)miss=true;else{tot+=p;if(p===3)red=true}
+      var tr=document.createElement('tr');[r[0],r[1]===null?'–':fm(r[1])+' '+r[3],p===null?'–':String(p)].forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.appendChild(td)});if(p)tr.className=p===3?'cur':'';tb.appendChild(tr)});
+    [['Oksijen',o?'Alıyor':'Oda havası',o?2:0],['Bilinç',cn?'C, V, P veya U':'Uyanık',cn]].forEach(function(r){tot+=r[2];if(r[2]===3)red=true;var tr=document.createElement('tr');if(r[2]===3)tr.className='cur';[r[0],r[1],String(r[2])].forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.appendChild(td)});tb.appendChild(tr)});
+    if(miss){$('sc').textContent='–';pill('pl','Eksik değer var','var(--warn)');$('adv').textContent='Tüm vital bulguları girin.';$('fq').textContent='–';return}
+    $('sc').textContent=tot;
+    var a,c,f,lvl;
+    if(tot>=7){lvl='Yüksek risk';c='var(--high)';f='Sürekli monitörizasyon';a='Acil yanıt: kritik bakım yetkinliği olan ekip (yoğun bakım, acil müdahale ekibi) tarafından hemen değerlendirme; yoğun bakıma transfer düşünülmeli.'}
+    else if(tot>=5){lvl='Orta risk';c='var(--high)';f='En az saatte bir';a='Acil yanıt: hastanın hekimi veya akut değerlendirme ekibi tarafından ivedi değerlendirme. Enfeksiyon şüphesinde sepsis taraması.'}
+    else if(red){lvl='Düşük–orta risk (tek parametre 3)';c='var(--warn)';f='En az saatte bir';a='Tek parametrede 3 puan: hekim ivedi olarak değerlendirmeli ve izlem sıklığına karar vermeli.'}
+    else if(tot>=1){lvl='Düşük risk';c='var(--ok)';f='En az 4–6 saatte bir';a='Sorumlu hemşire değerlendirir; izlem sıklığını artırma veya hekime bildirme kararı verir.'}
+    else{lvl='Düşük risk';c='var(--ok)';f='En az 12 saatte bir';a='Rutin izlem.'}
+    pill('pl',lvl,c);$('adv').textContent=a;$('fq').textContent=f;
+  }
+  seg('o2',calc);seg('sc',calc);seg('cn',calc);document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc)});calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
