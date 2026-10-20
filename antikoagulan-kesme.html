@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Antikoagülan Kesme</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Antikoagülan Kesme</h1>
+    <p>Girişim öncesi DOAK, varfarin ve DMAH kesme ve yeniden başlama zamanı, köprüleme kararı</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0;box-sizing:border-box}
+</style>
+  <section class="card">
+    <h2>Antikoagülan</h2>
+    <div class="field"><label for="dr">İlaç</label><select id="dr">
+      <option value="api">Apiksaban (Eliquis)</option>
+      <option value="riv">Rivaroksaban (Xarelto)</option>
+      <option value="edo">Edoksaban (Lixiana)</option>
+      <option value="dab">Dabigatran (Pradaxa)</option>
+      <option value="war" selected>Varfarin (Coumadin)</option>
+      <option value="lmwh">Terapötik DMAH (enoksaparin 1 mg/kg 2×1)</option>
+    </select></div>
+    <div class="grid">
+      <div class="field" id="w-crcl"><label for="crcl" id="l-crcl">Kreatinin klerensi <span id="u-crcl">mL/dk</span></label><input id="crcl" type="number" inputmode="decimal" step="any" value="65" placeholder=""></div>
+      <div class="field" id="w-wt"><label for="wt" id="l-wt">Ağırlık <span id="u-wt">kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70" placeholder=""></div>
+    </div>
+    <div class="field"><label for="dt">Girişim tarihi ve saati</label><input id="dt" type="datetime-local"></div>
+    <h2>Girişimin kanama riski</h2>
+    <div class="seg wrapseg"><button type="button" data-g="br" data-v="0" aria-pressed="false">Minimal</button><button type="button" data-g="br" data-v="1" aria-pressed="true">Düşük–orta</button><button type="button" data-g="br" data-v="2" aria-pressed="false">Yüksek</button></div>
+    <p class="note" id="brn"></p>
+  </section>
+
+  <section class="card" id="trc">
+    <h2>Tromboz riski (köprüleme kararı için)</h2>
+    <div class="items">
+      <label class="item" id="w-mv"><input type="checkbox" id="mv"><span class="txt">Mekanik mitral kapak</span></label>
+      <label class="item" id="w-av"><input type="checkbox" id="av"><span class="txt">Mekanik aort kapak + ek risk<small>eski tip (kafesli top, tek disk) kapak, AF, önceki inme/TİA, düşük EF</small></span></label>
+      <label class="item" id="w-st"><input type="checkbox" id="st"><span class="txt">Son 3 ayda iskemik inme veya TİA</span></label>
+      <label class="item" id="w-vt"><input type="checkbox" id="vt"><span class="txt">Son 3 ayda VTE</span></label>
+      <label class="item" id="w-tf"><input type="checkbox" id="tf"><span class="txt">Ağır trombofili<small>antitrombin, protein C/S eksikliği, antifosfolipid sendromu, homozigot faktör V Leiden</small></span></label>
+      <label class="item" id="w-cv"><input type="checkbox" id="cv"><span class="txt">AF ve CHA₂DS₂-VASc ≥ 7 (veya 5–6 ve önceki inme)</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2 id="t">Plan</h2>
+    <div class="res"><span class="pill" id="pl"></span></div>
+    <ol class="rec" id="rx"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Kanama riski örnekleri</h2>
+    <ul class="chk">
+      <li><b>Minimal:</b> diş çekimi (1–3 diş), periodontal girişim, katarakt, küçük cilt girişimi, biyopsisiz tanısal endoskopi.</li>
+      <li><b>Düşük–orta:</b> biyopsili endoskopi, kolonoskopi + küçük polipektomi, koroner anjiyografi, kalp pili, artroskopi, fıtık, kolesistektomi.</li>
+      <li><b>Yüksek:</b> spinal/epidural anestezi, lomber ponksiyon, majör abdominal/toraks/ortopedik cerrahi, böbrek veya karaciğer biyopsisi, TURP, büyük polipektomi, ERKP sfinkterotomi, nöroşirürji.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: EHRA 2021 DOAK pratik rehberi; PAUSE çalışması (Douketis 2019); ACC 2017 periprosedürel antikoagülasyon uzlaşısı; ACCP 2022 perioperatif antitrombotik tedavi kılavuzu; BRIDGE (2015). Girişimi yapacak hekim ve anestezi ile birlikte karar verin. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var GUN=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'],AY=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+  function fd(d,time){return d.getDate()+' '+AY[d.getMonth()]+' '+GUN[d.getDay()]+(time?' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'):'')}
+  function add(h){var b=$('dt').value?new Date($('dt').value):null;return b?new Date(b.getTime()+h*3600e3):null}
+  function addD(n){var b=$('dt').value?new Date($('dt').value):null;if(!b)return null;var d=new Date(b);d.setDate(d.getDate()+n);return d}
+  (function(){var d=new Date();d.setDate(d.getDate()+7);d.setHours(9,0,0,0);var z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);$('dt').value=z.toISOString().slice(0,16)})();
+  function li(b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$('rx').appendChild(l)}
+  var BRN=['Antikoagülan kesilmeden yapılabilir.','Yaklaşık 2 gün içinde kanama riski < %2.','Yaklaşık 2 gün içinde kanama riski ≥ %2 veya kanamanın ciddi sonuç doğuracağı bölge.'];
+  function calc(){var dr=$('dr').value,c=v('crcl'),w=v('wt'),br=+segVal('br');$('rx').innerHTML='';$('brn').textContent=BRN[br];
+    $('trc').hidden=dr!=='war';var NM={api:'Apiksaban',riv:'Rivaroksaban',edo:'Edoksaban',dab:'Dabigatran',war:'Varfarin',lmwh:'Terapötik DMAH'};$('t').textContent=NM[dr]+': plan';
+    pill('pl','');
+    if(dr==='war'){
+      var hi=['mv','av','st','vt','tf','cv'].some(function(i){return $(i).checked});
+      if(br===0){li('Varfarini kesmeyin','Girişimden önceki 1–3 gün içinde INR bakın; terapötik aralıkta olması yeterli (diş çekiminde traneksamik asit gargarası yardımcı olur).');return}
+      var last=addD(-6);
+      li('Son varfarin dozu: '+(last?fd(last):'girişimden 6 gün önce'),'Girişimden önceki 5 gün varfarin verilmez.');
+      li('Girişimden 1 gün önce INR','INR > 1,5 ise 1–2 mg oral K vitamini verin, girişim günü INR’yi tekrarlayın. Hedef INR ≤ 1,4 (nöroaksiyal ve yüksek riskte ≤ 1,2).');
+      if(hi){pill('pl','Köprüleme önerilir','var(--high)');
+        var d=w?(c!==null&&c<30?Math.round(w)+' mg günde 1':Math.round(w)+' mg günde 2'):'1 mg/kg 2×1';
+        li('Köprüleme: enoksaparin '+d+(c!==null&&c<30?' (CrCl < 30)':''),'Varfarin kesildikten 3 gün sonra, INR hedefin altına inince başlayın'+(addD(-3)?' ('+fd(addD(-3))+')':'')+'.');
+        li('Son enoksaparin: girişimden 24 saat önce, günlük dozun yarısı'+(add(-24)?' ('+fd(add(-24),true)+')':''),'2×1 kullanıyorsa o sabahki dozu verip akşam dozunu atlayın.');
+        li('Girişimden sonra enoksaparin',br===2?'Yüksek kanama riskinde 48–72 saat sonra terapötik doz; o zamana kadar gerekirse profilaktik doz.':'24 saat sonra terapötik doz.');
+        li('Varfarini yeniden başlatma','Hemostaz sağlanınca aynı akşam veya ertesi gün olağan dozla. INR 2 gün üst üste hedefte olunca enoksaparini kesin (en az 5 gün örtüşme).');}
+      else{pill('pl','Köprüleme gerekmez','var(--ok)');
+        li('Köprüleme yapmayın','AF’de köprüleme tromboemboliyi azaltmaz, kanamayı artırır (BRIDGE). Tromboz riski yüksekse yukarıdaki maddeleri işaretleyin.');
+        li('Varfarini yeniden başlatma','Hemostaz sağlanınca aynı akşam veya ertesi gün olağan dozla. Yüksek kanama riskli girişimde bu arada profilaktik DMAH düşünülebilir.');}
+      return}
+    if(dr==='lmwh'){
+      if(br===0){li('DMAH’ı kesmeyin; girişim dozdan 12 saat sonra (çukur düzey) yapılabilir','');return}
+      var h=c!==null&&c<30?48:24;
+      li('Son terapötik doz: girişimden '+h+' saat önce'+(add(-h)?' ('+fd(add(-h),true)+')':''),h===48?'CrCl < 30: birikim nedeniyle süre uzatıldı.':'2×1 kullanıyorsa bir önceki gün sabah dozunu verin, akşam dozunu atlayın (veya günlük dozun yarısı).');
+      li('Yeniden başlama',br===2?'48–72 saat sonra terapötik doz; arada 6–8. saatte profilaktik doz.':'24 saat sonra terapötik doz.');
+      li('Nöroaksiyal anestezi','Terapötik DMAH’tan sonra en az 24 saat bekleyin; kateter çekildikten 4 saat sonra doz.');return}
+    if(br===0){li('DOAK’ı kesmeyin','Girişimi bir sonraki dozdan hemen önce (çukur düzeyde) yapın veya girişim sabahki dozu atlayın; girişimden 6 saat sonra devam.');return}
+    if(c===null){li('Kreatinin klerensini girin','');return}
+    var hrs,ci='';
+    if(dr==='dab'){if(c<30){pill('pl','Dabigatran kontrendike','var(--high)');li('CrCl < 30: dabigatran kullanılmamalı','Hasta kullanıyorsa en az 96 saat önce kesin ve nefroloji/hematoloji ile görüşün.');return}
+      hrs=c>=80?(br===2?48:24):c>=50?(br===2?72:36):(br===2?96:48);}
+    else{if(c<15){pill('pl','CrCl < 15','var(--high)');li('CrCl < 15: bu DOAK önerilmez','Hasta kullanıyorsa en az 72 saat önce kesin; uzmana danışın.');return}
+      hrs=c>=30?(br===2?48:24):(br===2?48:36);}
+    var last=add(-hrs);
+    li('Son doz: girişimden en az '+hrs+' saat önce'+(last?' (en geç '+fd(last,true)+')':''),(br===2?'Yüksek kanama riski':'Düşük–orta kanama riski')+', CrCl '+Math.round(c)+' mL/dk. Günde 2 dozlu ilaçta bu saatten sonraki dozlar atlanır.');
+    li('Köprüleme yapmayın','DOAK’ın etkisi hızla geçer; heparin köprülemesi kanamayı artırır.');
+    li('Girişim öncesi düzey bakmaya gerek yok','Acil girişimde veya böbrek fonksiyonu kötüleşmişse ilaca özgü düzey (anti-Xa, dilüe trombin zamanı) düşünülebilir.');
+    li('Yeniden başlama',br===2?'48–72 saat sonra tam doz'+(add(48)?' ('+fd(add(48),true)+' sonrası)':'')+'. Tromboz riski yüksekse arada 6–8. saatte profilaktik DMAH.':'Hemostaz sağlanınca 24 saat sonra tam doz'+(add(24)?' ('+fd(add(24),true)+')':'')+'.');
+    if(br===2)li('Nöroaksiyal anestezi','Kateter çekildikten en az 6 saat sonra DOAK başlanabilir.');
+  }
+  $('dr').addEventListener('change',calc);seg('br',calc);document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

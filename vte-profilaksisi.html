@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VTE Profilaksisi</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>VTE Profilaksisi</h1>
+    <p>Yatan medikal hastada Padua ve IMPROVE ile tromboz profilaksisi kararı</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0;box-sizing:border-box}
+</style><style>.item.auto .txt::after{content:"Yukarıdaki değerden otomatik"}</style>
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="seg wrapseg"><button type="button" data-g="sx" data-v="m" aria-pressed="false">Erkek</button><button type="button" data-g="sx" data-v="f" aria-pressed="true">Kadın</button></div>
+    <div class="grid">
+      <div class="field" id="w-age"><label for="age" id="l-age">Yaş <span id="u-age"></span></label><input id="age" type="number" inputmode="decimal" step="any" value="74" placeholder=""></div>
+      <div class="field" id="w-wt"><label for="wt" id="l-wt">Ağırlık <span id="u-wt">kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="82" placeholder=""></div>
+      <div class="field" id="w-ht"><label for="ht" id="l-ht">Boy <span id="u-ht">cm</span></label><input id="ht" type="number" inputmode="decimal" step="any" value="165" placeholder=""></div>
+      <div class="field" id="w-egfr"><label for="egfr" id="l-egfr">eGFR / CrCl <span id="u-egfr">mL/dk</span></label><input id="egfr" type="number" inputmode="decimal" step="any" value="48" placeholder=""></div>
+      <div class="field" id="w-plt"><label for="plt" id="l-plt">Trombosit <span id="u-plt">bin/mm³</span></label><input id="plt" type="number" inputmode="decimal" step="any" value="210" placeholder=""></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Risk faktörleri</h2>
+    <p class="note">P: Padua (tromboz) puanı, I: IMPROVE (kanama) puanı.</p>
+    <h2>Tromboz</h2>
+    <div class="items">
+      <label class="item" id="w-ca"><input type="checkbox" id="ca" data-pp="3" data-pi="2"><span class="txt">Aktif kanser<small>metastaz veya son 6 ayda kemo/radyoterapi</small></span><span class="pts">P 3 · I 2</span></label>
+      <label class="item" id="w-vte"><input type="checkbox" id="vte" data-pp="3" data-pi="0"><span class="txt">Önceden VTE<small>yüzeyel ven trombozu hariç</small></span><span class="pts">P 3</span></label>
+      <label class="item" id="w-mob"><input type="checkbox" id="mob" data-pp="3" data-pi="0" checked><span class="txt">Hareket kısıtlılığı<small>en az 3 gün yatağa bağlı (tuvalete kalkabilir)</small></span><span class="pts">P 3</span></label>
+      <label class="item" id="w-thr"><input type="checkbox" id="thr" data-pp="3" data-pi="0"><span class="txt">Bilinen trombofili<small>antitrombin, protein C/S eksikliği, faktör V Leiden, protrombin mutasyonu, antifosfolipid sendromu</small></span><span class="pts">P 3</span></label>
+      <label class="item" id="w-trm"><input type="checkbox" id="trm" data-pp="2" data-pi="0"><span class="txt">Son 1 ayda travma veya cerrahi</span><span class="pts">P 2</span></label>
+      <label class="item auto" id="w-a70"><input type="checkbox" id="a70" data-pp="1" data-pi="0" disabled><span class="txt">Yaş ≥ 70</span><span class="pts">P 1</span></label>
+      <label class="item" id="w-hf"><input type="checkbox" id="hf" data-pp="1" data-pi="0" checked><span class="txt">Kalp veya solunum yetmezliği</span><span class="pts">P 1</span></label>
+      <label class="item" id="w-mi"><input type="checkbox" id="mi" data-pp="1" data-pi="0"><span class="txt">Akut MI veya iskemik inme</span><span class="pts">P 1</span></label>
+      <label class="item" id="w-inf"><input type="checkbox" id="inf" data-pp="1" data-pi="0" checked><span class="txt">Akut enfeksiyon veya romatolojik hastalık</span><span class="pts">P 1</span></label>
+      <label class="item auto" id="w-ob"><input type="checkbox" id="ob" data-pp="1" data-pi="0" disabled><span class="txt">Obezite (VKİ ≥ 30)</span><span class="pts">P 1</span></label>
+      <label class="item" id="w-hor"><input type="checkbox" id="hor" data-pp="1" data-pi="0"><span class="txt">Hormon tedavisi<small>oral kontraseptif, hormon replasmanı, tamoksifen</small></span><span class="pts">P 1</span></label>
+    </div>
+    <h2>Kanama</h2>
+    <div class="items">
+      <label class="item" id="w-ulc"><input type="checkbox" id="ulc" data-pp="0" data-pi="4.5"><span class="txt">Aktif gastroduodenal ülser</span><span class="pts">I 4.5</span></label>
+      <label class="item" id="w-bl"><input type="checkbox" id="bl" data-pp="0" data-pi="4"><span class="txt">Son 3 ayda kanama</span><span class="pts">I 4</span></label>
+      <label class="item auto" id="w-p50"><input type="checkbox" id="p50" data-pp="0" data-pi="4" disabled><span class="txt">Trombosit < 50.000</span><span class="pts">I 4</span></label>
+      <label class="item auto" id="w-a85"><input type="checkbox" id="a85" data-pp="0" data-pi="3.5" disabled><span class="txt">Yaş ≥ 85</span><span class="pts">I 3.5</span></label>
+      <label class="item auto" id="w-a40"><input type="checkbox" id="a40" data-pp="0" data-pi="1.5" disabled><span class="txt">Yaş 40–84</span><span class="pts">I 1.5</span></label>
+      <label class="item" id="w-liv"><input type="checkbox" id="liv" data-pp="0" data-pi="2.5"><span class="txt">Karaciğer yetmezliği<small>INR > 1,5</small></span><span class="pts">I 2.5</span></label>
+      <label class="item auto" id="w-r30"><input type="checkbox" id="r30" data-pp="0" data-pi="2.5" disabled><span class="txt">eGFR < 30</span><span class="pts">I 2.5</span></label>
+      <label class="item auto" id="w-r59"><input type="checkbox" id="r59" data-pp="0" data-pi="1" disabled><span class="txt">eGFR 30–59</span><span class="pts">I 1</span></label>
+      <label class="item" id="w-icu"><input type="checkbox" id="icu" data-pp="0" data-pi="2.5"><span class="txt">Yoğun bakım veya koroner yoğun bakımda</span><span class="pts">I 2.5</span></label>
+      <label class="item" id="w-cvc"><input type="checkbox" id="cvc" data-pp="0" data-pi="2"><span class="txt">Santral venöz kateter</span><span class="pts">I 2</span></label>
+      <label class="item" id="w-rh"><input type="checkbox" id="rh" data-pp="0" data-pi="2"><span class="txt">Romatolojik hastalık</span><span class="pts">I 2</span></label>
+      <label class="item auto" id="w-male"><input type="checkbox" id="male" data-pp="0" data-pi="1" disabled><span class="txt">Erkek cinsiyet</span><span class="pts">I 1</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Padua tromboz riski</span>
+    <div class="res"><span class="num" id="ps">–</span><span class="of">/ 20</span><span class="pill" id="ppl"></span></div>
+    <div class="sub"><span>Profilaksisiz 90 günde VTE</span><b id="pr">–</b></div>
+    <span class="lbl">IMPROVE kanama riski</span>
+    <div class="res"><span class="num" id="is">–</span><span class="of">/ 33</span><span class="pill" id="ipl"></span></div>
+    <div class="sub"><span>14 günde majör kanama</span><b id="ir">–</b></div>
+    <p class="advice" id="adv"></p>
+    <ol class="rec" id="rx"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Dikkat</h2>
+    <ul class="chk">
+      <li>Profilaksi yatış süresince, hasta mobilize olana kadar sürer; taburcu sonrası uzatılmış profilaksi rutin önerilmez.</li>
+      <li>Heparin kullananda trombositi başlangıçta ve 5–14. günler arasında izleyin (HIT).</li>
+      <li>Epidural/spinal kateter: profilaktik enoksaparinden 12 saat sonra kateter çekilir, çekildikten 4 saat sonra doz yapılır.</li>
+      <li>Zaten tam doz antikoagülan alan hastada ayrıca profilaksi gerekmez.</li>
+      <li>Kompresyon çorabı (GCS) tek başına önerilmez; mekanik yöntemde aralıklı pnömatik kompresyon tercih edilir.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: Barbar S ve ark. J Thromb Haemost 2010 (Padua); Decousus H ve ark. Chest 2011 (IMPROVE); ASH 2018 hastanede yatan medikal hastada VTE profilaksisi kılavuzu; ACCP 2012. Cerrahi hastada Caprini kullanılır. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var fm=function(x){return x.toLocaleString('tr-TR',{maximumFractionDigits:1})};
+  function setA(id,on){$(id).checked=!!on}
+  function li(b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$('rx').appendChild(l)}
+  function calc(){var age=v('age'),wt=v('wt'),ht=v('ht'),g=v('egfr'),pl=v('plt'),sx=segVal('sx');
+    var bmi=wt&&ht?wt/Math.pow(ht/100,2):null;
+    setA('a70',age!==null&&age>=70);setA('ob',bmi!==null&&bmi>=30);setA('p50',pl!==null&&pl<50);
+    setA('a85',age!==null&&age>=85);setA('a40',age!==null&&age>=40&&age<85);
+    setA('r30',g!==null&&g<30);setA('r59',g!==null&&g>=30&&g<60);setA('male',sx==='m');
+    var P=0,I=0;document.querySelectorAll('.items input').forEach(function(e){if(e.checked){P+=+e.dataset.pp;I+=+e.dataset.pi}});
+    // romatolojik hastalık Padua'da enfeksiyonla aynı madde
+    if($('rh').checked&&!$('inf').checked)P+=1;
+    $('ps').textContent=P;$('is').textContent=fm(I);
+    var hiP=P>=4,hiI=I>=7;
+    pill('ppl',hiP?'Yüksek risk':'Düşük risk',hiP?'var(--high)':'var(--ok)');$('pr').textContent=hiP?'≈ %11':'≈ %0,3';
+    pill('ipl',hiI?'Yüksek kanama riski':'Düşük kanama riski',hiI?'var(--high)':'var(--ok)');$('ir').textContent=hiI?'≈ %4,1':'≈ %0,4';
+    $('rx').innerHTML='';
+    var contra=$('ulc').checked||pl!==null&&pl<50;
+    if(!hiP){$('adv').textContent='Farmakolojik profilaksi gerekmiyor. Erken mobilizasyon; risk değişirse (hareketsizlik, yeni enfeksiyon) yeniden değerlendirin.';return}
+    if(hiI||contra){$('adv').textContent='Tromboz riski yüksek ama kanama riski de yüksek'+(contra?' veya kontrendikasyon var':'')+': mekanik profilaksi (aralıklı pnömatik kompresyon). Kanama riski azalınca farmakolojiğe geçin.';
+      if(!contra)li('Kanama riski kabul edilebilirse','Düşük doz UFH (5000 ünite 2×1) daha kolay geri döndürülebilir; protamin ile nötralize edilir.');return}
+    $('adv').textContent='Farmakolojik profilaksi önerilir (DMAH, UFH tercih edilir).';
+    var ob=bmi!==null&&bmi>=40,low=wt!==null&&wt<50,r=g!==null&&g<30;
+    if(r)li('Enoksaparin 20 mg SC günde 1 (CrCl < 30)','Alternatif: UFH 5000 ünite SC 2–3×1; diyaliz veya CrCl < 15’te UFH tercih edilir.');
+    else if(ob)li('Enoksaparin 40 mg SC günde 2 (VKİ '+fm(bmi)+')','Alternatif 0,5 mg/kg günde 1'+(wt?' = '+Math.round(wt*0.5)+' mg':'')+'; mümkünse anti-Xa (hedef 0,2–0,5 IU/mL).');
+    else if(low)li('Enoksaparin 20–30 mg SC günde 1 (ağırlık < 50 kg)','Düşük kiloda birikim ve kanama riski artar.');
+    else li('Enoksaparin 40 mg SC günde 1','Alternatif: tinzaparin 4500 IU, dalteparin 5000 IU günde 1.');
+    li('veya UFH 5000 ünite SC 2–3×1',r?'Böbrek yetmezliğinde güvenli seçenek.':'Böbrek yetmezliği yoksa DMAH tercih edilir (daha az HIT, günde tek doz).');
+    if(!r)li('veya fondaparinuks 2,5 mg SC günde 1','HIT öyküsünde seçenek. CrCl 30–50’de dikkat, < 30’da kontrendike.');
+  }
+  seg('sx',calc);document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

@@ -19,6 +19,10 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Steroid eşdeğeri | `steroid-esdegeri.html` |
 | Pankreatit skorları (BISAP, Ranson, Revize Atlanta) | `pankreatit.html` |
 | Opioid dönüşümü (morfin eşdeğeri) | `opioid-donusumu.html` |
+| VTE profilaksisi (Padua, IMPROVE) | `vte-profilaksisi.html` |
+| Antikoagülan kesme ve köprüleme | `antikoagulan-kesme.html` |
+| Varfarin ve INR yönetimi | `varfarin-inr.html` |
+| IV demir dozu (Ganzoni) | `iv-demir.html` |
 | Ampirik antibiyotik (10 sık enfeksiyon, risk ve alerjiye göre) | `ampirik-antibiyotik.html` |
 | CURB-65 | `curb-65.html` |
 | qSOFA | `qsofa.html` |

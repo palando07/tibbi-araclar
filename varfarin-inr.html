@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Varfarin ve INR</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Varfarin ve INR</h1>
+    <p>Yüksek veya düşük INR’de yapılacaklar, kanamada geri döndürme ve haftalık doz ayarı</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0;box-sizing:border-box}
+</style>
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="seg wrapseg"><button type="button" data-g="tg" data-v="2" aria-pressed="true">Hedef INR 2–3</button><button type="button" data-g="tg" data-v="3" aria-pressed="false">Hedef 2,5–3,5</button></div>
+    <div class="grid">
+      <div class="field" id="w-inr"><label for="inr" id="l-inr">INR <span id="u-inr"></span></label><input id="inr" type="number" inputmode="decimal" step="any" value="5.2" placeholder=""></div>
+      <div class="field" id="w-wk"><label for="wk" id="l-wk">Haftalık toplam doz <span id="u-wk">mg</span></label><input id="wk" type="number" inputmode="decimal" step="any" value="35" placeholder=""></div>
+      <div class="field" id="w-wt"><label for="wt" id="l-wt">Ağırlık <span id="u-wt">kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70" placeholder=""></div>
+    </div>
+    <h2>Kanama</h2>
+    <div class="seg wrapseg"><button type="button" data-g="bl" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="bl" data-v="1" aria-pressed="false">Minör</button><button type="button" data-g="bl" data-v="2" aria-pressed="false">Majör / hayatı tehdit eden</button></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Yapılacaklar</h2>
+    <div class="res"><span class="pill" id="pl"></span></div>
+    <ol class="rec" id="rx"></ol>
+  </section>
+
+  <section class="card" aria-live="polite" id="sc">
+    <h2>Yeni haftalık doz</h2>
+    <div class="res"><span class="num" id="nw">–</span><span class="unit">mg/hafta</span></div>
+    <div class="sub"><span>Değişim</span><b id="ch">–</b></div>
+    <table class="t"><thead><tr><th>Gün</th><th>Doz</th><th>5 mg tablet</th></tr></thead><tbody id="tb"></tbody></table>
+  </section>
+
+  <section class="card">
+    <h2>INR’yi etkileyen sık ilaçlar</h2>
+    <ul class="chk">
+      <li><b>Yükseltir:</b> amiodaron, metronidazol, TMP-SMX, flukonazol ve diğer azoller, makrolidler, kinolonlar, fibratlar, allopurinol, parasetamol (≥ 2 g/gün, birkaç gün).</li>
+      <li><b>Düşürür:</b> rifampisin, karbamazepin, fenitoin, fenobarbital, K vitamini içeren besinler ve enteral beslenme.</li>
+      <li><b>Kanamayı artırır:</b> aspirin, klopidogrel, NSAİİ, SSRI.</li>
+      <li>Yeni ilaç başlanınca 3–5 gün içinde INR bakın.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: ACCP 2012 (CHEST) antitrombotik tedavi kılavuzu; ASH 2018 VKA tedavisi kılavuzu; ACC 2020 OAK kanama uzlaşısı. Doz ayarı varfarin kullanan stabil hasta içindir; başlangıç döneminde günlük INR ile titre edin. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var fm=function(x,k){return x.toLocaleString('tr-TR',{maximumFractionDigits:k===undefined?1:k})};
+  function li(b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$('rx').appendChild(l)}
+  var GUN=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
+  function tab(mg){var q=Math.round(mg/1.25);var t=['0','¼','½','¾','1','1 ¼','1 ½','1 ¾','2','2 ¼','2 ½'];return t[q]!==undefined?t[q]:fm(mg/5,2)}
+  function sched(W){var q=Math.round(W/1.25),b=Math.floor(q/7),r=q-b*7,d=[];for(var i=0;i<7;i++)d.push(b*1.25);
+    // fazlalığı haftaya yay: Pzt, Prş, Cmt, Sal, Cum, Çrş
+    var ord=[0,3,5,1,4,2,6];for(var j=0;j<r;j++)d[ord[j]]+=1.25;return d}
+  function calc(){var I=v('inr'),W=v('wk'),w=v('wt'),hi=segVal('tg')==='3',bl=+segVal('bl'),o=hi?0.5:0,tb=$('tb');$('rx').innerHTML='';tb.innerHTML='';
+    var lo=2+o,up=3+o,pct=0,hold=0,showSched=true;
+    if(I===null){pill('pl','');$('sc').hidden=true;return}
+    if(bl===2){pill('pl','Majör kanama','var(--high)');showSched=false;
+      li('Varfarini kesin','');
+      var u=I<4?25:I<=6?35:50,tot=w?Math.min(u*w,u===25?2500:u===35?3500:5000):null;
+      li('4 faktörlü protrombin kompleks konsantresi (PCC) '+u+' IU/kg'+(tot?' = '+fm(tot,0)+' IU':''),'INR 2–4: 25, 4–6: 35, > 6: 50 IU/kg (en fazla 100 kg üzerinden). Alternatif sabit doz 1000–1500 IU. 15–30 dakika sonra INR kontrol.');
+      li('K vitamini 5–10 mg yavaş IV (20–30 dakikada)','PCC etkisi geçici; K vitamini 6–12 saatte etki eder.');
+      li('PCC yoksa taze donmuş plazma 10–15 mL/kg'+(w?' = '+fm(10*w,0)+'–'+fm(15*w,0)+' mL':''),'Volüm yüküne dikkat; INR’yi tam düzeltmeyebilir.');
+      li('Kanama odağını kontrol edin','Endoskopi, cerrahi, girişimsel radyoloji; transfüzyon ve destek.');$('sc').hidden=true;return}
+    if(bl===1){pill('pl','Minör kanama','var(--warn)');
+      li('Bir veya iki doz atlayın','Lokal önlemler (bası, traneksamik asit). INR > 4,5 ise 1–2,5 mg oral K vitamini düşünün.');
+      li('Kanamanın nedenini araştırın','INR terapötik aralıktayken kanama altta yatan lezyonu düşündürür (GİS, üriner).');hold=1;pct=I>up?-10:0}
+    else if(I>=10){pill('pl','INR ≥ 10','var(--high)');li('Varfarini kesin, 2,5–5 mg oral K vitamini','INR’yi 24 saat sonra tekrar; gerekirse K vitaminini tekrarlayın.');li('INR hedefe inince %10–20 azaltılmış dozla başlayın','');hold=2;pct=-15}
+    else if(I>=4.5){pill('pl','INR 4,5–10','var(--high)');li('1–2 doz atlayın','Rutin K vitamini önerilmez; kanama riski yüksekse (yaş > 75, yakın zamanda kanama, trombositopeni) 1–2,5 mg oral.');hold=2;pct=-10}
+    else if(I>up){var big=I>=up+1;pill('pl','INR yüksek','var(--warn)');
+      li(big?'Bir doz atlayın veya o günün dozunu azaltın':'Dozu değiştirmeden tekrar bakın veya %5–10 azaltın',big?'':'Hedefin hafifçe üstündeyse (≤ 0,5) çoğu zaman doz değişikliği gerekmez.');hold=big?1:0;pct=big?-10:I>up+0.5?-5:0}
+    else if(I>=lo){pill('pl','Hedef aralıkta','var(--ok)');li('Doz değişikliği yok','Stabil hastada INR kontrolünü 4 haftaya (en fazla 12 haftaya) kadar açabilirsiniz.')}
+    else{var far=I<lo-0.5;pill('pl','INR düşük','var(--warn)');
+      li(far?'Haftalık dozu %10–20 artırın':'Haftalık dozu %5–10 artırın','Önce uyum, atlanan doz, yeni ilaç ve diyet (yeşil yapraklı sebze) değişikliğini sorun. Tek düşük değer ve neden belliyse doz değiştirmeyebilirsiniz.');
+      if(I<1.5)li('Yüksek tromboz riskinde köprüleme düşünün','Mekanik mitral kapak, son 3 ayda VTE veya inme varsa INR hedefe gelene kadar terapötik DMAH.');
+      pct=far?15:7.5}
+    var nxt=I>=4.5?'1–2 gün':Math.abs(pct)>0||hold?'5–7 gün':'4 hafta';
+    li('Sonraki INR: '+nxt+' sonra','');
+    $('sc').hidden=!showSched||W===null||!W;
+    if(W){var nW=Math.round(W*(1+pct/100)/1.25)*1.25;$('nw').textContent=fm(nW,2);$('ch').textContent=(pct>0?'%'+fm(pct)+' artış':pct<0?'%'+fm(-pct)+' azalma':'Değişiklik yok')+(hold?' ve önce '+hold+' doz atlanacak':'');
+      var d=sched(nW);d.forEach(function(x,i){var tr=document.createElement('tr');[GUN[i],fm(x,2)+' mg',tab(x)].forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.appendChild(td)});tb.appendChild(tr)})}
+  }
+  seg('tg',calc);seg('bl',calc);document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc)});calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IV Demir Dozu</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>IV Demir Dozu</h1>
+    <p>Ganzoni formülüyle toplam demir açığı, ferrik karboksimaltoz ve demir sükroz uygulaması</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0;box-sizing:border-box}
+</style>
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field" id="w-wt"><label for="wt" id="l-wt">Ağırlık <span id="u-wt">kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="62" placeholder=""></div>
+      <div class="field" id="w-hb"><label for="hb" id="l-hb">Hemoglobin <span id="u-hb">g/dL</span></label><input id="hb" type="number" inputmode="decimal" step="any" value="8.4" placeholder=""></div>
+      <div class="field" id="w-thb"><label for="thb" id="l-thb">Hedef Hb <span id="u-thb">g/dL</span></label><input id="thb" type="number" inputmode="decimal" step="any" value="15" placeholder=""></div>
+      <div class="field" id="w-fer"><label for="fer" id="l-fer">Ferritin <span id="u-fer">ng/mL</span></label><input id="fer" type="number" inputmode="decimal" step="any" value="9" placeholder=""></div>
+      <div class="field" id="w-ts"><label for="ts" id="l-ts">Transferrin satürasyonu <span id="u-ts">%</span></label><input id="ts" type="number" inputmode="decimal" step="any" value="6" placeholder=""></div>
+    </div>
+    <div class="items">
+      <label class="item" id="w-ckd"><input type="checkbox" id="ckd"><span class="txt">Kronik böbrek hastalığı, kalp yetmezliği veya inflamasyon<small>ferritin eşiği yükselir</small></span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Toplam demir açığı (Ganzoni)</span>
+    <div class="res"><span class="num" id="gz">–</span><span class="unit">mg</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="adv"></p>
+    <div class="sub"><span>Hb açığı için</span><b id="g1">–</b></div>
+    <div class="sub"><span>Depo demiri</span><b id="g2">–</b></div>
+    <div class="sub"><span>Ferrik karboksimaltoz tablosuna göre</span><b id="fcm">–</b></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Uygulama</h2>
+    <table class="t"><thead><tr><th>Preparat</th><th>Toplam</th><th>Uygulama</th></tr></thead><tbody id="tb"></tbody></table>
+  </section>
+
+  <section class="card">
+    <h2>Dikkat</h2>
+    <ul class="chk">
+      <li>Test dozu gerekmez; ilk 30 dakika hasta gözlenir, resüsitasyon imkânı olan yerde verilir. Hafif infüzyon reaksiyonunda (flushing, eklem ağrısı) durdurup 15 dakika sonra yavaş devam edilebilir.</li>
+      <li>Ferrik karboksimaltoz sık ve kalıcı olabilen hipofosfatemi yapar; tekrarlanan dozlarda fosfor bakın.</li>
+      <li>Aktif bakteriyemi veya sepsiste ertelenir; gebelikte ilk trimesterde verilmez.</li>
+      <li>Ferritin ve TSAT’ı son dozdan en az 4 hafta sonra kontrol edin (erken ölçüm yanlış yüksek çıkar). Hb 2–4 haftada 1–2 g/dL yükselir.</li>
+      <li>Ekstravazasyon kalıcı cilt boyanması yapabilir.</li>
+      <li>Demir eksikliğinin nedenini araştırın: erkekte ve menopoz sonrası kadında GİS değerlendirmesi, çölyak serolojisi.</li>
+    </ul>
+  </section>
+
+  <p class="note">Formül: ağırlık × (hedef Hb − mevcut Hb) × 2,4 + depo demiri (35 kg üstünde 500 mg). Obezlerde ideal kilo kullanılabilir. Kaynaklar: Ganzoni AM 1970; Ferinject ve Venofer kısa ürün bilgileri; ESC 2023 kalp yetmezliği güncellemesi; KDIGO anemi kılavuzu. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var fm=function(x){return x.toLocaleString('tr-TR',{maximumFractionDigits:0})};
+  function calc(){var w=v('wt'),hb=v('hb'),t=v('thb'),fe=v('fer'),ts=v('ts'),ck=$('ckd').checked,tb=$('tb');tb.innerHTML='';
+    var defi=null;
+    if(fe!==null){defi=ck?(fe<100||fe<300&&ts!==null&&ts<20):fe<30||fe<100&&ts!==null&&ts<20}
+    pill('pl',defi===null?'':defi?'Demir eksikliği':'Demir eksikliği değil',defi===null?'':defi?'var(--warn)':'var(--ok)');
+    $('adv').textContent=defi===false?'Ferritin ve TSAT demir eksikliğini desteklemiyor; aneminin başka nedenlerini araştırın.':ck?'KBH, kalp yetmezliği veya inflamasyonda eşik: ferritin < 100 veya 100–299 ng/mL ve TSAT < %20.':'Eşik: ferritin < 30 ng/mL (inflamasyonda < 100 ve TSAT < %20).';
+    if(!w||hb===null||t===null){$('gz').textContent='–';return}
+    var tg=w<35?Math.min(t,13):t,store=w>=35?500:15*w,a=Math.max(0,w*(tg-hb)*2.4),tot=a+store;
+    $('gz').textContent=fm(Math.round(tot/50)*50);$('g1').textContent=fm(a)+' mg';$('g2').textContent=fm(store)+' mg';
+    var f=hb<10?(w<70?1500:2000):hb<14?(w<70?1000:1500):(w<70?500:1000);if(w<35)f=500;
+    $('fcm').textContent=fm(f)+' mg';
+    var mx=Math.min(1000,20*w),n=Math.ceil(f/mx),dose1=Math.min(f,mx);
+    var rows=[
+     ['Ferrik karboksimaltoz (Ferinject 500 mg/10 mL)',fm(f)+' mg = '+Math.ceil(f/500)+' flakon',(n>1?n+' uygulama, haftada en fazla 1 kez. ':'Tek uygulama. ')+'Uygulama başına en fazla '+fm(mx)+' mg (20 mg/kg, max 1000). '+fm(dose1)+' mg'+(dose1>500?' 250 mL SF içinde en az 15 dk':' 100 mL SF içinde en az 6 dk')+'.'],
+     ['Demir sükroz (Venofer 100 mg/5 mL)',fm(Math.round(tot/100)*100)+' mg = '+Math.round(tot/100)+' ampul',Math.ceil(Math.round(tot/100)/2)+' uygulama: 200 mg (2 ampul) 100 mL SF içinde 30 dk, haftada en fazla 3 kez; tek doz 7 mg/kg’ı geçmesin.']];
+    rows.forEach(function(r){var tr=document.createElement('tr');r.forEach(function(x){var td=document.createElement('td');td.textContent=x;tr.appendChild(td)});tb.appendChild(tr)});
+  }
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
