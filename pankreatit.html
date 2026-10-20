@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pankreatit Skorları</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Pankreatit Skorları</h1>
+    <p>Akut pankreatitte BISAP, Ranson ve Revize Atlanta ile ağırlık değerlendirmesi</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+</style>
+  <section class="card">
+    <h2>Başvuruda</h2>
+    <div class="seg wrapseg"><button type="button" data-g="et" data-v="2" aria-pressed="false">Safra taşı</button><button type="button" data-g="et" data-v="1" aria-pressed="true">Diğer (alkol vb.)</button></div>
+    <div class="grid">
+      <div class="field" id="w-age"><label for="age" id="l-age">Yaş <span id="u-age"></span></label><input id="age" type="number" inputmode="decimal" step="any" value="64" placeholder=""></div>
+      <div class="field" id="w-ure"><label for="ure" id="l-ure">Üre <span id="u-ure">mg/dL</span></label><input id="ure" type="number" inputmode="decimal" step="any" value="62" placeholder=""></div>
+      <div class="field" id="w-bun"><label for="bun" id="l-bun">BUN <span id="u-bun">mg/dL</span></label><input id="bun" type="number" inputmode="decimal" step="any" value="29" placeholder=""></div>
+      <div class="field" id="w-wbc"><label for="wbc" id="l-wbc">Lökosit <span id="u-wbc">/mm³</span></label><input id="wbc" type="number" inputmode="decimal" step="any" value="17500" placeholder=""></div>
+      <div class="field" id="w-glu"><label for="glu" id="l-glu">Glukoz <span id="u-glu">mg/dL</span></label><input id="glu" type="number" inputmode="decimal" step="any" value="180" placeholder=""></div>
+      <div class="field" id="w-ldh"><label for="ldh" id="l-ldh">LDH <span id="u-ldh">U/L</span></label><input id="ldh" type="number" inputmode="decimal" step="any" value="420" placeholder=""></div>
+      <div class="field" id="w-ast"><label for="ast" id="l-ast">AST <span id="u-ast">U/L</span></label><input id="ast" type="number" inputmode="decimal" step="any" value="120" placeholder=""></div>
+    </div>
+    <div class="items">
+      <label class="item" id="w-men"><input type="checkbox" id="men"><span class="txt">Bilinç bozukluğu<small>GKS < 15</small></span></label>
+      <label class="item" id="w-sirs"><input type="checkbox" id="sirs" checked><span class="txt">SIRS (en az 2 kriter)<small>ateş > 38 veya < 36 °C · nabız > 90 · solunum > 20 veya PaCO₂ < 32 · lökosit > 12.000 veya < 4.000</small></span></label>
+      <label class="item" id="w-ple"><input type="checkbox" id="ple"><span class="txt">Plevral efüzyon<small>görüntülemede</small></span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">BISAP</span>
+    <div class="res"><span class="num" id="bs">–</span><span class="of">/ 5</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="badv"></p>
+    <div class="sub"><span>Hastane mortalitesi</span><b id="bm">–</b></div>
+  </section>
+
+  <section class="card">
+    <h2>İlk 48 saatte</h2>
+    <p class="note">Boş bırakılan alanlar puan almaz.</p>
+    <div class="grid">
+      <div class="field" id="w-hct"><label for="hct" id="l-hct">Hematokrit düşüşü <span id="u-hct">puan</span></label><input id="hct" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 12"></div>
+      <div class="field" id="w-dbun"><label for="dbun" id="l-dbun">BUN artışı <span id="u-dbun">mg/dL</span></label><input id="dbun" type="number" inputmode="decimal" step="any" value="" placeholder="üre artışı ÷ 2,14"></div>
+      <div class="field" id="w-ca"><label for="ca" id="l-ca">Kalsiyum <span id="u-ca">mg/dL</span></label><input id="ca" type="number" inputmode="decimal" step="any" value="" placeholder=""></div>
+      <div class="field" id="w-po2"><label for="po2" id="l-po2">PaO₂ <span id="u-po2">mmHg</span></label><input id="po2" type="number" inputmode="decimal" step="any" value="" placeholder=""></div>
+      <div class="field" id="w-be"><label for="be" id="l-be">Baz açığı <span id="u-be">mEq/L</span></label><input id="be" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 5"></div>
+      <div class="field" id="w-fl"><label for="fl" id="l-fl">Sıvı açığı <span id="u-fl">L</span></label><input id="fl" type="number" inputmode="decimal" step="any" value="" placeholder="giren − çıkan"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Ranson</span>
+    <div class="res"><span class="num" id="rs">–</span><span class="of" id="rof">/ 11</span><span class="pill" id="rpl"></span></div>
+    <div class="sub"><span>Başvuru puanı</span><b id="r0">–</b></div>
+    <div class="sub"><span>48. saat puanı</span><b id="r48">–</b></div>
+    <div class="sub"><span>Tahmini mortalite</span><b id="rm">–</b></div>
+    <ul class="chk" id="rl"></ul>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Revize Atlanta sınıflaması</h2>
+    <div class="seg wrapseg"><button type="button" data-g="of" data-v="0" aria-pressed="true">Organ yetmezliği yok</button><button type="button" data-g="of" data-v="1" aria-pressed="false">Geçici (&lt; 48 saat)</button><button type="button" data-g="of" data-v="2" aria-pressed="false">Kalıcı (&gt; 48 saat)</button></div>
+    <div class="items">
+      <label class="item" id="w-loc"><input type="checkbox" id="loc"><span class="txt">Lokal veya sistemik komplikasyon<small>peripankreatik sıvı, nekroz, eşlik eden hastalığın alevlenmesi</small></span></label>
+    </div>
+    <div class="res"><span class="pill" id="apl"></span></div>
+    <p class="advice" id="aadv"></p>
+    <p class="note">Organ yetmezliği: modifiye Marshall skorunda solunum (PaO₂/FiO₂ ≤ 300), böbrek (kreatinin ≥ 1,9 mg/dL) veya dolaşım (sıvıya yanıtsız sistolik &lt; 90 mmHg) için ≥ 2 puan.</p>
+  </section>
+
+  <section class="card">
+    <h2>Yönetim</h2>
+    <ul class="chk">
+      <li>Sıvı: ölçülü (ılımlı) Ringer laktat. Hipovolemide 10 mL/kg bolus, sonra 1,5 mL/kg/saat; 12–24 saatte yeniden değerlendirin, hipervolemiden kaçının (WATERFALL 2022, AGA 2024).</li>
+      <li>Erken oral beslenme (ağrı izin verdikçe, 24–72 saat içinde); beslenemeyende enteral (nazogastrik/nazojejunal), parenteral değil.</li>
+      <li>Profilaktik antibiyotik önerilmez; enfekte nekroz şüphesinde karbapenem veya kinolon + metronidazol.</li>
+      <li>Biliyer pankreatitte kolanjit varsa 24 saat içinde ERKP; hafif biliyer pankreatitte aynı yatışta kolesistektomi.</li>
+      <li>Kontrastlı BT tanı kesinse rutin değil; tanı belirsizse veya 72 saatte düzelme yoksa.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: Wu BU ve ark. Gut 2008 (BISAP); Ranson JH 1974 ve 1979 (safra taşı formu); Banks PA ve ark. Gut 2013 (Revize Atlanta); ACG 2024 ve AGA 2024 kılavuzları. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var link=function(){};
+  $('ure').addEventListener('input',function(){var u=v('ure');$('bun').value=u===null?'':Math.round(u/2.14*10)/10;calc()});
+  $('bun').addEventListener('input',function(){var b=v('bun');$('ure').value=b===null?'':Math.round(b*2.14);calc()});
+  function calc(){
+    var age=v('age'),bun=v('bun'),g=segVal('et')==='2';
+    var b=0;if(bun!==null&&bun>25)b++;if($('men').checked)b++;if($('sirs').checked)b++;if(age!==null&&age>60)b++;if($('ple').checked)b++;
+    $('bs').textContent=b;var M=['%0,1','%0,4','%1,6','%3,6','%7,4','%9,5'];$('bm').textContent=M[b];
+    pill('pl',b>=3?'Yüksek risk':'Düşük risk',b>=3?'var(--high)':'var(--ok)');
+    $('badv').textContent=b>=3?'BISAP ≥ 3: ağır seyir, organ yetmezliği ve mortalite riski artmıştır; yakın izlem ve yoğun bakım değerlendirmesi.':'BISAP 0–2: mortalite düşük; yine de ilk 48 saatte organ yetmezliği açısından izleyin.';
+    // Ranson: [non-gallstone, gallstone]
+    var T=[['age','Yaş',[55,70],1],['wbc','Lökosit',[16000,18000],1],['glu','Glukoz',[200,220],1],['ldh','LDH',[350,400],1],['ast','AST',[250,250],1]];
+    var T48=[['hct','Hematokrit düşüşü',[10,10],1],['dbun','BUN artışı',[5,2],1],['ca','Kalsiyum < 8',[8,8],-1],['po2','PaO₂ < 60',[60,null],-1],['be','Baz açığı',[4,5],1],['fl','Sıvı açığı',[6,4],1]];
+    var gi=g?1:0,r0=0,r48=0,any48=false,ul=$('rl');ul.innerHTML='';
+    function chkT(t){var x=v(t[0]),th=t[2][gi];if(x===null||th===null)return 0;var hit=t[3]>0?x>th:x<th;if(hit){var li=document.createElement('li');li.textContent=t[1]+(t[3]>0?' > '+th.toLocaleString('tr-TR'):'');ul.appendChild(li)}return hit?1:0}
+    T.forEach(function(t){r0+=chkT(t)});T48.forEach(function(t){if(v(t[0])!==null&&t[2][gi]!==null)any48=true;r48+=chkT(t)});
+    var r=r0+r48;$('rs').textContent=r;$('rof').textContent=g?'/ 10':'/ 11';$('r0').textContent=r0+' / 5';$('r48').textContent=any48?r48+' / '+(g?5:6):'girilmedi';
+    var m=r<=2?'%0–3':r<=4?'≈ %15':r<=6?'≈ %40':'≈ %100';$('rm').textContent=any48?m:'48. saat değerleri gerekli';
+    pill('rpl',r>=3?'Ağır pankreatit':any48?'Hafif':'',r>=3?'var(--high)':'var(--ok)');
+    var of=segVal('of'),loc=$('loc').checked,a,ac,ad;
+    if(of==='2'){a='Ağır';ac='var(--high)';ad='Kalıcı organ yetmezliği: mortalite %15–30 (enfekte nekrozla daha yüksek). Yoğun bakım izlemi.'}
+    else if(of==='1'||loc){a='Orta ağır';ac='var(--warn)';ad='Geçici organ yetmezliği veya lokal/sistemik komplikasyon: mortalite düşük, yatış süresi uzar.'}
+    else{a='Hafif';ac='var(--ok)';ad='Organ yetmezliği ve komplikasyon yok: genellikle ilk hafta içinde düzelir, mortalite çok düşük.'}
+    pill('apl',a,ac);$('aadv').textContent=ad;
+  }
+  seg('et',calc);seg('of',calc);
+  document.querySelectorAll('input').forEach(function(el){if(el.id!=='ure'&&el.id!=='bun')el.addEventListener('input',calc);el.addEventListener('change',calc)});
+  calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

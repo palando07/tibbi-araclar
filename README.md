@@ -15,6 +15,10 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Wells skoru (pulmoner emboli) | `wells-pe.html` |
 | MELD-Na | `meld-na.html` |
 | Acil tedavi rehberi (hiperkalemi, DKA, hipoglisemi, hiponatremi, hiperkalsemi, adrenal kriz) | `acil-tedavi.html` |
+| İnfüzyon hızı (doz ↔ mL/saat, heparin aPTT ayarı) | `infuzyon-hizi.html` |
+| Steroid eşdeğeri | `steroid-esdegeri.html` |
+| Pankreatit skorları (BISAP, Ranson, Revize Atlanta) | `pankreatit.html` |
+| Opioid dönüşümü (morfin eşdeğeri) | `opioid-donusumu.html` |
 | Ampirik antibiyotik (10 sık enfeksiyon, risk ve alerjiye göre) | `ampirik-antibiyotik.html` |
 | CURB-65 | `curb-65.html` |
 | qSOFA | `qsofa.html` |

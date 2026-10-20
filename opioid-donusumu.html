@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Opioid Dönüşümü</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Opioid Dönüşümü</h1>
+    <p>Oral morfin eşdeğeri ve opioidler arası geçişte günlük doz</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+</style>
+  <section class="card">
+    <h2>Şu anki opioid</h2>
+    <div class="field"><label for="src">İlaç ve yol</label><select id="src"></select></div>
+    <div class="grid">
+      <div class="field" id="w-dose"><label for="dose" id="l-dose">Günlük toplam doz <span id="u-dose">mg/gün</span></label><input id="dose" type="number" inputmode="decimal" step="any" value="300" placeholder=""></div>
+    </div>
+    <h2>Çapraz tolerans indirimi</h2>
+    <div class="seg wrapseg"><button type="button" data-g="red" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="red" data-v="25" aria-pressed="true">%25</button><button type="button" data-g="red" data-v="50" aria-pressed="false">%50</button></div>
+    <p class="note">Başka bir opioide geçerken genellikle %25–50 azaltılır. Ağrı kontrolsüzse %25, yaşlı, kırılgan, böbrek/karaciğer yetmezliği veya yüksek dozda %50. Aynı opioidin yol değişiminde (ör. oral morfinden IV morfine) indirim gerekmez.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Oral morfin eşdeğeri (MME)</span>
+    <div class="res"><span class="num" id="mme">–</span><span class="unit">mg/gün</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="adv"></p>
+    <table class="t"><thead><tr><th>Yeni opioid</th><th>Günlük doz</th><th>Bölünmüş / kurtarma</th></tr></thead><tbody id="tb"></tbody></table>
+  </section>
+
+  <section class="card">
+    <h2>Dikkat</h2>
+    <ul class="chk">
+      <li>Metadona geçiş doğrusal değildir (yüksek dozda oran 1:10–1:20); algoloji veya palyatif bakım ile planlayın.</li>
+      <li>Fentanil bandına geçişte önceki uzun etkili opioid 12 saat daha devam eder (12 saatlik preparat bant yapıştırılırken son kez verilir). Bant etkisi 12–24 saatte başlar; doz artışı en erken 3 günde.</li>
+      <li>Fentanil bandı opioid-naif hastada ve akut ağrıda kullanılmaz; ateş ve ısıtıcı emilimi artırır.</li>
+      <li>Kurtarma dozu: günlük dozun %10–15’i hızlı etkili opioid, gerektiğinde 1–4 saatte bir.</li>
+      <li>Böbrek yetmezliğinde (eGFR &lt; 30) morfin, kodein, tramadol ve petidin metabolitleri birikir; fentanil, buprenorfin veya düşük doz oksikodon/hidromorfon tercih edilir.</li>
+      <li>Petidin tekrarlayan dozda nöbet riski taşır (norpetidin); kronik ağrıda önerilmez.</li>
+      <li>Tramadol ve tapentadol serotonerjik ilaçlarla serotonin sendromu yapabilir; tramadol nöbet eşiğini düşürür.</li>
+      <li>Laksatif başlayın; ≥ 50 MME, benzodiazepin birlikte kullanımı veya uyku apnesinde nalokson hazır olsun.</li>
+    </ul>
+  </section>
+
+  <p class="note">Dönüşüm oranları yaklaşıktır ve kişiler arası fark büyüktür; yeni opioidde sık değerlendirip titre edin. Kaynaklar: CDC 2022 opioid reçeteleme kılavuzu (MME katsayıları), fentanil bant prospektüs dönüşüm tablosu, ESMO 2018 kanser ağrısı kılavuzu. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var fm=function(x,k){if(x===null||!isFinite(x))return '–';return x.toLocaleString('tr-TR',{maximumFractionDigits:k!==undefined?k:(x>=100?0:x>=10?1:2)})};
+  // f: oral MME per unit (mg/gün, or mcg/saat for fentanyl)
+  var D=[
+   {n:'Morfin oral',f:1,u:'mg/gün',div:'4 saatte bir hızlı etkili veya 12 saatte bir yavaş salınımlı',bt:1},
+   {n:'Morfin IV/SC',f:3,u:'mg/gün',div:'4 saatte bir bolus veya sürekli infüzyon (günlük doz ÷ 24 = mg/saat)',bt:1},
+   {n:'Oksikodon oral',f:1.5,u:'mg/gün',div:'12 saatte bir yavaş salınımlı',bt:1},
+   {n:'Hidromorfon oral',f:4,u:'mg/gün',div:'4 saatte bir hızlı etkili veya günde 1 yavaş salınımlı',bt:1},
+   {n:'Tapentadol oral',f:0.4,u:'mg/gün',div:'12 saatte bir yavaş salınımlı',max:500,bt:1},
+   {n:'Tramadol oral',f:0.2,u:'mg/gün',div:'6 saatte bir veya 12 saatte bir yavaş salınımlı',max:400,bt:1},
+   {n:'Tramadol IV',f:0.3,u:'mg/gün',div:'6–8 saatte bir, yavaş IV',max:400,bt:1},
+   {n:'Kodein oral',f:0.15,u:'mg/gün',div:'4–6 saatte bir',max:240,bt:1},
+   {n:'Petidin IV/IM',f:0.4,u:'mg/gün',div:'3–4 saatte bir; kronik kullanım önerilmez',max:600,bt:1},
+   {n:'Fentanil IV infüzyon',f:7.2,u:'mcg/saat',div:'sürekli infüzyon',bt:0},
+   {n:'Fentanil transdermal bant',f:2.4,u:'mcg/saat',div:'72 saatte bir bant değişimi',bt:0,patch:1}];
+  var s=$('src');D.forEach(function(d,i){var o=document.createElement('option');o.value=i;o.textContent=d.n+' ('+d.u+')';if(d.n==='Tramadol oral')o.selected=true;s.appendChild(o)});
+  // manufacturer table (oral morphine mg/day -> patch mcg/h)
+  function patch(m){if(m<60)return null;if(m<135)return 25;if(m<225)return 50;if(m<315)return 75;if(m<405)return 100;return 25*(Math.floor((m-45)/90)+1)}
+  function calc(){var d=D[s.value],x=v('dose'),red=+segVal('red'),tb=$('tb');tb.innerHTML='';$('u-dose').textContent=d.u;
+    $('l-dose').firstChild.textContent=d.u==='mcg/saat'?'Hız ':'Günlük toplam doz ';
+    if(x===null||x<=0){$('mme').textContent='–';pill('pl','');$('adv').textContent='';return}
+    var mme=x*d.f;$('mme').textContent=fm(mme,0);
+    pill('pl',mme>=90?'≥ 90 MME':mme>=50?'≥ 50 MME':'< 50 MME',mme>=90?'var(--high)':mme>=50?'var(--warn)':'var(--ok)');
+    $('adv').textContent=mme>=90?'Yüksek doz: aşırı doz riski belirgin artmıştır; endikasyonu ve faydayı yeniden değerlendirin, nalokson hazır olsun.':mme>=50?'Orta-yüksek doz: risk artar; nalokson bulundurun, sedatif birlikte kullanımından kaçının.':'';
+    var t=mme*(1-red/100);
+    D.forEach(function(o,i){if(i===+s.value)return;var tr=document.createElement('tr'),c1=o.n,c2,c3;
+      if(o.patch){var p=patch(mme);c2=p?p+' mcg/saat':'Uygun değil';c3=p?'Prospektüs tablosuna göre; tablo temkinli olduğundan ek indirim uygulanmadı. 72 saatte bir':'Oral morfin eşdeğeri 60 mg/gün altında bant önerilmez'}
+      else if(o.u==='mcg/saat'){var h=t/o.f;c2=fm(h,0)+' mcg/saat';c3=o.div+'; kurtarma: saatlik dozun %50–100’ü bolus'}
+      else{var dd=t/o.f;c2=fm(dd)+' mg/gün';c3=o.div+(o.bt?'; kurtarma ≈ '+fm(dd*0.1,1)+'–'+fm(dd*0.15,1)+' mg':'');
+        if(o.max&&dd>o.max){c2+=' (en fazla '+o.max+')';c3='Günlük üst sınır aşılıyor; bu ilaç uygun değil'}}
+      [c1,c2,c3].forEach(function(z,j){var td=document.createElement('td');td.textContent=z;tr.appendChild(td)});tb.appendChild(tr)});
+  }
+  s.addEventListener('change',function(){var d=D[s.value];$('dose').value=d.u==='mcg/saat'?25:d.n.indexOf('Morfin oral')===0?60:d.n.indexOf('Tramadol')===0?300:30;calc()});
+  seg('red',calc);$('dose').addEventListener('input',calc);calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

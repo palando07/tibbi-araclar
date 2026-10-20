@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Steroid Eşdeğeri</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Steroid Eşdeğeri</h1>
+    <p>Kortikosteroidler arası doz dönüşümü ve uzun kullanımda alınacak önlemler</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+</style><style>#pt td,#pt th{font-size:.82rem;overflow-wrap:anywhere}</style>
+  <section class="card">
+    <h2>Kullanılan steroid</h2>
+    <div class="field"><label for="src">İlaç</label><select id="src"></select></div>
+    <div class="grid">
+      <div class="field" id="w-dose"><label for="dose" id="l-dose">Günlük doz <span id="u-dose">mg</span></label><input id="dose" type="number" inputmode="decimal" step="any" value="32" placeholder=""></div>
+      <div class="field" id="w-wk"><label for="wk" id="l-wk">Kullanım süresi <span id="u-wk">hafta</span></label><input id="wk" type="number" inputmode="decimal" step="any" value="4" placeholder=""></div>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Prednizolon eşdeğeri</span>
+    <div class="res"><span class="num" id="pe">–</span><span class="unit">mg/gün</span><span class="pill" id="pl"></span></div>
+    <table class="t"><thead><tr><th>İlaç</th><th>Eşdeğer günlük doz</th></tr></thead><tbody id="tb"></tbody></table>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Bu doz ve sürede</h2>
+    <ul class="chk" id="rk"></ul>
+  </section>
+
+  <section class="card">
+    <h2>İlaç özellikleri</h2>
+    <table class="t"><thead><tr><th>İlaç</th><th>Eşdeğer</th><th>Mineralokortikoid</th><th>Etki süresi</th></tr></thead><tbody id="pt"></tbody></table>
+  </section>
+
+  <p class="note">Eşdeğerlik glukokortikoid (antiinflamatuvar) etkiye göredir; mineralokortikoid etki farklıdır. Deksametazon ve betametazon mineralokortikoid etki taşımaz, adrenal yetmezlikte tek başına yeterli değildir. Kaynaklar: Liu D ve ark. Allergy Asthma Clin Immunol 2013; ESE/Endocrine Society 2024 glukokortikoid kaynaklı adrenal yetmezlik kılavuzu; ACR 2022 glukokortikoid osteoporozu kılavuzu. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var fm=function(x){if(x===null||!isFinite(x))return '–';return x.toLocaleString('tr-TR',{maximumFractionDigits:x>=10?1:2})};
+  var D=[
+   {n:'Prednizolon',e:5,m:'0,8',h:'12–36 saat',x:'Deltacortril'},
+   {n:'Prednizon',e:5,m:'0,8',h:'12–36 saat',x:'karaciğerde prednizolona dönüşür'},
+   {n:'Metilprednizolon',e:4,m:'0,5',h:'12–36 saat',x:'Prednol, Depo-Medrol'},
+   {n:'Deflazakort',e:6,m:'≈ 0',h:'12–36 saat',x:'Flantadin'},
+   {n:'Hidrokortizon',e:20,m:'1',h:'8–12 saat',x:'fizyolojik kortizol'},
+   {n:'Kortizon asetat',e:25,m:'0,8',h:'8–12 saat',x:''},
+   {n:'Triamsinolon',e:4,m:'0',h:'12–36 saat',x:''},
+   {n:'Deksametazon',e:0.75,m:'0',h:'36–54 saat',x:'Dekort'},
+   {n:'Betametazon',e:0.6,m:'0',h:'36–54 saat',x:'Celestone'}];
+  var s=$('src'),pt=$('pt');
+  D.forEach(function(d,i){var o=document.createElement('option');o.value=i;o.textContent=d.n;if(d.n==='Metilprednizolon')o.selected=true;s.appendChild(o);
+    var tr=document.createElement('tr');[d.n+(d.x?' ('+d.x+')':''),fm(d.e)+' mg',d.m,d.h].forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.appendChild(td)});pt.appendChild(tr)});
+  function li(t){var l=document.createElement('li');l.textContent=t;$('rk').appendChild(l)}
+  function calc(){var d=D[s.value],ds=v('dose'),wk=v('wk'),tb=$('tb');tb.innerHTML='';$('rk').innerHTML='';
+    if(ds===null||ds<=0){$('pe').textContent='–';pill('pl','');return}
+    var pe=ds/d.e*5;$('pe').textContent=fm(pe);
+    pill('pl',pe<=7.5?'Düşük doz':pe<=30?'Orta doz':pe<=100?'Yüksek doz':'Çok yüksek doz',pe<=7.5?'var(--ok)':pe<=30?'var(--warn)':'var(--high)');
+    D.forEach(function(x,i){var tr=document.createElement('tr');if(+s.value===i)tr.className='cur';
+      [x.n,fm(pe/5*x.e)+' mg'].forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.appendChild(td)});tb.appendChild(tr)});
+    var w=wk===null?0:wk;
+    if(w>=3&&pe>=5||w>=12)li('HPA baskılanması olası: 3 haftadan uzun kullanımda ani kesmeyin, azaltarak bırakın. Prednizolon 5 mg civarına inince sabah kortizolüyle adrenal fonksiyonu değerlendirin.');
+    else li('3 haftadan kısa kullanımda genellikle azaltmadan kesilebilir (son 1 yılda tekrarlayan kür yoksa).');
+    if(w>=3&&pe>=5)li('Stres durumunda (ateşli hastalık, cerrahi) ek doz gerekir: ateşte günlük dozu 2 katına çıkarın; majör cerrahide indüksiyonda hidrokortizon 100 mg IV, sonra 200 mg/24 saat.');
+    if(pe>=2.5&&w>=12)li('Osteoporoz önlemi: kalsiyum ve D vitamini; FRAX (glukokortikoid düzeltmeli) ve kemik mineral yoğunluğu ile kırık riskini değerlendirin; orta-yüksek riskte bisfosfonat.');
+    else if(pe>=2.5&&w>=4)li('3 aydan uzun sürecekse osteoporoz önlemlerine şimdiden başlayın (kalsiyum, D vitamini, kırık riski değerlendirmesi).');
+    if(pe>=20&&w>=4)li('Pneumocystis profilaksisi düşünün (prednizolon ≥ 20 mg ≥ 4 hafta, özellikle ek immünsüpresif veya akciğer hastalığı varsa): TMP-SMX 80/400 mg günde 1 veya 160/800 mg haftada 3.');
+    li('Kan şekeri izlemi: öğleden sonra ve akşam yükselir; sabah tek doz steroidde NPH için İnsülin dozu aracına bakın.');
+    if(pe>=20)li('Yüksek dozda mide koruma, özellikle NSAİİ veya antikoagülanla birlikteyse PPI önerilir.');
+    if(pe>=7.5&&w>=12)li('Uzun süreli kullanımda göz (katarakt, glokom), kan basıncı ve kilo takibi.');
+  }
+  s.addEventListener('change',calc);['dose','wk'].forEach(function(i){$(i).addEventListener('input',calc)});calc();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

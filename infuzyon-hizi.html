@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>İnfüzyon Hızı</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>İnfüzyon Hızı</h1>
+    <p>Vazopresör, inotrop, heparin, insülin ve diğer infüzyonlarda doz ile mL/saat arasında hesap</p>
+  </header>
+<style>
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.prep{margin:0;font-size:.88rem;color:var(--muted)}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td:last-child,table.t th:last-child{text-align:right}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+</style>
+  <section class="card">
+    <h2>İlaç ve hazırlık</h2>
+    <div class="field"><label for="dr">İlaç</label><select id="dr"></select></div>
+    <div class="grid">
+      <div class="field" id="w-amt"><label for="amt" id="l-amt">Toplam ilaç <span id="u-amt">mg</span></label><input id="amt" type="number" inputmode="decimal" step="any" value="4"></div>
+      <div class="field" id="w-vol"><label for="vol" id="l-vol">Toplam hacim <span id="u-vol">mL</span></label><input id="vol" type="number" inputmode="decimal" step="any" value="50"></div>
+    </div>
+    <p class="prep" id="prep"></p>
+    <div class="grid">
+      <div class="field" id="w-wt"><label for="wt" id="l-wt">Ağırlık <span id="u-wt">kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70"></div>
+    </div>
+    <div class="seg wrapseg"><button type="button" data-g="yon" data-v="1" aria-pressed="true">Dozdan hıza</button><button type="button" data-g="yon" data-v="2" aria-pressed="false">Hızdan doza</button></div>
+    <div class="grid">
+      <div class="field" id="w-dose"><label for="dose" id="l-dose">Doz <span id="u-dose">mcg/kg/dk</span></label><input id="dose" type="number" inputmode="decimal" step="any" value="0.1"></div>
+      <div class="field" id="w-rate"><label for="rate" id="l-rate">Pompa hızı <span id="u-rate">mL/saat</span></label><input id="rate" type="number" inputmode="decimal" step="any" value="5"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2 id="t">Sonuç</h2>
+    <div class="res"><span class="num" id="out">–</span><span class="unit" id="outu"></span><span class="pill" id="pl"></span></div>
+    <div class="sub" id="r-abs"><span>Mutlak doz</span><b id="abs">–</b></div>
+    <div class="sub"><span>Konsantrasyon</span><b id="conc">–</b></div>
+    <div class="sub"><span>Olağan aralık</span><b id="rng">–</b></div>
+    <div class="sub" id="r-bol"><span>Yükleme</span><b id="bol">–</b></div>
+    <div class="sub"><span>Serum seti ile (20 damla = 1 mL)</span><b id="drop">–</b></div>
+    <div class="sub"><span>Şişe/enjektör biter</span><b id="dur">–</b></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Doz tablosu</h2>
+    <table class="t"><thead><tr><th>Doz</th><th id="th-abs">Mutlak</th><th>mL/saat</th></tr></thead><tbody id="tb"></tbody></table>
+  </section>
+
+  <section class="card" id="nomo" aria-live="polite" hidden>
+    <h2>Heparin aPTT ayarı (Raschke)</h2>
+    <table class="t"><thead><tr><th>aPTT</th><th>Yapılacak</th><th>Hız değişimi</th></tr></thead><tbody id="ntb"></tbody></table>
+    <p class="note">aPTT 6 saat sonra tekrar; iki ardışık değer hedefteyse günde bir. Saniye sınırları özgün çalışmanın laboratuvarına aittir; hastanenizin hedef aralığını (çoğunlukla kontrolün 1,5–2,5 katı) veya anti-Xa hedefini kullanın.</p>
+  </section>
+
+  <section class="card">
+    <h2>Dikkat</h2>
+    <ul class="chk" id="nt"></ul>
+  </section>
+
+  <p class="note">Hazırlıklar 50 mL perfüzör veya serum için örnektir; hastanenizin standart sulandırmasını girin. Ampul içeriği firmaya göre değişebilir, kutuyu kontrol edin.</p>
+  <p class="note">Kaynaklar: Surviving Sepsis Campaign 2021, ESC 2020/2023, ACC/AHA, Raschke 1993 (heparin nomogramı), prospektüs bilgileri. Hesap sonucunu uygulamadan önce ikinci bir kişiyle doğrulayın. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return x.toFixed(1).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  var fm=function(x,d){if(x===null||!isFinite(x))return '–';var k=d!==undefined?d:(Math.abs(x)>=100?0:Math.abs(x)>=10?1:2);return x.toLocaleString('tr-TR',{maximumFractionDigits:k})};
+  // per hour amount in base units (mcg or ünite) per 1 dose-unit
+  var U={'mcg/kg/dk':[60,1,'mcg/dk'],'mcg/dk':[60,0],'mcg/saat':[1,0],'mg/saat':[1000,0],'mg/dk':[60000,0],'mg/kg/saat':[1000,1,'mg/saat'],'ünite/saat':[1,0],'ünite/kg/saat':[1,1,'ünite/saat']};
+  var AU={mg:1000,mcg:1,'ünite':1};
+  var D=[
+   {n:'Noradrenalin',u:'mcg/kg/dk',au:'mg',a:4,v:50,d:0.1,r:[0.05,0.5],mx:1,tab:[0.02,0.05,0.1,0.15,0.2,0.3,0.4,0.5,0.75,1],
+    p:'Ör. 4 mg noradrenalin, SF veya %5 dekstrozla 50 mL’ye (80 mcg/mL).',
+    nt:['Sepsiste hedef ortalama arter basıncı ≥ 65 mmHg.','0,25–0,5 mcg/kg/dk üzerinde vazopressin ve hidrokortizon (200 mg/gün) eklemeyi düşünün.','Santral kateter tercih edilir; periferden kısa süre büyük ven ve sık ekstravazasyon kontrolüyle verilebilir.']},
+   {n:'Adrenalin',u:'mcg/kg/dk',au:'mg',a:4,v:50,d:0.05,r:[0.01,0.5],mx:1,tab:[0.01,0.02,0.05,0.1,0.15,0.2,0.3,0.5],
+    p:'Ör. 4 ampul (1 mg/1 mL) SF ile 50 mL’ye (80 mcg/mL).',
+    nt:['Laktat yükselmesi, taşikardi ve hiperglisemi yapabilir.','Anafilakside ilk tedavi infüzyon değil 0,5 mg IM’dir.']},
+   {n:'Dopamin',u:'mcg/kg/dk',au:'mg',a:200,v:50,d:5,r:[2,20],mx:20,tab:[2,3,5,7.5,10,12.5,15,20],
+    p:'Ör. 1 ampul (200 mg/5 mL) SF ile 50 mL’ye (4 mg/mL).',
+    nt:['Sepsiste noradrenaline göre daha fazla aritmi; yalnız seçilmiş bradikardik hastada.','"Renal doz" dopaminin böbrek koruyucu etkisi yoktur.']},
+   {n:'Dobutamin',u:'mcg/kg/dk',au:'mg',a:250,v:50,d:5,r:[2,20],mx:20,tab:[2,2.5,5,7.5,10,15,20],
+    p:'Ör. 1 flakon (250 mg/20 mL) SF ile 50 mL’ye (5 mg/mL).',
+    nt:['Hipotansiyonu ağırlaştırabilir; hipotansif hastada vazopresörle birlikte.','Taşiaritmi ve iskemi açısından izleyin.']},
+   {n:'Nitrogliserin',u:'mcg/dk',au:'mg',a:50,v:50,d:10,r:[5,200],mx:400,tab:[5,10,20,30,50,75,100,150,200],
+    p:'Ör. 50 mg nitrogliserin (Perlinganit 10 mg/10 mL × 5) dilüsyonsuz 50 mL (1 mg/mL).',
+    nt:['5–10 mcg/dk ile başlayıp 3–5 dakikada bir 5–10 mcg/dk artırın.','Sistolik < 90 mmHg, sağ ventrikül infarktı, ciddi aort darlığı ve son 24–48 saatte PDE-5 inhibitörü kullanımında vermeyin.','PVC olmayan set ve cam/polietilen şişe önerilir (emilim).']},
+   {n:'Amiodaron',u:'mg/dk',au:'mg',a:900,v:500,d:1,r:[0.5,1],mx:1,tab:[0.5,0.75,1],
+    p:'Ör. 6 ampul (150 mg/3 mL) %5 dekstrozla 500 mL’ye (1,8 mg/mL). Yalnız %5 dekstroz ile sulandırılır.',
+    bol:function(w){return '150 mg %5 dekstroz 100 mL’de 10 dk; AF’de 5 mg/kg'+(w?' = '+fm(5*w,0)+' mg':'')+' 20–120 dk'},
+    nt:['Klasik şema: 1 mg/dk 6 saat, sonra 0,5 mg/dk 18 saat (ilk 24 saatte ~1 g).','Periferden konsantrasyon ≤ 2 mg/mL olmalı; flebit sık.','Hipotansiyon, bradikardi, QT uzaması; varfarin ve digoksin düzeyini artırır.']},
+   {n:'Esmolol',u:'mcg/kg/dk',au:'mg',a:2500,v:250,d:50,r:[50,300],mx:300,tab:[25,50,100,150,200,250,300],
+    p:'Ör. hazır 2500 mg/250 mL torba veya 100 mg/10 mL flakonlardan 10 mg/mL.',
+    bol:function(w){return '500 mcg/kg'+(w?' = '+fm(0.5*w,0)+' mg':'')+' 1 dakikada'},
+    nt:['Yarı ömrü 9 dakika; kesince etki hızla kaybolur.','Dekompanse kalp yetmezliği, ileri AV blok ve ağır bronkospazmda kaçının.']},
+   {n:'Heparin (VTE)',u:'ünite/kg/saat',au:'ünite',a:25000,v:50,d:18,r:[12,30],mx:40,tab:[10,12,14,16,18,20,22,24],hep:1,
+    p:'Ör. 25.000 ünite (5 mL flakon) SF ile 50 mL’ye (500 ünite/mL).',
+    bol:function(w){return '80 ünite/kg'+(w?' = '+fm(80*w,0)+' ünite IV':'')},
+    nt:['İlk aPTT 6 saatte; aşağıdaki tabloya göre ayarlayın.','Trombosit sayısını izleyin (HIT: 5–10. gün, trombosit > %50 düşüş).','Obezlerde gerçek kiloyla başlanır; bazı protokoller bolusu 10.000 ünite ile sınırlar.']},
+   {n:'Heparin (AKS)',u:'ünite/kg/saat',au:'ünite',a:25000,v:50,d:12,r:[12,12],mx:12,abs:1000,tab:[8,10,12],
+    p:'Ör. 25.000 ünite (5 mL flakon) SF ile 50 mL’ye (500 ünite/mL).',
+    bol:function(w){return '60 ünite/kg'+(w?' = '+fm(Math.min(60*w,4000),0)+' ünite IV':'')+' (en fazla 4000)'},
+    nt:['İnfüzyon en fazla 1000 ünite/saat.','Hedef aPTT kontrolün 1,5–2 katı (≈ 50–70 sn); ilk kontrol 3–6 saatte.','Fibrinolitik verilen hastada 48 saat veya revaskülarizasyona kadar.']},
+   {n:'İnsülin (kısa etkili)',u:'ünite/saat',au:'ünite',a:50,v:50,d:5,r:[0.5,10],mx:15,tab:[0.5,1,2,3,4,5,6,7,8,10],
+    p:'50 ünite kristalize insülin SF ile 50 mL’ye (1 mL = 1 ünite).',
+    bol:function(w){return 'DKA’da isteğe bağlı 0,1 ünite/kg'+(w?' = '+fm(0.1*w,1)+' ünite':'')+'; DKA infüzyonu 0,1 ünite/kg/saat'+(w?' = '+fm(0.1*w,1)+' ünite/saat':'')},
+    nt:['Kan şekerini saatlik ölçün; potasyum < 3,5 iken başlamayın.','Setin ilk 20 mL’sini atın (insülin plastiğe tutunur).','Ayrıntılı DKA şeması için Acil tedavi rehberine bakın.']},
+   {n:'Furosemid',u:'mg/saat',au:'mg',a:100,v:50,d:10,r:[5,40],mx:40,tab:[5,10,15,20,30,40],
+    p:'Ör. 10 ampul (20 mg/2 mL) SF ile 50 mL’ye (2 mg/mL).',
+    bol:function(){return 'İnfüzyondan önce 40 mg IV (veya evdeki günlük oral dozun 1–2,5 katı)'},
+    nt:['Hedef idrar: ilk 6 saatte > 100–150 mL/saat veya 2. saatte spot idrar Na > 50–70 mEq/L (ESC 2021).','Bolus hızı 4 mg/dk’yı geçmemeli (ototoksisite).','K, Mg, kreatinin ve volümü günlük izleyin.']},
+   {n:'Pantoprazol',u:'mg/saat',au:'mg',a:80,v:50,d:8,r:[8,8],mx:8,tab:[4,8],
+    p:'Ör. 2 flakon (40 mg) SF ile 50 mL’ye (1,6 mg/mL).',
+    bol:function(){return '80 mg IV'},
+    nt:['Endoskopide yüksek riskli ülserde 72 saat.','Aralıklı yüksek doz (40–80 mg 2×1 IV) infüzyona eşdeğer kabul edilir.']},
+   {n:'Oktreotid',u:'mcg/saat',au:'mcg',a:500,v:50,d:50,r:[25,50],mx:50,tab:[25,50],
+    p:'Ör. 5 ampul (100 mcg/1 mL) SF ile 50 mL’ye (10 mcg/mL).',
+    bol:function(){return '50 mcg IV'},
+    nt:['Varis kanamasında endoskopiden önce başlanır, 2–5 gün sürer.','Siroz ve kanamada antibiyotik profilaksisi (seftriakson 1 g/gün) unutulmamalı.']},
+   {n:'Midazolam',u:'mg/kg/saat',au:'mg',a:50,v:50,d:0.05,r:[0.02,0.1],mx:0.2,tab:[0.02,0.03,0.05,0.075,0.1],
+    p:'Ör. 50 mg midazolam SF ile 50 mL’ye (1 mg/mL).',
+    bol:function(w){return 'Gerekirse 0,01–0,05 mg/kg'+(w?' = '+fm(0.01*w,1)+'–'+fm(0.05*w,1)+' mg':'')+' yavaş IV'},
+    nt:['Yaşlı, karaciğer ve böbrek yetmezliğinde birikir; en düşük dozu kullanın.','Günlük sedasyon arası (RASS hedefi) önerilir.','Antidot: flumazenil 0,2 mg IV.']},
+   {n:'Propofol (%1)',u:'mcg/kg/dk',au:'mg',a:500,v:50,d:20,r:[5,50],mx:80,tab:[5,10,20,30,40,50,67],
+    p:'%1 propofol dilüsyonsuz (10 mg/mL).',
+    nt:['Hipotansiyon ve bradikardi; entübe olmayan hastada solunum depresyonu.','1 mL = 1,1 kcal yağ; trigliseridi 48 saatte bir izleyin.','> 4 mg/kg/saat (≈ 67 mcg/kg/dk) ve > 48 saatte propofol infüzyon sendromu riski.','Açılan şişe 12 saatte değiştirilmeli.']}
+  ];
+  var sel=$('dr');D.forEach(function(d,i){var o=document.createElement('option');o.value=i;o.textContent=d.n+' ('+d.u+')';sel.appendChild(o)});
+  function setDrug(){var d=D[sel.value];$('amt').value=d.a;$('vol').value=d.v;$('dose').value=d.d;$('u-amt').textContent=d.au;$('u-dose').textContent=d.u;$('prep').textContent=d.p;
+    $('w-wt').hidden=!U[d.u][1];var nt=$('nt');nt.innerHTML='';d.nt.forEach(function(x){var li=document.createElement('li');li.textContent=x;nt.appendChild(li)});calc(true)}
+  function calc(fromDrug){var d=D[sel.value],u=U[d.u],w=v('wt'),a=v('amt'),vl=v('vol'),yon=segVal('yon');
+    $('w-dose').hidden=yon!=='1';$('w-rate').hidden=yon!=='2';
+    var c=a!==null&&vl?a*AU[d.au]/vl:null; // base per mL
+    var needW=u[1]&&!w;
+    var per=function(x){return x*u[0]*(u[1]?w:1)}; // base/hour for dose x
+    var mlh=function(x){return c?per(x)/c:null};
+    var dose=null,rate=null;
+    if(c&&!needW){if(yon==='1'){dose=v('dose');rate=dose!==null?mlh(dose):null}else{rate=v('rate');dose=rate!==null?rate*c/(u[0]*(u[1]?w:1)):null}}
+    if(fromDrug===true&&rate!==null)$('rate').value=Math.round(rate*10)/10;
+    $('t').textContent=d.n;
+    if(yon==='1'){$('out').textContent=fm(rate,1);$('outu').textContent='mL/saat'}else{$('out').textContent=fm(dose);$('outu').textContent=d.u}
+    var cu=d.au==='mg'?(c>=1000?[c/1000,'mg/mL']:[c,'mcg/mL']):[c,d.au+'/mL'];$('conc').textContent=c?fm(cu[0])+' '+cu[1]:'–';
+    $('rng').textContent=(d.r[0]===d.r[1]?fm(d.r[0]):fm(d.r[0])+'–'+fm(d.r[1]))+' '+d.u;
+    $('r-abs').hidden=!u[1];$('abs').textContent=u[1]&&dose!==null&&w?fm(dose*w)+' '+u[2]:'–';
+    $('r-bol').hidden=!d.bol;$('bol').textContent=d.bol?d.bol(w):'';
+    $('drop').textContent=rate===null?'–':rate/3<1?'< 1 damla/dk (pompa gerekir)':fm(rate/3,0)+' damla/dk';
+    $('dur').textContent=rate?(vl/rate>=48?fm(vl/rate/24,1)+' günde':fm(vl/rate,1)+' saatte'):'–';
+    var warn='',col='';
+    if(needW){warn='Ağırlık girin';col='var(--warn)'}
+    else if(dose!==null){var absU=d.abs&&w?dose*w:0;
+      if(dose>d.mx||d.abs&&absU>d.abs){warn='Önerilen üst sınırın üstünde';col='var(--high)'}
+      else if(dose>d.r[1]*1.0001){warn='Olağan aralığın üstünde';col='var(--warn)'}
+      else if(dose<d.r[0]*0.9999){warn='Olağan aralığın altında';col='var(--warn)'}}
+    pill('pl',warn,col);
+    $('th-abs').hidden=!u[1];var tb=$('tb');tb.innerHTML='';
+    d.tab.forEach(function(x){var tr=document.createElement('tr');if(dose!==null&&Math.abs(x-dose)<1e-9)tr.className='cur';
+      var cells=[fm(x)+' '+d.u];if(u[1])cells.push(w?fm(x*w)+' '+u[2]:'–');cells.push(fm(mlh(x)===null||needW?null:mlh(x),1));
+      cells.forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.appendChild(td)});tb.appendChild(tr)});
+    $('nomo').hidden=!d.hep;
+    if(d.hep){var ml=function(uk){return w&&c?' ('+(uk>0?'+':'−')+fm(Math.abs(uk)*w,0)+' ünite = '+(uk>0?'+':'−')+fm(Math.abs(uk)*w/c,1)+' mL/saat)':''};
+      var R=[['< 35 sn (< 1,2×)','80 ünite/kg bolus'+(w?' = '+fm(80*w,0)+' ünite':''),'+4 ünite/kg/saat'+ml(4)],
+             ['35–45 sn (1,2–1,5×)','40 ünite/kg bolus'+(w?' = '+fm(40*w,0)+' ünite':''),'+2 ünite/kg/saat'+ml(2)],
+             ['46–70 sn (1,5–2,3×)','Değişiklik yok','Aynı hız'],
+             ['71–90 sn (2,3–3×)','Bolus yok','−2 ünite/kg/saat'+ml(-2)],
+             ['> 90 sn (> 3×)','İnfüzyonu 1 saat durdurun','−3 ünite/kg/saat'+ml(-3)]];
+      var nb=$('ntb');nb.innerHTML='';R.forEach(function(r){var tr=document.createElement('tr');r.forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.appendChild(td)});nb.appendChild(tr)})}
+  }
+  seg('yon',calc);sel.addEventListener('change',setDrug);
+  ['amt','vol','wt','dose','rate'].forEach(function(id){$(id).addEventListener('input',calc)});
+  setDrug();
+
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
