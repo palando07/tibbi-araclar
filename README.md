@@ -54,3 +54,5 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz. Hiçbir hasta verisi kaydedilmez. Ortak kod (Kopyala düğmesi, çevrimdışı çalışma) `ortak.js` dosyasındadır.
 
 `lib/` klasöründeki üçüncü taraf kütüphaneler: qrcode-generator 1.4.4 (MIT, Kazuhiko Arase) ve jsQR 1.4.0 (Apache 2.0, Cosmo Wolfe). Nöbet devrinde QR kod oluşturma ve okuma için kullanılır.
+
+Başlıktaki "Vizit" yazısı DM Serif Display yazı tipinden çizilmiştir (SIL Open Font License 1.1).
