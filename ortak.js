@@ -2,6 +2,15 @@
 (function(){
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 
+
+  // Yazı boyutu: menüdeki ayar (localStorage 'vizit-yazi') her sayfada uygulanır.
+  try {
+    var yb = parseFloat(localStorage.getItem('vizit-yazi'));
+    if (yb > 1 && yb < 1.5) {
+      document.documentElement.style.fontSize = (16 * yb) + 'px';
+      var cssY = document.createElement('style'); cssY.textContent = 'body{font-size:1rem!important}.sub>b,.sub>span{white-space:normal;min-width:0;overflow-wrap:anywhere}.sub>b{text-align:right}li,small{overflow-wrap:anywhere}'; document.head.appendChild(cssY);
+    }
+  } catch (e) {}
   var css = document.createElement('style');
   css.textContent = '.copy{align-self:flex-start;border:1px solid var(--line);background:var(--bg);color:var(--accent);' +
     'font:600 .9rem var(--font-body);padding:8px 16px;border-radius:999px;cursor:pointer}' +
@@ -227,5 +236,23 @@
       il.appendChild(d);
       son.parentNode.insertBefore(il, son.nextSibling);
     }
+  }
+
+  // Sonuca git: sonuç kartı ekranda değilken altta küçük bir düğme gösterir.
+  var sonuc = document.querySelector('section.card[aria-live]');
+  if (sonuc && 'IntersectionObserver' in window) {
+    var cssJ = document.createElement('style');
+    cssJ.textContent = '.sonuca{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;' +
+      'border:0;background:var(--accent);color:#fff;font:600 .95rem var(--font-body);padding:11px 18px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer}' +
+      '.sonuca:focus-visible{outline:3px solid var(--fg);outline-offset:2px}';
+    document.head.appendChild(cssJ);
+    var git = document.createElement('button'); git.type = 'button'; git.className = 'sonuca'; git.textContent = 'Sonuç ↓'; git.hidden = true;
+    git.setAttribute('aria-label', 'Sonuca git');
+    git.addEventListener('click', function(){ sonuc.scrollIntoView({behavior: 'smooth', block: 'start'}); });
+    document.body.appendChild(git);
+    new IntersectionObserver(function(es){
+      var e = es[0];
+      git.hidden = e.isIntersecting || e.boundingClientRect.top < 0;
+    }, {threshold: 0}).observe(sonuc);
   }
 })();

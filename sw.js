@@ -1,6 +1,6 @@
 // Sayfaları telefona kaydeder, böylece internet yokken de açılır.
 // Bir sayfayı değiştirdiğinizde aşağıdaki sürüm numarasını artırın.
-const CACHE = 'tibbi-araclar-v35';
+const CACHE = 'tibbi-araclar-v36';
 const FILES = ['./', 'index.html', 'egfr.html', 'af-skor.html', 'elektrolit.html', 'kreatinin-klerensi.html', 'child-pugh.html', 'wells-pe.html',
   'meld-na.html', 'curb-65.html', 'qsofa.html', 'glasgow-blatchford.html',
   'sodyum.html', 'osmolalite.html', 'vki.html', 'qtc.html', 'glasgow-koma.html', 'ortak.js',

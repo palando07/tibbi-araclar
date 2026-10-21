@@ -56,12 +56,22 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
 .hseg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
 .hasta .alt{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .hasta .bilgi{font-size:.78rem;color:var(--muted);margin:0}
+.sekme{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px}
+.sekme::-webkit-scrollbar{display:none}
+.sekme a{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--fg);text-decoration:none;font:600 .9rem var(--font-body);padding:8px 14px;border-radius:999px}
+.sekme a:focus-visible,.yazi button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.group{scroll-margin-top:12px}
+.yazi{display:flex;align-items:center;gap:6px;align-self:flex-end;margin-top:-8px}
+.yazi span{font-size:.8rem;color:var(--muted);margin-right:2px}
+.yazi button{width:40px;height:36px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;font-weight:700;font-family:var(--font-body);cursor:pointer;line-height:1}
+.yazi button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
 </style>
 </head>
 <body data-ornek-yok>
 <div class="wrap">
   <h1>Vizit</h1>
   <p class="sub">Dahiliye pratiği için hesaplayıcılar</p>
+  <div class="yazi" role="group" aria-label="Yazı boyutu"><span>Yazı</span><button type="button" data-y="1" style="font-size:.85rem">A</button><button type="button" data-y="1.12" style="font-size:1rem">A</button><button type="button" data-y="1.25" style="font-size:1.2rem">A</button></div>
   <input class="search" id="q" type="search" placeholder="Ara: sodyum, siroz, pnömoni…" aria-label="Hesaplayıcı ara" autocomplete="off">
   <section class="hasta" id="hasta" aria-label="Hasta özeti">
     <div class="ust"><strong>Hasta</strong><p class="ozet" id="h-ozet">Değer girilmedi. Buraya ya da herhangi bir araca yazdığınız değerler diğer araçlarda hazır gelir.</p></div>
@@ -76,9 +86,10 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
     </div>
     <p class="bilgi">Yalnız bu telefonda, uygulama açıkken tutulur; 30 dakika işlem yapılmazsa silinir. İsim veya kimlik bilgisi girmeyin.</p>
   </section>
+  <nav class="sekme" id="sekme" aria-label="Bölümler"><a href="#b-bobrek">Böbrek</a><a href="#b-kardiyo">Kardiyo</a><a href="#b-karaciger">Karaciğer</a><a href="#b-acil">Acil</a><a href="#b-genel">Genel</a></nav>
   <section class="quick" id="fav" hidden><h2>Favoriler</h2><div class="items group-items" style="display:flex;flex-direction:column;gap:8px"></div></section>
   <section class="quick" id="son" hidden><h2>Son kullanılanlar</h2><div class="items" style="display:flex;flex-direction:column;gap:8px"></div></section>
-  <section class="group">
+  <section class="group" id="b-bobrek">
     <h2>Böbrek ve elektrolit</h2>
     <a class="tool" href="egfr.html" data-k="gfr böbrek kreatinin ckd kbh">
       <div><strong>eGFR</strong><span>CKD-EPI 2021 ve KDIGO G evresi</span></div>
@@ -121,7 +132,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div class="go">›</div>
     </a>
   </section>
-  <section class="group">
+  <section class="group" id="b-kardiyo">
     <h2>Kardiyoloji ve tromboz</h2>
     <a class="tool" href="af-skor.html" data-k="atriyal fibrilasyon inme kanama antikoagülan chads hasbled">
       <div><strong>AF risk skorları</strong><span>CHA₂DS₂-VASc / CHA₂DS₂-VA ve HAS-BLED</span></div>
@@ -164,7 +175,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div class="go">›</div>
     </a>
   </section>
-  <section class="group">
+  <section class="group" id="b-karaciger">
     <h2>Karaciğer ve GİS</h2>
     <a class="tool" href="siroz-asit.html" data-k="siroz asit parasentez saag sbp spontan bakteriyel peritonit albümin diüretik spironolakton hrs hepatorenal aki terlipressin">
       <div><strong>Siroz ve asit</strong><span>Asit sıvısı, SBP, parasentez albümini, diüretik, HRS-AKI</span></div>
@@ -195,7 +206,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div class="go">›</div>
     </a>
   </section>
-  <section class="group">
+  <section class="group" id="b-acil">
     <h2>Enfeksiyon ve acil</h2>
     <a class="tool" href="acil-tedavi.html" data-k="acil tedavi hiperkalemi potasyum dka ketoasidoz hipoglisemi hiponatremi hipertonik salin hiperkalsemi adrenal kriz hidrokortizon">
       <div><strong>Acil tedavi rehberi</strong><span>Hiperkalemi, DKA, hipoglisemi, hiponatremi, hiperkalsemi, adrenal kriz</span></div>
@@ -230,7 +241,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div class="go">›</div>
     </a>
   </section>
-  <section class="group">
+  <section class="group" id="b-genel">
     <h2>Genel ve endokrin</h2>
     <a class="tool" href="anemi.html" data-k="anemi kansızlık hemoglobin mcv ferritin demir eksikliği tsat b12 folat retikülosit hemoliz talasemi mentzer">
       <div><strong>Anemi yaklaşımı</strong><span>Anemi tipi, demir/B12/folat durumu, sonraki test</span></div>
@@ -340,6 +351,14 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
   $('h-kop').onclick=function(){var b=this,t=ozetMetni(oku());function ok(){b.textContent='Kopyalandı ✓';setTimeout(function(){b.textContent='Kopyala'},1600)}
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,function(){});};
   ciz();window.addEventListener('pageshow',ciz);
+})();
+(function(){
+  var b=document.querySelectorAll('.yazi button'),v='1';
+  try{v=localStorage.getItem('vizit-yazi')||'1'}catch(e){}
+  function ciz(){b.forEach(function(x){x.setAttribute('aria-pressed',x.dataset.y===v)})}
+  b.forEach(function(x){x.onclick=function(){v=x.dataset.y;try{localStorage.setItem('vizit-yazi',v)}catch(e){}location.reload()}});
+  ciz();
+  var q=document.getElementById('q');q.addEventListener('input',function(){document.getElementById('sekme').hidden=!!q.value.trim()});
 })();
 </script>
 <script src="ortak.js"></script>
