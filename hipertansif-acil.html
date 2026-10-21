@@ -91,10 +91,10 @@ table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
       </select>
     </div>
     <div class="grid">
-      <div class="field"><label for="sbp">Sistolik <span>mmHg</span></label><input id="sbp" type="number" inputmode="numeric" step="1" value="200"></div>
-      <div class="field"><label for="dbp">Diyastolik <span>mmHg</span></label><input id="dbp" type="number" inputmode="numeric" step="1" value="115"></div>
-      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70"></div>
-      <div class="field" id="w-hr"><label for="hr">Nabız <span>/dk</span></label><input id="hr" type="number" inputmode="numeric" step="1" value="100"></div>
+      <div class="field"><label for="sbp">Sistolik <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="numeric" step="1" value="200"></div>
+      <div class="field"><label for="dbp">Diyastolik <span>mmHg</span></label><input id="dbp" data-hasta="dbp" type="number" inputmode="numeric" step="1" value="115"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field" id="w-hr"><label for="hr">Nabız <span>/dk</span></label><input id="hr" data-hasta="nabiz" type="number" inputmode="numeric" step="1" value="100"></div>
     </div>
   </section>
 
@@ -116,7 +116,7 @@ table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
   </section>
 
   <p class="note">Tablo değiştirildiğinde alanlara örnek değerler gelir; kendi hastanızın değerlerini girin. OAB = DKB + (SKB − DKB) / 3. <span class="tr-no">Türkiye'de bulunmayabilir</span> işaretli ilaçlar için ilacabak.com ve TİTCK KÜB/KT kayıtlarında Türkiye'de satışta ürün bulunamadı; kılavuzda geçtikleri için bilgi amaçlı gösterilir. Sodyum nitroprussid (Nipruss) ilaç listesinde görünmekle birlikte temini hastaneye göre değişebilir.</p>
-  <p class="note">Kaynaklar: van den Born BH ve ark. ESC Council on Hypertension position document on the management of hypertensive emergencies, Eur Heart J Cardiovasc Pharmacother 2019 (hedefler, zamanlama, ilaç seçimi ve IV doz tablosu; tablo 4 için yayımlanmış düzeltme vardır); 2024 ESC Yüksek Kan Basıncı ve Hipertansiyon Kılavuzu (≥ 180/110 mmHg'de hipertansif acil değerlendirmesi); AHA/ASA akut iskemik inme kılavuzu 2018/2019 (185/110, 180/105, 220/120 eşikleri ve tablo 5 dozları); ESO 2025 akut inmede kan basıncı kılavuzu; AHA/ASA 2022 spontan intraserebral kanama kılavuzu; INTERACT3 (Lancet 2023); ACOG Committee Opinion 767 (gebelikte ağır hipertansiyon, labetalol/hidralazin/nifedipin algoritması, magnezyum sülfat); AHA/ACC 2014 NSTE-AKS (nitrat ve PDE-5 inhibitörü); KÜB/SmPC: Brevibloc (esmolol), Ebrasel/Ebrantil (urapidil), nikardipin 1 mg/mL, fentolamin (FDA etiketi); Türkiye piyasa bilgisi ilacabak.com ve TİTCK KÜB/KT kayıtları (Ekim 2026). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: van den Born BH ve ark. ESC Council on Hypertension position document on the management of hypertensive emergencies, Eur Heart J Cardiovasc Pharmacother 2019 (hedefler, zamanlama, ilaç seçimi ve IV doz tablosu; tablo 4 için yayımlanmış düzeltme vardır); 2024 ESC Yüksek Kan Basıncı ve Hipertansiyon Kılavuzu (≥ 180/110 mmHg'de hipertansif acil değerlendirmesi); AHA/ASA akut iskemik inme kılavuzu 2018/2019 (220/120 eşiği ve tablo 5 dozları) ve 2026 güncellemesi (185/110 ve 180/105 eşikleri, trombolitik ve trombektomi sonrası yoğun düşürmeme); ESO 2025 intraserebral kanama kılavuzu; AHA/ASA 2022 spontan intraserebral kanama kılavuzu; INTERACT3 (Lancet 2023); ACOG Committee Opinion 767 ve Practice Bulletin 222 (gebelikte ağır hipertansiyon, labetalol/hidralazin/nifedipin algoritması ve en yüksek dozlar, magnezyum sülfat); magnezyum sülfat %15 KÜB; AHA/ACC 2014 NSTE-AKS (nitrat ve PDE-5 inhibitörü); KÜB/SmPC: Brevibloc (esmolol), Ebrasel/Ebrantil (urapidil), nikardipin 1 mg/mL, fentolamin (FDA etiketi); Türkiye piyasa bilgisi ilacabak.com ve TİTCK KÜB/KT kayıtları (Ekim 2026). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -151,7 +151,7 @@ table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
     cle:function(){return ['Klevidipin'+NO+': 1–2 mg/saat; 2–5 dakikada bir dozu iki katına çıkarın, en fazla 21 mg/saat','Etki 2–3 dakikada başlar, 5–15 dakika sürer.']},
     phen:function(){return ['Fentolamin'+NO+': 5 mg IV, gerektikçe tekrarlanır','Koroner arter hastalığı veya miyokard infarktüsü öyküsünde kontrendike; taşiaritmi ve göğüs ağrısı yapabilir.']},
     mg:function(){return ['Magnezyum sülfat (%15, 10 mL ampul = 1,5 g): yükleme 4–6 g IV 20–30 dakikada (= '+nf(4/0.15,1)+'–'+nf(6/0.15,0)+' mL %15), idame 1–2 g/saat',
-      'Nöbet profilaksisi ve tedavisi; antihipertansifi geciktirmeyin. Miyastenia graviste kontrendike; böbrek yetmezliği ve akciğer ödeminde dikkat (refleks, solunum, idrar çıkışı izlemi). Damar yolu yoksa %50 çözeltiden 10 g IM (her kalçaya 5 g).']}
+      'Nöbet profilaksisi ve tedavisi; antihipertansifi geciktirmeyin. Miyastenia gravis, kalp bloğu ve miyokard hasarında kontrendike; KÜB ağır böbrek yetmezliğini de kontrendikasyon sayar, böbrek işlevi bozuksa idameyi azaltın ve düzey izleyin. Akciğer ödeminde dikkat (refleks, solunum, idrar çıkışı izlemi). Damar yolu yoksa 10 g IM (her kalçaya 5 g); Türkiye\'deki ampuller %15 olduğundan 5 g = 33,3 mL (ACOG %50 çözelti kullanır).']}
   };
   function c(id,w){return DR[id](w)}
 
@@ -182,22 +182,22 @@ table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
   ais:{t:'İskemik inme (reperfüzyon yok)',run:function(p){var w=p.wt,need=p.sbp>220||p.dbp>120,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg']];
     if(need){rows.push(['Hedef OAB',r0(p.map*.85)+' mmHg (%15 düşüş)']);rows.push(['Süre','İlk 24 saat'])}
     else rows.push(['Hedef','Acil düşürme gerekmez (eşik > 220/120)']);
-    var s=need?[['KB > 220/120 mmHg: OAB\'yi ilk 24 saatte yaklaşık %15 düşürün','Daha büyük ve hızlı düşüşten kaçının; penumbra perfüzyonu KB\'ye bağımlıdır.'],
+    var s=need?[['KB > 220/120 mmHg: OAB\'yi ilk 24 saatte yaklaşık %15 düşürün','AHA/ASA: ilk 24 saatte %15; ESC 2019 belgesi aynı düşüşü 1 saat içinde önerir. Daha büyük ve hızlı düşüşten kaçının; penumbra perfüzyonu KB\'ye bağımlıdır.'],
       c('nic'),['Labetalol'+NO+': 10 mg IV, ardından 2–8 mg/dk infüzyon','AHA/ASA seçeneği.'],c('cle'),
       ['KB kontrol edilemezse veya DKB > 140 mmHg: sodyum nitroprussid'+(w?' 0,3–10 µg/kg/dk = '+nf(0.3*w,0)+'–'+nf(10*w,0)+' µg/dk':''),'Nipruss; temini değişken.']]
       :[['KB ≤ 220/120 mmHg: acil antihipertansif önerilmez','Başka bir endikasyon (AKS, akciğer ödemi, aort diseksiyonu, preeklampsi) yoksa; KB\'yi izleyin.'],
       ['Reperfüzyon adayıysa','"Trombolitik/trombektomi planlı" tablosunu seçin: hedef < 185/110 mmHg.']];
     return{pl:need?['Acil KB düşürme gerekli',HIGH]:['Acil KB düşürme önerilmez',OK],rows:rows,s:s,n:['Sedasyon yapan ve uzun etkili ilaçlardan kaçının; nörolojik muayeneyi sık tekrarlayın.','Nikardipin: ağır aort darlığı, kararsız angina ve MI sonrası ilk 8 günde kontrendike.']}}},
-  ait:{t:'İskemik inme (reperfüzyon planlı)',run:function(p){var w=p.wt,hi=p.sbp>185||p.dbp>110,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Trombolitik öncesi','< 185/110 mmHg'],['Trombolitik sırasında ve sonraki 24 saat','< 180/105 mmHg']];
-    var s=[[hi?'KB '+r0(p.sbp)+'/'+r0(p.dbp)+': trombolitikten önce < 185/110 mmHg\'ye indirin':'KB hedefte (< 185/110); trombolitik verilebilir','KB 185/110 altına indirilemezse trombolitik uygulanmaz. Uygulama sırasında ve sonraki 24 saat < 180/105 mmHg tutun; KB\'yi sık ölçün.'],
+  ait:{t:'İskemik inme (reperfüzyon planlı)',run:function(p){var w=p.wt,hi=p.sbp>=185||p.dbp>=110,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Trombolitik öncesi','< 185/110 mmHg'],['Trombolitik sırasında ve sonraki 24 saat','< 180/105 mmHg']];
+    var s=[[hi?'KB '+r0(p.sbp)+'/'+r0(p.dbp)+': trombolitikten önce < 185/110 mmHg\'ye indirin':'KB hedefte (< 185/110); KB açısından trombolitik verilebilir','KB 185/110 altına indirilemezse trombolitik uygulanmaz. Uygulama sırasında ve sonraki 24 saat < 180/105 mmHg tutun; KB\'yi sık ölçün.'],
       c('nic'),['Labetalol'+NO+': 10–20 mg IV 1–2 dakikada; 1 kez tekrarlanabilir','AHA/ASA seçeneği.'],c('cle'),
-      ['Başarılı trombektomi sonrası','İlk 24 saatte sistolik KB\'yi yoğun şekilde < 140 mmHg\'ye düşürmeyin (ESO 2025).']];
+      ['Trombolitik veya başarılı trombektomi sonrası yoğun düşürmeyin','Trombolitik sonrası SKB\'yi < 140 mmHg\'ye indirmenin yararı yok; başarılı trombektomi sonrası ilk 72 saatte SKB < 140 mmHg hedefi zararlıdır (AHA/ASA 2026).']];
     return{pl:hi?['Trombolitik öncesi düşürün',HIGH]:['Trombolitik için uygun KB',OK],rows:rows,s:s,n:['Nikardipin: ağır aort darlığı, kararsız angina ve MI sonrası ilk 8 günde kontrendike.','Tedaviye rağmen KB yükselirse ölçüm sıklığını artırın ve tedaviyi yoğunlaştırın.']}}},
   ich:{t:'İntraserebral kanama',run:function(p){var w=p.wt,S=p.sbp,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg']],s=[],pl;
     if(S>220){rows.push(['Hedef','Dikkatli, kademeli düşürme']);pl=['Hipertansif acil',HIGH];
       s.push(['SKB > 220 mmHg: dikkatli düşürün','ATACH-2 post hoc analizinde SKB ≥ 220 olanlarda yoğun düşürmenin yararı görülmedi; büyük ve hızlı düşüşlerden kaçının. Sürekli IV infüzyon ve sık KB izlemi.'])}
-    else if(S>=150){rows.push(['Hedef SKB','130–140 mmHg ('+r0(S-140)+'–'+r0(S-130)+' mmHg düşüş)']);rows.push(['Süre','Hemen başlayın; INTERACT3: 1 saatte < 140']);pl=['Hipertansif acil',HIGH];
-      s.push(['SKB 150–220 mmHg: hedef 130–140 mmHg','Tedaviye hemen başlayın, dikkatli titre edin; KB\'yi düzgün ve sürekli kontrol altında tutun (dalgalanmadan kaçının). INTERACT3 paketinde hedef 1 saat içinde SKB < 140 mmHg.'])}
+    else if(S>=150){rows.push(['Hedef SKB','140 mmHg; 130–150 aralığında tutun ('+r0(S-140)+' mmHg düşüş)']);if(S-140>70)rows.push(['Dikkat','Başlangıca göre 70 mmHg\'den fazla düşürmeyin (≥ '+r0(S-70)+' mmHg)']);rows.push(['Süre','Hemen başlayın; INTERACT3: 1 saatte < 140']);pl=['Hipertansif acil',HIGH];
+      s.push(['SKB 150–220 mmHg: hedef 140 mmHg (130–150 aralığı)','Hafif–orta kanamada tedaviye mümkünse ilk 2 saatte başlayın, hedefe 1 saatte ulaşın; dikkatli titre edin, KB\'yi düzgün ve sürekli kontrol altında tutun (dalgalanmadan kaçının). ESO 2025: başlangıca göre 70 mmHg\'den fazla düşürmeyin, SKB\'yi aktif olarak 110 mmHg altına indirmeyin. Büyük hematom veya cerrahi planlanan hastada yoğun düşürmenin güvenliği belirsizdir.'])}
     else{rows.push(['Hedef','Acil düşürme gerekmez; < 130 mmHg\'ye inmeyin']);pl=['Acil KB düşürme gerekmez',OK];
       s.push(['SKB < 150 mmHg: ek düşürme gerekmez','SKB\'nin 130 mmHg altına inmesi zararlı olabilir.'])}
     if(S>=150)s.push(c('nic'),c('ura'),c('lab',w));
@@ -211,20 +211,20 @@ table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
     var s=[['SKB\'yi hemen < 140 mmHg\'ye düşürün','Ön ve art yükü azaltın; noninvaziv CPAP ödemi ve venöz dönüşü azaltır.'],
       [c('ntg')[0]+' + IV loop diüretik',c('ntg')[1]+' Yüksek dozlar gerekebilir. Loop diüretik volüm yükünü azaltır.'],
       c('snp',w),[c('ura')[0]+' + IV loop diüretik',c('ura')[1]+' Nitrogliserinle karşılaştırıldığında KB düşüşü daha iyi, refleks taşikardi yok.']];
-    return{pl:['Hipertansif acil',HIGH],rows:rows,s:s,n:['Nitroprussid ESC belgesinde ilk seçenektir (ön ve art yükü azaltır); Türkiye\'de temini değişken olduğu için nitrogliserin önde gösterildi.','Esmolol ve diğer beta blokerler dekompanse kalp yetmezliğinde kontrendike.','Nitrogliserin: hipotansiyon, sağ ventrikül infarktı ve son 24 saatte sildenafil/vardenafil, 48 saatte tadalafil kullanımında vermeyin.']}}},
-  dis:{t:'Akut aort diseksiyonu',run:function(p){var w=p.wt,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Hedef SKB','≤ 120 mmHg'+(p.sbp>120?' ('+r0(p.sbp-120)+' mmHg düşüş)':'')],['Hedef nabız','≤ 60/dk'+(p.hr!==null?' (şu an '+r0(p.hr)+')':'')],['Süre','Hemen']];
-    var s=[['SKB ≤ 120 mmHg ve nabız ≤ 60/dk: hemen','Aort duvarındaki gerilimi azaltır. Önce beta blokajla başlayın, gerekirse vazodilatör ekleyin. Acil kalp-damar cerrahisi konsültasyonu.'],
+    return{pl:['Hipertansif acil',HIGH],rows:rows,s:s,n:['ESC belgesinde nitroprussid ve nitrogliserin (loop diüretikle) birlikte ilk seçenektir; Türkiye\'de nitroprussid temini değişken olduğu için nitrogliserin önde gösterildi.','Esmolol ve diğer beta blokerler dekompanse kalp yetmezliğinde kontrendike.','Nitrogliserin: hipotansiyon, sağ ventrikül infarktı ve son 24 saatte sildenafil/vardenafil, 48 saatte tadalafil kullanımında vermeyin.']}}},
+  dis:{t:'Akut aort diseksiyonu',run:function(p){var w=p.wt,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Hedef SKB','< 120 mmHg'+(p.sbp>=120?' (en az '+r0(p.sbp-119)+' mmHg düşüş)':'')],['Hedef nabız','< 60/dk'+(p.hr!==null?' (şu an '+r0(p.hr)+')':'')],['Süre','Hemen']];
+    var s=[['SKB < 120 mmHg ve nabız < 60/dk: hemen','Aort duvarındaki gerilimi azaltır. Önce beta blokajla başlayın, gerekirse vazodilatör ekleyin. Acil kalp-damar cerrahisi konsültasyonu.'],
       c('esm',w),['Hedef KB\'ye ulaşılmazsa vazodilatör ekleyin',c('ntg')[0]+'; ya da '+c('nic')[0]+'; ya da sodyum nitroprussid'+(w?' 0,3–10 µg/kg/dk = '+nf(0.3*w,0)+'–'+nf(10*w,0)+' µg/dk':'')+' (temini değişken).'],
       c('meto'),c('lab',w)];
     return{pl:['Hipertansif acil',HIGH],rows:rows,s:s,n:['Vazodilatörü beta blokajsız tek başına vermeyin: refleks taşikardi aort duvarı gerilimini artırır.','Esmolol kısa etkili olduğu için aşırı düşüşte hızla geri döner; metoprolol ve labetalolün uzun yarı ömrü bu açıdan dezavantajdır.','Esmolol: nabız < 50, hasta sinüs, 2.–3. derece AV blok, kardiyojenik şok, dekompanse KY, akut astım ve tedavi edilmemiş feokromositomada kontrendike.'],tbl:w}}},
   pre:{t:'Ağır preeklampsi / eklampsi',run:function(p){var sev=p.sbp>=160||p.dbp>=110,rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Hedef','< 160/105 mmHg'],['Süre','Ağır KB doğrulandıktan sonra 30–60 dakika içinde tedavi']];
-    var s=[[sev?'KB ≥ 160 ve/veya ≥ 110 mmHg (15 dakika sürüyorsa): acil tedavi':'KB ağır aralıkta değil (< 160/110)','Hedef < 160/105 mmHg. Kontrol sağlandıktan sonra KB\'yi 1 saat 10 dakikada bir, sonraki saat 15 dakikada bir, sonraki saat 30 dakikada bir ölçün. Fetal kalp hızını izleyin.'],
+    var s=[[sev?'KB ≥ 160 ve/veya ≥ 110 mmHg (15 dakika sürüyorsa): acil tedavi':'KB ağır aralıkta değil (< 160/110)','Hedef < 160/105 mmHg (ESC); ACOG 140–150/90–100 mmHg aralığını hedefler. Kontrol sağlandıktan sonra KB\'yi 1 saat 10 dakikada bir, sonraki saat 15 dakikada bir, sonraki saat 30 dakikada bir ölçün. Fetal kalp hızını izleyin.'],
       c('mg'),c('nic'),
       ['Oral nifedipin (kısa etkili, Nidilat 10 mg kapsül): 10 mg ağızdan; 20 dakika sonra hâlâ ağırsa 20 mg, 20 dakika sonra yine 20 mg','Ardından da ağırsa IV ilaca geçin. Kapsül yutulur; delinmez, dil altı verilmez. ACOG\'a göre özellikle damar yolu yoksa birinci basamak; ESC belgesi ise ani düşüş nedeniyle kısa etkili nifedipini önermez.'],
-      ['Labetalol'+NO+': 20 mg IV 2 dakikada; 10 dakika sonra 40 mg, 10 dakika sonra 80 mg','Yine kontrol yoksa başka ilaca geçin. ESC: kümülatif doz 24 saatte 800 mg\'ı geçmesin (fetal bradikardi). Astım, kalp hastalığı ve kalp yetmezliğinde kaçının.'],
-      ['Hidralazin'+NO+': 5–10 mg IV 2 dakikada; 20 dakika sonra 10 mg','24 saatte en fazla 25 mg. ESC belgesi artık önermiyor (perinatal olumsuz sonuçlar, maternal hipotansiyon).'],
+      ['Labetalol'+NO+': 20 mg IV 2 dakikada; 10 dakika sonra 40 mg, 10 dakika sonra 80 mg','Yine kontrol yoksa başka ilaca geçin. ACOG: kümülatif IV doz 24 saatte en fazla 300 mg; ESC: 800 mg (fetal bradikardi). Anne nabzı < 60/dk ise vermeyin. Astım, kalp hastalığı ve kalp yetmezliğinde kaçının.'],
+      ['Hidralazin'+NO+': 5–10 mg IV 2 dakikada; 20 dakika sonra 10 mg','Toplam IV doz en fazla 20 mg (ACOG); sonra labetalol veya başka ilaca geçin. ESC belgesi artık önermiyor (perinatal olumsuz sonuçlar, maternal hipotansiyon).'],
       ['Kesin tedavi doğumdur','Kadın doğum ve yoğun bakım ekibiyle birlikte yönetin.']];
-    return{pl:sev?['Hipertansif acil',HIGH]:['Ağır aralıkta değil',WARN],rows:rows,s:s,n:['Sodyum nitroprussid gebelikte kontrendike (fetal siyanür toksisitesi).','Urapidil: KÜB\'ye göre gebelikte zorunlu olmadıkça kullanılmaz.','Nikardipin: çoğul gebelikte kullanmayın; IV kullanımda ve beta-2 agonistle birlikte akciğer ödemi bildirilmiştir.','Magnezyum: miyastenia graviste kontrendike; böbrek yetmezliğinde düzey ve refleks izlemi.']}}},
+    return{pl:sev?['Hipertansif acil',HIGH]:['Ağır aralıkta değil',WARN],rows:rows,s:s,n:['Sodyum nitroprussid gebelikte kontrendike (fetal siyanür toksisitesi).','Urapidil: KÜB\'ye göre gebelikte zorunlu olmadıkça kullanılmaz.','Nikardipin: çoğul gebelikte kullanmayın; IV kullanımda ve beta-2 agonistle birlikte akciğer ödemi bildirilmiştir.','Magnezyum: miyastenia gravis, kalp bloğu ve ağır böbrek yetmezliğinde (KÜB) kontrendike; böbrek işlevi bozuksa düzey ve refleks izlemi.']}}},
   sym:{t:'Sempatomimetik kriz / feokromositoma',run:function(p){var rows=[['Ortalama arter basıncı',r0(p.map)+' mmHg'],['Hedef','Kaynakta sayısal hedef yok; organ hasarına göre']];
     var s=[['Kokain / amfetamin: önce benzodiazepin','Ajitasyon ve sempatik aktivasyonu azaltır; KB çoğu kez bununla düşer. Koroner iskemi varsa nitrogliserin ve aspirin.'],
       c('phen'),c('nic'),c('ura'),

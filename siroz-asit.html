@@ -90,12 +90,12 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   <section class="card">
     <h2>Hasta</h2>
     <div class="grid">
-      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70"></div>
-      <div class="field"><label for="salb">Serum albümin <span>g/dL</span></label><input id="salb" type="number" inputmode="decimal" step="any" value="2.8"></div>
-      <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" type="number" inputmode="decimal" step="any" value="1.3"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="salb">Serum albümin <span>g/dL</span></label><input id="salb" data-hasta="alb" type="number" inputmode="decimal" step="any" value="2.8"></div>
+      <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.3"></div>
       <div class="field"><label for="bun">BUN <span>mg/dL</span></label><input id="bun" type="number" inputmode="decimal" step="any" value="32"></div>
-      <div class="field"><label for="bil">Total bilirubin <span>mg/dL</span></label><input id="bil" type="number" inputmode="decimal" step="any" value="3.4"></div>
-      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="131"></div>
+      <div class="field"><label for="bil">Total bilirubin <span>mg/dL</span></label><input id="bil" data-hasta="bil" type="number" inputmode="decimal" step="any" value="3.4"></div>
+      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="131"></div>
       <div class="field"><label for="ctp">Child-Pugh puanı <span>5–15</span></label><input id="ctp" type="number" inputmode="decimal" step="1" value="10"></div>
     </div>
     <p class="note">BUN yerine üre biliniyorsa: BUN = üre ÷ 2,14.</p>
@@ -173,8 +173,8 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <h2>Profilaksi kararı</h2>
     <div class="res"><span class="pill" id="prp"></span></div>
     <div class="sub"><span>Asit protein &lt; 1,5 g/dL</span><b id="plo">–</b></div>
-    <div class="sub"><span>Böbrek: Kr &gt; 1,2 · BUN &gt; 25 · Na &lt; 130</span><b id="pre">–</b></div>
-    <div class="sub"><span>Karaciğer: Child-Pugh &gt; 9 ve bilirubin &gt; 3</span><b id="pli">–</b></div>
+    <div class="sub"><span>Böbrek: Kr ≥ 1,2 · BUN ≥ 25 · Na ≤ 130</span><b id="pre">–</b></div>
+    <div class="sub"><span>Karaciğer: Child-Pugh ≥ 9 ve bilirubin ≥ 3</span><b id="pli">–</b></div>
     <ol class="rec" id="rxP"></ol>
   </section>
 
@@ -214,7 +214,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       <li>EASL: ilk kez gelişen orta (evre 2) asitte yalnız spironolakton 100 mg/gün başlanır, 72 saatte bir 100 mg artırılır (en çok 400 mg). Haftada &lt; 2 kg kilo kaybı veya hiperkalemi olursa furosemid 40 mg/gün eklenir, 40 mg basamaklarla en çok 160 mg. Uzun süreli veya tekrarlayan asitte baştan kombinasyon.</li>
       <li>Kilo kaybı en çok 0,5 kg/gün (ödem yoksa), 1 kg/gün (ödem varsa).</li>
       <li>Diüretiği kesin: Na &lt; 125 mmol/L, AKI, ensefalopatinin kötüleşmesi veya kısıtlayıcı kas krampları. K &lt; 3 mmol/L ise furosemidi, K &gt; 6 mmol/L ise spironolaktonu kesin.</li>
-      <li>Tuz: orta düzey sodyum kısıtlaması. EASL 80–120 mmol/gün (4,6–6,9 g tuz); AASLD 2 g (90 mmol) sodyum/gün. &lt; 40 mmol/gün çok düşük sodyumlu diyetten kaçının.</li>
+      <li>Tuz: orta düzey sodyum kısıtlaması. EASL 80–120 mmol/gün (4,6–6,9 g tuz); AASLD 2 g (88 mmol) sodyum/gün. &lt; 40 mmol/gün çok düşük sodyumlu diyetten kaçının.</li>
       <li>Hiponatremi yoksa sıvı kısıtlaması gerekmez.</li>
     </ul>
   </section>
@@ -223,11 +223,11 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <h2>Refrakter asit</h2>
     <p class="advice">Sodyum kısıtlaması ve diüretiğe rağmen mobilize edilemeyen ya da büyük hacimli parasentezden sonra erken tekrarlayan asit. Diüretiğe dirençli (en yüksek dozda yanıt yok) ve diüretiğe dayanıksız (yan etki en yüksek doza izin vermiyor) olarak ikiye ayrılır.</p>
     <ul class="chk">
-      <li>Sodyum kısıtlaması (88 mmol veya 2000 mg/gün) ve en az 1 hafta en yüksek doz diüretik: spironolakton 400 mg/gün (veya amilorid 30 mg/gün) + furosemid 160 mg/gün.</li>
+      <li>Sodyum kısıtlaması (88 mmol veya 2000 mg/gün) ve en az 1 hafta en yüksek doz diüretik: spironolakton 400 mg/gün + furosemid 160 mg/gün (ICA tanımı).</li>
       <li>Yanıtsızlık: 4 günde ortalama kilo kaybı &lt; 0,8 kg ve idrar sodyumu alınan sodyumdan az.</li>
       <li>Erken tekrar: mobilizasyondan sonra 4 hafta içinde evre 2–3 asidin yeniden ortaya çıkması.</li>
-      <li>Diüretiğe bağlı komplikasyon (dayanıksız asit): kreatininde &gt; %100 artışla &gt; 2 mg/dL, K &lt; 3 veya &gt; 6 mmol/L, Na’da &gt; 10 mmol/L düşüş veya &lt; 125 mmol/L, hepatik ensefalopati.</li>
-      <li>Tanı için tüm ölçütler karşılanmalı. İlk basamak tekrarlayan büyük hacimli parasentez + albümin (8 g/L); karaciğer nakli açısından değerlendirin. Diüretikle idrar sodyumu &gt; 30 mmol/gün değilse diüretiği kesin (EASL).</li>
+      <li>Diüretiğe bağlı komplikasyon (dayanıksız asit): kreatininde &gt; %100 artışla &gt; 2 mg/dL, K &lt; 3 veya &gt; 6 mmol/L, Na’nın &gt; 10 mmol/L düşüşle &lt; 125 mmol/L’ye inmesi, hepatik ensefalopati.</li>
+      <li>Tanı için tüm ölçütler karşılanmalı. İlk basamak tekrarlayan büyük hacimli parasentez + albümin (8 g/L); uygun hastada TIPS düşünün (EASL 2018); karaciğer nakli açısından değerlendirin. Diüretikle idrar sodyumu &gt; 30 mmol/gün değilse diüretiği kesin (EASL).</li>
     </ul>
   </section>
 
@@ -245,10 +245,10 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <div class="sub"><span>Kreatinin artışı</span><b id="akd">–</b></div>
     <div class="sub"><span>Bazale oran</span><b id="akr">–</b></div>
     <ol class="rec" id="rxH"></ol>
-    <p class="note">ICA evreleri (AASLD 2021): Evre 1 kreatinin artışı ≥ 0,3 mg/dL ile 2 kata kadar; Evre 2 2–3 kat; Evre 3 &gt; 3 kat veya kreatinin &gt; 4 mg/dL. AKI: 48 saatte ≥ 0,3 mg/dL veya 7 günde ≥ %50 artış; ICA-ADQI 2024’te idrar çıkışı ≤ 0,5 mL/kg/saat (≥ 6 saat) de ölçüttür.</p>
+    <p class="note">ICA evreleri (AASLD 2021): Evre 1 kreatinin artışı ≥ 0,3 mg/dL veya 1,5–2 kat (Kr &lt; 1,5 mg/dL ise 1A, ≥ 1,5 ise 1B; EASL 2018); Evre 2 &gt; 2–3 kat; Evre 3 &gt; 3 kat veya akut artışla kreatinin ≥ 4,0 mg/dL veya RRT. ICA-ADQI 2024 KDIGO kreatinin ölçütlerini kullanır (evre 2 ≥ 2,0 kat, evre 3 ≥ 3,0 kat); fark yalnız tam 2 ve 3 katta ortaya çıkar. AKI: 48 saatte ≥ 0,3 mg/dL veya 7 günde ≥ %50 artış; ICA-ADQI 2024’te idrar çıkışı ≤ 0,5 mL/kg/saat (≥ 6 saat) de ölçüttür.</p>
   </section>
 
-  <p class="note">Kaynaklar: Biggins SW ve ark. AASLD 2021 asit, SBP ve hepatorenal sendrom rehberi, Hepatology 2021;74:1014–48 (SAAG, protein, PMN, bakterasit, ampirik antibiyotik ve süre, 48. saat parasentezi, SBP albümini, profilaksi, 6–8 g/L parasentez albümini, diüretik dozları, tuz, refrakter asit, AKI evreleri ve HRS-AKI ölçütleri); EASL 2018 dekompanse siroz klinik uygulama kılavuzu, J Hepatol 2018;69:406–60 (SAAG ≥ 1,1, PMN &gt; 250, protein &lt; 1,5 g/dL, tuz 80–120 mmol, diüretik basamakları ve kesme ölçütleri, 8 g/L albümin); Runyon BA, AASLD 2009 asit rehberi (ikincil peritonit, 100:40 oranı, SBP albümin ölçütleri, norfloksasin 400 mg/gün); Akriviadis EA, Runyon BA. Gastroenterology 1990;98:127–33 (ikincil peritonit ölçütleri, 48. saat parasentezi); Sort P ve ark. N Engl J Med 1999;341:403–9 (albümin 1,5 + 1 g/kg); Nadim MK ve ark. ICA-ADQI 2024, J Hepatol 2024;81:163–83 (HRS-AKI tanısı, terlipressin, norepinefrin, albümin 20–40 g/gün). Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: Biggins SW ve ark. AASLD 2021 asit, SBP ve hepatorenal sendrom rehberi, Hepatology 2021;74:1014–48 (SAAG, protein, PMN, bakterasit, ampirik antibiyotik ve süre, 48. saat parasentezi, SBP albümini, profilaksi, 6–8 g/L parasentez albümini, diüretik dozları, tuz, refrakter asit, AKI evreleri ve HRS-AKI ölçütleri); EASL 2018 dekompanse siroz klinik uygulama kılavuzu, J Hepatol 2018;69:406–60 (SAAG ≥ 1,1, PMN &gt; 250, protein &lt; 1,5 g/dL, tuz 80–120 mmol, diüretik basamakları ve kesme ölçütleri, 8 g/L albümin); Runyon BA, AASLD 2009 asit rehberi (ikincil peritonit, 100:40 oranı, SBP albümin ölçütleri, norfloksasin 400 mg/gün); Akriviadis EA, Runyon BA. Gastroenterology 1990;98:127–33 (ikincil peritonit ölçütleri, 48. saat parasentezi); Sort P ve ark. N Engl J Med 1999;341:403–9 (albümin 1,5 + 1 g/kg); Rimola A ve ark. Hepatology 1995;21:674–9 (sefotaksim 2 g 12 saatte bir); Nadim MK ve ark. ICA-ADQI 2024, J Hepatol 2024;81:163–83 (HRS-AKI tanısı, terlipressin, norepinefrin, albümin 20–40 g/gün); Angeli P ve ark. ICA 2015, J Hepatol 2015;62:968–74 (AKI evreleri, evre 1 izlemi, albümin en çok 100 g/gün); Fernández J ve ark. Gastroenterology 2007;133:818–24 (birincil profilaksi ölçütleri ≥ 1,2 / ≥ 25 / ≤ 130, Child-Pugh ≥ 9 ve bilirubin ≥ 3); EMA terlipressin Madde 31 değerlendirmesi, 2022 (kreatinin ≥ 5 mg/dL, ACLF evre 3, MELD ≥ 39, bolus 1 mg 4–6 saatte bir). Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -327,21 +327,21 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     $('a3').textContent=d3?fm(d3)+' g':'–';$('a3v').textContent=vials(d3);
     var bf=[];if(cr!==null&&cr>1)bf.push('Kr > 1');if(bun!==null&&bun>30)bf.push('BUN > 30');if(bil!==null&&bil>4)bf.push('bilirubin > 4');
     $('benef').textContent=bf.length?'evet ('+bf.join(', ')+')':'hayır';
-    if(acq==='c')li('rxS','IV üçüncü kuşak sefalosporin','Örneğin sefotaksim 2 g IV 12 saatte bir. Toplumda edinilmiş SBP’de ilk seçenek.');
+    if(acq==='c')li('rxS','IV üçüncü kuşak sefalosporin','Örneğin sefotaksim 2 g IV 8–12 saatte bir (AASLD 2009: 8 saatte bir; 12 saatte bir dozun 6 saatte bir kadar etkili olduğu randomize çalışmada gösterildi, Rimola 1995) veya seftriakson 1–2 g IV günde bir. Toplumda edinilmiş SBP’de ilk seçenek.');
     else if(acq==='n')li('rxS','Piperasilin/tazobaktam','Nozokomiyal veya ÇİD riski: geniş spektrum ilk seçenek; yerel direnç verisine göre uyarlayın.');
     else li('rxS','Meropenem','Yakın zamanda veya halen piperasilin/tazobaktam almış hastada.');
     if(dx==='sec')li('rxS','İkincil peritonit şüphesinde anaerop kapsamı ekleyin','Görüntüleme ve cerrahi değerlendirme.');
     li('rxS','Süre 5–7 gün','48. saatte tanısal parasentez: PMN düşüşü < %25 ise başarısızlık.');
     li('rxS','Albümin 1. gün '+(d1?fm(d1)+' g':'1,5 g/kg')+', 3. gün '+(d3?fm(d3)+' g':'1 g/kg'),'Antibiyotiğe ek olarak; HRS-AKI sıklığını azaltır ve sağkalımı artırır.');
-    li('rxS','Hipotansiyon (OAB < 65 mmHg) veya AKI gelişirse non-selektif beta blokeri geçici kesin');
+    li('rxS','Non-selektif beta blokeri geçici kesin','EASL 2018: SBP veya sepsis gibi akut tabloda ya da sistolik kan basıncı < 90 mmHg olunca kesilir; AASLD 2021: hipotansiyon (sistolik < 90 veya OAB < 65 mmHg) ya da AKI gelişirse. Düzelince yeniden başlanabilir.');
 
     // 3) Profilaksi
     $('rxP').innerHTML='';
     var psbp=segVal('psbp')==='1',gib=segVal('gib')==='1';
     var low=tp===null?null:tp<1.5;
-    var ren=(cr!==null&&cr>1.2)||(bun!==null&&bun>25)||(na!==null&&na<130);
+    var ren=(cr!==null&&cr>=1.2)||(bun!==null&&bun>=25)||(na!==null&&na<=130);
     var renK=cr===null&&bun===null&&na===null?null:ren;
-    var liv=ctp===null||bil===null?null:(ctp>9&&bil>3);
+    var liv=ctp===null||bil===null?null:(ctp>=9&&bil>=3);
     $('plo').textContent=yn(low);$('pre').textContent=yn(renK);$('pli').textContent=yn(liv);
     var prim=low&&(ren||liv);
     if(psbp)pill('prp','İkincil profilaksi endike','var(--high)');
@@ -349,6 +349,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     else pill('prp','Birincil profilaksi ölçütü yok','var(--ok)');
     if(psbp)li('rxP','İkincil profilaksi: uzun süreli, her gün','Norfloksasin 400 mg/gün PO; alternatif siprofloksasin 500 mg/gün PO.');
     else if(prim)li('rxP','Birincil profilaksi (seçilmiş hastada)','Asit protein < 1,5 g/dL ve böbrek işlev bozukluğu veya ileri karaciğer yetmezliği. Norfloksasin 400 mg/gün PO veya TMP-SMX (AASLD 2009).');
+    else if(low===null)li('rxP','Asit total proteini girilmedi','Birincil profilaksi kararı için asit proteini gerekir: < 1,5 g/dL ve ek ölçütlerden biri birlikte olmalı.');
     else li('rxP','Profilaksi gerekmiyor','Asit proteini < 1,5 g/dL ve ek ölçütlerden biri birlikte olmalı.');
     if(gib)li('rxP','Üst GİS kanaması: seftriakson 1 g IV 24 saatte bir','En çok 7 gün; asit protein düzeyinden bağımsız.');
 
@@ -367,16 +368,19 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     $('rxH').innerHTML='';
     var b=v('bcr');
     if(b===null||cr===null||b<=0){$('akn').textContent='–';pill('akp','','');$('akd').textContent=$('akr').textContent='–'}
-    else{var dd=cr-b,r=cr/b,st=0;
-      if(dd>=0.3||r>=1.5){st=(r>3||cr>4)?3:(r>=2?2:1)}
+    else{var dd=Math.round((cr-b)*1e6)/1e6,r=Math.round(cr/b*1e6)/1e6,st=0;
+      if(dd>=0.3||r>=1.5){st=(r>3||cr>=4)?3:(r>2?2:1)}
       $('akd').textContent=(dd>=0?'+':'')+fm(dd,2)+' mg/dL';$('akr').textContent=fm(r,2)+' kat';
       $('akn').textContent=st?'Evre '+st:'AKI yok';
       pill('akp',st?'ICA-AKI':'Ölçüt karşılanmadı',st===3?'var(--high)':st?'var(--warn)':'var(--ok)');
       if(st){
         li('rxH','Tetikleyicileri düzeltin','Diüretik ve nefrotoksikleri (NSAİİ, aminoglikozit, iyotlu kontrast) kesin; hipotansiyonda beta blokeri kesmeyi düşünün.');
-        li('rxH','Volüm: albümin 1 g/kg/gün × 2 gün'+(wt?' = '+fm(wt)+' g/gün':''),'AASLD 2021 HRS-AKI algoritması. ICA-ADQI 2024 sabit 48 saat albümini şart koşmaz; volüm durumu belirsizse sıvı yüklemesi: 250–500 mL kristaloid veya 1–1,5 g/kg %20–25 albümin'+(wt?' ('+fm(wt)+'–'+fm(1.5*wt)+' g)':'')+'.');
-        li('rxH','HRS-AKI ölçütleri (ICA-ADQI 2024)','Asitli siroz; ICA-AKI ölçütleri; yeterli volüm resüsitasyonundan sonra 24 saatte kreatinin ve/veya idrar çıkışında düzelme yok; AKI için güçlü başka açıklama yok (şok, nefrotoksik ilaç, yapısal böbrek hasarı: proteinüri > 500 mg/gün, mikrohematüri > 50 eritrosit/BBA, anormal böbrek USG).');
-        li('rxH','Terlipressin','İnfüzyon 2 mg/gün ile başlanır; kreatinin %25 düşmezse 24 saatte bir en az 2 mg/gün artırılır, en çok 12 mg/gün. Alternatif IV bolus 1–2 mg 6 saatte bir. Sürekli infüzyonun yan etkisi daha azdır; volüm yükünde dikkat (iskemi, akciğer ödemi).');
+        var alb=wt?Math.min(wt,100):null;
+        if(st===1&&cr<1.5)li('rxH','Evre 1A (Kr < 1,5 mg/dL): yakın izlem','Tetikleyicileri düzeltin, hipovolemi düşünülüyorsa volüm verin (kristaloid, albümin veya kanamada kan), enfeksiyonu hemen tedavi edin; kreatinini 2–4 günde bir izleyin. İlerlerse veya Kr ≥ 1,5 mg/dL olursa 2 günlük albümin verilir (EASL 2018; ICA 2015).');
+        else li('rxH','Volüm: albümin 1 g/kg/gün × 2 gün, en çok 100 g/gün'+(alb?' = '+fm(alb)+' g/gün':''),'Evre 1B ve üstü veya ilerleyen AKI’de diüretiği kesin ve albümin verin (EASL 2018; ICA 2015; AASLD 2021). ICA-ADQI 2024 sabit 48 saat albümini HRS-AKI tanısı için şart koşmaz; volüm durumu belirsizse sıvı yüklemesi: 250–500 mL kristaloid veya 1–1,5 g/kg %20–25 albümin'+(wt?' ('+fm(wt)+'–'+fm(1.5*wt)+' g)':'')+'.');
+        li('rxH','HRS-AKI ölçütleri (ICA-ADQI 2024)','Asitli siroz; ICA-AKI ölçütleri (48 saatte ≥ 0,3 mg/dL veya 7 günde ≥ %50 kreatinin artışı ve/veya ≥ 6 saat ≤ 0,5 mL/kg/saat idrar); klinik olarak gerekiyorsa yeterli volüm resüsitasyonundan sonra 24 saatte kreatinin ve/veya idrar çıkışında düzelme yok; AKI’nin birincil nedeni olarak güçlü başka açıklama yok (vazopressör gerektiren septik şok, akut glomerüler hasar, obstrüksiyon, nefrotoksik ilaç). ICA-ADQI 2024’e göre HRS-AKI tübül hasarı, proteinüri veya önceden var olan KBH ile birlikte bulunabilir: eski ICA 2015 ölçütlerindeki proteinüri > 500 mg/gün, mikrohematüri > 50 eritrosit/BBA ve anormal böbrek USG tek başına vazokonstriktörü engelleyen dışlama ölçütü değildir.');
+        li('rxH','Terlipressin','Tercihen sürekli infüzyon: 2 mg/gün ile başlanır; kreatinin bazale göre %25 düşmezse doz 24 saatte bir artırılır, en çok 12 mg/gün (ICA-ADQI 2024). Alternatif IV bolus: 1 mg 4–6 saatte bir; 2–3 gün sonra kreatinin ≥ %25 düşmezse en çok 2 mg 4–6 saatte bir. Sürekli infüzyonun yan etkisi daha azdır; volüm yükünde dikkat (iskemi, akciğer ödemi).');
+        li('rxH','Terlipressinden kaçının (EMA 2022)'+(cr>=5?': kreatinin ≥ 5 mg/dL':''),'Bazal kreatinin ≥ 5 mg/dL, ACLF evre 3 veya MELD ≥ 39 olan hastada yarar riskten açıkça fazla değilse kullanmayın; yeni başlayan solunum sıkıntısında önce hastayı stabilize edin, tedavi sırasında solunum ve sıvı yükünü yakından izleyin. Ciddi veya düzelmeyen solunum yetmezliğinde albümini azaltın ya da terlipressini kesin.');
         li('rxH','Vazokonstriktörle birlikte albümin 20–40 g/gün','%20–25 albümin; volüm durumuna göre her gün ayarlayın, sıvı yükü veya akciğer ödeminde kesin.');
         li('rxH','Alternatif: norepinefrin 0,5–3 mg/saat','OAB > 10 mmHg artmazsa 4 saatte bir 0,5 mg/saat artırın (en çok 3 mg/saat).');
         li('rxH','Vazokonstriktörü durdurma','Kreatinin bazalin 0,3 mg/dL yakınına inince, en çok 14 gün, ciddi yan etki, en yüksek tolere edilen dozda 48 saatte düzelme yoksa, RRT veya nakil başlayınca.');

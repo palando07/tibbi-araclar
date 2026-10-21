@@ -102,7 +102,7 @@ a.in{color:var(--accent);font-weight:600}
       <div class="field"><label for="tsh">TSH <span>mIU/L</span></label><input id="tsh" type="number" inputmode="decimal" step="any" value="7.8"></div>
       <div class="field"><label for="ft4">sT4 <span>ng/dL</span></label><input id="ft4" type="number" inputmode="decimal" step="any" value="1.1"></div>
       <div class="field"><label for="ft3">sT3 <span>pg/mL (isteğe bağlı)</span></label><input id="ft3" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
-      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" type="number" inputmode="numeric" step="1" value="58"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="58"></div>
     </div>
     <details>
       <summary>Laboratuvar referans aralıkları</summary>
@@ -203,6 +203,7 @@ a.in{color:var(--accent);font-weight:600}
   }
   var HEDEF_TXT='TEMD 2025 Böl. 7: genç ve orta yaşta 0,4–2,5; ≥ 65–70 yaşta 3–6; > 80–85 yaşta ≤ 10 mIU/L. Gebelik planlayanda 0,4–2,5 (düşük tarafta tutulması önerilir).';
   var LINK_LT4='Doz için Levotiroksin aracını kullanın. Doz değişiklikleri 12,5–25 µg/gün adımlarla yapılır; her değişiklikten 6–8 hafta sonra TSH; doz oturunca 6–12 ayda bir (TEMD 2025 Böl. 7).';
+  var LINK_LT4_G='Doz için Levotiroksin aracını kullanın. Gebelikte her doz değişikliğinden sonra ve ilk 24 haftada 4 haftada bir TSH; hedef trimestere özgü aralık (TEMD 2025 Böl. 26). Gebelik dışı 6–8 haftalık kontrol aralığı burada geçerli değildir.';
   var START_LT4='Başlangıç: genç hastada planlanan tam doz (≈ 1,2–1,8 µg/kg/gün); 60 yaş üstünde koroner hastalık yoksa 50 µg/gün; yaşlıda veya koroner hastalıkta 12,5–25 µg/gün, 7–10 günde bir 12,5 µg artırarak (TEMD 2025 Böl. 7). ';
   var BB=['Semptom kontrolü: beta bloker','Ana semptomatik tedavidir; propranolol T4→T3 dönüşümünü de azaltır. Kontrendikasyonda verapamil veya diltiazem (TEMD 2025 Böl. 9). ATA 2016: özellikle yaşlıda ve dinlenme nabzı > 90/dk ise.'];
   var ATD_IZLEM='Tedavinin ilk aylarında TSH yanıltıcıdır; doz sT4 ve total T3’e göre ayarlanır. Ötiroid olunca doz %30–50 azaltılıp 4–6 hafta sonra test tekrarlanır; minimal dozla ötiroidide 2–3 ayda bir (TEMD 2025 Böl. 1, 9).';
@@ -267,8 +268,8 @@ a.in{color:var(--accent);font-weight:600}
           else r.tx.push(['TSH < 20: tedavi kararı bireysel','Kritik hastada TSH < 20 ile düşük sT4 iyileşme dönemine bağlı olabilir; altta primer tiroid hastalığı yoksa tiroid hormonu önerilmez. Dopamin ve yüksek doz glukokortikoid hipotiroidide TSH’yi düşürebilir (TEMD 2025 Böl. 25).']);
           return r;
         }
-        if(c.lt4){r.tx.push(['Levotiroksin dozunu artırın','Önce uyumu, alım zamanını (aç karnına, kahvaltıdan ≥ 30 dk önce) ve emilimi bozan ilaçları (kalsiyum, demir: ≥ 4 saat ara) sorgulayın; 200 µg/gün üzerinde hedefe ulaşılamıyorsa uyumsuzluk veya emilim sorunu düşünün (TEMD 2025 Böl. 7). '+LINK_LT4])}
-        else r.tx.push(['Levotiroksin başlayın',(preg?'':START_LT4)+LINK_LT4]);
+        if(c.lt4){r.tx.push(['Levotiroksin dozunu artırın','Önce uyumu, alım zamanını (aç karnına, kahvaltıdan ≥ 30 dk önce) ve emilimi bozan ilaçları (kalsiyum, demir: ≥ 4 saat ara) sorgulayın; 200 µg/gün üzerinde hedefe ulaşılamıyorsa uyumsuzluk veya emilim sorunu düşünün (TEMD 2025 Böl. 7). '+(preg?LINK_LT4_G:LINK_LT4)])}
+        else r.tx.push(['Levotiroksin başlayın',preg?LINK_LT4_G:START_LT4+LINK_LT4]);
         if(preg){pregLT4(r,c.lt4,tsh,x.eU)}
         else r.tx.push(['Hedef TSH: '+hd.txt,HEDEF_TXT]);
         return r;
@@ -283,19 +284,20 @@ a.in{color:var(--accent);font-weight:600}
             r.tx.push(['Aşırı tedaviden kaçının',HEDEF_TXT]);return r}
           r=R('Yetersiz levotiroksin replasmanı (subklinik)',C.sub,'Levotiroksin altında TSH yüksek, sT4 normal.');
           r.dd.push('Uyumsuzluk veya düzensiz kullanım');r.dd.push('Alım zamanı (yemekle birlikte) veya emilim sorunu (çölyak, atrofik gastrit, H. pylori)');r.dd.push('Etkileşen ilaçlar: kalsiyum, demir (≥ 4 saat ara), PPI, östrojen');r.dd.push('Preparat değişikliği (değişiklikten 6–8 hafta sonra TSH; TEMD 2025 Böl. 7)');r.dd.push('Kilo artışı, gebelik');
-          r.tx.push(['Dozu 12,5–25 µg/gün artırın veya alımı düzeltin',LINK_LT4]);
+          r.tx.push(preg?['Dozu artırın veya alımı düzeltin',LINK_LT4_G]:['Dozu 12,5–25 µg/gün artırın veya alımı düzeltin',LINK_LT4]);
           if(preg)pregLT4(r,true,tsh,x.eU);else r.tx.push(['Hedef TSH: '+(c.hip?'kullanılmaz (santral hipotiroidide sT4 izlenir)':hd.txt),HEDEF_TXT]);return r}
         if(preg){
           if(tsh>10){r=R('Gebelikte aşikâr hipotiroidi (TSH > 10)',C.hypo,'Gebelikte TSH > 10 mIU/L, sT4 düzeyinden bağımsız olarak aşikâr hipotiroidi kabul edilir (TEMD 2025 Böl. 26).');
             r.dd.push('Otoimmün tiroidit (Hashimoto)');r.dd.push('Tiroidektomi veya radyoaktif iyot sonrası');
             r.nx.push(['Anti-TPO','Etiyoloji ve postpartum tiroidit riski için.']);
-            r.tx.push(['Levotiroksin gecikmeden başlayın',LINK_LT4]);pregLT4(r,false,tsh,x.eU);return r}
+            r.tx.push(['Levotiroksin gecikmeden başlayın',LINK_LT4_G]);pregLT4(r,false,tsh,x.eU);return r}
           r=R('Gebelikte subklinik hipotiroidi',C.sub,'TSH gebeliğe özgü üst sınırın ('+fr(x.eU)+') üzerinde, sT4 normal. TEMD: gebelikte subklinik hipotiroidi TSH 2,5–10 mIU/L ve normal sT4 (Böl. 26).');
           r.subs.push(['TEMD gebelik taraması',tsh>4?'TSH > 4: sT4 ile derecelendirme':'TSH > 2,5: anti-TPO ölçülür']);
           r.dd.push('Otoimmün tiroidit');r.dd.push('İyot eksikliği');r.dd.push('Ölçüm farkı / geçici yükselme');
           r.nx.push(['Anti-TPO','TSH > 2,5 mIU/L ise ölçülür; anti-TPO pozitif subklinik hipotiroidide gebelik komplikasyon riski daha yüksektir (TEMD 2025 Böl. 26).']);
-          r.tx.push(['Anti-TPO pozitifse levotiroksin önerilir','Randomize çalışmalarda LT4 bu grupta obstetrik riskleri azalttı (TEMD 2025 Böl. 26). '+LINK_LT4]);
+          r.tx.push(['Anti-TPO pozitifse levotiroksin önerilir','Randomize çalışmalarda LT4 bu grupta obstetrik riskleri azalttı (TEMD 2025 Böl. 26). '+LINK_LT4_G]);
           r.tx.push(['Anti-TPO negatifse karar bireysel','Veriler çelişkili; TEMD olası riskleri gözeterek LT4 lehine düşünmeyi önerir. ATA 2026: ilk trimesterden sonra başlanan LT4’ün hafif subklinik hipotiroidide gebelik sonuçlarını iyileştirdiği gösterilmedi.']);
+          r.tx.push(['Kaynaklar arası fark (ATA 2026)','TEMD 2025 anti-TPO durumuna göre karar verir. ATA 2026 ise subklinik hipotiroidide levotiroksin kararında anti-TPO durumunu artık kullanmaz; kararı tanının gebelikteki zamanlamasına göre verir ve 1. trimester üst sınırı için ≈ 4,0 mIU/L kabul eder. Bu araç TEMD’i esas alır; endokrinoloji ile birlikte karar verin.']);
           r.tx.push(['Tedavi edilirse hedef ve izlem','TSH trimestere özgü aralıkta (1. trimester ≤ 2,5; 2.–3. trimester ≤ 3,0 mIU/L). İlk 24 haftada 4 haftada bir TSH, sonra doğuma kadar en az bir kez (TEMD 2025 Böl. 26).']);
           return r}
         var stg=tsh>=10?2:tsh>=4.5?1:0,old=age!==null&&age>=65;
@@ -424,7 +426,7 @@ a.in{color:var(--accent);font-weight:600}
         if(g2){
           r.tx.push(['Tedavi önerilir'+w,'TEMD Şekil 10.1: TSH < 0,1 ise yaş ve risk faktöründen bağımsız tedavi; bu grupta aşikâra ilerleme yılda %5–8. '+sec+(!old&&!risk?' ATA 2016 65 yaş altı asemptomatik evre 2’de tedaviyi “düşünülebilir” olarak verir.':'')]);
         }else{
-          if(old||risk)r.tx.push(['Tedavi önerilir'+w,'TEMD Şekil 10.1: TSH 0,1–0,4 ve en az bir risk (≥ 65 yaş, kardiyovasküler hastalık, osteoporoz, semptom, östrojen veya bisfosfonat almayan postmenopoz) → tedavi. '+sec+' ATA 2016 bu grupta tedaviyi “düşünülebilir” olarak verir.']);
+          if(old||risk)r.tx.push(['Tedavi önerilir'+w,'TEMD Şekil 10.1: TSH 0,1–0,4 ve en az bir risk (≥ 65 yaş, kardiyovasküler hastalık, osteoporoz, semptom, östrojen veya bisfosfonat almayan postmenopoz) → tedavi. '+sec+' ATA 2016 bu grupta ≥ 65 yaş, kalp hastalığı, semptom ve menopozda tedaviyi “düşünülebilir” olarak verir; yalnız osteoporoz varsa TSH 0,1–0,4’te tedavi önermez.']);
           else r.tx.push(['Tedavisiz izlem','TEMD Şekil 10.1: 65 yaş altı, asemptomatik ve risk faktörü yoksa takip. Hafif olguda TSH sıklıkla normale döner; aşikâra ilerleme 7 yılda %0,5–0,7 (Böl. 10).']);
         }
         r.table=g2?2:1;
@@ -485,7 +487,7 @@ a.in{color:var(--accent);font-weight:600}
     if(c.lt4&&!preg&&!c.hip){
       r.subs.push(['Yaşa göre hedef TSH',hd.txt]);
       if(tsh>hd.hi)r.tx.push(['TSH yaşa göre hedefin üzerinde','Doz 12,5–25 µg/gün artırılabilir; 6–8 hafta sonra TSH (TEMD 2025 Böl. 7). '+HEDEF_TXT]);
-      else if(hd.lo!==null&&tsh<hd.lo)r.tx.push(['TSH yaşa göre hedefin altında','≥ 65–70 yaşta hedef 3–6 mIU/L; aşırı tedaviden kaçınmak için doz 12,5–25 µg/gün azaltılabilir (TEMD 2025 Böl. 7).']);
+      else if(hd.lo!==null&&tsh<hd.lo)r.tx.push(['TSH yaşa göre hedefin altında','TEMD 2025 Böl. 7: ≥ 65–70 yaşta hedef 3–6 mIU/L “alınabilir”. Tiroid kanseri nedeniyle planlı TSH baskılaması yoksa ve hasta iyi durumdaysa, aşırı tedaviden kaçınmak için doz 12,5–25 µg/gün azaltılması düşünülebilir; karar bireyseldir.']);
       else r.nx.push(['İzlem','TSH hedefte; doz sabitse 6–12 ayda bir TSH (TEMD 2025 Böl. 7).']);
     }
     if(preg&&!c.lt4&&!c.atd)r.nx.push(['Anti-TPO pozitif ötiroid gebe','Gebelikte TSH yükselme riski %20; ilk 24 haftada 4–6 haftada bir TSH ile izlem uygundur (TEMD 2025 Böl. 26).']);
@@ -524,6 +526,9 @@ a.in{color:var(--accent);font-weight:600}
     $('rnote').textContent='';
     if(tsh===null||f4===null||tL===null||tU===null||a4===null||b4===null){
       $('pat').textContent='–';pill('pl','');$('adv').textContent='TSH, sT4 ve referans aralıklarını girin.';
+      ['w-dd','w-nx','w-tx'].forEach(function(k){$(k).hidden=true});$('tbl').hidden=true;return}
+    if(tL>=tU||a4>=b4||b4<=0||(f3!==null&&a3!==null&&b3!==null&&a3>=b3)){
+      $('pat').textContent='–';pill('pl','');$('adv').textContent='Referans aralığını kontrol edin: alt sınır üst sınırdan küçük ve üst sınır sıfırdan büyük olmalı.';
       ['w-dd','w-nx','w-tx'].forEach(function(k){$(k).hidden=true});$('tbl').hidden=true;return}
     // Gebelikte TSH aralığı (TEMD 2025 Böl. 8, 26)
     var eL=tL,eU=tU,rn='';

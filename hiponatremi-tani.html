@@ -89,12 +89,12 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
   <section class="card">
     <h2>Serum</h2>
     <div class="grid">
-      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="124"></div>
-      <div class="field"><label for="glu">Glukoz <span>mg/dL</span></label><input id="glu" type="number" inputmode="decimal" step="any" value="110"></div>
+      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="124"></div>
+      <div class="field"><label for="glu">Glukoz <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="110"></div>
       <div class="field"><label for="osm">Ölçülen osmolalite <span>mOsm/kg</span></label><input id="osm" type="number" inputmode="decimal" step="any" value="258" placeholder="yoksa hesaplanır"></div>
-      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="60"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="60"></div>
       <div class="field"><label for="ua">Ürik asit <span>mg/dL, isteğe bağlı</span></label><input id="ua" type="number" inputmode="decimal" step="any" value="3.1"></div>
-      <div class="field"><label for="ure">Üre <span>mg/dL, isteğe bağlı</span></label><input id="ure" type="number" inputmode="decimal" step="any" value="18"></div>
+      <div class="field"><label for="ure">Üre <span>mg/dL, isteğe bağlı</span></label><input id="ure" data-hasta="ure" type="number" inputmode="decimal" step="any" value="18"></div>
     </div>
     <p class="note">Osmolalite boş bırakılırsa efektif osmolalite hesaplanır (2 × Na + glukoz / 18). Kılavuz ölçülen osmolaliteyi esas alır. Üre değil BUN biliniyorsa: üre = BUN × 2,14.</p>
   </section>
@@ -249,14 +249,14 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     var em=$('emerg');em.hidden=true;em.innerHTML='';
     if(sev&&sev!=='none'&&(sym>0||acute)){
       em.hidden=false;
-      em.appendChild(document.createTextNode(sym===2?'Ağır belirtiler: tanısal ayırımı beklemeden hemen %3 NaCl bolusu gerekir. ':sym===1?'Orta şiddetli belirtiler: %3 NaCl tek doz ve neden araştırması. ':'Akut hiponatremi: belirgin Na düşüşü varsa %3 NaCl düşünülür. '));
+      em.appendChild(document.createTextNode(sym===2?'Ağır belirtiler: tanısal ayırımı beklemeden hemen %3 NaCl bolusu gerekir. ':sym===1?'Orta şiddetli belirtiler: %3 NaCl tek doz ve neden araştırması. ':'Akut hiponatremi: belirti olmasa da Na düşüşü > 10 mmol/L ise tek doz 150 mL %3 NaCl (20 dakikada) düşünülür (ESE 2014). '));
       var a=document.createElement('a');a.href='acil-tedavi.html';a.textContent='Acil Tedavi Rehberi →';em.appendChild(a);
     }
 
     // 2) Algoritma
     var hypot=null,cat=null,causes=[];
     if(sev==='none'){pill('dxp','Na ≥ 135: algoritma uygulanmaz','var(--ok)')}
-    else if(osm===null){pill('dxp','Serum Na girin','var(--muted)')}
+    else if(na===null||osm===null){pill('dxp','Serum Na girin','var(--muted)')}
     else{
       hypot=osm<275;
       if(!hypot){
@@ -379,7 +379,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     if(sev==='mild')li('lim','Hafif hiponatremi','Sınırlar orta ve derin hiponatremi için tanımlanmıştır; yine de hızlı düzelmeden kaçının.');
     li('lim','Hedef '+(hr?'4–6':'4–8')+' mmol/L/gün (ABD 2013)','Sınır hedef değildir. Belirtisiz kronik hastada sınıra yaklaşmak gereksizdir.');
     li('lim','Aşırı düzelme riski yüksek durumlar','Geri dönüşümlü neden düzelince su diürezi başlar: tiyazid, SSRI veya desmopressinin kesilmesi, adrenal yetmezlikte glukokortikoid başlanması, düşük solüt alımında beslenme, hipovolemide volüm yerine konması. İdrar çıkışı artıp idrar dilüe hale gelirse Na’yı sık ölçün.');
-    li('lim','Sınır aşılırsa (ESE)','Aktif tedaviyi durdurun; uzmanla birlikte 1 saatte '+(wt?fm(10*wt,0)+' mL ('+'10 mL/kg)':'10 mL/kg')+' elektrolitsiz su (oral su veya %5 dekstroz IV), idrar çıkışı ve sıvı dengesi yakından izlenerek. Desmopressin 1–2 µg IV/SC eklenebilir; tolvaptan sonrası etkisiz kalabilir.');
+    li('lim','Sınır aşılırsa (ESE)','Aktif tedaviyi durdurun; uzmanla birlikte 1 saatte '+(wt?fm(10*wt,0)+' mL ('+'10 mL/kg)':'10 mL/kg')+' elektrolitsiz su (oral su veya %5 dekstroz IV), idrar çıkışı ve sıvı dengesi yakından izlenerek. Desmopressin 2 µg IV eklenebilir, 8 saatten sık tekrarlanmaz (ESE 2014; ABD 2013: 2–4 µg parenteral); tolvaptan sonrası etkisiz kalabilir.');
 
     // 6) Tedavi
     var lo=wt?0.25*wt:null,hi=wt?0.5*wt:null;
@@ -404,7 +404,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
       li('rx','1. basamak: sıvı kısıtlaması',(fu!==null?'Furst oranına göre: '+$('fua').textContent+'. ':'')+'Hastaların yaklaşık yarısı yanıt vermez.');
       li('rx','2. basamak (ESE): üre 0,25–0,50 g/kg/gün'+(wt?' = '+fm(lo)+'–'+fm(hi)+' g/gün':''),'ABD 2013: 15–60 g/gün; sık kullanılan başlangıç 30 g/gün. Acı tadı meyve suyu veya şuruplu çözeltiyle maskelenir; bulantı ve tat bozukluğu sık. Serum üresi yaklaşık iki katına çıkar, bu böbrek işlev bozukluğu anlamına gelmez.');
       li('rx','2. basamak (ESE, zayıf öneri): düşük doz kıvrım diüretiği + oral NaCl','EFFUSE-FLUID randomize çalışmasında furosemid 20–40 mg/gün ± NaCl 3 g/gün, tek başına sıvı kısıtlamasına üstün bulunmadı; AKI ve hipokalemi daha sıktı.');
-      li('rx','Tolvaptan: dikkat','ESE 2014 orta ve derin hiponatremide önermez (aşırı hızlı düzelme riski). KÜB: SIADH’de hastanede başlanır; 15 mg/gün, kanser, çok düşük Na, diüretik veya Na takviyesi alanlarda 7,5 mg; en çok 60 mg/gün. Na ilk 4–6 saatte, ilk 1–2 gün en az 6 saatte bir ölçülür. İlk 6 saatte > 6 veya 6–12 saatte > 8 mmol/L artış aşırı hızlı düzelme uyarısıdır; 24 saatte ≥ 12 veya 48 saatte ≥ 18 mmol/L artışta kesilir. Hasta serbestçe su içebilmeli; sıvı kısıtlamasıyla birlikte verilmez. Kontrendike: hipovolemi, anüri, susama hissi yokluğu, gebelik, emzirme. CYP3A4 inhibitörleri ve greyfurt suyu düzeyi artırır.');
+      li('rx','Tolvaptan: dikkat','ESE 2014 orta ve derin hiponatremide önermez (aşırı hızlı düzelme riski). KÜB: SIADH’de hastanede başlanır; 15 mg/gün, kanser, çok düşük Na, diüretik veya Na takviyesi alanlarda 7,5 mg; en çok 60 mg/gün. Na ilk 4–6 saatte, ilk 1–2 gün en az 6 saatte bir ölçülür. İlk 6 saatte > 6 veya 6–12 saatte > 8 mmol/L artış aşırı hızlı düzelme uyarısıdır; 24 saatte ≥ 12 veya 48 saatte ≥ 18 mmol/L artışta kesilir. Hasta suya erişebilmeli ve yeterince içebilmeli; sıvı kısıtlaması altındaki hastada aşırı dehidratasyona özellikle dikkat edin (ABD prospektüsü ilk 24 saatte kısıtlamadan kaçınmayı söyler). Kontrendike: hipovolemi veya hipovolemik hiponatremi, hipernatremi, anüri, susama hissi yokluğu, gebelik, emzirme. CYP3A4 inhibitörleri ve greyfurt suyu düzeyi artırır.');
       li('rx','Önerilmeyenler (ESE 2014)','Lityum ve demeklosiklin.');
       li('rx','Kılavuz dışı kanıt: empagliflozin 25 mg/gün','Randomize çalışmada 1000 mL kısıtlamaya eklenince 4 günde Na artışı 10’a karşı 7 mmol/L; henüz kılavuz önerisi değildir.');
     }else pill('rxp','Algoritmayı tamamlayın','var(--muted)');

@@ -111,7 +111,7 @@ a.lnk{color:var(--accent);font-weight:600}
   <section class="card">
     <h2>Tam kan sayımı</h2>
     <div class="grid">
-      <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" type="number" inputmode="decimal" step="any" value="9.8"></div>
+      <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="9.8"></div>
       <div class="field"><label for="hct">Hematokrit <span>%</span></label><input id="hct" type="number" inputmode="decimal" step="any" value="31"></div>
       <div class="field"><label for="mcv">MCV <span>fL</span></label><input id="mcv" type="number" inputmode="decimal" step="any" value="72"></div>
       <div class="field"><label for="rbc">Eritrosit <span>10⁶/µL</span></label><input id="rbc" type="number" inputmode="decimal" step="any" value="4.1"></div>
@@ -173,7 +173,7 @@ a.lnk{color:var(--accent);font-weight:600}
     <div class="sub" id="s70"><span>İnflamasyonda ferritin &lt; 70 (WHO 2020)</span><b id="f70">–</b></div>
     <div class="sub"><span>TSAT &lt; %20: demir kısıtlı eritropoez</span><b id="t20">–</b></div>
     <div class="sub" id="shf" hidden><span>KY: ferritin &lt; 100 veya 100–299 + TSAT &lt; %20</span><b id="hfo">–</b></div>
-    <div class="sub" id="sckd" hidden><span>KBH: ferritin &lt; 100 + TSAT &lt; %40 veya 100–300 + TSAT &lt; %25</span><b id="ckdo">–</b></div>
+    <div class="sub" id="sckd" hidden><span>KBH: ferritin &lt; 100 + TSAT &lt; %40 veya 100–299 + TSAT &lt; %25</span><b id="ckdo">–</b></div>
     <div class="sub" id="shd" hidden><span>Hemodiyaliz: ferritin ≤ 500 + TSAT ≤ %30</span><b id="hdo">–</b></div>
     <ol class="rec" id="rxI"></ol>
     <p class="note">Demir dozu ve preparat seçimi için <a class="lnk" href="iv-demir.html">IV demir dozu</a> sayfasını kullanın. Ferritin akut faz reaktanıdır; inflamasyonda normal değer demir eksikliğini dışlamaz. Ferritin &gt; 150 ng/mL ile mutlak demir eksikliği inflamasyonda bile olası değildir (BSG). Oral demirle 2 haftada Hb’de ≥ 1 g/dL artış, demir çalışmaları belirsiz olsa da mutlak demir eksikliğini kuvvetle düşündürür (BSG).</p>
@@ -210,7 +210,7 @@ a.lnk{color:var(--accent);font-weight:600}
     <ol class="rec" id="rxR"></ol>
   </section>
 
-  <p class="note">Kaynaklar: WHO. Guideline on haemoglobin cutoffs to define anaemia in individuals and populations, 2024 (anemi eşikleri ve şiddet aralıkları, gebelik trimester eşikleri, 15–65 yaş); WHO guideline on use of ferritin concentrations to assess iron status, 2020 (inflamasyonda erişkinde ferritin &lt; 70 µg/L, inflamasyon CRP &gt; 5 mg/L); Snook J ve ark. BSG 2021 demir eksikliği anemisi rehberi, Gut 2021;70:2030–51 (ferritin &lt; 15 ve &lt; 30, 45 eşiği özgüllük 0,92, &gt; 150 ile mutlak eksiklik olası değil, TSAT &lt; %20, 2 haftada ≥ 10 g/L Hb yanıtı, erkek ve postmenopozal kadında gastroskopi + kolonoskopi, çölyak serolojisi, idrar tetkiki, premenopozal kadın ve genç erkek, normal demirde Hb elektroforezi); Ko CW ve ark. AGA 2020 demir eksikliği anemisinin GİS değerlendirmesi rehberi, Gastroenterology 2020;159:1085–94 (ferritin &lt; 45 ng/mL, çift yönlü endoskopi, çölyak serolojisi, negatif endoskopiden sonra H. pylori); McDonagh TA ve ark. ESC 2021 kalp yetmezliği rehberi ve 2023 odaklı güncelleme (ferritin &lt; 100 veya 100–299 + TSAT &lt; %20); KDIGO 2026 KBH’de anemi rehberi, Kidney Int 2026;109:44 (anemi Hb &lt; 13 erkek / &lt; 12 kadın, diyaliz dışı ve PD’de ferritin &lt; 100 + TSAT &lt; %40 veya 100–300 + TSAT &lt; %25, ferritin &lt; 45 ağır eksiklik, ferritin &gt; 700 veya TSAT ≥ %40’ta demir verilmez, hemodiyalizde ferritin ≤ 500 + TSAT ≤ %30); NICE NG239 B12 eksikliği, 2024 (B12 ve aktif B12 eşikleri, belirsiz sonuçta MMA, bekleme sırasında replasman); Devalia V ve ark. BSH 2014 B12 ve folat rehberi, Br J Haematol 2014;166:496–513 (MMA ikinci basamak, homosistein daha az özgül, güçlü klinik bulguda tedavi geciktirilmez, serum folat ilk test); Hillman RS ve ark. Hematology in Clinical Practice (düzeltilmiş retikülosit ve RPI); Mentzer WC. Lancet 1973;1:882; Denic S ve ark. ISRN Hematol 2013:858294 (HbA2 &gt; %3,5, demir eksikliği HbA2’yi düşürür); Marchand A ve ark. JAMA 1980;243:1909–11 (haptoglobin ≤ 25 mg/dL). Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: WHO. Guideline on haemoglobin cutoffs to define anaemia in individuals and populations, 2024 (anemi eşikleri ve şiddet aralıkları, gebelik trimester eşikleri, 15–65 yaş); WHO guideline on use of ferritin concentrations to assess iron status, 2020 (inflamasyonda erişkinde ferritin &lt; 70 µg/L, inflamasyon CRP &gt; 5 mg/L); Snook J ve ark. BSG 2021 demir eksikliği anemisi rehberi, Gut 2021;70:2030–51 (ferritin &lt; 15 ve &lt; 30, 45 eşiği özgüllük 0,92, &gt; 150 ile mutlak eksiklik olası değil, TSAT &lt; %20, 2 haftada ≥ 10 g/L Hb yanıtı, erkek ve postmenopozal kadında gastroskopi + kolonoskopi, çölyak serolojisi, idrar tetkiki, premenopozal kadın ve genç erkek, normal demirde Hb elektroforezi); Ko CW ve ark. AGA 2020 demir eksikliği anemisinin GİS değerlendirmesi rehberi, Gastroenterology 2020;159:1085–94 (ferritin &lt; 45 ng/mL, çift yönlü endoskopi, çölyak serolojisi, negatif endoskopiden sonra H. pylori); McDonagh TA ve ark. ESC 2021 kalp yetmezliği rehberi ve 2023 odaklı güncelleme (ferritin &lt; 100 veya 100–299 + TSAT &lt; %20); KDIGO 2026 KBH’de anemi rehberi, Kidney Int 2026;109:44 (anemi Hb &lt; 13 erkek / &lt; 12 kadın, diyaliz dışı ve PD’de ferritin &lt; 100 + TSAT &lt; %40 veya ferritin ≥ 100 ve &lt; 300 + TSAT &lt; %25, ferritin &lt; 45 ağır eksiklik, ferritin &gt; 700 veya TSAT ≥ %40’ta demir verilmez, hemodiyalizde ferritin ≤ 500 + TSAT ≤ %30); NICE NG239 B12 eksikliği, 2024 (B12 ve aktif B12 eşikleri, belirsiz sonuçta MMA, bekleme sırasında replasman); Devalia V ve ark. BSH 2014 B12 ve folat rehberi, Br J Haematol 2014;166:496–513 (MMA ikinci basamak, homosistein daha az özgül, güçlü klinik bulguda tedavi geciktirilmez, serum folat ilk test); Hillman RS ve ark. Hematology in Clinical Practice (düzeltilmiş retikülosit ve RPI); Mentzer WC. Lancet 1973;1:882; Denic S ve ark. ISRN Hematol 2013:858294 (HbA2 &gt; %3,5, demir eksikliği HbA2’yi düşürür); Marchand A ve ark. JAMA 1980;243:1909–11 (haptoglobin ≤ 25 mg/dL). Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -277,13 +277,13 @@ a.lnk{color:var(--accent);font-weight:600}
     var hfID=fer===null?null:(fer<100||(fer<300&&ts!==null&&ts<20));
     if(fer!==null&&fer>=100&&fer<300&&ts===null)hfID=null;
     $('hfo').textContent=yn(hfID);
-    var ckdID=fer===null||ts===null?(fer!==null&&fer<45?true:null):(fer<45||(fer<100&&ts<40)||(fer>=100&&fer<=300&&ts<25));
+    var ckdID=fer===null||ts===null?(fer!==null&&fer<45?true:null):(fer<45||(fer<100&&ts<40)||(fer>=100&&fer<300&&ts<25));
     var ckdHold=(fer!==null&&fer>700)||(ts!==null&&ts>=40);
     $('ckdo').textContent=ckdHold?'demir verilmez':yn(ckdID);
     var hdID=fer===null||ts===null?null:(fer<=500&&ts<=30);
     $('hdo').textContent=yn(hdID);
 
-    var idS=null; // 'abs' kesin, 'likely', 'mixed', 'ai', 'no'
+    var idS=null; // 'abs' kesin, 'likely', 'mixed', 'ai', 'border', 'no'
     if(fer!==null){
       if(fer<15)idS='abs';
       else if(fer<45)idS='likely';
@@ -291,25 +291,27 @@ a.lnk{color:var(--accent);font-weight:600}
       else if(infl&&fer<=150&&(t20||t20===null))idS='mixed';
       else if(infl&&t20)idS='ai';
       else if(fer>150&&t20)idS='ai';
+      else if(fer<=100&&t20)idS='border';
       else idS='no';
     }
     var baseS=idS;
-    if((hf&&hfID)||(ckd&&ckdID&&!ckdHold)||(hd&&hdID)){if(idS==='no'||idS==='ai'||idS==='mixed')idS='ctx'}
-    var irTxt={abs:['Mutlak demir eksikliği',C.high],likely:['Demir eksikliği olası',C.high],mixed:['Karma tablo olası (inflamasyon + demir eksikliği)',C.warn],ai:['Fonksiyonel demir eksikliği / inflamasyon anemisi',C.warn],ctx:['Hastalığa özgü tanıma göre demir eksikliği',C.warn],no:['Demir eksikliği desteklenmiyor',C.ok]};
+    if((hf&&hfID)||(ckd&&ckdID&&!ckdHold)||(hd&&hdID)){if(idS==='no'||idS==='ai'||idS==='mixed'||idS==='border')idS='ctx'}
+    var irTxt={abs:['Mutlak demir eksikliği',C.high],likely:['Demir eksikliği olası',C.high],mixed:['Karma tablo olası (inflamasyon + demir eksikliği)',C.warn],ai:['Fonksiyonel demir eksikliği / inflamasyon anemisi',C.warn],ctx:['Hastalığa özgü tanıma göre demir eksikliği',C.warn],border:['Sınırda: demir eksikliği dışlanamaz',C.warn],no:['Demir eksikliği desteklenmiyor',C.ok]};
     if(idS)pill('irp',irTxt[idS][0],irTxt[idS][1]);else pill('irp','Ferritin girilmedi','var(--muted)');
     var idPos=idS==='abs'||idS==='likely';
     if(idS==='abs')li('rxI','Ferritin < 15 ng/mL','Depolar boş; demir eksikliği için özgüllük 0,99 (BSG). Nedeni araştırın ve demir replasmanına başlayın.');
     else if(idS==='likely')li('rxI',fer<45?'Ferritin < 45 ng/mL':'İnflamasyonda ferritin < 70 ng/mL','AGA anemide 45 ng/mL eşiğini (15 yerine) önerir; özgüllük 0,92 (BSG). İnflamasyonda WHO 2020 erişkinde < 70 µg/L’yi demir eksikliği lehine kabul eder.');
     else if(idS==='mixed'||(idS==='ctx'&&baseS==='mixed'))li('rxI','İnflamasyon + ferritin 70–150 ng/mL'+(t20?' + TSAT < %20':''),'Mutlak demir eksikliği inflamasyon anemisine eşlik ediyor olabilir. Retikülosit Hb, hipokrom eritrosit yüzdesi, sTfR/log ferritin oranı ve oral demir denemesine yanıt ayırımda yardımcıdır (BSG).');
     else if(idS==='ai'||(idS==='ctx'&&baseS==='ai'))li('rxI','Ferritin yüksek/normal, TSAT < %20','Demir kısıtlı eritropoez: inflamasyon (kronik hastalık) anemisi düşünün. Altta yatan inflamatuvar hastalığı, KBH’yi ve maligniteyi araştırın. Ferritin > 150 ng/mL ile mutlak eksiklik olası değil (BSG).');
+    else if(idS==='border'||(idS==='ctx'&&baseS==='border'))li('rxI','Ferritin 45–100 ng/mL + TSAT < %20','Ferritin 45’in üzerinde olsa da TSAT < %20 demir kısıtlı eritropoezi gösterir. BSG: ferritinin yalancı normal olduğu düşünülürse TSAT yardımcıdır; CRP’nin yakalamadığı inflamasyon, KBH, karaciğer hastalığı ve ileri yaşta ferritin yalancı normal olabilir. 2 haftalık oral demir denemesinde Hb’de ≥ 1 g/dL artış mutlak eksikliği kuvvetle düşündürür (BSG 2021).');
     else if(idS==='no')li('rxI','Ferritin ve TSAT demir eksikliğini desteklemiyor',mc==='micro'?'Mikrositozda talasemi taşıyıcılığı için Hb elektroforezi; sideroblastik anemi ve inflamasyon anemisi diğer nedenler.':'Aneminin diğer nedenlerine bakın.');
     if(idS==='ctx')li('rxI','Hastalığa özgü eşikler karşılandı','Genel eşiklerle mutlak eksiklik net değil, ancak '+[hf&&hfID?'KY (ESC)':'',ckd&&ckdID&&!ckdHold?'KBH (KDIGO)':'',hd&&hdID?'hemodiyaliz (KDIGO)':''].filter(Boolean).join(', ')+' tanımına göre demir tedavisi düşünülür.');
     if(hf)li('rxI','Kalp yetmezliği (ESC)',hfID?'Demir eksikliği var. Semptomatik HFrEF/HFmrEF’de IV ferrik karboksimaltoz veya ferrik derizomaltoz: semptom ve yaşam kalitesi için sınıf I, KY hastaneye yatışını azaltmak için sınıf IIa (ESC 2023).':hfID===null?'TSAT girin (ferritin 100–299 ng/mL’de gerekir).':'ESC tanımına göre demir eksikliği yok. Tüm KY hastalarında ferritin ve TSAT ile tarama önerilir.');
     if(ckd){if(ckdHold)li('rxI','KBH: demir vermeyin','Ferritin > 700 ng/mL veya TSAT ≥ %40 iken demir verilmez (KDIGO 2026). Aktif enfeksiyonda demiri askıya alın.');
-      else if(ckdID)li('rxI','KBH: demir tedavisi düşünülür',(fer!==null&&fer<45?'Ferritin < 45 ng/mL ağır demir eksikliğidir; demir başlayın. ':'')+'Diyaliz dışı ve PD hastasında eşik ferritin < 100 + TSAT < %40 veya ferritin 100–300 + TSAT < %25 (KDIGO 2026).');
+      else if(ckdID)li('rxI','KBH: demir tedavisi düşünülür',(fer!==null&&fer<45?'Ferritin < 45 ng/mL ağır demir eksikliğidir; demir başlayın. ':'')+'Diyaliz dışı ve PD hastasında eşik ferritin < 100 + TSAT < %40 veya ferritin 100–299 (≥ 100 ve < 300) + TSAT < %25 (KDIGO 2026).');
       else li('rxI','KBH: KDIGO demir eşikleri karşılanmadı',ckdID===null?'TSAT girin.':'KBH’de anemi tanımı Hb < 13 (erkek) / < 12 g/dL (kadın); demir dışı nedenleri ve ESA ihtiyacını değerlendirin.')}
     if(hd)li('rxI','Hemodiyaliz',hdID?'Ferritin ≤ 500 ve TSAT ≤ %30: IV demir düşünülür (KDIGO 2026).':hdID===null?'Ferritin ve TSAT girin.':'Hemodiyalizde demir başlama eşiği (ferritin ≤ 500 ve TSAT ≤ %30) karşılanmadı.');
-    if(idPos||idS==='mixed'||idS==='ctx')li('rxI','Demir replasmanı',(hf&&hfID?'Kalp yetmezliğinde ESC IV demir önerir (yukarıda). ':'')+'Oral demir: günde 1 tablet ferröz sülfat, fumarat veya glukonat; tolere edilmezse gün aşırı (BSG). Oral demir uygun değilse, etkisizse veya hızlı düzeltme gerekiyorsa IV demir; doz için IV demir dozu sayfası. Hb normale döndükten sonra yaklaşık 3 ay sürdürün; ilk 4 haftada yanıtı izleyin.');
+    if(idPos||idS==='mixed'||idS==='ctx'||idS==='border')li('rxI',idS==='border'?'Oral demir denemesi':'Demir replasmanı',(hf&&hfID?'Kalp yetmezliğinde ESC IV demir önerir (yukarıda). ':'')+'Oral demir: günde 1 tablet ferröz sülfat, fumarat veya glukonat; tolere edilmezse gün aşırı (BSG). Oral demir uygun değilse, etkisizse veya hızlı düzeltme gerekiyorsa IV demir; doz için IV demir dozu sayfası. Hb normale döndükten sonra yaklaşık 3 ay sürdürün; ilk 4 haftada yanıtı izleyin.');
 
     // 3) Talasemi
     var mz=mcv!==null&&rbc!==null&&rbc>0?mcv/rbc:null;
@@ -365,10 +367,11 @@ a.lnk{color:var(--accent);font-weight:600}
 
     // 7) Kırmızı bayraklar
     var post=sx==='post';
-    if(idPos&&(male||post)){li('rxR',(male?'Erkekte':'Postmenopozal kadında')+' demir eksikliği: GİS değerlendirmesi','Yeni tanı demir eksikliği anemisinde ilk basamak gastroskopi + kolonoskopi (kolonoskopi uygun değilse BT kolonografi). Hastaların yaklaşık üçte birinde altta yatan patoloji, çoğunlukla GİS’te bulunur; GİS kanseri belirtisiz bu şekilde başvurabilir (BSG 2021). AGA 2020 da çift yönlü endoskopi önerir. Genç erkekte de aynı algoritma.');
+    if(idPos&&(male||post)&&anem===false){li('rxR',(male?'Erkekte':'Postmenopozal kadında')+' anemisiz demir eksikliği','BSG 2021: anemisiz demir eksikliğinde rutin invaziv inceleme (endoskopi) için yeterli kanıt yok; ancak erkek ve postmenopozal kadında, GİS semptomu veya ailede GİS hastalığı varsa araştırma eşiği düşük tutulmalı. Kan sayımını dönemsel izleyin; çölyak serolojisi ve idrar tetkiki düşünün. Anemi gelişirse tam GİS değerlendirmesi yapın.')}
+    else if(idPos&&(male||post)){li('rxR',(male?'Erkekte':'Postmenopozal kadında')+' demir eksikliği: GİS değerlendirmesi','Yeni tanı demir eksikliği anemisinde ilk basamak gastroskopi + kolonoskopi (kolonoskopi uygun değilse BT kolonografi). Hastaların yaklaşık üçte birinde altta yatan patoloji, çoğunlukla GİS’te bulunur; GİS kanseri belirtisiz bu şekilde başvurabilir (BSG 2021). AGA 2020 da çift yönlü endoskopi önerir. Genç erkekte de aynı algoritma.');
       li('rxR','Ek testler','Çölyak serolojisi (tüm yaşlarda), idrar tetkiki/mikroskobisi (renal kaynak, böbrek hücreli karsinom). Negatif çift yönlü endoskopiden sonra non-invaziv H. pylori testi (AGA); yetersiz yanıt veya tekrarlayan anemide ince bağırsak (kapsül endoskopi) ve üriner sistem (BSG).')}
     else if(idPos&&preg){li('rxR','Gebelikte demir eksikliği','Gebelik ve menstrüel kayıp sık nedendir; çölyak serolojisi düşünün. Doğumdan önce GİS incelemesi gerekirse gastroskopi ve (ilk trimesterden sonra) MR enterografi güvenli kabul edilir (BSG).')}
-    else if(idPos&&sx==='pre'){li('rxR','Premenopozal kadında demir eksikliği','Menstrüel kayıp ve gebelik sık nedendir. Çölyak serolojisi isteyin; endoskopi yalnız ek endişe verici bulgu varsa (GİS semptomu, ailede kolorektal kanser, ağır veya tekrarlayan ya da menstrüel kayıpla orantısız anemi) (BSG). AGA ise belirtisiz premenopozal kadında da çift yönlü endoskopiyi koşullu önerir.');
+    else if(idPos&&sx==='pre'){li('rxR','Premenopozal kadında demir eksikliği','Menstrüel kayıp ve gebelik sık nedendir. Çölyak serolojisi isteyin; endoskopi yalnız ek endişe verici bulgu varsa (50 yaş üstü, adet görmeme (ör. histerektomi), GİS semptomu, iki birinci derece akrabada kolorektal kanser, menstrüel kayıpla orantısız, kalıcı veya tekrarlayan anemi) (BSG 2021). AGA ise belirtisiz premenopozal kadında da çift yönlü endoskopiyi koşullu önerir.');
       li('rxR','İdrar tetkiki','Açıklanamayan demir eksikliğinde mikroskobik hematüriye bakın (BSG).')}
     if(sev==='ağır')li('rxR','Ağır anemi (WHO)','Hemodinamik durum, aktif kanama ve transfüzyon gereksinimi açısından hemen değerlendirin.');
     if(hn>=2||(h4&&(h2||h3)))li('rxR','Hemoliz bulguları','Şistosit ve trombositopeni varsa TMA acildir.');
