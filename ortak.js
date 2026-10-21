@@ -76,7 +76,8 @@
   var girdiler = Array.prototype.filter.call(document.querySelectorAll('input'), function(i){
     return /^(number|text)$/.test(i.type) && !i.closest('header') && i.type !== 'search';
   });
-  var ilkKart = girdiler.length ? girdiler[0].closest('section, .card, form') : null;
+  var ilkGirdi = girdiler[0] || document.querySelector('[data-hasta-cins]');
+  var ilkKart = ilkGirdi ? ilkGirdi.closest('section, .card, form') : null;
   if (ilkKart && !document.body.hasAttribute('data-ornek-yok')) {
     var css2 = document.createElement('style');
     css2.textContent = '.ornek{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--surface);border:1px dashed var(--accent);' +
@@ -90,6 +91,24 @@
       var a = el.getAttribute('data-hasta');
       if (kayit[a] != null && gecerli(el)) { el.value = kayit[a]; kullanilan.push(AD[a] + ' ' + String(kayit[a]).replace('.', ',')); tetikle(el); }
     });
+    if (kayit.cins) {
+      var cinsEl = Array.prototype.filter.call(document.querySelectorAll('[data-hasta-cins]'), gecerli), uyg = false;
+      var gruplar = [];
+      cinsEl.forEach(function(b){
+        if (b.tagName !== 'BUTTON') return;
+        var g = gruplar.filter(function(x){ return x.ust === b.parentNode; })[0];
+        if (!g) gruplar.push(g = {ust: b.parentNode, bs: []});
+        g.bs.push(b);
+      });
+      gruplar.forEach(function(g){
+        var bs = g.bs, basili = bs.filter(function(b){ return b.getAttribute('aria-pressed') === 'true'; })[0];
+        if (basili && basili.getAttribute('data-hasta-cins') === kayit.cins) { uyg = true; return; }
+        var hedef = bs.filter(function(b){ return b.getAttribute('data-hasta-cins') === kayit.cins; })[0];
+        if (hedef) { hedef.click(); uyg = true; }
+      });
+      cinsEl.forEach(function(c){ if (c.type === 'checkbox') { var on = kayit.cins === c.getAttribute('data-hasta-cins'); if (c.checked !== on) { c.checked = on; tetikle(c); } uyg = true; } });
+      if (uyg) kullanilan.unshift(kayit.cins === 'm' ? 'Erkek' : 'Kadın');
+    }
     if (kullanilan.length) yaz(kayit);
 
     var bant = document.createElement('div'); bant.className = 'ornek'; bant.setAttribute('role', 'status');
@@ -111,6 +130,16 @@
     bant.appendChild(yazi); bant.appendChild(dug);
     ilkKart.parentNode.insertBefore(bant, ilkKart);
 
+    function cinsKaydet(deger){ var v = oku(); v.cins = deger; yaz(v); }
+    document.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var b = e.target.closest && e.target.closest('button[data-hasta-cins]');
+      if (b && gecerli(b)) cinsKaydet(b.getAttribute('data-hasta-cins'));
+    });
+    document.addEventListener('change', function(e){
+      var c = e.target;
+      if (e.isTrusted && c.type === 'checkbox' && c.hasAttribute('data-hasta-cins')) cinsKaydet(c.checked ? c.getAttribute('data-hasta-cins') : (c.getAttribute('data-hasta-cins') === 'm' ? 'f' : 'm'));
+    });
     document.addEventListener('input', function(e){
       if (!e.isTrusted) return;
       var el = e.target;
@@ -121,5 +150,82 @@
       }
       if (!kullanilan.length && bant.parentNode) bant.remove();
     });
+  }
+
+  // İlgili araçlar: sayfanın altına klinik olarak bağlantılı araçlara kısayol ekler.
+  var AN = {'egfr':'eGFR','akut-bobrek-hasari':'Akut böbrek hasarı','kreatinin-klerensi':'Kreatinin klerensi','bobrek-ilac-dozu':'Böbrekte ilaç dozu',
+    'elektrolit':'Elektrolit hesaplamaları','elektrolit-replasmani':'Elektrolit replasmanı','kan-gazi':'Kan gazı yorumu','hiponatremi-tani':'Hiponatremi tanısı',
+    'sodyum':'Sodyum ve sıvı açığı','osmolalite':'Serum osmolalitesi','af-skor':'AF risk skorları','qtc':'Düzeltilmiş QT','wells-pe':'Wells skoru (PE)',
+    'vte-profilaksisi':'VTE profilaksisi','antikoagulan-kesme':'Antikoagülan kesme','varfarin-inr':'Varfarin ve INR','prevent':'PREVENT','heart-skoru':'HEART skoru',
+    'duke-kriterleri':'Duke kriterleri','ortalama-arter-basinci':'Ortalama arter basıncı','siroz-asit':'Siroz ve asit','child-pugh':'Child-Pugh','meld-na':'MELD-Na',
+    'glasgow-blatchford':'Glasgow-Blatchford','pankreatit':'Pankreatit skorları','r-faktor':'R faktör','fib-4':'FIB-4','acil-tedavi':'Acil tedavi rehberi',
+    'hipertansif-acil':'Hipertansif acil','infuzyon-hizi':'İnfüzyon hızı','ampirik-antibiyotik':'Ampirik antibiyotik','curb-65':'CURB-65','news2':'NEWS2',
+    'qsofa':'qSOFA','glasgow-koma':'Glasgow Koma Skalası','anemi':'Anemi yaklaşımı','diyabet-tedavi':'Tip 2 diyabet tedavisi','insulin-dozu':'İnsülin dozu',
+    'steroid-esdegeri':'Steroid eşdeğeri','opioid-donusumu':'Opioid dönüşümü','iv-demir':'IV demir dozu','vki':'VKİ ve VYA','tiroid-testi':'Tiroid testi yorumu',
+    'levotiroksin':'Levotiroksin dozu','stop-bang':'STOP-BANG'};
+  var IL = {
+    'egfr':['kreatinin-klerensi','bobrek-ilac-dozu','akut-bobrek-hasari','elektrolit-replasmani'],
+    'kreatinin-klerensi':['bobrek-ilac-dozu','egfr','antikoagulan-kesme','akut-bobrek-hasari'],
+    'bobrek-ilac-dozu':['kreatinin-klerensi','egfr','akut-bobrek-hasari','ampirik-antibiyotik'],
+    'akut-bobrek-hasari':['bobrek-ilac-dozu','elektrolit-replasmani','kan-gazi','acil-tedavi'],
+    'elektrolit':['kan-gazi','osmolalite','elektrolit-replasmani','hiponatremi-tani'],
+    'elektrolit-replasmani':['elektrolit','acil-tedavi','infuzyon-hizi','egfr'],
+    'kan-gazi':['elektrolit','osmolalite','akut-bobrek-hasari','acil-tedavi'],
+    'hiponatremi-tani':['sodyum','osmolalite','acil-tedavi','tiroid-testi'],
+    'sodyum':['hiponatremi-tani','acil-tedavi','osmolalite','elektrolit'],
+    'osmolalite':['hiponatremi-tani','elektrolit','kan-gazi','sodyum'],
+    'af-skor':['antikoagulan-kesme','kreatinin-klerensi','bobrek-ilac-dozu','varfarin-inr'],
+    'qtc':['elektrolit-replasmani','elektrolit','af-skor'],
+    'wells-pe':['vte-profilaksisi','antikoagulan-kesme','heart-skoru','news2'],
+    'vte-profilaksisi':['wells-pe','kreatinin-klerensi','antikoagulan-kesme','vki'],
+    'antikoagulan-kesme':['varfarin-inr','kreatinin-klerensi','af-skor','bobrek-ilac-dozu'],
+    'varfarin-inr':['antikoagulan-kesme','af-skor','glasgow-blatchford'],
+    'prevent':['diyabet-tedavi','egfr','vki','ortalama-arter-basinci'],
+    'heart-skoru':['wells-pe','af-skor','qtc','prevent'],
+    'duke-kriterleri':['ampirik-antibiyotik','qsofa','news2'],
+    'ortalama-arter-basinci':['hipertansif-acil','news2','infuzyon-hizi','qsofa'],
+    'siroz-asit':['child-pugh','meld-na','glasgow-blatchford','hiponatremi-tani'],
+    'child-pugh':['meld-na','siroz-asit','fib-4','bobrek-ilac-dozu'],
+    'meld-na':['child-pugh','siroz-asit','fib-4'],
+    'glasgow-blatchford':['anemi','antikoagulan-kesme','child-pugh','varfarin-inr'],
+    'pankreatit':['news2','elektrolit-replasmani','r-faktor','kan-gazi'],
+    'r-faktor':['fib-4','child-pugh','pankreatit'],
+    'fib-4':['child-pugh','meld-na','r-faktor','siroz-asit'],
+    'acil-tedavi':['elektrolit-replasmani','infuzyon-hizi','insulin-dozu','kan-gazi'],
+    'hipertansif-acil':['ortalama-arter-basinci','infuzyon-hizi','acil-tedavi','glasgow-koma'],
+    'infuzyon-hizi':['acil-tedavi','hipertansif-acil','elektrolit-replasmani','opioid-donusumu'],
+    'ampirik-antibiyotik':['bobrek-ilac-dozu','curb-65','qsofa','news2'],
+    'curb-65':['ampirik-antibiyotik','news2','qsofa'],
+    'news2':['qsofa','curb-65','ampirik-antibiyotik','glasgow-koma'],
+    'qsofa':['news2','ampirik-antibiyotik','ortalama-arter-basinci','kan-gazi'],
+    'glasgow-koma':['news2','hipertansif-acil','acil-tedavi'],
+    'anemi':['iv-demir','glasgow-blatchford','egfr'],
+    'diyabet-tedavi':['insulin-dozu','egfr','prevent','vki'],
+    'insulin-dozu':['diyabet-tedavi','steroid-esdegeri','acil-tedavi','egfr'],
+    'steroid-esdegeri':['insulin-dozu','acil-tedavi'],
+    'opioid-donusumu':['infuzyon-hizi','bobrek-ilac-dozu'],
+    'iv-demir':['anemi','egfr'],
+    'vki':['kreatinin-klerensi','stop-bang','prevent','diyabet-tedavi'],
+    'tiroid-testi':['levotiroksin','hiponatremi-tani','anemi'],
+    'levotiroksin':['tiroid-testi','vki'],
+    'stop-bang':['vki','prevent']
+  };
+  var bu = (location.pathname.split('/').pop() || '').replace('.html', '');
+  if (IL[bu]) {
+    var css3 = document.createElement('style');
+    css3.textContent = '.ilgili{display:flex;flex-direction:column;gap:8px}.ilgili h2{margin:8px 0 0;font:700 .78rem var(--font-body);text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}' +
+      '.ilgili div{display:flex;flex-wrap:wrap;gap:8px}.ilgili a{border:1px solid var(--line);background:var(--surface);color:var(--accent);' +
+      'text-decoration:none;font:600 .9rem var(--font-body);padding:8px 14px;border-radius:999px}.ilgili a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}';
+    document.head.appendChild(css3);
+    var kartlar = document.querySelectorAll('section.card, .card');
+    var son = kartlar[kartlar.length - 1];
+    if (son) {
+      var il = document.createElement('nav'); il.className = 'ilgili'; il.setAttribute('aria-label', 'İlgili araçlar');
+      var h = document.createElement('h2'); h.textContent = 'İlgili araçlar'; il.appendChild(h);
+      var d = document.createElement('div');
+      IL[bu].forEach(function(k){ var a = document.createElement('a'); a.href = k + '.html'; a.textContent = AN[k]; d.appendChild(a); });
+      il.appendChild(d);
+      son.parentNode.insertBefore(il, son.nextSibling);
+    }
   }
 })();
