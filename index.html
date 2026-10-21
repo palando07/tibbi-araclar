@@ -19,6 +19,8 @@ body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);
   padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
 .wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
 h1{font-size:1.6rem;margin:0}
+.marka{display:flex;align-items:center;gap:10px;font-size:1.75rem;font-weight:800;letter-spacing:-.02em}
+.marka .nabiz{width:44px;height:26px;color:var(--accent);flex:none}
 .sub{margin:0;color:var(--muted);font-size:.92rem}
 a.tool{display:flex;justify-content:space-between;align-items:center;gap:12px;text-decoration:none;color:var(--fg);
   background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
@@ -69,7 +71,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
 </head>
 <body data-ornek-yok>
 <div class="wrap">
-  <h1>Vizit</h1>
+  <h1 class="marka"><svg class="nabiz" viewBox="0 0 44 26" aria-hidden="true"><polyline points="2,14 11,14 14,9 19,23 25,3 28,14 42,14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Vizit</h1>
   <p class="sub">Dahiliye pratiği için hesaplayıcılar</p>
   <div class="yazi" role="group" aria-label="Yazı boyutu"><span>Yazı</span><button type="button" data-y="1" style="font-size:.85rem">A</button><button type="button" data-y="1.12" style="font-size:1rem">A</button><button type="button" data-y="1.25" style="font-size:1.2rem">A</button></div>
   <input class="search" id="q" type="search" placeholder="Ara: sodyum, siroz, pnömoni…" aria-label="Hesaplayıcı ara" autocomplete="off">

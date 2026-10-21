@@ -255,4 +255,10 @@
       git.hidden = e.isIntersecting || e.boundingClientRect.top < 0;
     }, {threshold: 0}).observe(sonuc);
   }
+
+  // Geri bağlantısında küçük nabız işareti (logo ile uyumlu)
+  document.querySelectorAll('a.back').forEach(function(a){
+    if (a.textContent.trim() !== '← Vizit') return;
+    a.innerHTML = '← <svg viewBox="0 0 44 26" aria-hidden="true" style="width:22px;height:13px;vertical-align:-1px;margin:0 3px 0 2px"><polyline points="2,14 11,14 14,9 19,23 25,3 28,14 42,14" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Vizit';
+  });
 })();
