@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Akut Böbrek Hasarı</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.tag{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font:600 .74rem var(--font-body);color:#fff;vertical-align:1px}
+ol.rec li a,.note a{color:var(--accent);font-weight:600}
+.sub b.wr{white-space:normal;text-align:right;min-width:0}
+.seg.many button{flex:1 1 34%;padding:10px 8px;border-top:1px solid var(--line);margin-top:-1px}
+.stg{font:700 .75rem var(--font-num);color:var(--muted);margin-left:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Akut Böbrek Hasarı</h1>
+    <p>KDIGO evrelemesi (kreatinin ve idrar çıkışı), FENa ve FEÜre, prerenal–renal–postrenal ipuçları, KDIGO’ya göre yönetim ve acil diyaliz eşikleri</p>
+  </header>
+
+  <section class="card">
+    <h2>Kreatinin</h2>
+    <div class="grid">
+      <div class="field"><label for="bcr">Bazal kreatinin <span>mg/dL</span></label><input id="bcr" type="number" inputmode="decimal" step="any" value="0.9"></div>
+      <div class="field"><label for="ccr">Güncel kreatinin <span>mg/dL</span></label><input id="ccr" type="number" inputmode="decimal" step="any" value="1.6"></div>
+    </div>
+    <span class="lbl">Artışın gerçekleştiği süre</span>
+    <div class="seg wrapseg"><button type="button" data-g="tm" data-v="48" aria-pressed="true">48 saat içinde</button><button type="button" data-g="tm" data-v="7" aria-pressed="false">7 gün içinde</button><button type="button" data-g="tm" data-v="x" aria-pressed="false">7 günden uzun</button></div>
+    <span class="lbl">Böbrek replasman tedavisi (RRT)</span>
+    <div class="seg"><button type="button" data-g="rrt" data-v="0" aria-pressed="true">Başlanmadı</button><button type="button" data-g="rrt" data-v="1" aria-pressed="false">Başlandı</button></div>
+    <p class="note">“7 gün içinde”: 1,5 kat ölçütü için artışın son 7 günde olduğu bilinen veya varsayılan durum. µmol/L ÷ 88,4 = mg/dL.</p>
+  </section>
+
+  <section class="card">
+    <h2>İdrar çıkışı <span class="stg">isteğe bağlı</span></h2>
+    <div class="grid">
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="uo">İdrar miktarı <span>mL</span></label><input id="uo" type="number" inputmode="decimal" step="any" value="300"></div>
+      <div class="field"><label for="hr">Süre <span>saat</span></label><input id="hr" type="number" inputmode="decimal" step="any" value="12"></div>
+    </div>
+    <p class="note">Boş bırakılırsa yalnız kreatinine göre evrelenir. Hesap tüm süre için ortalamadır; KDIGO ölçütü sürenin tamamında düşük akım arar.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>KDIGO AKI evresi</h2>
+    <div class="res"><span class="num" id="stn">–</span><span class="pill" id="stp"></span></div>
+    <div class="sub"><span>Belirleyen ölçüt</span><b class="wr" id="trg">–</b></div>
+    <div class="sub"><span>Kreatinin artışı</span><b id="dlt">–</b></div>
+    <div class="sub"><span>Bazale oran</span><b id="rat">–</b></div>
+    <div class="sub"><span>Kreatinine göre evre</span><b class="wr" id="scs">–</b></div>
+    <div class="sub"><span>İdrar çıkışı</span><b class="wr" id="uor">–</b></div>
+    <div class="sub"><span>İdrar çıkışına göre evre</span><b class="wr" id="uos">–</b></div>
+    <ol class="rec" id="rxK"></ol>
+    <table class="t">
+      <thead><tr><th>Evre</th><th>Serum kreatinini</th><th>İdrar çıkışı</th></tr></thead>
+      <tbody>
+        <tr id="r1"><td>1</td><td>Bazalin 1,5–1,9 katı veya ≥ 0,3 mg/dL artış</td><td>&lt; 0,5 mL/kg/saat, 6–12 saat</td></tr>
+        <tr id="r2"><td>2</td><td>Bazalin 2,0–2,9 katı</td><td>&lt; 0,5 mL/kg/saat, ≥ 12 saat</td></tr>
+        <tr id="r3"><td>3</td><td>Bazalin ≥ 3 katı veya Kr ≥ 4,0 mg/dL veya RRT başlanması</td><td>&lt; 0,3 mL/kg/saat ≥ 24 saat veya anüri ≥ 12 saat</td></tr>
+      </tbody>
+    </table>
+    <p class="note">AKI tanımı (KDIGO 2012): 48 saatte ≥ 0,3 mg/dL artış, 7 gün içinde bazalin ≥ 1,5 katı veya 6 saat &lt; 0,5 mL/kg/saat idrar. Hasta en yüksek evreyi veren ölçüte göre evrelenir. Kr ≥ 4,0 ile evre 3 için önce tanım ölçütü karşılanmalıdır. 18 yaş altı eGFR ölçütü bu sayfada yoktur (erişkin içindir).</p>
+  </section>
+
+  <section class="card">
+    <h2>İdrar indeksleri</h2>
+    <div class="grid">
+      <div class="field"><label for="sna">Serum Na <span>mmol/L</span></label><input id="sna" type="number" inputmode="decimal" step="any" value="138"></div>
+      <div class="field"><label for="una">İdrar Na <span>mmol/L</span></label><input id="una" type="number" inputmode="decimal" step="any" value="15"></div>
+      <div class="field"><label for="ucr">İdrar kreatinin <span>mg/dL</span></label><input id="ucr" type="number" inputmode="decimal" step="any" value="120"></div>
+      <div class="field"><label for="uos2">İdrar ozmolalitesi <span>mOsm/kg</span></label><input id="uos2" type="number" inputmode="decimal" step="any" value="620"></div>
+    </div>
+    <span class="lbl">Üre birimi</span>
+    <div class="seg"><button type="button" data-g="un" data-v="ure" aria-pressed="true">Üre (mg/dL)</button><button type="button" data-g="un" data-v="bun" aria-pressed="false">BUN (mg/dL)</button></div>
+    <div class="grid">
+      <div class="field"><label for="sur" id="lsur">Serum üre <span>mg/dL</span></label><input id="sur" type="number" inputmode="decimal" step="any" value="90"></div>
+      <div class="field"><label for="uur" id="luur">İdrar üre <span>mg/dL</span></label><input id="uur" type="number" inputmode="decimal" step="any" value="1200"></div>
+    </div>
+    <span class="lbl">Son 24 saatte diüretik</span>
+    <div class="seg"><button type="button" data-g="diu" data-v="0" aria-pressed="true">Almadı</button><button type="button" data-g="diu" data-v="1" aria-pressed="false">Aldı</button></div>
+    <span class="lbl">İdrar sedimenti (mikroskopi)</span>
+    <div class="seg wrapseg many"><button type="button" data-g="sed" data-v="na" aria-pressed="true">Bakılmadı</button><button type="button" data-g="sed" data-v="bl" aria-pressed="false">Silik (bland)</button><button type="button" data-g="sed" data-v="atn" aria-pressed="false">Granüler / TEH</button><button type="button" data-g="sed" data-v="gn" aria-pressed="false">Eritrosit silendiri</button><button type="button" data-g="sed" data-v="ain" aria-pressed="false">Lökosit silendiri</button></div>
+    <p class="note">Serum kreatinini “Kreatinin” kartındaki güncel değerdir. Üre = BUN × 2,14. FEÜre’de serum ve idrar aynı birimde olmalıdır. TEH: tübül epitel hücresi (veya silendiri).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>İndekslerin yorumu</h2>
+    <span class="lbl">FENa</span>
+    <div class="res"><span class="num" id="fena">–</span><span class="of">%</span><span class="pill" id="fenap"></span></div>
+    <div class="sub"><span>FEÜre</span><b id="feu">–</b></div>
+    <div class="sub"><span>BUN / kreatinin</span><b id="bcrr">–</b></div>
+    <div class="sub"><span>İdrar Na</span><b id="unao">–</b></div>
+    <div class="sub"><span>İdrar ozmolalitesi</span><b id="uoso">–</b></div>
+    <div class="sub"><span>İdrar / plazma kreatinin</span><b id="upc">–</b></div>
+    <div class="sub"><span>İdrar / plazma üre</span><b id="upu">–</b></div>
+    <div class="res"><span class="pill" id="sump"></span></div>
+    <ol class="rec" id="rxI"></ol>
+    <table class="t">
+      <thead><tr><th>İndeks</th><th>Prerenal lehine</th><th>ATN lehine</th></tr></thead>
+      <tbody>
+        <tr><td>FENa</td><td>&lt; %1</td><td>&gt; %3</td></tr>
+        <tr><td>FEÜre <small>diüretik alanda</small></td><td>≤ %35</td><td>ATN ort. %58,6</td></tr>
+        <tr><td>İdrar Na</td><td>&lt; 20 mmol/L</td><td>&gt; 40 mmol/L</td></tr>
+        <tr><td>İdrar ozm.</td><td>&gt; 500 mOsm/kg</td><td>&lt; 350 mOsm/kg</td></tr>
+        <tr><td>İdrar/plazma Kr</td><td>&gt; 40</td><td>&lt; 20</td></tr>
+        <tr><td>İdrar/plazma üre</td><td>&gt; 8</td><td>&lt; 3</td></tr>
+        <tr><td>BUN/Kr</td><td>&gt; 20 <small>normal 10–15</small></td><td>–</td></tr>
+      </tbody>
+    </table>
+    <p class="note">FENa = (idrar Na × serum Kr) ÷ (serum Na × idrar Kr) × 100; FEÜre aynı formülde Na yerine üre. Eşikler oligürik AKI’de geliştirilmiştir (Miller 1978, Espinel 1976); tek bir indeks her hastada ayırt etmez, klinik seyirle birlikte yorumlayın.</p>
+  </section>
+
+  <section class="card">
+    <h2>Postrenal neden</h2>
+    <ul class="chk">
+      <li>Görüntüleme, özellikle böbrek ultrasonu, AKI değerlendirmesinin temel parçasıdır (KDIGO 2012); obstrüksiyonu ultrasonla dışlayın.</li>
+      <li>FENa obstrüksiyonu ayırt etmez: Espinel 1980’de obstrüksiyonda FENa &gt; %1 iken akut obstrüksiyonda FENa &lt; %1 de bildirilmiştir (Steiner 1984; Zarich 1985).</li>
+    </ul>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>KDIGO’ya göre yönetim</h2>
+    <div class="res"><span class="pill" id="mgp"></span></div>
+    <ol class="rec" id="rxM"></ol>
+    <p class="note">Evreye göre adımlar KDIGO 2012 Şekil 4’ten (yüksek risk ve tüm evreler; evre 1’den, 2’den ve 3’ten itibaren eklenenler); parantez içindeki numaralar KDIGO önerileridir.</p>
+  </section>
+
+  <section class="card">
+    <h2>Acil diyaliz değerlendirmesi</h2>
+    <div class="grid">
+      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" type="number" inputmode="decimal" step="any" value="5.4"></div>
+      <div class="field"><label for="ph">Arteriyel pH</label><input id="ph" type="number" inputmode="decimal" step="any" value="7.31"></div>
+      <div class="field"><label for="hco">Bikarbonat <span>mmol/L</span></label><input id="hco" type="number" inputmode="decimal" step="any" value="18"></div>
+      <div class="field"><label for="pf">PaO₂/FiO₂</label><input id="pf" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+      <div class="field"><label for="olg">Oligüri / anüri süresi <span>saat</span></label><input id="olg" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+    </div>
+    <span class="lbl">Diüretiğe dirençli akciğer ödemi / volüm yükü</span>
+    <div class="seg"><button type="button" data-g="ovl" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="ovl" data-v="1" aria-pressed="false">Var</button></div>
+    <p class="note">BUN “İdrar indeksleri” kartındaki serum üre/BUN değerinden alınır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Acil RRT ölçütleri</h2>
+    <div class="res"><span class="pill" id="rrp"></span></div>
+    <table class="t">
+      <thead><tr><th></th><th>AKIKI <small>2016</small></th><th>STARRT-AKI <small>2020</small></th></tr></thead>
+      <tbody>
+        <tr id="ta"><td>A Asidoz</td><td>pH &lt; 7,15 <small>metabolik (PaCO₂ &lt; 35) veya solunumla düzeltilemeyen mikst</small></td><td>pH ≤ 7,20 veya HCO₃ ≤ 12 mmol/L</td></tr>
+        <tr id="te"><td>E Potasyum</td><td>K &gt; 6 veya tedaviye rağmen &gt; 5,5 mmol/L</td><td>K ≥ 6,0 mmol/L</td></tr>
+        <tr id="to"><td>O Volüm yükü</td><td>Diüretiğe rağmen akciğer ödemi; SpO₂ &gt; %95 için O₂ &gt; 5 L/dk veya FiO₂ &gt; %50</td><td>PaO₂/FiO₂ ≤ 200 + volüm yükü</td></tr>
+        <tr id="tu"><td>U Üremi</td><td>BUN &gt; 112 mg/dL <small>üre &gt; 40 mmol/L ≈ 240 mg/dL</small></td><td>–</td></tr>
+        <tr id="tg"><td>Oligüri</td><td>Oligüri/anüri &gt; 72 saat</td><td>AKI &gt; 72 saat sürmesi</td></tr>
+      </tbody>
+    </table>
+    <ol class="rec" id="rxR"></ol>
+    <p class="note">KDIGO 2012 (5.1.1–5.1.2) sayısal eşik vermez: yaşamı tehdit eden sıvı, elektrolit veya asit–baz bozukluğunda RRT acil başlanır; karar tek BUN/kreatinin eşiğine değil klinik bağlama ve laboratuvar eğilimine dayanır. Tablodaki eşikler, ağır AKI’li yoğun bakım hastalarında “bekleyen” kolun RRT başlatma ölçütleridir. I (intoksikasyon): diyalizle uzaklaştırılan zehirlenmede ayrıca değerlendirin.</p>
+  </section>
+
+  <p class="note">Kaynaklar: KDIGO AKI Çalışma Grubu. KDIGO Clinical Practice Guideline for Acute Kidney Injury, Kidney Int Suppl 2012;2:1–138 (AKI tanımı ve evreleri, en yüksek evre kuralı, Kr ≥ 4,0 koşulu, Şekil 4 evreye göre yönetim, öneriler 2.3, 3.1.1–3.1.2, 3.3.1–3.3.4, 3.4.1–3.4.2, 3.5.1, 3.8.1–3.8.7, 4.2–4.5, 5.1.1–5.1.2); Kellum JA, Lameire N. KDIGO özeti, Crit Care 2013;17:204 ve 205; KDIGO 2026 AKI/AKD kılavuzu henüz taslaktır, bu sayfa 2012 kılavuzuna dayanır. Espinel CH. JAMA 1976;236:579–81 ve Espinel CH, Gregory AW. Clin Nephrol 1980;13:73–7 (FENa &lt; 1 / &gt; 3); Miller TR ve ark. Ann Intern Med 1978;89:47–50 (idrar Na, ozmolalite, U/P kreatinin ve üre); Carvounis CP ve ark. Kidney Int 2002;62:2223–9 (FEÜre ≤ %35, diüretik); Steiner RW. Am J Med 1984;77:699–702 ve Zarich S ve ark. Arch Intern Med 1985;145:108–12 (FENa istisnaları); Feinfeld DA ve ark. Int Urol Nephrol 2002;34:143–5 (BUN/Kr); Perazella MA ve ark. Clin J Am Soc Nephrol 2008;3:1615–9 ve Fadel R ve ark. Kidney360 2023;4:918–23 (sediment); Gaudry S ve ark. AKIKI, N Engl J Med 2016;375:122–33 ve protokol (Crit Care 2015;19 Suppl 1) ile AKIKI 2, Lancet 2021;397:1293–300; STARRT-AKI Investigators, N Engl J Med 2020;383:240–51 ve çalışma sitesi (University of Alberta; standart kol RRT ölçütleri). Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var f2=function(x){return x.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})};
+  function li(ol,b,a,html){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';if(html)p.innerHTML=a;else p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  var C={ok:'var(--ok)',warn:'var(--warn)',high:'var(--high)',low:'var(--low)',acc:'var(--accent)'};
+  function tag(t,c){return t?' <span class="tag" style="background:'+c+'">'+t+'</span>':''}
+  function setSub(id,txt,t,c){$(id).innerHTML='';$(id).textContent=txt;if(t)$(id).insertAdjacentHTML('beforeend',tag(t,c))}
+
+  // --- KDIGO evrelemesi ---
+  function stageCr(b,c,tm,out){
+    if(b===null||c===null||b<=0||c<=0)return null;
+    var d=c-b,r=c/b,trig=[];
+    var abs=tm==='48'&&d>=0.3,rel=(tm==='48'||tm==='7')&&r>=1.5;
+    out.d=d;out.r=r;
+    if(!abs&&!rel)return 0;
+    var st=1;
+    if(r>=3){st=3;trig.push('≥ 3 kat bazal')}
+    else if(c>=4){st=3;trig.push('Kr ≥ 4,0 mg/dL')}
+    else if(r>=2){st=2;trig.push('≥ 2 kat bazal')}
+    else if(rel){trig.push('≥ 1,5 kat bazal')}
+    else trig.push('48 saatte ≥ 0,3 mg/dL');
+    out.trig=trig[0];return st;
+  }
+  function stageUO(w,ml,h,out){
+    if(w===null||ml===null||h===null||w<=0||h<=0||ml<0)return null;
+    var r=ml/w/h;out.r=r;out.h=h;
+    if(ml===0&&h>=12){out.trig='anüri ≥ 12 saat';return 3}
+    if(r<0.3&&h>=24){out.trig='< 0,3 mL/kg/saat, ≥ 24 saat';return 3}
+    if(r<0.5&&h>=12){out.trig='< 0,5 mL/kg/saat, ≥ 12 saat';return 2}
+    if(r<0.5&&h>=6){out.trig='< 0,5 mL/kg/saat, 6–12 saat';return 1}
+    if(r<0.5){out.short=true;return 0}
+    return 0;
+  }
+  var stCol=[C.ok,C.warn,C.high,C.acc];
+
+  function calc(){
+    var b=v('bcr'),c=v('ccr'),tm=segVal('tm'),rrt=segVal('rrt')==='1';
+    var oc={},ou={};
+    var sc=stageCr(b,c,tm,oc),su=stageUO(v('wt'),v('uo'),v('hr'),ou);
+    $('rxK').innerHTML='';
+    $('dlt').textContent=oc.d===undefined?'–':(oc.d>=0?'+':'')+f2(oc.d)+' mg/dL';
+    $('rat').textContent=oc.r===undefined?'–':f2(oc.r)+' kat';
+    $('scs').textContent=sc===null?'veri yok':sc?'Evre '+sc+' ('+oc.trig+')':'ölçüt yok';
+    $('uor').textContent=ou.r===undefined?'girilmedi':f2(ou.r)+' mL/kg/saat ('+fm(ou.h)+' saat)';
+    $('uos').textContent=su===null?'veri yok':su?'Evre '+su+' ('+ou.trig+')':(ou.short?'süre < 6 saat':'ölçüt yok');
+    var st=Math.max(sc||0,su||0),trg=[];
+    if(rrt){st=3;trg.push('RRT başlandı')}
+    if(sc&&sc===st)trg.push('kreatinin: '+oc.trig);
+    if(su&&su===st)trg.push('idrar: '+ou.trig);
+    var known=sc!==null||su!==null||rrt;
+    if(!known){$('stn').textContent='–';pill('stp','','');$('trg').textContent='–'}
+    else{$('stn').textContent=st?'Evre '+st:'AKI yok';
+      pill('stp',st?'KDIGO AKI':'Ölçüt karşılanmadı',stCol[st]);
+      $('trg').textContent=st?trg.join(' · '):'–'}
+    ['r1','r2','r3'].forEach(function(id,i){$(id).className=st===i+1?'cur':''});
+    if(tm==='x'&&sc===0)li('rxK','Artış 7 günden uzun sürede','KDIGO AKI kreatinin ölçütleri 48 saat (≥ 0,3 mg/dL) ve 7 gün (≥ 1,5 kat) ile sınırlıdır; daha yavaş kayıp akut böbrek hastalığı veya KBH açısından değerlendirilmelidir.');
+    if(tm==='7'&&oc.d>=0.3&&oc.r<1.5)li('rxK','≥ 0,3 mg/dL artış 48 saat dışında','Mutlak artış ölçütü yalnız 48 saat içinde geçerlidir; 7 günlük ölçüt için ≥ 1,5 kat gerekir.');
+    if(sc&&su&&sc!==su)li('rxK','Ölçütler farklı evre veriyor','KDIGO: hasta en yüksek evreyi veren ölçüte göre evrelenir.');
+    if(ou.short)li('rxK','İdrar süresi 6 saatten kısa','İdrar ölçütü için en az 6 saatlik düşük akım gerekir; izlemi sürdürün.');
+    if(c!==null&&c>=4&&sc===0)li('rxK','Kr ≥ 4,0 mg/dL ama tanım ölçütü yok','Kr ≥ 4,0 ile evre 3 için önce 48 saatte ≥ 0,3 mg/dL veya 7 günde ≥ 1,5 kat artış gerekir (KDIGO).');
+
+    // --- İdrar indeksleri ---
+    var sna=v('sna'),una=v('una'),ucr=v('ucr'),uosm=v('uos2'),un=segVal('un'),diu=segVal('diu')==='1',sed=segVal('sed');
+    var sur=v('sur'),uur=v('uur');
+    $('lsur').firstChild.nodeValue=(un==='bun'?'Serum BUN ':'Serum üre ');
+    $('luur').firstChild.nodeValue=(un==='bun'?'İdrar üre azotu ':'İdrar üre ');
+    var bun=sur===null?null:(un==='bun'?sur:sur/2.14);
+    var fena=(una!==null&&c&&sna&&ucr)?una*c/(sna*ucr)*100:null;
+    var feu=(uur!==null&&c&&sur&&ucr)?uur*c/(sur*ucr)*100:null;
+    $('rxI').innerHTML='';
+    var pre=0,atn=0;
+    if(fena===null){$('fena').textContent='–';pill('fenap','','')}
+    else{$('fena').textContent=fena<1?f2(fena):fm(fena,1);
+      if(fena<1){pill('fenap','< %1: prerenal lehine',C.ok);if(!diu)pre++}
+      else if(fena>3){pill('fenap','> %3: ATN lehine',C.high);if(!diu)atn++}
+      else pill('fenap','%1–3: ara bölge',C.warn)}
+    if(feu===null)setSub('feu','–');
+    else if(feu<=35){setSub('feu','%'+fm(feu,1),'prerenal',C.ok);pre++}
+    else{setSub('feu','%'+fm(feu,1),'ATN lehine',C.high);atn++}
+    var bcr=(bun!==null&&c)?bun/c:null;
+    if(bcr===null)setSub('bcrr','–');else if(bcr>20)setSub('bcrr',fm(bcr,1),'> 20',C.ok);else setSub('bcrr',fm(bcr,1));
+    if(una===null)setSub('unao','–');
+    else if(una<20){setSub('unao',fm(una,0)+' mmol/L','prerenal',C.ok);if(!diu)pre++}
+    else if(una>40){setSub('unao',fm(una,0)+' mmol/L','ATN',C.high);if(!diu)atn++}
+    else setSub('unao',fm(una,0)+' mmol/L','ara',C.warn);
+    if(uosm===null)setSub('uoso','–');
+    else if(uosm>500){setSub('uoso',fm(uosm,0)+' mOsm/kg','prerenal',C.ok);pre++}
+    else if(uosm<350){setSub('uoso',fm(uosm,0)+' mOsm/kg','ATN',C.high);atn++}
+    else setSub('uoso',fm(uosm,0)+' mOsm/kg','ara',C.warn);
+    var upc=(ucr&&c)?ucr/c:null;
+    if(upc===null)setSub('upc','–');
+    else if(upc>40){setSub('upc',fm(upc,0),'prerenal',C.ok);pre++}
+    else if(upc<20){setSub('upc',fm(upc,0),'ATN',C.high);atn++}
+    else setSub('upc',fm(upc,0),'ara',C.warn);
+    var upu=(uur!==null&&sur)?uur/sur:null;
+    if(upu===null)setSub('upu','–');
+    else if(upu>8){setSub('upu',fm(upu,1),'prerenal',C.ok);pre++}
+    else if(upu<3){setSub('upu',fm(upu,1),'ATN',C.high);atn++}
+    else setSub('upu',fm(upu,1),'ara',C.warn);
+    if(sed==='atn')atn++;
+    if(!pre&&!atn)pill('sump','','');
+    else if(pre&&!atn)pill('sump','Bulgular prerenal lehine ('+pre+')',C.ok);
+    else if(atn&&!pre)pill('sump','Bulgular ATN lehine ('+atn+')',C.high);
+    else pill('sump','Karışık: '+pre+' prerenal, '+atn+' ATN lehine',C.warn);
+
+    if(diu){li('rxI','Diüretik alan hastada FEÜre’ye bakın','Diüretik FENa’yı yükseltir: diüretik alan prerenal hastaların yalnız %48’inde FENa < %1 iken %89’unda FEÜre ≤ %35 bulunmuştur (Carvounis 2002). FENa ve idrar Na bu hastada özetlenen sayıma katılmadı.')}
+    if(fena!==null&&fena<1)li('rxI','Düşük FENa her zaman volüme yanıtlı prerenal değildir','Karaciğer veya kalp yetmezliği (HRS, kardiyorenal), akut GN, pigment nefropatisi (miyoglobin/hemoglobin), kontrast nefropatisi, sepsis, yanık, akut obstrüksiyon, böbrek nakli rejeksiyonu ve bazı nonoligürik ATN’de de < %1 görülür (Steiner 1984; Zarich 1985).');
+    if(fena!==null&&fena>=1)li('rxI','Yüksek FENa prerenali dışlamaz','Diüretik kullanımında ve bazı kronik böbrek yetmezliği hastalarında volüm eksikliğine rağmen > %1 olabilir (Steiner 1984).');
+    if(bcr!==null&&bcr>20)li('rxI','BUN/Kr > 20','Sıklıkla prerenal durumu düşündürür; ancak protein katabolizması, yüksek protein alımı, GİS kanaması veya yüksek doz steroid de oranı artırır (Feinfeld 2002).');
+    if(sed==='atn')li('rxI','Granüler (çamur kahverengi) silendir veya tübül epitel hücresi','ATN’yi güçlü biçimde destekler; Perazella 2008 skorunda ≥ 2 puan ATN için çok güçlü öngörücüdür.');
+    else if(sed==='gn')li('rxI','Eritrosit silendiri / dismorfik eritrosit','Glomerülonefriti düşündürür; Fadel 2023’te sedimentle konan GN tahminlerinin tamamı biyopsiyle doğrulandı. Nefrolojiyle değerlendirin.');
+    else if(sed==='ain')li('rxI','Lökosit silendiri','Akut interstisyel nefriti düşündürür (Fadel 2023). İlaç öyküsünü gözden geçirin.');
+    else if(sed==='bl')li('rxI','Silik sediment','Prerenal düşünülen hastada silendir/TEH yokluğu ATN’yi büyük ölçüde dışlar (NÖD %91; Perazella 2008), ancak ATN veya GN’yi tamamen dışlamaz (Fadel 2023’te silik sedimentli biyopsilerin %40’ı ATN, %60’ı GN).');
+    else li('rxI','Sediment mikroskopisi','Otomatik laboratuvar analizi silendirleri sıklıkla kaçırır; mümkünse santrifüje idrarı hekim değerlendirsin (Fadel 2023).');
+
+    // --- Yönetim ---
+    $('rxM').innerHTML='';
+    var w=v('wt');
+    pill('mgp',known?(st?'Evre '+st+' için adımlar':'Yüksek risk / AKI yok'):'',known?stCol[st]:'');
+    li('rxM','Mümkünse tüm nefrotoksik ajanları kesin','NSAİİ, aminoglikozit, iyotlu kontrast vb. Aminoglikozit: daha az nefrotoksik alternatif yoksa (3.8.1); normal böbrek işlevinde günde tek doz (3.8.2); çoklu dozda > 24 saat, tek dozda > 48 saat kullanımda düzey izlemi (3.8.3–3.8.4). Amfoterisin B gerekiyorsa lipid formülasyonu (3.8.6); eşdeğer etkinlikte azol veya ekinokandin tercih edilir (3.8.7).');
+    li('rxM','Volüm durumu ve perfüzyon basıncını sağlayın','Fonksiyonel hemodinamik izlemi düşünün. Hemorajik şok yoksa kolloid yerine izotonik kristalloid (3.1.1); vazomotor şokta sıvıyla birlikte vazopressör (3.1.2). Volüm yükü dışında AKI’yi önlemek veya tedavi etmek için diüretik kullanmayın (3.4.1–3.4.2); düşük doz dopamin yok (3.5.1).');
+    li('rxM','Serum kreatinini ve idrar çıkışını izleyin','Evrelemeyi tekrarlayın (2.3.2).');
+    li('rxM','Hiperglisemiden kaçının','Kritik hastada insülinle plazma glukoz hedefi 110–149 mg/dL (6,1–8,3 mmol/L) (3.3.1).');
+    li('rxM','Radyokontrast yerine başka yöntemleri düşünün','Kontrast gerekiyorsa: en düşük doz (4.3.1); izo- veya düşük ozmolar iyotlu kontrast (4.3.2); IV izotonik NaCl veya sodyum bikarbonatla volüm genişletme (4.4.1), yalnız oral sıvı yetersiz (4.4.2); IV kristalloide ek oral NAC önerilebilir (4.4.3); teofilin ve fenoldopam yok (4.4.4–4.4.5); kontrastı uzaklaştırmak için profilaktik HD/hemofiltrasyon yok (4.5.1).');
+    li('rxM','Beslenme','Toplam enerji 20–30 kcal/kg/gün'+(w?' ('+fm(20*w,0)+'–'+fm(30*w,0)+' kcal/gün)':'')+' (3.3.2). Protein kısıtlamayın (3.3.3): diyalizsiz katabolik olmayan AKI 0,8–1,0 g/kg/gün'+(w?' ('+fm(0.8*w,0)+'–'+fm(w,0)+' g)':'')+'; RRT’de 1,0–1,5 g/kg/gün; CRRT veya hiperkatabolik hastada en çok 1,7 g/kg/gün (3.3.4).');
+    if(st>=1){li('rxM','Nedeni araştırın','Geri döndürülebilir nedenlere öncelik (2.3.1): non-invaziv tanısal inceleme (öykü, ilaçlar, volüm, idrar tetkiki ve sedimenti, idrar indeksleri, böbrek ultrasonu); gerekirse invaziv inceleme düşünün.')}
+    li('rxM','İlaç dozlarını gözden geçirin'+(st>=2?'':' (KDIGO: evre 2’den itibaren)'),'Böbrekten atılan ilaçların dozlarını güncel böbrek işlevine göre ayarlayın: <a href="bobrek-ilac-dozu.html">Böbrekte İlaç Dozu</a>.',true);
+    if(st>=2){li('rxM','RRT’yi düşünün','Endikasyonlar aşağıdaki kartta.');li('rxM','Yoğun bakım yatışını düşünün')}
+    if(st>=3)li('rxM','Mümkünse subklavyen kateterden kaçının','Diyaliz kateteri için subklavyen ven son seçenektir (5.4.2).');
+    li('rxM','3 ay sonra yeniden değerlendirin','AKI’nin düzelmesi, yeni KBH veya var olan KBH’nin kötüleşmesi açısından (2.3.4).');
+
+    // --- Acil RRT ---
+    var K=v('k'),ph=v('ph'),hco=v('hco'),pf=v('pf'),olg=v('olg'),ovl=segVal('ovl')==='1';
+    $('rxR').innerHTML='';
+    var hits=[];
+    var aA=ph!==null&&ph<7.15,sA=(ph!==null&&ph<=7.20)||(hco!==null&&hco<=12);
+    var aE=K!==null&&K>6,sE=K!==null&&K>=6,aE2=K!==null&&K>5.5&&K<=6;
+    var sO=ovl&&pf!==null&&pf<=200;
+    var aU=bun!==null&&bun>112;
+    var aG=olg!==null&&olg>72;
+    $('ta').className=aA||sA?'cur':'';$('te').className=aE||sE?'cur':'';$('to').className=ovl?'cur':'';$('tu').className=aU?'cur':'';$('tg').className=aG?'cur':'';
+    if(aA||sA)hits.push('Asidoz: '+(ph!==null?'pH '+f2(ph):'')+(hco!==null&&hco<=12?(ph!==null?', ':'')+'HCO₃ '+fm(hco,0):''));
+    if(aE||sE)hits.push('Hiperkalemi: K '+fm(K,1)+' mmol/L');
+    if(ovl)hits.push('Diüretiğe dirençli volüm yükü'+(sO?' (PaO₂/FiO₂ '+fm(pf,0)+')':''));
+    if(aU)hits.push('BUN '+fm(bun,0)+' mg/dL (> 112)');
+    if(aG)hits.push('Oligüri/anüri '+fm(olg,0)+' saat');
+    if(hits.length){pill('rrp','RRT başlatma ölçütü var',C.high);hits.forEach(function(h){li('rxR',h)});
+      li('rxR','Nefroloji ile acil RRT kararı','Yaşamı tehdit eden sıvı, elektrolit veya asit–baz bozukluğunda RRT acil başlanır (KDIGO 5.1.1).')}
+    else if(aE2){pill('rrp','K 5,5–6: tedaviye yanıtı izleyin',C.warn);li('rxR','K > 5,5 mmol/L','AKIKI’de tıbbi tedaviye rağmen > 5,5 mmol/L sürmesi RRT ölçütüydü.')}
+    else{pill('rrp','Girilen değerlerde acil ölçüt yok',C.ok)}
+    if(aE2&&hits.length)li('rxR','K > 5,5 mmol/L','Tıbbi tedaviye rağmen sürerse AKIKI ölçütüdür.');
+    if(!hits.length)li('rxR','Ölçüt yokken erken RRT yarar sağlamadı','AKIKI ve STARRT-AKI’de erken başlama 60–90 gün mortaliteyi azaltmadı; STARRT-AKI’de 90. günde RRT bağımlılığı (%10,4’e karşı %6,0) ve yan etki daha sıktı. AKIKI’de bekleyen kolun %49’u hiç RRT almadı.');
+    li('rxR','Ölçüt olmadan uzun erteleme','AKIKI 2: oligüri > 72 saat veya BUN > 112 mg/dL olan hastada RRT’yi BUN 140 mg/dL’ye ya da zorunlu endikasyona kadar daha da ertelemek fayda sağlamadı, 60. gün ölüm riski daha yüksekti (HR 1,65).');
+  }
+  ['tm','rrt','un','diu','sed','ovl'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

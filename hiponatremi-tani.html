@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hiponatremi Tanısı</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartları, sonra sonuç kartları */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 10px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.seg.wrapseg{flex-wrap:wrap}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub span{min-width:0}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sub b.w{white-space:normal;text-align:right;font-family:var(--font-body)}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+.warnbox a,.advice a,.note a{color:var(--accent);font-weight:600}
+.mk{font-weight:700}
+.mk.y{color:var(--ok)} .mk.n{color:var(--high)} .mk.u{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Hiponatremi Tanısı</h1>
+    <p>Avrupa kılavuzu (ESE/ESICM/ERBP 2014) algoritmasıyla neden ayırımı, SIADH ölçütleri, Furst oranı, düzeltme sınırları ve nedene yönelik tedavi</p>
+  </header>
+
+  <section class="card">
+    <h2>Serum</h2>
+    <div class="grid">
+      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="124"></div>
+      <div class="field"><label for="glu">Glukoz <span>mg/dL</span></label><input id="glu" type="number" inputmode="decimal" step="any" value="110"></div>
+      <div class="field"><label for="osm">Ölçülen osmolalite <span>mOsm/kg</span></label><input id="osm" type="number" inputmode="decimal" step="any" value="258" placeholder="yoksa hesaplanır"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="60"></div>
+      <div class="field"><label for="ua">Ürik asit <span>mg/dL, isteğe bağlı</span></label><input id="ua" type="number" inputmode="decimal" step="any" value="3.1"></div>
+      <div class="field"><label for="ure">Üre <span>mg/dL, isteğe bağlı</span></label><input id="ure" type="number" inputmode="decimal" step="any" value="18"></div>
+    </div>
+    <p class="note">Osmolalite boş bırakılırsa efektif osmolalite hesaplanır (2 × Na + glukoz / 18). Kılavuz ölçülen osmolaliteyi esas alır. Üre değil BUN biliniyorsa: üre = BUN × 2,14.</p>
+  </section>
+
+  <section class="card">
+    <h2>İdrar (spot, tedaviden önce)</h2>
+    <div class="grid">
+      <div class="field"><label for="uosm">Osmolalite <span>mOsm/kg</span></label><input id="uosm" type="number" inputmode="decimal" step="any" value="480"></div>
+      <div class="field"><label for="una">Sodyum <span>mmol/L</span></label><input id="una" type="number" inputmode="decimal" step="any" value="62"></div>
+      <div class="field"><label for="uk">Potasyum <span>mmol/L</span></label><input id="uk" type="number" inputmode="decimal" step="any" value="28"></div>
+      <div class="field"><label for="feua">FE ürat <span>%, isteğe bağlı</span></label><input id="feua" type="number" inputmode="decimal" step="any" value="14"></div>
+      <div class="field"><label for="uvol">24 saat idrar <span>mL, isteğe bağlı</span></label><input id="uvol" type="number" inputmode="decimal" step="any" value="" placeholder="biliniyorsa"></div>
+    </div>
+    <p class="note">FE ürat = (idrar ürik asit × serum kreatinin) / (serum ürik asit × idrar kreatinin) × 100.</p>
+  </section>
+
+  <section class="card">
+    <h2>Klinik</h2>
+    <span class="lbl">Klinik volüm durumu</span>
+    <div class="seg wrapseg"><button type="button" data-g="vol" data-v="hypo" aria-pressed="false">Hipovolemik</button><button type="button" data-g="vol" data-v="eu" aria-pressed="true">Övolemik</button><button type="button" data-g="vol" data-v="hyper" aria-pressed="false">Hipervolemik</button></div>
+    <span class="lbl">Başlangıç</span>
+    <div class="seg wrapseg"><button type="button" data-g="dur" data-v="a" aria-pressed="false">&lt; 48 saat (belgeli)</button><button type="button" data-g="dur" data-v="c" aria-pressed="true">≥ 48 saat / bilinmiyor</button></div>
+    <span class="lbl">Belirtiler</span>
+    <div class="seg wrapseg"><button type="button" data-g="sym" data-v="0" aria-pressed="true">Yok / hafif</button><button type="button" data-g="sym" data-v="1" aria-pressed="false">Orta şiddetli</button><button type="button" data-g="sym" data-v="2" aria-pressed="false">Ağır</button></div>
+    <p class="note">Orta şiddetli: kusmasız bulantı, konfüzyon, baş ağrısı. Ağır: kusma, kardiyorespiratuvar sıkıntı, anormal ve derin uykuya eğilim, nöbet, koma (GKS ≤ 8).</p>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="diu"><span class="txt">Son dönemde diüretik kullanımı<small>Tiyazid, indapamid, kıvrım diüretiği, amilorid</small></span></label>
+      <label class="item"><input type="checkbox" id="ckd"><span class="txt">Böbrek hastalığı / böbrek yetmezliği</span></label>
+      <label class="item"><input type="checkbox" id="tsh" checked><span class="txt">Tiroid işlevi bakıldı, normal<small>TSH ve serbest T4</small></span></label>
+      <label class="item"><input type="checkbox" id="cort"><span class="txt">Adrenal yetmezlik dışlandı<small>Sabah kortizolü yeterli veya ACTH uyarı testi normal</small></span></label>
+    </div>
+    <span class="lbl">ODS risk etkenleri</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="rk"><span class="txt">Hipokalemi</span></label>
+      <label class="item"><input type="checkbox" id="ralc"><span class="txt">Alkol kullanım bozukluğu</span></label>
+      <label class="item"><input type="checkbox" id="rmal"><span class="txt">Malnütrisyon</span></label>
+      <label class="item"><input type="checkbox" id="rliv"><span class="txt">İleri karaciğer hastalığı</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Sınıflama</h2>
+    <span class="lbl">Serum sodyumu</span>
+    <div class="res"><span class="num" id="nao">–</span><span class="of">mmol/L</span><span class="pill" id="sevp"></span></div>
+    <div class="sub"><span>Glukoza göre düzeltilmiş Na</span><b id="nac">–</b></div>
+    <div class="sub"><span id="osml">Osmolalite</span><b id="osmo">–</b></div>
+    <div class="sub"><span>Süre</span><b id="duro">–</b></div>
+    <div class="sub"><span>Belirtiler</span><b id="symo">–</b></div>
+    <p class="warnbox" id="emerg" hidden></p>
+    <p class="note">ESE 2014 biyokimyasal şiddet (iyon seçici elektrotla): hafif 130–135, orta 125–129, derin &lt; 125 mmol/L. Akut: &lt; 48 saattir var olduğu belgelenmiş; sınıflanamıyorsa kronik kabul edilir. Glukoz düzeltmesi (Hillier): glukozun 100 mg/dL üzerindeki her 100 mg/dL’si için Na’ya 2,4 mmol/L eklenir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Tanı algoritması</h2>
+    <div class="res"><span class="pill" id="dxp"></span></div>
+    <ol class="rec" id="alg"></ol>
+    <h3>En olası nedenler</h3>
+    <ol class="rec" id="cause"></ol>
+    <p class="note">Algoritma böbrek hastalığında ve diüretik kullananlarda dikkatle yorumlanmalıdır. İdrar osmolalitesi ve sodyumu aynı örnekte, mümkünse tedaviden önce ölçülmelidir. Diüretik kullananlarda FE ürat &gt; %12 SIADH lehine en yararlı bulgudur.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>SIADH ölçütleri</h2>
+    <div class="res"><span class="num" id="siN">–</span><span class="of">/ 6 temel ölçüt</span><span class="pill" id="sip"></span></div>
+    <h3>Temel ölçütler</h3>
+    <div id="essl"></div>
+    <h3>Destekleyici ölçütler</h3>
+    <div id="supl"></div>
+    <ol class="rec" id="sirx"></ol>
+    <p class="note">Temel ölçütler (ESE 2014 Tablo 6): efektif serum osmolalitesi &lt; 275 mOsm/kg; düşük efektif osmolalitede idrar osmolalitesi &gt; 100 mOsm/kg; klinik övolemi; normal tuz ve su alımında idrar Na &gt; 30 mmol/L; adrenal, tiroid, hipofiz veya böbrek yetmezliği yok; yakın zamanda diüretik kullanımı yok. Burada girilmeyen destekleyici ölçütler: %0,9 NaCl infüzyonuyla düzelmeme, FE Na &gt; %0,5, FE üre &gt; %55, sıvı kısıtlamasıyla düzelme.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Sıvı kısıtlaması (Furst oranı)</h2>
+    <span class="lbl">(idrar Na + idrar K) / serum Na</span>
+    <div class="res"><span class="num" id="fu">–</span><span class="pill" id="fup"></span></div>
+    <div class="sub"><span>Önerilen günlük toplam sıvı</span><b class="w" id="fua">–</b></div>
+    <div class="sub" id="s500" hidden><span>ABD 2013: idrar hacminin 500 mL altı</span><b id="fu500">–</b></div>
+    <div class="sub"><span>Kısıtlamaya yanıtsızlık öngördürücüleri</span><b class="w" id="fpr">–</b></div>
+    <ol class="rec" id="frx"></ol>
+    <p class="note">Furst oranı &lt; 0,5: ≤ 1 L/gün; 0,5–1: ≤ 500 mL/gün; &gt; 1: kısıtlama tek başına yeterince etkili olmaz. Yanıtsızlık öngördürücüleri (ABD 2013): idrar osmolalitesi &gt; 500 mOsm/kg, Furst oranı &gt; 1, 24 saatlik idrar &lt; 1500 mL. Kısıtlama yiyecek dışındaki tüm sıvıları kapsar; en çok çalışılan sınır 1000 mL/gün’dür.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Düzeltme sınırları</h2>
+    <div class="res"><span class="pill" id="odsp"></span></div>
+    <table class="t">
+      <thead><tr><th>Dönem</th><th>Artış sınırı</th><th>Na en çok</th></tr></thead>
+      <tbody>
+        <tr><td>İlk 24 saat <small id="l1s">ESE: 10 mmol/L</small></td><td id="l1">–</td><td id="l1n">–</td></tr>
+        <tr><td>Sonraki her 24 saat <small>ESE: 8 mmol/L</small></td><td id="l2">–</td><td id="l2n">–</td></tr>
+      </tbody>
+    </table>
+    <ol class="rec" id="lim"></ol>
+    <p class="note">ESE 2014: orta veya derin kronik hiponatremide ilk 24 saatte &gt; 10, sonraki her 24 saatte &gt; 8 mmol/L artıştan kaçının. ABD 2013: hedef 4–8 mmol/L/gün, sınır 10–12; ODS riski yüksekse hedef 4–6, sınır 8 mmol/L/gün. Yüksek risk: Na ≤ 105 mmol/L, hipokalemi, alkolizm, malnütrisyon, ileri karaciğer hastalığı.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Nedene yönelik tedavi</h2>
+    <div class="res"><span class="pill" id="rxp"></span></div>
+    <ol class="rec" id="rx"></ol>
+    <p class="note">Ağır veya orta şiddetli belirtili hiponatremide %3 NaCl için <a href="acil-tedavi.html">Acil Tedavi Rehberi</a>, sodyum açığı ve infüzyonun Na’ya etkisi için <a href="sodyum.html">Sodyum ve Sıvı Açığı</a> sayfasını kullanın.</p>
+  </section>
+
+  <p class="note">Kaynaklar: Spasovski G ve ark. ESE/ESICM/ERBP hiponatremi tanı ve tedavi kılavuzu, Eur J Endocrinol 2014;170:G1–47 (şiddet ve süre sınıflaması, belirti şiddeti, glukoz düzeltmesi, &lt; 275 mOsm/kg, idrar osmolalitesi ≤ 100, idrar Na ≤ 30, tanı algoritması ve neden listeleri, SIADH ölçütleri Tablo 6, FE ürat &gt; %12, 10/8 mmol/L sınırları, aşırı düzeltmede 10 mL/kg elektrolitsiz su, üre 0,25–0,50 g/kg/gün, kıvrım diüretiği + oral NaCl, lityum/demeklosiklin/vaptan önerilmez, hipovolemide 0,5–1,0 mL/kg/saat izotonik sıvı); Verbalis JG ve ark. ABD uzman paneli, Am J Med 2013;126:S1–42 (4–8 ve 4–6 mmol/L hedefleri, 10–12 ve 8 mmol/L sınırları, ODS risk etkenleri, idrar hacminin 500 mL altında kısıtlama, kısıtlamaya yanıtsızlık öngördürücüleri, üre 15–60 g/gün); Furst H ve ark. Am J Med Sci 2000;319:240–4 (idrar/plazma elektrolit oranı); Warren AM ve ark. Endocr Rev 2023;44:819–61 (iki kılavuzun karşılaştırması, kortizol eşikleri, ilaç listesi, EFFUSE-FLUID ve empagliflozin çalışmaları, tolvaptan güvenlik önerileri); Samsca (tolvaptan) KÜB, Nisan 2025 (endikasyon, 15/7,5 mg başlangıç, en çok 60 mg, hastanede başlama, izlem ve kesme eşikleri, kontrendikasyonlar). Kılavuzun 2024’te yayımlanmış resmî bir güncellemesi yoktur. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var f2=function(x){return x.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function row(box,label,state,val){
+    var d=document.createElement('div');d.className='sub';var s=document.createElement('span');s.textContent=label;
+    var b=document.createElement('b');b.className='w';var m=document.createElement('span');
+    m.className='mk '+(state===true?'y':state===false?'n':'u');m.textContent=state===true?'✓ ':state===false?'✗ ':'? ';
+    b.appendChild(m);b.appendChild(document.createTextNode(val));d.appendChild(s);d.appendChild(b);$(box).appendChild(d)}
+  var ck=function(id){return $(id).checked};
+
+  function calc(){
+    var na=v('na'),glu=v('glu'),mosm=v('osm'),wt=v('wt'),ua=v('ua'),ure=v('ure');
+    var uosm=v('uosm'),una=v('una'),uk=v('uk'),feua=v('feua'),uvol=v('uvol');
+    var vol=segVal('vol'),acute=segVal('dur')==='a',sym=+segVal('sym');
+    var diu=ck('diu'),ckd=ck('ckd'),tsh=ck('tsh'),cort=ck('cort');
+    var risk=[];if(ck('rk'))risk.push('hipokalemi');if(ck('ralc'))risk.push('alkol');if(ck('rmal'))risk.push('malnütrisyon');if(ck('rliv'))risk.push('ileri karaciğer hastalığı');
+    if(na!==null&&na<=105)risk.unshift('Na ≤ 105');
+    var hr=risk.length>0;
+    ['alg','cause','essl','supl','sirx','frx','lim','rx'].forEach(function(id){$(id).innerHTML=''});
+
+    // 1) Sınıflama
+    var nac=null,sev=null;
+    if(na===null){$('nao').textContent='–';pill('sevp','','');}
+    else{
+      $('nao').textContent=fm(na);
+      if(na>=135){sev='none';pill('sevp','Hiponatremi yok (≥ 135)','var(--ok)')}
+      else if(na>=130){sev='mild';pill('sevp','Hafif (130–135)','var(--warn)')}
+      else if(na>=125){sev='mod';pill('sevp','Orta (125–129)','var(--high)')}
+      else{sev='prof';pill('sevp','Derin (< 125)','var(--high)')}
+    }
+    if(na!==null&&glu!==null){nac=glu>100?na+2.4*(glu-100)/100:na;$('nac').textContent=glu>100?fm(nac)+' mmol/L':'gerekmez (glukoz ≤ 100)'}
+    else $('nac').textContent='–';
+    var osm=mosm,calcO=false;
+    if(osm===null&&na!==null){osm=2*na+(glu!==null?glu/18:0);calcO=true}
+    $('osml').textContent=calcO?'Hesaplanan efektif osmolalite':'Ölçülen osmolalite';
+    $('osmo').textContent=osm===null?'–':fm(osm,0)+' mOsm/kg';
+    $('duro').textContent=acute?'akut (< 48 saat)':'kronik / bilinmiyor';
+    $('symo').textContent=['yok / hafif','orta şiddetli','ağır'][sym];
+    var em=$('emerg');em.hidden=true;em.innerHTML='';
+    if(sev&&sev!=='none'&&(sym>0||acute)){
+      em.hidden=false;
+      em.appendChild(document.createTextNode(sym===2?'Ağır belirtiler: tanısal ayırımı beklemeden hemen %3 NaCl bolusu gerekir. ':sym===1?'Orta şiddetli belirtiler: %3 NaCl tek doz ve neden araştırması. ':'Akut hiponatremi: belirgin Na düşüşü varsa %3 NaCl düşünülür. '));
+      var a=document.createElement('a');a.href='acil-tedavi.html';a.textContent='Acil Tedavi Rehberi →';em.appendChild(a);
+    }
+
+    // 2) Algoritma
+    var hypot=null,cat=null,causes=[];
+    if(sev==='none'){pill('dxp','Na ≥ 135: algoritma uygulanmaz','var(--ok)')}
+    else if(osm===null){pill('dxp','Serum Na girin','var(--muted)')}
+    else{
+      hypot=osm<275;
+      if(!hypot){
+        li('alg','Tonisite: '+fm(osm,0)+' mOsm/kg'+(calcO?' (hesaplanan)':''),'≥ 275 mOsm/kg: hipotonik değil. Hiperglisemiyi ve diğer hipotonik olmayan nedenleri araştırın.'+(nac!==null&&nac>=135&&glu>100?' Glukoza göre düzeltilmiş Na '+fm(nac)+' mmol/L: hiperglisemiye bağlı.':''));
+        cat='nonhypo';pill('dxp','Hipotonik olmayan hiponatremi','var(--warn)');
+        causes=[['Hiperglisemi (translokasyonel)','Glukoz düzeltmesiyle Na normale yaklaşıyorsa.'],['Mannitol veya başka ozmotik aktif madde','Ölçülen − hesaplanan osmolalite farkı (osmolar açık) artar.'],['Psödohiponatremi','Ağır hipertrigliseridemi veya paraproteinemi; dolaylı iyon seçici elektrot ölçümünde görülür, kan gazı cihazıyla (doğrudan) Na ölçün.'],['Yüksek üre','Üre ölçülen osmolaliteyi artırır ama efektif osmol değildir; böbrek yetmezliğinde hipotonik hiponatremi gizlenebilir.']];
+      }else{
+        li('alg','Tonisite: '+fm(osm,0)+' mOsm/kg'+(calcO?' (hesaplanan)':''),'< 275 mOsm/kg: hipotonik hiponatremi.'+(calcO?' Hesaplanan değer yol göstericidir; kesin karar için ölçülen osmolalite isteyin.':'')+(nac!==null&&nac>=135&&glu>100?' Ancak glukoza göre düzeltilmiş Na '+fm(nac)+' mmol/L: hiperglisemi katkısını ve ölçümleri doğrulayın.':''));
+        if(uosm===null){li('alg','İdrar osmolalitesi: veri yok','Algoritmanın devamı için idrar osmolalitesi gerekir.');pill('dxp','İdrar osmolalitesi gerekli','var(--muted)')}
+        else if(uosm<=100){
+          li('alg','İdrar osmolalitesi '+fm(uosm,0)+' ≤ 100 mOsm/kg','En yüksek düzeyde dilüe idrar: göreceli fazla su alımı.');
+          cat='water';pill('dxp','Göreceli fazla su alımı','var(--low)');
+          causes=[['Primer polidipsi',''],['Düşük solüt alımı','“Çay ve kraker” diyeti, yetersiz beslenme.'],['Bira potomanisi','']];
+        }else{
+          li('alg','İdrar osmolalitesi '+fm(uosm,0)+' > 100 mOsm/kg','Vazopressin etkisi sürüyor; idrar sodyumuna bakın.');
+          if(una===null){li('alg','İdrar sodyumu: veri yok','');pill('dxp','İdrar sodyumu gerekli','var(--muted)')}
+          else if(una<=30){
+            li('alg','İdrar Na '+fm(una)+' ≤ 30 mmol/L','Düşük efektif arteriyel volüm.'+(diu?' Diüretik etkisi geçtiyse (uzak diüretik) idrar Na düşük olabilir.':''));
+            if(vol==='hyper'){
+              li('alg','Hücre dışı sıvı artmış','Ödem, asit, efüzyon: düşük efektif dolaşım hacmi.');
+              cat='hyper';pill('dxp','Hipervolemik: düşük efektif volüm','var(--high)');
+              causes=[['Kalp yetmezliği',''],['Karaciğer sirozu',''],['Nefrotik sendrom','']];
+            }else{
+              li('alg','Hücre dışı sıvı azalmış'+(vol==='eu'?' (klinik olarak övolemik görünse de)':''),vol==='eu'?'Volüm muayenesinin duyarlılığı düşüktür; düşük idrar Na hafif hipovolemiyi düşündürür. Düşük solüt alımında da idrar Na düşük olabilir.':'');
+              cat='hypo';pill('dxp','Düşük efektif volüm (extrarenal kayıp)','var(--warn)');
+              causes=[['İshal ve kusma',''],['Üçüncü boşluğa kayıp','Pankreatit, ileus, yanık, kas hasarı.'],['Uzak (etkisi geçmiş) diüretik','']];
+            }
+          }else{
+            li('alg','İdrar Na '+fm(una)+' > 30 mmol/L','Hücre dışı sıvı durumunu ve diüretik kullanımını değerlendirin.');
+            if(diu||ckd){
+              li('alg',''+(diu&&ckd?'Diüretik ve böbrek hastalığı':diu?'Diüretik kullanımı':'Böbrek hastalığı')+' var','İdrar Na yorumlanamaz.'+(diu&&feua!==null?(feua>12?' FE ürat '+fm(feua)+' > %12: diüretiğe rağmen SIADH lehine.':' FE ürat '+fm(feua)+' ≤ %12: SIADH lehine bulgu yok.'):(diu?' FE ürat (> %12 SIADH lehine) yardımcı olabilir.':'')));
+              cat=diu&&feua!==null&&feua>12&&vol!=='hypo'?'siad':'diu';
+              pill('dxp',cat==='siad'?'SIADH olası (diüretik altında)':'Diüretik / böbrek hastalığı','var(--warn)');
+              causes=[];
+              if(diu)causes.push(['Diüretik','Tiyazid ve tiyazid benzeri diüretikler en sık nedenlerdendir; ilaçla ilişkiyi kayda geçin.']);
+              if(ckd)causes.push(['Böbrek hastalığı','Böbrek yetmezliğinde idrar Na ve osmolalitesi tanısal değerini yitirir.']);
+              causes.push(['Diğer tüm nedenler','SIADH, adrenal yetmezlik ve hipotiroidi birlikte bulunabilir; diüretiği kesip yeniden değerlendirin.']);
+            }else if(vol==='hypo'){
+              li('alg','Hücre dışı sıvı azalmış, diüretik yok','Böbrek yoluyla sodyum kaybı.');
+              cat='renalloss';pill('dxp','Hipovolemik: böbrek yoluyla kayıp','var(--warn)');
+              causes=[['Kusma','Metabolik alkalozda bikarbonatla birlikte Na atılır; idrar klorüne bakın (düşüktür).'],['Primer adrenal yetmezlik','Hiperkalemiyle birlikte olabilir.'],['Böbrek tuz kaybı',''],['Serebral tuz kaybı','Nadir; SIADH’den ayırımı volüm durumuna dayanır.'],['Gizli diüretik kullanımı','']];
+            }else if(vol==='eu'){
+              li('alg','Hücre dışı sıvı normal, diüretik yok','');
+              cat='siad';pill('dxp','Övolemik: SIADH ve benzerleri','var(--low)');
+              causes=[['SIADH','Temel ölçütler ve dışlanması gerekenler aşağıda.'],['Sekonder adrenal yetmezlik','Hipofiz hastalığı; hiperkalemi olmaz.'],['(Hipotiroidi)','Nadiren tek başına neden olur; ağır hipotiroidide düşünün.'],['Gizli diüretik kullanımı','']];
+            }else{
+              li('alg','Ödemli hasta, idrar Na > 30, diüretik/böbrek hastalığı işaretlenmedi','ESE algoritmasında bu dal yoktur. Ödemli hastada idrar Na genellikle düşüktür; yüksekse diüretik etkisini, böbrek hastalığını ve volüm değerlendirmesini yeniden gözden geçirin.');
+              cat='hyperhi';pill('dxp','Uyumsuz bulgular: yeniden değerlendirin','var(--warn)');
+              causes=[['Diüretik etkisi (işaretlenmemiş olabilir)',''],['Böbrek hastalığı',''],['SIADH + başka nedenle ödem','']];
+            }
+          }
+        }
+      }
+    }
+    if(!causes.length&&sev!=='none'&&osm!==null&&cat===null)li('cause','Eksik veri','Algoritmayı tamamlamak için idrar değerlerini girin.');
+    causes.forEach(function(c){li('cause',c[0],c[1])});
+    if(cat==='siad')li('cause','SIADH nedenleri (ayırım için)','Malignite (özellikle akciğer, nazofarinks, lenfoma); akciğer hastalığı (pnömoni, tüberküloz); SSS hastalığı (kanama, travma, kitle, enfeksiyon); geçici uyaranlar (ağrı, bulantı, ameliyat sonrası); ilaçlar (SSRI/SNRI, trisiklik, karbamazepin/okskarbazepin, valproat, lamotrijin, antipsikotikler, vinkristin, siklofosfamid, ifosfamid, metotreksat, desmopressin, oksitosin, MDMA); idiyopatik.');
+
+    // 3) SIADH ölçütleri
+    var e=[];
+    e.push(['Efektif osmolalite < 275 mOsm/kg',hypot===null?null:hypot,osm===null?'veri yok':fm(osm,0)+(calcO?' (hesaplanan)':'')]);
+    e.push(['İdrar osmolalitesi > 100 mOsm/kg',uosm===null?null:uosm>100,uosm===null?'veri yok':fm(uosm,0)]);
+    e.push(['Klinik övolemi',vol==='eu',{hypo:'hipovolemik',eu:'övolemik',hyper:'hipervolemik'}[vol]]);
+    e.push(['İdrar Na > 30 mmol/L',una===null?null:una>30,una===null?'veri yok':fm(una)]);
+    var endo=ckd?false:(tsh&&cort?true:null);
+    e.push(['Adrenal, tiroid, hipofiz, böbrek yetmezliği yok',endo,ckd?'böbrek hastalığı var':(tsh&&cort?'dışlandı':[!tsh?'tiroid':null,!cort?'adrenal':null].filter(Boolean).join(' ve ')+' bakılmadı')]);
+    e.push(['Yakın zamanda diüretik yok',!diu,diu?'diüretik var':'yok']);
+    var met=0,fail=0,unk=0;e.forEach(function(x){row('essl',x[0],x[1],x[2]);if(x[1]===true)met++;else if(x[1]===false)fail++;else unk++});
+    $('siN').textContent=met;
+    if(sev==='none'||na===null)pill('sip','','');
+    else if(met===6)pill('sip','Temel ölçütler karşılanıyor','var(--ok)');
+    else if(fail===0)pill('sip','Eksik değerlendirme var','var(--warn)');
+    else pill('sip','SIADH ölçütleri karşılanmıyor','var(--high)');
+    var s1=ua===null?null:ua<4, s2=ure===null?null:ure<21.6, s3=feua===null?null:feua>12;
+    row('supl','Ürik asit < 4 mg/dL',s1,ua===null?'veri yok':fm(ua));
+    row('supl','Üre < 21,6 mg/dL',s2,ure===null?'veri yok':fm(ure));
+    row('supl','FE ürat > %12',s3,feua===null?'veri yok':'%'+fm(feua));
+    if(sev!=='none'&&na!==null){
+      var todo=[];
+      if(!cort)todo.push('Adrenal yetmezlik: sabah kortizolü (< 140 nmol/L ≈ < 5 µg/dL yetmezliği düşündürür; > 300 nmol/L ≈ > 10,9 µg/dL bazı uzmanlarca dışlama eşiği), gerekirse ACTH uyarı testi. Klinik şüphede sonucu beklemeden hidrokortizon başlayın.');
+      if(!tsh)todo.push('Tiroid: TSH ve serbest T4 (sekonder hipotiroidiyi kaçırmamak için ikisi birlikte).');
+      if(ckd)todo.push('Böbrek yetmezliği SIADH tanısını dışlar; idrar parametreleri yorumlanamaz.');
+      if(diu)todo.push('Diüretik: mümkünse kesip yeniden değerlendirin; FE ürat > %12 diüretiğe rağmen SIADH’yi destekler.');
+      if(vol!=='eu')todo.push('Klinik övolemi yok: volüm durumunu yeniden değerlendirin; şüphede izotonik sıvıya yanıt (Na yükselirse hipovolemi) ayırıcıdır.');
+      if(uosm===null||una===null||mosm===null)todo.push('Eksik laboratuvar: '+[mosm===null?'ölçülen serum osmolalitesi':null,uosm===null?'idrar osmolalitesi':null,una===null?'idrar Na':null].filter(Boolean).join(', ')+'.');
+      todo.push('Glukoz ve lipid/protein ile hipotonik olmayan hiponatremiyi dışlayın; ilaç öyküsünü gözden geçirin.');
+      if(met===6||cat==='siad')todo.push('Neden araştırması: ilaçlar, akciğer grafisi; açıklanamayan SIADH’de toraks ve beyin BT (gerekirse batın-pelvis).');
+      li('sirx','Dışlanması gerekenler',todo.join(' '));
+    }
+
+    // 4) Furst
+    var fu=na!==null&&una!==null&&uk!==null&&na>0?(una+uk)/na:null;
+    var preds=[];
+    if(uosm!==null&&uosm>500)preds.push('U-osm > 500');
+    if(fu!==null&&fu>1)preds.push('Furst > 1');
+    if(uvol!==null&&uvol<1500)preds.push('idrar < 1500 mL');
+    $('fpr').textContent=preds.length?preds.join(', '):((uosm===null&&fu===null)?'veri yok':'yok');
+    $('s500').hidden=uvol===null;
+    if(uvol!==null)$('fu500').textContent=uvol>500?'≤ '+fm(uvol-500,0)+' mL/gün':'uygulanamaz';
+    if(fu===null){$('fu').textContent='–';pill('fup','','');$('fua').textContent='idrar Na, K ve serum Na gerekli'}
+    else{
+      $('fu').textContent=f2(fu);
+      if(fu<0.5){pill('fup','< 0,5','var(--ok)');$('fua').textContent='≤ 1 L/gün'}
+      else if(fu<=1){pill('fup','0,5–1','var(--warn)');$('fua').textContent='≤ 500 mL/gün'}
+      else{pill('fup','> 1','var(--high)');$('fua').textContent='kısıtlama tek başına yetersiz'}
+    }
+    if(cat==='hypo'||cat==='renalloss')li('frx','Hipovolemide sıvı kısıtlaması yapılmaz','Önce volüm açığını giderin (aşağıda).');
+    else if(fu!==null){
+      if(preds.length)li('frx','Sıvı kısıtlamasına yanıt olasılığı düşük ('+preds.join(', ')+')','Erken ikinci basamak tedaviyi düşünün (ABD 2013). Kısıtlamaya tek başına güvenmeyin.');
+      else li('frx','Sıvı kısıtlaması ilk basamak','Na’yı 24–48 saat izleyin; yanıtsızlıkta ikinci basamağa geçin.');
+      li('frx','Pratik noktalar','Kısıtlamayı ağızdan alınan tüm sıvılar ve IV sıvılar için uygulayın; efervesan veya suyla çözülen ilaçları tablet formuna çevirin. Dar (500 mL) kısıtlamaya uyum düşüktür.');
+    }
+
+    // 5) Sınırlar
+    var lim1=hr?8:10,lim2=8;
+    pill('odsp',hr?'Yüksek ODS riski: '+risk.join(', '):'Ortalama ODS riski',hr?'var(--high)':'var(--ok)');
+    $('l1s').textContent=hr?'yüksek riskte ABD: 8 mmol/L':'ESE: 10 mmol/L';
+    $('l1').textContent='≤ '+lim1+' mmol/L';$('l2').textContent='≤ '+lim2+' mmol/L';
+    $('l1n').textContent=na===null?'–':fm(na+lim1)+' mmol/L';$('l2n').textContent=na===null?'–':fm(na+lim1+lim2)+' (48. saat)';
+    if(sev==='mild')li('lim','Hafif hiponatremi','Sınırlar orta ve derin hiponatremi için tanımlanmıştır; yine de hızlı düzelmeden kaçının.');
+    li('lim','Hedef '+(hr?'4–6':'4–8')+' mmol/L/gün (ABD 2013)','Sınır hedef değildir. Belirtisiz kronik hastada sınıra yaklaşmak gereksizdir.');
+    li('lim','Aşırı düzelme riski yüksek durumlar','Geri dönüşümlü neden düzelince su diürezi başlar: tiyazid, SSRI veya desmopressinin kesilmesi, adrenal yetmezlikte glukokortikoid başlanması, düşük solüt alımında beslenme, hipovolemide volüm yerine konması. İdrar çıkışı artıp idrar dilüe hale gelirse Na’yı sık ölçün.');
+    li('lim','Sınır aşılırsa (ESE)','Aktif tedaviyi durdurun; uzmanla birlikte 1 saatte '+(wt?fm(10*wt,0)+' mL ('+'10 mL/kg)':'10 mL/kg')+' elektrolitsiz su (oral su veya %5 dekstroz IV), idrar çıkışı ve sıvı dengesi yakından izlenerek. Desmopressin 1–2 µg IV/SC eklenebilir; tolvaptan sonrası etkisiz kalabilir.');
+
+    // 6) Tedavi
+    var lo=wt?0.25*wt:null,hi=wt?0.5*wt:null;
+    if(sev==='none'||na===null){pill('rxp','','')}
+    else if(cat==='nonhypo'){pill('rxp','Altta yatan nedeni tedavi edin','var(--warn)');li('rx','Hiperglisemi veya ozmotik madde','Na’yı değil nedeni tedavi edin; hiperglisemi düzeldikçe Na yükselir. Hipotonik olmayan hiponatremide hipertonik salin ve sıvı kısıtlaması gereksizdir.')}
+    else if(cat==='water'){pill('rxp','Su alımını azaltın','var(--low)');
+      li('rx','Su alımını azaltın, solüt alımını düzeltin','Primer polidipside sıvı alımını sınırlayın; düşük solüt alımında ve bira potomanisinde protein ve tuz içeren beslenmeyi sağlayın.');
+      li('rx','Aşırı düzelme riski yüksek','İdrar zaten dilüedir; su alımı azalınca veya beslenme başlayınca Na hızla yükselebilir. Na’yı sık izleyin.')}
+    else if(cat==='hypo'||cat==='renalloss'){pill('rxp','Volüm açığını giderin','var(--warn)');
+      li('rx','IV %0,9 NaCl veya dengeli kristaloid 0,5–1,0 mL/kg/saat'+(wt?' = '+fm(0.5*wt,0)+'–'+fm(wt,0)+' mL/saat':''),'ESE 2014. Na’yı sık izleyin.');
+      li('rx','Volüm düzelince su diürezi başlar','Vazopressin uyarısı kalkınca idrar dilüe hale gelir ve Na hızla yükselir; sınırları izleyin.');
+      if(cat==='renalloss')li('rx','Nedeni tedavi edin','Kusmayı kontrol edin; primer adrenal yetmezlik şüphesinde sonucu beklemeden hidrokortizon; gizli diüretik kullanımını sorgulayın.');
+      if(diu)li('rx','Diüretiği kesin','Tiyazide bağlı hiponatremi yeniden maruziyette tekrarlar; ilaç yan etkisi olarak kaydedin.')}
+    else if(cat==='hyper'||cat==='hyperhi'){pill('rxp','Altta yatan hastalığı tedavi edin','var(--high)');
+      li('rx','Kalp yetmezliği, siroz veya nefrotik sendromu tedavi edin','Hipervolemik hiponatremi kötü prognoz göstergesidir; Na’ya yönelik özel tedavi yerine altta yatan hastalığın tedavisi esastır.');
+      li('rx','Sıvı kısıtlaması','Ek sıvı yükünü önlemek için.'+(fu!==null?' Furst oranına göre: '+$('fua').textContent+'.':''));
+      li('rx','Vaptan ve demeklosiklin','ESE 2014 hipervolemik hiponatremide önermez. ABD’de (FDA 2013) tolvaptan sirozda endikasyondan çıkarıldı ve 30 günle sınırlandı. AB’de tolvaptan yalnızca SIADH için onaylıdır.')}
+    else if(cat==='siad'||cat==='diu'){
+      pill('rxp',cat==='siad'?'SIADH: kısıtlama → ikinci basamak':'Diüretiği kesip yeniden değerlendirin','var(--low)');
+      if(cat==='diu'&&diu)li('rx','Diüretiği kesin','Tiyazide bağlı hiponatremi yeniden maruziyette tekrarlar; ilaç yan etkisi olarak kaydedin. Kesildikten sonra su diürezi Na’yı hızla yükseltebilir.');
+      li('rx','Nedeni tedavi edin','Sorumlu ilacı kesin; ağrı, bulantı, pnömoni gibi geçici uyaranları tedavi edin. Geri dönüşümlü neden düzelince Na ek tedavisiz yükselir.');
+      li('rx','1. basamak: sıvı kısıtlaması',(fu!==null?'Furst oranına göre: '+$('fua').textContent+'. ':'')+'Hastaların yaklaşık yarısı yanıt vermez.');
+      li('rx','2. basamak (ESE): üre 0,25–0,50 g/kg/gün'+(wt?' = '+fm(lo)+'–'+fm(hi)+' g/gün':''),'ABD 2013: 15–60 g/gün; sık kullanılan başlangıç 30 g/gün. Acı tadı meyve suyu veya şuruplu çözeltiyle maskelenir; bulantı ve tat bozukluğu sık. Serum üresi yaklaşık iki katına çıkar, bu böbrek işlev bozukluğu anlamına gelmez.');
+      li('rx','2. basamak (ESE, zayıf öneri): düşük doz kıvrım diüretiği + oral NaCl','EFFUSE-FLUID randomize çalışmasında furosemid 20–40 mg/gün ± NaCl 3 g/gün, tek başına sıvı kısıtlamasına üstün bulunmadı; AKI ve hipokalemi daha sıktı.');
+      li('rx','Tolvaptan: dikkat','ESE 2014 orta ve derin hiponatremide önermez (aşırı hızlı düzelme riski). KÜB: SIADH’de hastanede başlanır; 15 mg/gün, kanser, çok düşük Na, diüretik veya Na takviyesi alanlarda 7,5 mg; en çok 60 mg/gün. Na ilk 4–6 saatte, ilk 1–2 gün en az 6 saatte bir ölçülür. İlk 6 saatte > 6 veya 6–12 saatte > 8 mmol/L artış aşırı hızlı düzelme uyarısıdır; 24 saatte ≥ 12 veya 48 saatte ≥ 18 mmol/L artışta kesilir. Hasta serbestçe su içebilmeli; sıvı kısıtlamasıyla birlikte verilmez. Kontrendike: hipovolemi, anüri, susama hissi yokluğu, gebelik, emzirme. CYP3A4 inhibitörleri ve greyfurt suyu düzeyi artırır.');
+      li('rx','Önerilmeyenler (ESE 2014)','Lityum ve demeklosiklin.');
+      li('rx','Kılavuz dışı kanıt: empagliflozin 25 mg/gün','Randomize çalışmada 1000 mL kısıtlamaya eklenince 4 günde Na artışı 10’a karşı 7 mmol/L; henüz kılavuz önerisi değildir.');
+    }else pill('rxp','Algoritmayı tamamlayın','var(--muted)');
+    if(!cort&&sev&&sev!=='none'&&(cat==='siad'||cat==='renalloss'||cat==='diu'))li('rx','Adrenal yetmezlik dışlanmadı','Klinik şüphe varsa kortizol ve ACTH için kan alıp beklemeden hidrokortizon başlayın; glukokortikoid sonrası su diürezi ile aşırı düzelme riski yüksektir.');
+  }
+  ['vol','dur','sym'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

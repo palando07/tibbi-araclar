@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Anemi Yaklaşımı</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.items .item.dis{opacity:.5}
+.sxseg button{padding:9px 6px;font-size:.88rem;line-height:1.25}
+.sub b{white-space:normal;text-align:right;max-width:62%}
+a.lnk{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Anemi Yaklaşımı</h1>
+    <p>Anemi tanısı ve şiddeti (WHO 2024), MCV ve retikülosit indeksine göre sınıflama, demir eksikliği tanımları, talasemi ipucu, B12/folat ve hemoliz paneli</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <span class="lbl">Cinsiyet ve menopoz durumu</span>
+    <div class="seg sxseg"><button type="button" data-g="sx" data-v="m" aria-pressed="false">Erkek</button><button type="button" data-g="sx" data-v="pre" aria-pressed="false">Kadın premenopoz</button><button type="button" data-g="sx" data-v="post" aria-pressed="true">Kadın postmenopoz</button></div>
+    <div class="items">
+      <label class="item" id="w-preg"><input type="checkbox" id="preg"><span class="txt">Gebelik<small>WHO gebelik eşikleri kullanılır</small></span></label>
+      <label class="item"><input type="checkbox" id="inf"><span class="txt">İnflamasyon / enfeksiyon / aktif kronik hastalık<small>CRP &gt; 5 mg/L ise otomatik kabul edilir</small></span></label>
+      <label class="item"><input type="checkbox" id="ckd"><span class="txt">Kronik böbrek hastalığı (diyaliz dışı veya PD)<small>KDIGO 2026 demir eşikleri</small></span></label>
+      <label class="item"><input type="checkbox" id="hd"><span class="txt">Hemodiyaliz<small>KDIGO 2026 demir eşikleri</small></span></label>
+      <label class="item"><input type="checkbox" id="hf"><span class="txt">Kalp yetmezliği<small>ESC demir eksikliği tanımı</small></span></label>
+    </div>
+    <div id="w-tri" hidden>
+      <span class="lbl">Trimester</span>
+      <div class="seg"><button type="button" data-g="tri" data-v="1" aria-pressed="true">1.</button><button type="button" data-g="tri" data-v="2" aria-pressed="false">2.</button><button type="button" data-g="tri" data-v="3" aria-pressed="false">3.</button></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Tam kan sayımı</h2>
+    <div class="grid">
+      <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" type="number" inputmode="decimal" step="any" value="9.8"></div>
+      <div class="field"><label for="hct">Hematokrit <span>%</span></label><input id="hct" type="number" inputmode="decimal" step="any" value="31"></div>
+      <div class="field"><label for="mcv">MCV <span>fL</span></label><input id="mcv" type="number" inputmode="decimal" step="any" value="72"></div>
+      <div class="field"><label for="rbc">Eritrosit <span>10⁶/µL</span></label><input id="rbc" type="number" inputmode="decimal" step="any" value="4.1"></div>
+      <div class="field"><label for="rdw">RDW <span>%</span></label><input id="rdw" type="number" inputmode="decimal" step="any" value="17.2"></div>
+      <div class="field"><label for="rdwu">RDW üst sınırı <span>% (lab.)</span></label><input id="rdwu" type="number" inputmode="decimal" step="any" value="14.5"></div>
+      <div class="field"><label for="ret">Retikülosit <span>%</span></label><input id="ret" type="number" inputmode="decimal" step="any" value="1.2"></div>
+    </div>
+    <p class="note">Eritrosit sayısı yalnız Mentzer indeksi için; 10⁶/µL = 10¹²/L. RDW üst sınırını kendi laboratuvarınıza göre değiştirin.</p>
+  </section>
+
+  <section class="card">
+    <h2>Demir, B12, folat</h2>
+    <div class="grid">
+      <div class="field"><label for="fer">Ferritin <span>ng/mL</span></label><input id="fer" type="number" inputmode="decimal" step="any" value="8"></div>
+      <div class="field"><label for="ts">TSAT <span>%</span></label><input id="ts" type="number" inputmode="decimal" step="any" value="6"></div>
+      <div class="field"><label for="crp">CRP <span>mg/L</span></label><input id="crp" type="number" inputmode="decimal" step="any" value="3"></div>
+      <div class="field"><label for="b12">B12 <span>pg/mL</span></label><input id="b12" type="number" inputmode="decimal" step="any" value="410"></div>
+      <div class="field"><label for="fol">Folat <span>ng/mL</span></label><input id="fol" type="number" inputmode="decimal" step="any" value="8.5"></div>
+    </div>
+    <p class="note">ng/mL = µg/L. B12: pg/mL = ng/L (pmol/L ÷ 0,738). Folat: ng/mL × 2,266 = nmol/L. CRP mg/dL ise × 10.</p>
+  </section>
+
+  <section class="card">
+    <h2>Hemoliz (isteğe bağlı)</h2>
+    <div class="grid">
+      <div class="field"><label for="ldh">LDH <span>U/L</span></label><input id="ldh" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="ldhu">LDH üst sınırı <span>U/L</span></label><input id="ldhu" type="number" inputmode="decimal" step="any" value="250"></div>
+      <div class="field"><label for="ib">İndirekt bilirubin <span>mg/dL</span></label><input id="ib" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="ibu">İnd. bilirubin üst sınırı <span>mg/dL</span></label><input id="ibu" type="number" inputmode="decimal" step="any" value="0.9"></div>
+      <div class="field"><label for="hp">Haptoglobin <span>mg/dL</span></label><input id="hp" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+    </div>
+    <p class="note">Üst sınırları kendi laboratuvarınıza göre girin.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Anemi ve sınıflama</h2>
+    <div class="res"><span class="num" id="hbo">–</span><span class="of">g/dL</span><span class="pill" id="sevp"></span></div>
+    <div class="sub"><span>Anemi eşiği (WHO 2024)</span><b id="thr">–</b></div>
+    <div class="sub"><span>Şiddet aralıkları</span><b id="sevr">–</b></div>
+    <div class="sub"><span>MCV</span><b id="mcvo">–</b></div>
+    <div class="sub"><span>RDW</span><b id="rdwo">–</b></div>
+    <div class="sub"><span>Düzeltilmiş retikülosit</span><b id="cro">–</b></div>
+    <div class="sub"><span>Retikülosit üretim indeksi</span><b id="rpio">–</b></div>
+    <div class="res"><span class="pill" id="clsp"></span></div>
+    <p class="note">Düzeltilmiş retikülosit = retikülosit % × (Hct ÷ 45). RPI = düzeltilmiş retikülosit ÷ olgunlaşma süresi (Hct ≥ 36: 1,0; 26–35: 1,5; 16–25: 2,0; ≤ 15: 2,5 gün). RPI &lt; 2 yetersiz kemik iliği yanıtı (hipoproliferatif), &gt; 3 uygun yanıt (kanama veya hemoliz). MCV &lt; 80 / 80–100 / &gt; 100 fL; referans aralığı laboratuvara göre değişir. WHO 2024 eşikleri 15–65 yaş içindir; 65 yaş üstü için ayrı eşik verilmez. Yükseklik ve sigara için WHO düzeltme önerir (bu araçta uygulanmaz).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Olası nedenler ve sonraki testler</h2>
+    <ol class="rec" id="rxC"></ol>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Demir durumu</h2>
+    <div class="res"><span class="pill" id="irp"></span></div>
+    <div class="sub"><span>İnflamasyon (CRP &gt; 5 mg/L veya klinik)</span><b id="info">–</b></div>
+    <div class="sub"><span>Ferritin &lt; 15: depolar boş (BSG)</span><b id="f15">–</b></div>
+    <div class="sub"><span>Ferritin &lt; 45: anemide demir eksikliği (AGA)</span><b id="f45">–</b></div>
+    <div class="sub" id="s70"><span>İnflamasyonda ferritin &lt; 70 (WHO 2020)</span><b id="f70">–</b></div>
+    <div class="sub"><span>TSAT &lt; %20: demir kısıtlı eritropoez</span><b id="t20">–</b></div>
+    <div class="sub" id="shf" hidden><span>KY: ferritin &lt; 100 veya 100–299 + TSAT &lt; %20</span><b id="hfo">–</b></div>
+    <div class="sub" id="sckd" hidden><span>KBH: ferritin &lt; 100 + TSAT &lt; %40 veya 100–300 + TSAT &lt; %25</span><b id="ckdo">–</b></div>
+    <div class="sub" id="shd" hidden><span>Hemodiyaliz: ferritin ≤ 500 + TSAT ≤ %30</span><b id="hdo">–</b></div>
+    <ol class="rec" id="rxI"></ol>
+    <p class="note">Demir dozu ve preparat seçimi için <a class="lnk" href="iv-demir.html">IV demir dozu</a> sayfasını kullanın. Ferritin akut faz reaktanıdır; inflamasyonda normal değer demir eksikliğini dışlamaz. Ferritin &gt; 150 ng/mL ile mutlak demir eksikliği inflamasyonda bile olası değildir (BSG). Oral demirle 2 haftada Hb’de ≥ 1 g/dL artış, demir çalışmaları belirsiz olsa da mutlak demir eksikliğini kuvvetle düşündürür (BSG).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Talasemi taşıyıcılığı ipucu</h2>
+    <div class="res"><span class="num" id="mzo">–</span><span class="of">Mentzer (MCV ÷ eritrosit)</span><span class="pill" id="mzp"></span></div>
+    <p class="advice" id="mza"></p>
+    <p class="note">Mentzer 1973: &lt; 13 talasemi taşıyıcılığını, &gt; 13 demir eksikliğini düşündürür. Tarama ipucudur, tanı koydurmaz: iki durum birlikte olabilir. Mikrositoz ve normal demir çalışmasında Hb elektroforezi/HPLC isteyin (BSG). HbA2 &gt; %3,5 beta talasemi taşıyıcılığı; demir eksikliği ve alfa talasemi HbA2’yi düşürerek taşıyıcılığı maskeleyebilir (Denic 2013). Alfa talasemi taşıyıcılığında HbA2 normaldir; tanı DNA analiziyle konur.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>B12 ve folat</h2>
+    <div class="sub"><span>B12</span><b id="b12o">–</b></div>
+    <div class="sub"><span>Folat</span><b id="folo">–</b></div>
+    <ol class="rec" id="rxB"></ol>
+    <p class="note">B12 (NICE NG239, 2024): &lt; 180 pg/mL (133 pmol/L) eksiklik doğrulanmış; 180–350 pg/mL (133–258 pmol/L) belirsiz, olası eksiklik; &gt; 350 pg/mL eksiklik olası değil. Aktif B12 (holotranskobalamin): &lt; 25 / 25–70 / &gt; 70 pmol/L. Laboratuvarınızın eşikleri farklıysa onları kullanın. Folat: &lt; 3 ng/mL (7 nmol/L) eksiklik; yaklaşık 3–4,5 ng/mL (7–10 nmol/L) belirsiz bölge (BSH 2014).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Hemoliz paneli</h2>
+    <div class="res"><span class="pill" id="hmp"></span></div>
+    <div class="sub"><span>Retikülosit yanıtı (RPI &gt; 3)</span><b id="hm1">–</b></div>
+    <div class="sub"><span>LDH &gt; üst sınır</span><b id="hm2">–</b></div>
+    <div class="sub"><span>İndirekt bilirubin &gt; üst sınır</span><b id="hm3">–</b></div>
+    <div class="sub"><span>Haptoglobin ≤ 25 mg/dL</span><b id="hm4">–</b></div>
+    <ol class="rec" id="rxH"></ol>
+    <p class="note">Haptoglobin ≤ 25 mg/dL hemolizde duyarlılık %83, özgüllük %96 (Marchand 1980). Haptoglobin akut faz reaktanıdır; inflamasyonda hemolize rağmen normal çıkabilir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Kırmızı bayraklar</h2>
+    <ol class="rec" id="rxR"></ol>
+  </section>
+
+  <p class="note">Kaynaklar: WHO. Guideline on haemoglobin cutoffs to define anaemia in individuals and populations, 2024 (anemi eşikleri ve şiddet aralıkları, gebelik trimester eşikleri, 15–65 yaş); WHO guideline on use of ferritin concentrations to assess iron status, 2020 (inflamasyonda erişkinde ferritin &lt; 70 µg/L, inflamasyon CRP &gt; 5 mg/L); Snook J ve ark. BSG 2021 demir eksikliği anemisi rehberi, Gut 2021;70:2030–51 (ferritin &lt; 15 ve &lt; 30, 45 eşiği özgüllük 0,92, &gt; 150 ile mutlak eksiklik olası değil, TSAT &lt; %20, 2 haftada ≥ 10 g/L Hb yanıtı, erkek ve postmenopozal kadında gastroskopi + kolonoskopi, çölyak serolojisi, idrar tetkiki, premenopozal kadın ve genç erkek, normal demirde Hb elektroforezi); Ko CW ve ark. AGA 2020 demir eksikliği anemisinin GİS değerlendirmesi rehberi, Gastroenterology 2020;159:1085–94 (ferritin &lt; 45 ng/mL, çift yönlü endoskopi, çölyak serolojisi, negatif endoskopiden sonra H. pylori); McDonagh TA ve ark. ESC 2021 kalp yetmezliği rehberi ve 2023 odaklı güncelleme (ferritin &lt; 100 veya 100–299 + TSAT &lt; %20); KDIGO 2026 KBH’de anemi rehberi, Kidney Int 2026;109:44 (anemi Hb &lt; 13 erkek / &lt; 12 kadın, diyaliz dışı ve PD’de ferritin &lt; 100 + TSAT &lt; %40 veya 100–300 + TSAT &lt; %25, ferritin &lt; 45 ağır eksiklik, ferritin &gt; 700 veya TSAT ≥ %40’ta demir verilmez, hemodiyalizde ferritin ≤ 500 + TSAT ≤ %30); NICE NG239 B12 eksikliği, 2024 (B12 ve aktif B12 eşikleri, belirsiz sonuçta MMA, bekleme sırasında replasman); Devalia V ve ark. BSH 2014 B12 ve folat rehberi, Br J Haematol 2014;166:496–513 (MMA ikinci basamak, homosistein daha az özgül, güçlü klinik bulguda tedavi geciktirilmez, serum folat ilk test); Hillman RS ve ark. Hematology in Clinical Practice (düzeltilmiş retikülosit ve RPI); Mentzer WC. Lancet 1973;1:882; Denic S ve ark. ISRN Hematol 2013:858294 (HbA2 &gt; %3,5, demir eksikliği HbA2’yi düşürür); Marchand A ve ark. JAMA 1980;243:1909–11 (haptoglobin ≤ 25 mg/dL). Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var f1=function(x){return x.toLocaleString('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:1})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  var yn=function(b){return b===null?'veri yok':b?'evet':'hayır'};
+  var C={ok:'var(--ok)',warn:'var(--warn)',high:'var(--high)',low:'var(--low)'};
+
+  // WHO 2024, g/L: [eşik, hafif alt sınır, orta alt sınır, ağır üst sınır (<)]
+  var WHO={m:[130,110,80,80],f:[120,110,80,80],t1:[110,100,70,70],t2:[105,95,70,70],t3:[110,100,70,70]};
+
+  function calc(){
+    ['rxC','rxI','rxB','rxH','rxR'].forEach(function(id){$(id).innerHTML=''});
+    var sx=segVal('sx'),male=sx==='m';
+    $('preg').disabled=male;if(male)$('preg').checked=false;
+    $('w-preg').classList.toggle('dis',male);
+    var preg=$('preg').checked;$('w-tri').hidden=!preg;
+    var tri=segVal('tri');
+    var hb=v('hb'),hct=v('hct'),mcv=v('mcv'),rbc=v('rbc'),rdw=v('rdw'),rdwu=v('rdwu'),ret=v('ret');
+    var fer=v('fer'),ts=v('ts'),crp=v('crp'),b12=v('b12'),fol=v('fol');
+    var ldh=v('ldh'),ldhu=v('ldhu'),ib=v('ib'),ibu=v('ibu'),hp=v('hp');
+    var ckd=$('ckd').checked,hd=$('hd').checked,hf=$('hf').checked;
+    var infl=$('inf').checked||(crp!==null&&crp>5);
+
+    // 1) Anemi ve şiddet
+    var key=preg?'t'+tri:(male?'m':'f'),w=WHO[key];
+    var grp=preg?tri+'. trimester gebe':(male?'erkek':'gebe olmayan kadın');
+    $('thr').textContent='< '+f1(w[0]/10)+' g/dL ('+grp+')';
+    $('sevr').textContent='hafif '+f1(w[1]/10)+'–'+f1((w[0]-1)/10)+' · orta '+f1(w[2]/10)+'–'+f1((w[1]-1)/10)+' · ağır < '+f1(w[3]/10);
+    var anem=null,sev=null;
+    if(hb===null){$('hbo').textContent='–';pill('sevp','','')}
+    else{$('hbo').textContent=f1(hb);var g=Math.round(hb*10);
+      if(g>=w[0]){anem=false;pill('sevp','Anemi yok','var(--ok)')}
+      else{anem=true;sev=g>=w[1]?'hafif':g>=w[2]?'orta':'ağır';
+        pill('sevp',sev.charAt(0).toLocaleUpperCase('tr-TR')+sev.slice(1)+' anemi',sev==='hafif'?C.warn:C.high)}}
+
+    var mc=mcv===null?null:mcv<80?'micro':mcv>100?'macro':'normo';
+    $('mcvo').textContent=mcv===null?'–':fm(mcv)+' fL · '+{micro:'mikrositer',normo:'normositer',macro:'makrositer'}[mc];
+    var rdwHi=rdw!==null&&rdwu!==null?rdw>rdwu:null;
+    $('rdwo').textContent=rdw===null?'–':'%'+fm(rdw)+(rdwHi===null?'':rdwHi?' · yüksek (anizositoz)':' · normal');
+
+    var cr=null,rpi=null,mat=null;
+    if(ret!==null&&hct!==null&&hct>0){cr=ret*hct/45;mat=hct>=36?1:hct>=26?1.5:hct>=16?2:2.5;rpi=cr/mat}
+    $('cro').textContent=cr===null?'–':'%'+fm(cr,2);
+    $('rpio').textContent=rpi===null?'–':fm(rpi,2)+' (olgunlaşma '+fm(mat)+' gün)';
+    var prol=rpi===null?null:rpi<2?'hypo':rpi>3?'hyper':'mid';
+    var clsTxt=[];
+    if(mc)clsTxt.push({micro:'Mikrositer',normo:'Normositer',macro:'Makrositer'}[mc]);
+    if(prol)clsTxt.push({hypo:'hipoproliferatif',hyper:'hiperproliferatif',mid:'sınırda retikülosit yanıtı'}[prol]);
+    pill('clsp',clsTxt.join(', '),anem?C.low:'var(--muted)');
+
+    // 2) Demir durumu
+    var f15=fer===null?null:fer<15,f45=fer===null?null:fer<45,f70=fer===null||!infl?null:fer<70,t20=ts===null?null:ts<20;
+    $('info').textContent=infl?'evet'+(crp!==null&&crp>5?' (CRP '+fm(crp)+' mg/L)':' (klinik)'):'hayır';
+    $('f15').textContent=yn(f15);$('f45').textContent=yn(f45);$('t20').textContent=yn(t20);
+    $('s70').hidden=!infl;$('f70').textContent=yn(f70);
+    $('shf').hidden=!hf;$('sckd').hidden=!ckd;$('shd').hidden=!hd;
+    var hfID=fer===null?null:(fer<100||(fer<300&&ts!==null&&ts<20));
+    if(fer!==null&&fer>=100&&fer<300&&ts===null)hfID=null;
+    $('hfo').textContent=yn(hfID);
+    var ckdID=fer===null||ts===null?(fer!==null&&fer<45?true:null):(fer<45||(fer<100&&ts<40)||(fer>=100&&fer<=300&&ts<25));
+    var ckdHold=(fer!==null&&fer>700)||(ts!==null&&ts>=40);
+    $('ckdo').textContent=ckdHold?'demir verilmez':yn(ckdID);
+    var hdID=fer===null||ts===null?null:(fer<=500&&ts<=30);
+    $('hdo').textContent=yn(hdID);
+
+    var idS=null; // 'abs' kesin, 'likely', 'mixed', 'ai', 'no'
+    if(fer!==null){
+      if(fer<15)idS='abs';
+      else if(fer<45)idS='likely';
+      else if(infl&&fer<70)idS='likely';
+      else if(infl&&fer<=150&&(t20||t20===null))idS='mixed';
+      else if(infl&&t20)idS='ai';
+      else if(fer>150&&t20)idS='ai';
+      else idS='no';
+    }
+    var baseS=idS;
+    if((hf&&hfID)||(ckd&&ckdID&&!ckdHold)||(hd&&hdID)){if(idS==='no'||idS==='ai'||idS==='mixed')idS='ctx'}
+    var irTxt={abs:['Mutlak demir eksikliği',C.high],likely:['Demir eksikliği olası',C.high],mixed:['Karma tablo olası (inflamasyon + demir eksikliği)',C.warn],ai:['Fonksiyonel demir eksikliği / inflamasyon anemisi',C.warn],ctx:['Hastalığa özgü tanıma göre demir eksikliği',C.warn],no:['Demir eksikliği desteklenmiyor',C.ok]};
+    if(idS)pill('irp',irTxt[idS][0],irTxt[idS][1]);else pill('irp','Ferritin girilmedi','var(--muted)');
+    var idPos=idS==='abs'||idS==='likely';
+    if(idS==='abs')li('rxI','Ferritin < 15 ng/mL','Depolar boş; demir eksikliği için özgüllük 0,99 (BSG). Nedeni araştırın ve demir replasmanına başlayın.');
+    else if(idS==='likely')li('rxI',fer<45?'Ferritin < 45 ng/mL':'İnflamasyonda ferritin < 70 ng/mL','AGA anemide 45 ng/mL eşiğini (15 yerine) önerir; özgüllük 0,92 (BSG). İnflamasyonda WHO 2020 erişkinde < 70 µg/L’yi demir eksikliği lehine kabul eder.');
+    else if(idS==='mixed'||(idS==='ctx'&&baseS==='mixed'))li('rxI','İnflamasyon + ferritin 70–150 ng/mL'+(t20?' + TSAT < %20':''),'Mutlak demir eksikliği inflamasyon anemisine eşlik ediyor olabilir. Retikülosit Hb, hipokrom eritrosit yüzdesi, sTfR/log ferritin oranı ve oral demir denemesine yanıt ayırımda yardımcıdır (BSG).');
+    else if(idS==='ai'||(idS==='ctx'&&baseS==='ai'))li('rxI','Ferritin yüksek/normal, TSAT < %20','Demir kısıtlı eritropoez: inflamasyon (kronik hastalık) anemisi düşünün. Altta yatan inflamatuvar hastalığı, KBH’yi ve maligniteyi araştırın. Ferritin > 150 ng/mL ile mutlak eksiklik olası değil (BSG).');
+    else if(idS==='no')li('rxI','Ferritin ve TSAT demir eksikliğini desteklemiyor',mc==='micro'?'Mikrositozda talasemi taşıyıcılığı için Hb elektroforezi; sideroblastik anemi ve inflamasyon anemisi diğer nedenler.':'Aneminin diğer nedenlerine bakın.');
+    if(idS==='ctx')li('rxI','Hastalığa özgü eşikler karşılandı','Genel eşiklerle mutlak eksiklik net değil, ancak '+[hf&&hfID?'KY (ESC)':'',ckd&&ckdID&&!ckdHold?'KBH (KDIGO)':'',hd&&hdID?'hemodiyaliz (KDIGO)':''].filter(Boolean).join(', ')+' tanımına göre demir tedavisi düşünülür.');
+    if(hf)li('rxI','Kalp yetmezliği (ESC)',hfID?'Demir eksikliği var. Semptomatik HFrEF/HFmrEF’de IV ferrik karboksimaltoz veya ferrik derizomaltoz: semptom ve yaşam kalitesi için sınıf I, KY hastaneye yatışını azaltmak için sınıf IIa (ESC 2023).':hfID===null?'TSAT girin (ferritin 100–299 ng/mL’de gerekir).':'ESC tanımına göre demir eksikliği yok. Tüm KY hastalarında ferritin ve TSAT ile tarama önerilir.');
+    if(ckd){if(ckdHold)li('rxI','KBH: demir vermeyin','Ferritin > 700 ng/mL veya TSAT ≥ %40 iken demir verilmez (KDIGO 2026). Aktif enfeksiyonda demiri askıya alın.');
+      else if(ckdID)li('rxI','KBH: demir tedavisi düşünülür',(fer!==null&&fer<45?'Ferritin < 45 ng/mL ağır demir eksikliğidir; demir başlayın. ':'')+'Diyaliz dışı ve PD hastasında eşik ferritin < 100 + TSAT < %40 veya ferritin 100–300 + TSAT < %25 (KDIGO 2026).');
+      else li('rxI','KBH: KDIGO demir eşikleri karşılanmadı',ckdID===null?'TSAT girin.':'KBH’de anemi tanımı Hb < 13 (erkek) / < 12 g/dL (kadın); demir dışı nedenleri ve ESA ihtiyacını değerlendirin.')}
+    if(hd)li('rxI','Hemodiyaliz',hdID?'Ferritin ≤ 500 ve TSAT ≤ %30: IV demir düşünülür (KDIGO 2026).':hdID===null?'Ferritin ve TSAT girin.':'Hemodiyalizde demir başlama eşiği (ferritin ≤ 500 ve TSAT ≤ %30) karşılanmadı.');
+    if(idPos||idS==='mixed'||idS==='ctx')li('rxI','Demir replasmanı',(hf&&hfID?'Kalp yetmezliğinde ESC IV demir önerir (yukarıda). ':'')+'Oral demir: günde 1 tablet ferröz sülfat, fumarat veya glukonat; tolere edilmezse gün aşırı (BSG). Oral demir uygun değilse, etkisizse veya hızlı düzeltme gerekiyorsa IV demir; doz için IV demir dozu sayfası. Hb normale döndükten sonra yaklaşık 3 ay sürdürün; ilk 4 haftada yanıtı izleyin.');
+
+    // 3) Talasemi
+    var mz=mcv!==null&&rbc!==null&&rbc>0?mcv/rbc:null;
+    if(mz===null){$('mzo').textContent='–';pill('mzp','','');$('mza').textContent='MCV ve eritrosit sayısını girin.'}
+    else{$('mzo').textContent=fm(mz);
+      if(mc!=='micro'){pill('mzp','Mikrositoz yok','var(--muted)');$('mza').textContent='Mentzer indeksi yalnız mikrositozda yorumlanır.'}
+      else if(mz<13){pill('mzp','< 13: talasemi taşıyıcılığı lehine',C.warn);$('mza').textContent='Hb elektroforezi/HPLC isteyin.'+(idPos?' Eşlik eden demir eksikliği HbA2’yi düşürebilir; gerekirse demir replasmanından sonra tekrarlayın.':'')}
+      else if(mz>13){pill('mzp','> 13: demir eksikliği lehine',C.low);$('mza').textContent=idS==='no'?'Demir çalışmaları normal: Mentzer’e rağmen Hb elektroforezi isteyin (BSG).':'Demir çalışmalarıyla birlikte değerlendirin.'}
+      else{pill('mzp','= 13: ayırt ettirmez','var(--muted)');$('mza').textContent='Hb elektroforezi ve demir çalışmaları.'}}
+
+    // 4) B12 / folat
+    var bS=b12===null?null:b12<180?'low':b12<=350?'ind':'ok';
+    $('b12o').textContent=b12===null?'–':fm(b12,0)+' pg/mL · '+{low:'eksiklik',ind:'belirsiz',ok:'eksiklik olası değil'}[bS];
+    var fS=fol===null?null:fol<3?'low':fol<4.5?'ind':'ok';
+    $('folo').textContent=fol===null?'–':fm(fol)+' ng/mL · '+{low:'eksiklik',ind:'belirsiz bölge',ok:'normal'}[fS];
+    if(bS==='low')li('rxB','B12 eksikliği doğrulandı','Nedeni araştırın: intrinsik faktör antikoru (pernisiyöz anemi), diyet, metformin/PPİ, mide/ileum cerrahisi, nitröz oksit. B12 replasmanı başlayın.');
+    else if(bS==='ind')li('rxB','B12 belirsiz (180–350 pg/mL)','Belirti/bulgu varsa serum metilmalonik asit (MMA) isteyin; laboratuvar referansıyla yorumlayın. Anemi/ataksi gibi hızla kötüleşebilen durumda, geri dönüşsüz nedende (otoimmün gastrit), ilgili cerrahide veya gebelik/emzirmede MMA beklenirken replasmana başlayın (NICE). Homosistein MMA’dan az özgüldür; folat eksikliğinde de yükselir.');
+    else if(bS==='ok'&&mc==='macro')li('rxB','B12 düzeyi eksikliği desteklemiyor','Güçlü klinik bulgu varsa test sonucuna rağmen tedaviyi geciktirmeyin (BSH 2014). Makrositozda alkol, karaciğer hastalığı, hipotiroidi, ilaçlar ve MDS’yi düşünün.');
+    if(fS==='low')li('rxB','Folat eksikliği','Folik asitten önce B12 eksikliğini dışlayın veya birlikte tedavi edin; yalnız folat verilmesi B12 eksikliğinde nörolojik hasarı ilerletebilir.');
+    else if(fS==='ind')li('rxB','Folat belirsiz bölgede','Klinik tabloya göre; homosistein yükselir ama B12 eksikliğinden ayırt ettirmez, MMA folat eksikliğinde normaldir.');
+    if(bS===null&&fS===null)li('rxB','B12 ve folat girilmedi',mc==='macro'?'Makrositer anemide ilk testler.':'');
+    else if(bS!=='low'&&bS!=='ind'&&fS!=='low'&&fS!=='ind'&&mc!=='macro')li('rxB','B12 ve folat eksikliği desteklenmiyor');
+
+    // 5) Hemoliz
+    var h1=prol===null?null:prol==='hyper',h2=ldh!==null&&ldhu?ldh>ldhu:null,h3=ib!==null&&ibu!==null?ib>ibu:null,h4=hp===null?null:hp<=25;
+    $('hm1').textContent=yn(h1);$('hm2').textContent=yn(h2);$('hm3').textContent=yn(h3);$('hm4').textContent=yn(h4);
+    var hn=[h1,h2,h3,h4].filter(function(x){return x===true}).length,hk=[h1,h2,h3,h4].filter(function(x){return x!==null}).length;
+    var lab=[h2,h3,h4].filter(function(x){return x!==null}).length;
+    if(!hk)pill('hmp','Veri yok','var(--muted)');
+    else if(hn>=2||(h4&&(h2||h3)))pill('hmp','Hemoliz olası ('+hn+'/'+hk+')',C.high);
+    else if(hn===1)pill('hmp','Tek bulgu ('+hn+'/'+hk+')',C.warn);
+    else pill('hmp','Hemoliz bulgusu yok ('+hk+' ölçüldü)',C.ok);
+    if(hn>=2||(h4&&(h2||h3)))li('rxH','Hemoliz düşünülüyor','Direkt antiglobulin (Coombs) testi ve periferik yayma (şistosit, sferosit). Şistosit + trombositopeni varsa trombotik mikroanjiyopatiyi acil değerlendirin. G6PD, ilaç ve enfeksiyon öyküsü.');
+    else if(h1&&!lab)li('rxH','Hiperproliferatif yanıt: kanama mı hemoliz mi?','LDH, indirekt bilirubin, haptoglobin, periferik yayma ve DAT isteyin; akut kanamayı dışlayın.');
+    else if(h1)li('rxH','Retikülosit yanıtı var, hemoliz belirteçleri belirgin değil','Akut veya yakın kanamayı, demir/B12/folat replasmanına yanıtı düşünün.');
+    else if(prol==='hypo'&&!lab)li('rxH','Hipoproliferatif tablo','Hemoliz olası değil; panel isteğe bağlıdır.');
+
+    // 6) Nedenler
+    if(anem===false&&!idPos)li('rxC','Anemi yok','Hb WHO eşiğinin üzerinde. '+(mc&&mc!=='normo'?'Anemisiz '+(mc==='micro'?'mikrositoz: demir eksikliği veya talasemi taşıyıcılığı.':'makrositoz: B12/folat, alkol, karaciğer, hipotiroidi, ilaç, MDS.'):''));
+    if(anem===false&&idPos)li('rxC','Anemisiz demir eksikliği','Erkek, postmenopozal kadın, GİS semptomu veya ailede GİS hastalığı varsa araştırma eşiği düşük tutulmalı (BSG).');
+    if(anem){
+      if(prol==='hyper')li('rxC','Hiperproliferatif anemi','Hemoliz veya akut kanama. Hemoliz paneli ve kanama odağı araştırması. Not: retikülositoz MCV’yi yükseltebilir.');
+      if(mc==='micro'&&prol!=='hyper')li('rxC','Mikrositer anemi','Olası: demir eksikliği (en sık), talasemi taşıyıcılığı, inflamasyon anemisi, sideroblastik anemi. Test: ferritin, TSAT, CRP; demir normalse Hb elektroforezi.');
+      if(mc==='normo'&&prol!=='hyper')li('rxC','Normositer'+(prol==='hypo'?' hipoproliferatif':'')+' anemi','Olası: inflamasyon anemisi, KBH, erken/karma demir eksikliği'+(rdwHi?' (RDW yüksek: karma eksiklik düşündürür)':'')+', B12/folat eksikliği, endokrin nedenler, kemik iliği yetmezliği veya infiltrasyonu. Test: ferritin, TSAT, CRP, kreatinin/eGFR, B12, folat, TSH, periferik yayma; diğer seriler de düşükse kemik iliği değerlendirmesi.');
+      if(mc==='macro'&&prol!=='hyper')li('rxC','Makrositer'+(prol==='hypo'?' hipoproliferatif':'')+' anemi','Olası: B12 veya folat eksikliği, alkol, karaciğer hastalığı, hipotiroidi, ilaçlar (metotreksat, hidroksiüre, antiretroviral vb.), MDS. Test: B12, folat, karaciğer testleri, TSH, periferik yayma (hipersegmente nötrofil, makroovalosit).');
+      if(mc===null)li('rxC','MCV girilmedi','Sınıflama için MCV gerekir.');
+      if(prol===null)li('rxC','Retikülosit veya hematokrit girilmedi','Hipo/hiperproliferatif ayırım için retikülosit üretim indeksi hesaplanamadı.');
+      if(prol==='mid')li('rxC','RPI 2–3: sınırda yanıt','Yetersiz ile uygun yanıt arasında; klinik ve hemoliz paneliyle birlikte yorumlayın.');
+      if(idPos)li('rxC','Demir eksikliği anemisi','İlk inceleme: idrar tetkiki (hematüri), çölyak serolojisi; uygun hastada üst ve alt GİS endoskopisi (BSG, AGA). Ayrıntı “Kırmızı bayraklar”da.');
+      if(ckd||hd)li('rxC','KBH','KBH’de anemi tanımı Hb < 13 (erkek) / < 12 g/dL (kadın) (KDIGO 2026); demir, B12, folat ve inflamasyonu ESA öncesi değerlendirin.');
+    }
+    if(hb===null)li('rxC','Hemoglobin girilmedi');
+
+    // 7) Kırmızı bayraklar
+    var post=sx==='post';
+    if(idPos&&(male||post)){li('rxR',(male?'Erkekte':'Postmenopozal kadında')+' demir eksikliği: GİS değerlendirmesi','Yeni tanı demir eksikliği anemisinde ilk basamak gastroskopi + kolonoskopi (kolonoskopi uygun değilse BT kolonografi). Hastaların yaklaşık üçte birinde altta yatan patoloji, çoğunlukla GİS’te bulunur; GİS kanseri belirtisiz bu şekilde başvurabilir (BSG 2021). AGA 2020 da çift yönlü endoskopi önerir. Genç erkekte de aynı algoritma.');
+      li('rxR','Ek testler','Çölyak serolojisi (tüm yaşlarda), idrar tetkiki/mikroskobisi (renal kaynak, böbrek hücreli karsinom). Negatif çift yönlü endoskopiden sonra non-invaziv H. pylori testi (AGA); yetersiz yanıt veya tekrarlayan anemide ince bağırsak (kapsül endoskopi) ve üriner sistem (BSG).')}
+    else if(idPos&&preg){li('rxR','Gebelikte demir eksikliği','Gebelik ve menstrüel kayıp sık nedendir; çölyak serolojisi düşünün. Doğumdan önce GİS incelemesi gerekirse gastroskopi ve (ilk trimesterden sonra) MR enterografi güvenli kabul edilir (BSG).')}
+    else if(idPos&&sx==='pre'){li('rxR','Premenopozal kadında demir eksikliği','Menstrüel kayıp ve gebelik sık nedendir. Çölyak serolojisi isteyin; endoskopi yalnız ek endişe verici bulgu varsa (GİS semptomu, ailede kolorektal kanser, ağır veya tekrarlayan ya da menstrüel kayıpla orantısız anemi) (BSG). AGA ise belirtisiz premenopozal kadında da çift yönlü endoskopiyi koşullu önerir.');
+      li('rxR','İdrar tetkiki','Açıklanamayan demir eksikliğinde mikroskobik hematüriye bakın (BSG).')}
+    if(sev==='ağır')li('rxR','Ağır anemi (WHO)','Hemodinamik durum, aktif kanama ve transfüzyon gereksinimi açısından hemen değerlendirin.');
+    if(hn>=2||(h4&&(h2||h3)))li('rxR','Hemoliz bulguları','Şistosit ve trombositopeni varsa TMA acildir.');
+    if(bS==='low'||(bS==='ind'&&anem))li('rxR','B12 eksikliği ve nörolojik belirti','Nöropati, ataksi veya bilişsel değişiklik varsa tedaviyi geciktirmeyin; folatı tek başına vermeyin.');
+    if(anem&&prol==='hypo'&&mc==='normo'&&idS==='no'&&bS!=='low'&&fS!=='low')li('rxR','Açıklanamayan normositer hipoproliferatif anemi','Lökosit ve trombosit de düşükse veya yaymada blast/lökoeritroblastik tablo varsa hematolojiye yönlendirin.');
+    if(!$('rxR').children.length)li('rxR','Girilen verilerle kırmızı bayrak yok','Klinik öykü (kanama, kilo kaybı, GİS semptomu) ile birlikte değerlendirin.');
+  }
+  ['sx','tri'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

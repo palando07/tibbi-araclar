@@ -9,6 +9,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Elektrolit hesaplamaları (düzeltilmiş Ca, anyon açığı, düzeltilmiş Na) | `elektrolit.html` |
 | Elektrolit replasmanı (K, Mg, P, Ca eksikliğinde doz ve hız) | `elektrolit-replasmani.html` |
 | Kan gazı yorumu (asit-baz, kompanzasyon, anyon açığı, delta oranı, A-a) | `kan-gazi.html` |
+| Akut böbrek hasarı (KDIGO evresi, FENa/FEÜre) | `akut-bobrek-hasari.html` |
 | Kreatinin klerensi (Cockcroft-Gault) | `kreatinin-klerensi.html` |
 | Böbrekte ilaç dozu (CrCl'ye göre antibiyotik, NOAK, sık ilaçlar) | `bobrek-ilac-dozu.html` |
 | Siroz ve asit (SAAG, SBP, parasentez, diüretik, HRS-AKI) | `siroz-asit.html` |
@@ -30,6 +31,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | CURB-65 | `curb-65.html` |
 | qSOFA | `qsofa.html` |
 | Glasgow-Blatchford | `glasgow-blatchford.html` |
+| Hiponatremi tanısı (neden ayrımı, SIADH, sıvı kısıtlama) | `hiponatremi-tani.html` |
 | Sodyum ve sıvı açığı (hipo/hipernatremi) | `sodyum.html` |
 | Serum osmolalitesi | `osmolalite.html` |
 | VKİ ve vücut yüzey alanı | `vki.html` |
@@ -44,6 +46,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Tiroid testi yorumu | `tiroid-testi.html` |
 | Levotiroksin dozu | `levotiroksin.html` |
 | STOP-BANG | `stop-bang.html` |
+| Anemi yaklaşımı | `anemi.html` |
 | Tip 2 diyabet tedavisi (HbA1c hedefi, ilaç seçimi) | `diyabet-tedavi.html` |
 | İnsülin dozu (bazal-bolus, düzeltme skalası, steroid NPH, titrasyon) | `insulin-dozu.html` |
 | Nöbet takip listesi: menüde yok, ayrı uygulama (nobet.webmanifest; veriler yalnız cihazda, localStorage) | `nobet-listesi.html` |
