@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vizit Hakkında</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun klinik kart; üstte giriş alanları, altta büyük sonuç ve KDIGO G-evresi şeridi */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --g1:#2e8b57; --g2:#7aa83a; --g3a:#d9a21b; --g3b:#e07b24; --g4:#d24b32; --g5:#9b2335;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.field{display:flex;flex-direction:column;gap:6px}
+label,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.row{display:flex;gap:10px;align-items:stretch}
+input[type=number]{flex:1;min-width:0;font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg)}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.err{color:var(--g4);font-size:.85rem;min-height:1.2em;margin:0}
+.result{display:flex;flex-direction:column;gap:14px}
+.big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.big .num{font:700 3.2rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.big .unit{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.stage-text{margin:0;font-size:.98rem}
+.scale{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;position:relative}
+.scale div{height:10px;border-radius:3px;opacity:.35}
+.scale div.on{opacity:1}
+.ticks{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;font:500 .72rem var(--font-num);color:var(--muted);text-align:center}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+code{font-family:var(--font-num);font-size:.82rem;background:var(--accent-soft);padding:1px 5px;border-radius:4px;word-break:break-word}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+td:first-child{font-family:var(--font-num);font-weight:700;white-space:nowrap}
+@media (prefers-reduced-motion:no-preference){.scale div{transition:opacity .2s}}
+
+.card h2{font-size:1.05rem;margin:0}
+.card p{margin:0}
+.card ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.qr{align-self:center;background:#fff;border-radius:12px;padding:10px;line-height:0}
+.qr img{width:220px;height:220px;image-rendering:pixelated}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:0;background:var(--accent);color:#fff;font:600 .95rem var(--font-body);padding:11px 16px;border-radius:10px;cursor:pointer}
+.btn.ghost{background:var(--bg);color:var(--accent);border:1px solid var(--line)}
+.btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.url{font-size:.85rem;color:var(--muted);word-break:break-all;text-align:center}
+</style>
+</head>
+<body data-ornek-yok>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Hakkında ve paylaş</h1>
+    <p>Dahiliye pratiği için hesaplayıcılar · 45 araç · son güncelleme 21 Ekim 2026</p>
+  </header>
+
+  <section class="card">
+    <h2>Paylaş</h2>
+    <p>Meslektaşınız telefonunun kamerasıyla bu kodu okutarak Vizit'i açabilir.</p>
+    <div class="qr" id="qr"></div>
+    <p class="url" id="url"></p>
+    <div class="btns">
+      <button type="button" class="btn" id="paylas">Bağlantıyı gönder</button>
+      <button type="button" class="btn ghost" id="kopya">Bağlantıyı kopyala</button>
+    </div>
+    <p class="note">Telefonda uygulama gibi kullanmak için: iPhone'da Safari'de Paylaş → Ana Ekrana Ekle; Android'de Chrome menüsü → Ana ekrana ekle.</p>
+  </section>
+
+  <section class="card">
+    <h2>Önemli not</h2>
+    <p>Vizit klinik karar desteği içindir; hekimin klinik değerlendirmesinin yerini almaz. Doz ve eşikler erişkin hastalar içindir. İlaç kullanmadan önce güncel prospektüsü ve kurumunuzun protokollerini kontrol edin.</p>
+  </section>
+
+  <section class="card">
+    <h2>Veri gizliliği</h2>
+    <ul>
+      <li>Girdiğiniz değerler hiçbir sunucuya gönderilmez; hesaplamalar telefonunuzda yapılır.</li>
+      <li>Araçlar arası taşınan hasta değerleri yalnızca uygulama açıkken tutulur ve 30 dakika işlem yapılmazsa silinir.</li>
+      <li>Hasta adı veya T.C. kimlik numarası istenmez; girmeyin.</li>
+      <li>Favoriler ve yazı boyutu yalnızca bu telefonda saklanır.</li>
+      <li>İlk açılıştan sonra internetsiz de çalışır.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Kaynaklar</h2>
+    <p>Her aracın dayandığı kılavuz ve çalışmalar kendi sayfasının altında yazılıdır. Başlıcaları:</p>
+    <ul>
+      <li>Böbrek: KDIGO (AKI 2012, anemi 2026), CKD-EPI 2021, ilaç prospektüsleri (KÜB, SmPC)</li>
+      <li>Elektrolit: ESE/ESICM/ERBP 2014 hiponatremi kılavuzu, UK Kidney Association hiperkalemi</li>
+      <li>Endokrin: TEMD Diabetes Mellitus 2026, TEMD Tiroid 2025, TEMD Osteoporoz 2025, ADA 2025–2026, ATA</li>
+      <li>Kardiyoloji ve tromboz: ESC kılavuzları, AHA/ACC, EHRA 2021 DOAK rehberi, ACCP, ASH</li>
+      <li>Karaciğer ve GİS: AASLD 2021, EASL 2018, ICA-ADQI 2024, ESGE 2021, Revize Atlanta</li>
+      <li>Enfeksiyon ve acil: ATS/IDSA, IDSA 2025, Surviving Sepsis 2021, RCP NEWS2, AHA/ASA, ACOG</li>
+      <li>Hematoloji: WHO 2024, BSG 2021, AGA 2020, NICE NG239</li>
+      <li>Diğer: CDC 2022 opioid kılavuzu</li>
+    </ul>
+    <p class="note">Tüm araçlar Ekim 2026'da iki ayrı kontrol turunda güncel kılavuzlarla karşılaştırıldı. Hata veya güncel olmayan bir bilgi görürseniz lütfen bildirin.</p>
+  </section>
+
+  <p class="note">Başlıktaki "Vizit" yazısı DM Serif Display yazı tipinden çizilmiştir (SIL Open Font License). QR kodu: qrcode-generator (MIT).</p>
+</div>
+<script src="lib/qrcode.js"></script>
+<script>
+(function(){
+  var URL='https://palando07.github.io/tibbi-araclar/';
+  document.getElementById('url').textContent=URL;
+  try{var q=qrcode(0,'M');q.addData(URL);q.make();var im=new Image();im.src=q.createDataURL(8,2);im.alt='Vizit bağlantısının QR kodu';document.getElementById('qr').appendChild(im)}catch(e){}
+  var p=document.getElementById('paylas');
+  p.onclick=function(){
+    if(navigator.share)navigator.share({title:'Vizit',text:'Dahiliye pratiği için hesaplayıcılar',url:URL}).catch(function(){});
+    else location.href='https://wa.me/?text='+encodeURIComponent('Vizit: dahiliye pratiği için hesaplayıcılar '+URL);
+  };
+  var k=document.getElementById('kopya');
+  k.onclick=function(){if(navigator.clipboard)navigator.clipboard.writeText(URL).then(function(){k.textContent='Kopyalandı ✓';setTimeout(function(){k.textContent='Bağlantıyı kopyala'},1600)})};
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

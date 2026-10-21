@@ -27,6 +27,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Varfarin ve INR yönetimi | `varfarin-inr.html` |
 | IV demir dozu (Ganzoni) | `iv-demir.html` |
 | NEWS2 erken uyarı skoru | `news2.html` |
+| Hakkında ve paylaş (QR, kaynaklar, veri gizliliği) | `hakkinda.html` |
 | Ampirik antibiyotik (10 sık enfeksiyon, risk ve alerjiye göre) | `ampirik-antibiyotik.html` |
 | CURB-65 | `curb-65.html` |
 | qSOFA | `qsofa.html` |
