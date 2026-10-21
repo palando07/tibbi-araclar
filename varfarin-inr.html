@@ -97,9 +97,9 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
     <h2>Hasta</h2>
     <div class="seg wrapseg"><button type="button" data-g="tg" data-v="2" aria-pressed="true">Hedef INR 2–3</button><button type="button" data-g="tg" data-v="3" aria-pressed="false">Hedef 2,5–3,5</button></div>
     <div class="grid">
-      <div class="field" id="w-inr"><label for="inr" id="l-inr">INR <span id="u-inr"></span></label><input id="inr" type="number" inputmode="decimal" step="any" value="5.2" placeholder=""></div>
+      <div class="field" id="w-inr"><label for="inr" id="l-inr">INR <span id="u-inr"></span></label><input id="inr" data-hasta="inr" type="number" inputmode="decimal" step="any" value="5.2" placeholder=""></div>
       <div class="field" id="w-wk"><label for="wk" id="l-wk">Haftalık toplam doz <span id="u-wk">mg</span></label><input id="wk" type="number" inputmode="decimal" step="any" value="35" placeholder=""></div>
-      <div class="field" id="w-wt"><label for="wt" id="l-wt">Ağırlık <span id="u-wt">kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70" placeholder=""></div>
+      <div class="field" id="w-wt"><label for="wt" id="l-wt">Ağırlık <span id="u-wt">kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70" placeholder=""></div>
     </div>
     <h2>Kanama</h2>
     <div class="seg wrapseg"><button type="button" data-g="bl" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="bl" data-v="1" aria-pressed="false">Minör</button><button type="button" data-g="bl" data-v="2" aria-pressed="false">Majör / hayatı tehdit eden</button></div>

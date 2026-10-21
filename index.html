@@ -280,7 +280,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
     var w=norm(q.value.trim()), any=false;
     document.querySelectorAll('.quick').forEach(function(g){g.style.display=w?'none':''});
     document.querySelectorAll('.group').forEach(function(g){
-      var vis=0;g.querySelectorAll('a.tool').forEach(function(a){var m=!w||norm(a.textContent+' '+a.dataset.k).indexOf(w)>=0;(a.closest('.trow')||a).hidden=!m;if(m)vis++});
+      var vis=0;g.querySelectorAll('a.tool').forEach(function(a){var t=norm(a.textContent+' '+a.dataset.k),m=!w||w.split(/\s+/).every(function(x){return t.indexOf(x)>=0});(a.closest('.trow')||a).hidden=!m;if(m)vis++});
       g.hidden=!vis;if(vis)any=true});
     document.getElementById('empty').hidden=any;
   });

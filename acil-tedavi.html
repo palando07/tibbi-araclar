@@ -99,13 +99,13 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
       </select>
     </div>
     <div class="grid">
-      <div class="field" id="w-wt"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" type="number" inputmode="decimal" step="any" value="70"></div>
-      <div class="field" id="w-k"><label for="k">Potasyum <span>mEq/L</span></label><input id="k" type="number" inputmode="decimal" step="any" value="6.8"></div>
-      <div class="field" id="w-glu"><label for="glu">Kan şekeri <span>mg/dL</span></label><input id="glu" type="number" inputmode="numeric" step="1" value="480"></div>
+      <div class="field" id="w-wt"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field" id="w-k"><label for="k">Potasyum <span>mEq/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="6.8"></div>
+      <div class="field" id="w-glu"><label for="glu">Kan şekeri <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="numeric" step="1" value="480"></div>
       <div class="field" id="w-ph"><label for="ph">pH</label><input id="ph" type="number" inputmode="decimal" step="any" value="7.15"></div>
-      <div class="field" id="w-na"><label for="na">Sodyum <span>mEq/L</span></label><input id="na" type="number" inputmode="decimal" step="any" value="118"></div>
+      <div class="field" id="w-na"><label for="na">Sodyum <span>mEq/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="118"></div>
       <div class="field" id="w-ca"><label for="ca">Düzeltilmiş kalsiyum <span>mg/dL</span></label><input id="ca" type="number" inputmode="decimal" step="any" value="14.2"></div>
-      <div class="field" id="w-egfr"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" type="number" inputmode="decimal" step="any" value="60"></div>
+      <div class="field" id="w-egfr"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" data-hasta="egfr" type="number" inputmode="decimal" step="any" value="60"></div>
     </div>
     <div class="items" id="opts">
       <label class="item" id="w-ekg"><input type="checkbox" id="ekg"><span class="txt">EKG değişikliği var<small>sivri T, PR uzaması, geniş QRS, bradikardi, aritmi</small></span></label>

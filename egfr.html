@@ -76,7 +76,7 @@ td:first-child{font-family:var(--font-num);font-weight:700;white-space:nowrap}
     <div class="field">
       <label for="scr">Serum kreatinin</label>
       <div class="row">
-        <input id="scr" type="number" inputmode="decimal" step="0.01" min="0" value="1.2">
+        <input id="scr" data-hasta="kreatinin" data-hasta-kosul="#u-mg[aria-pressed=true]" type="number" inputmode="decimal" step="0.01" min="0" value="1.2">
         <div class="seg" role="group" aria-label="Kreatinin birimi">
           <button type="button" id="u-mg" aria-pressed="true">mg/dL</button>
           <button type="button" id="u-um" aria-pressed="false">µmol/L</button>
@@ -85,7 +85,7 @@ td:first-child{font-family:var(--font-num);font-weight:700;white-space:nowrap}
     </div>
     <div class="field">
       <label for="age">Yaş (yıl)</label>
-      <input id="age" type="number" inputmode="numeric" step="1" min="18" max="120" value="65">
+      <input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" min="18" max="120" value="65">
     </div>
     <div class="field">
       <span class="lbl" id="sexlbl">Cinsiyet</span>
