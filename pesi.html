@@ -185,6 +185,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
   function calc(){
     var mod=segVal('mod'),age=v('age'),hr=v('hr'),sbp=v('sbp'),rr=v('rr'),t=v('tmp'),sat=v('sat');
     var male=segVal('sex')==='m',ca=$('ca').checked,hf=$('hf').checked,cld=$('cld').checked,ams=$('ams').checked;
+    if(age!==null&&age<=0)age=null;
     var showP=mod!=='spesi',showS=mod!=='pesi';
     $('k-pesi').hidden=!showP;$('k-spesi').hidden=!showS;
     $('w-sex').hidden=$('w-rr').hidden=$('w-t').hidden=$('w-ams').hidden=!showP;
@@ -211,24 +212,27 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     function a1(c,n){if(c){s++;sp.push(n)}}
     a1(age!==null&&age>80,'yaş > 80');a1(ca,'kanser');a1(hf||cld,'kronik kardiyopulmoner hastalık');
     a1(hr!==null&&hr>=110,'nabız ≥ 110');a1(sbp!==null&&sbp<100,'SKB < 100');a1(sat!==null&&sat<90,'SaO₂ < %90');
-    $('ss').textContent=String(s);
-    if(s===0){pill('sc','Düşük risk','var(--ok)');$('sm').textContent='%1,0–1,1'}else{pill('sc','Yüksek risk (≥ 1)','var(--high)');$('sm').textContent='%8,9–10,9'}
-    $('sf').textContent=s?sp.join(' · '):'Hiçbir madde yok';
+    $('ss').textContent=age===null?'–':String(s);
+    if(age===null){pill('sc','','');$('sm').textContent='–'}
+    else if(s===0){pill('sc','Düşük risk','var(--ok)');$('sm').textContent='%1,0–1,1'}else{pill('sc','Yüksek risk (≥ 1)','var(--high)');$('sm').textContent='%8,9–10,9'}
+    $('sf').textContent=age===null?'Yaşı girin.':s?sp.join(' · '):'Hiçbir madde yok';
 
     // ESC 2019
     var hd=segVal('hd')==='1',rv=segVal('rv'),tn=segVal('tn');
     var pHigh=cls!==null&&cls>=3,sHigh=s>=1,clin;
     clin=mod==='pesi'?pHigh:mod==='spesi'?sHigh:(pHigh||sHigh);
-    var clinKnown=mod==='spesi'||cls!==null;
+    var clinKnown=age!==null;
     $('eq').textContent=!clinKnown?'–':mod==='both'?('PESI '+(cls?CL[cls]:'–')+' · sPESI '+s+(pHigh!==sHigh&&cls?' (uyumsuz)':'')+' → '+(clin?'yüksek':'düşük')):(clin?'yüksek':'düşük');
     var yz={u:'bakılmadı','0':'yok','1':'var'},tz={u:'bakılmadı','0':'normal','1':'yüksek'};
     $('er').textContent='RV '+yz[rv]+' · troponin '+tz[tn];
     var risk,col;$('rx').innerHTML='';
     if(hd){risk='h'}
+    else if(!clinKnown){risk=null}
     else if(clin){risk=(rv==='1'&&tn==='1')?'ih':'il'}
     else{risk=(rv==='1'||tn==='1')?'il':'l'}
     document.querySelectorAll('#etb tr').forEach(function(r){r.className=r.dataset.r===risk?'cur':''});
-    if(risk==='h'){pill('ep','Yüksek risk','var(--high)');
+    if(risk===null){pill('ep','','');li('Yaşı girin','PESI/sPESI hesaplanmadan ESC risk sınıfı belirlenemez. Hemodinamik instabilite varsa hasta skordan bağımsız olarak yüksek risklidir.');}
+    else if(risk==='h'){pill('ep','Yüksek risk','var(--high)');
       li('Sistemik trombolitik tedavi (I B)','Hemodinamik instabilitede reperfüzyon; antikoagülasyona fraksiyone olmayan heparinle (yükleme dozu dahil) başlayın.');
       li('Tromboliz kontrendike veya başarısızsa','Cerrahi pulmoner embolektomi (I C); alternatif olarak perkütan kateter yönlendirmeli tedavi (IIa C).');
       li('Vazopresör ve dikkatli sıvı','Norepinefrin ve/veya dobutamin düşünülmeli; agresif sıvı yüklemesi önerilmez.');}

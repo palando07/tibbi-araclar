@@ -150,7 +150,7 @@ table.t.dz td:first-child{width:34%}
     <div class="sub"><span>Tetikleyici</span><b id="c7">–</b></div>
     <div class="sub"><span>JTA ölçütleri (Akamizu 2012)</span><b id="jta">–</b></div>
     <ol class="rec" id="rxB"></ol>
-    <p class="note">BWPS: &lt; 25 olası değil, 25–44 yaklaşan kriz (kriz tehdidi), ≥ 45 kriz. Duyarlı ama özgül değildir; yüksek ateşli influenza gibi tabloları ayıramaz. Taşikardi bandı orijinal 1993 tablosundaki gibi 90–109/dk = 5 puan; TEMD Tablo 28.1 bu bandı 100–109 olarak yazar. TEMD tablosunda tetikleyici “var 0 / yok 10” olarak basılmıştır; orijinal skalada tetikleyici <b>varsa</b> 10 puandır ve burada öyle hesaplanır.</p>
+    <p class="note">BWPS: &lt; 25 olası değil, 25–44 yaklaşan kriz (kriz tehdidi), ≥ 45 kriz. Duyarlı ama özgül değildir; yüksek ateşli influenza gibi tabloları ayıramaz. Taşikardinin en alt bandı kaynaklarda farklı basılır: 90–109/dk (MDCalc ve çoğu hesaplayıcı; burada kullanılan), 99–109/dk (orijinal tabloyu yeniden basan bazı yayınlar), 100–109/dk (TEMD Tablo 28.1); fark yalnız nabız 90–99/dk iken 5 puandır. TEMD tablosunda tetikleyici “var 0 / yok 10” olarak basılmıştır; orijinal skalada tetikleyici <b>varsa</b> 10 puandır ve burada öyle hesaplanır.</p>
   </section>
 
   <section class="card">
@@ -288,7 +288,7 @@ table.t.dz td:first-child{width:34%}
     else if(lvl===1)li('rxB','Yaklaşan kriz (kriz tehdidi)','TEMD: kriz tehdidi taşıyan hastada da destek tedavisi (sıvı, kortikosteroid, sedatif) ve altta yatan hastalığın tedavisi. ATA 2016: 25–44 puanda agresif tedavi kararı klinik yargıya dayanır.');
     else li('rxB','BWPS < 25','Tiroid krizi olası değil; tirotoksikozu ve diğer ateş/taşikardi nedenlerini değerlendirin.');
     li('rxB','JTA: '+jt,'Ön koşul tirotoksikoz (sT3/sT4 yüksek). TS1: SSS bulgusu + ≥ 1 diğer bulgu veya SSS’siz ≥ 3 bulgu. TS2: 2 bulgu ya da TS1 görünümü ama sT3/sT4 sonucu yok. Bulgular: ateş ≥ 38 °C, nabız ≥ 130/dk, KKY (akciğer ödemi, akciğer alanlarının yarısından fazlasında ral, kardiyojenik şok, NYHA IV veya Killip ≥ III), GİS-hepatik (bulantı, kusma, ishal veya bilirubin > 3 mg/dL). Burada SSS = BWPS SSS ≥ hafif, KKY = akciğer ödemi seçimi olarak yaklaşık eşlendi.');
-    if(hr!==null&&hr>=90&&hr<100)li('rxB','Nabız 90–99/dk','Orijinal skalada 5 puan; TEMD Tablo 28.1’de bu aralık puan almaz (TEMD toplamı 5 puan düşük olur).');
+    if(hr!==null&&hr>=90&&hr<100)li('rxB','Nabız 90–99/dk','Burada 5 puan (90–109 bandı); TEMD Tablo 28.1’de (100–109) bu aralık puan almaz, TEMD toplamı 5 puan düşük olur.');
 
     // ---------- A) Tedavi ----------
     $('tA').innerHTML='';$('rxA').innerHTML='';

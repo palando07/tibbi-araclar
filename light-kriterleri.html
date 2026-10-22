@@ -139,7 +139,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     <div class="sub"><span>Sıvı / serum albümin <small style="display:block;color:var(--muted)">sirozda transüda lehine &lt; 0,6</small></span><b id="ar">–</b></div>
     <div class="sub"><span>Sıvı kolesterol <small style="display:block;color:var(--muted)">eksüda lehine &gt; 45 (meta-analiz) / &gt; 55 mg/dL</small></span><b id="ch">–</b></div>
     <ol class="rec" id="rx"></ol>
-    <p class="note">Albümin gradyanı &gt; 1,2 g/dL (Roth 1990) KY’ye bağlı yalancı eksüdaların %83’ünü, protein gradyanı &gt; 3,1 g/dL %55’ini doğru sınıflar; KY’de albümin gradyanı tercih edilir. Hepatik hidrotoraksta sıvı/serum albümin oranı &lt; 0,6 en iyi ayırır (%77) (Bielsa 2012). Kolesterol eşikleri: &gt; 45 mg/dL (Heffner 1997 meta-analizi), &gt; 55 mg/dL (Valdés 1991), &gt; 60 mg/dL (Hamm 1987).</p>
+    <p class="note">Albümin gradyanı &gt; 1,2 g/dL (eşik: Roth 1990) KY’ye bağlı yalancı eksüdaların %83’ünü, protein gradyanı &gt; 3,1 g/dL %55’ini doğru sınıflar (Bielsa 2012); KY’de albümin gradyanı tercih edilir. Hepatik hidrotoraksta sıvı/serum albümin oranı &lt; 0,6 en iyi ayırır (%77) (Bielsa 2012). Kolesterol eşikleri: &gt; 45 mg/dL (Heffner 1997 meta-analizi), &gt; 55 mg/dL (Valdés 1991), &gt; 60 mg/dL (Hamm 1987).</p>
   </section>
 
   <p class="note">Kaynaklar: Light RW, Macgregor MI, Luchsinger PC, Ball WC. Pleural effusions: the diagnostic separation of transudates and exudates. Ann Intern Med 1972;77:507–13 (üç ölçüt); Roberts ME ve ark. BTS Guideline for pleural disease, Thorax 2023;78(Suppl 3):s1–s42 ve özet Thorax 2023;78:1143–56 (Light ölçütleri tablosu: protein &gt; 0,5, LDH &gt; 0,6, sıvı LDH &gt; ÜSL’nin 2/3’ü; tek taraflı efüzyonda KY tanısını desteklemek için serum NT-proBNP önerisi, sıvı NT-proBNP’nin rutin istenmemesi); Roth BJ ve ark. Chest 1990;98:546–9 (albümin gradyanı 1,2 g/dL); Romero-Candeira S ve ark. Am J Med 2001;110:681–6 (diüretik etkisi, gradyanlar); Bielsa S, Porcel JM ve ark. Respirology 2012;17:721–6 (protein gradyanı &gt; 3,1, albümin gradyanı &gt; 1,2, sıvı/serum albümin &lt; 0,6); Heffner JE ve ark. Chest 1997;111:970–80 (kolesterol &gt; 45 mg/dL); Valdés L ve ark. Chest 1991;99:1097–102 (kolesterol 55 mg/dL); Hamm H ve ark. Chest 1987;92:296–302 (kolesterol 60 mg/dL). BTS 2023 albümin/protein gradyanı ve kolesterol için ayrı bir öneri içermez; bu eşikler özgün çalışmalardandır. Bu araç klinik karar desteği içindir.</p>
@@ -159,8 +159,10 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     var sp=v('sp'),pp=v('pp'),sl=v('sl'),pl=v('pl'),uln=v('uln'),sa=v('sa'),pa=v('pa'),chol=v('chol'),kl=segVal('kl');
     var r1=sp>0&&pp!==null?pp/sp:null, r2=sl>0&&pl!==null?pl/sl:null, lim=uln>0?uln*2/3:null;
     var k1=r1===null?null:r1>0.5, k2=r2===null?null:r2>0.6, k3=pl!==null&&lim!==null?pl>lim:null;
-    $('c1').textContent=r1===null?'–':fm(r1,2);$('c2').textContent=r2===null?'–':fm(r2,2);
-    $('t3').textContent=lim===null?'eşik –':'eşik > '+fm(lim,0)+' U/L';
+    // Eşiğe çok yakın oranlar 2 ondalıkta eşikle aynı görünmesin (ör. 0,504 → "0,50 · evet")
+    var fr=function(r,t){return Math.abs(r-t)<0.005?fm(r,3):fm(r,2)};
+    $('c1').textContent=r1===null?'–':fr(r1,0.5);$('c2').textContent=r2===null?'–':fr(r2,0.6);
+    $('t3').textContent=lim===null?'eşik –':'eşik > '+(Math.abs(lim-Math.round(lim))<1e-9?fm(lim,0):fm(lim,1))+' U/L';
     $('c3').textContent=pl===null?'–':fm(pl,0)+' U/L';
     mark(1,k1);mark(2,k2);mark(3,k3);
     var ks=[k1,k2,k3],n=ks.filter(function(x){return x===true}).length,m=ks.filter(function(x){return x!==null}).length;

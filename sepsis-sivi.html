@@ -253,7 +253,7 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
     }
     if(x.p==='vp'){
       if(dose!==null){if(dose>0.04+1e-9)pill('vp-p','> 0,04 U/dk: kurtarma dozu','var(--high)');else if(dose>0.03+1e-9)pill('vp-p','0,03–0,04 U/dk','var(--warn)');else if(Math.abs(dose-0.03)<1e-9)pill('vp-p','Önerilen sabit doz','var(--ok)');else pill('vp-p','< 0,03 U/dk','var(--warn)')}
-      li(X,'0,03 U/dk sabit'+(conc?' = '+rate(0.03*60/conc):''),'Titre edilmez (SSC 2026). 0,03–0,04 U/dk üzerindeki dozlar kardiyak, dijital ve splanknik iskemiyle ilişkilidir ve kurtarma tedavisine saklanır (SSC 2016). VASST: 0,01–0,03 U/dk.');
+      li(X,'0,03 U/dk sabit'+(conc?' = '+rate(0.03*60/conc):''),'Genellikle sabit dozda verilir, titre edilmez (SSC 2026 doz belirtmez). 0,03–0,04 U/dk üzerindeki dozlar kardiyak, dijital ve splanknik iskemiyle ilişkilidir ve kurtarma tedavisine saklanır (SSC 2016). VASST: 0,01–0,03 U/dk.');
       li(X,'Türkiye’de erişim','Vazopressin (arginin vazopressin) ruhsat ve bulunurluğu kuruma göre değişebilir; terlipressin farklı bir ilaçtır ve bu dozla yer değiştirmez. (Bu bilgi doğrulanmadı; eczanenize danışın.)');
     }
     if(x.p==='ep'){
@@ -282,8 +282,8 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
     var map=s!==null&&d!==null&&s>0&&d>0?(s+2*d)/3:null,old=age!==null&&age>=65,lo=old?60:65;
     $('mapt').textContent=old?'60–65 mmHg (≥ 65 yaş, SSC 2026)':'≥ 65 mmHg';
     if(map===null){$('map').textContent='–';pill('mapp','','')}
-    else{$('map').textContent=fm(map,0);
-      if(Math.round(map)<lo)pill('mapp','Hedefin altında','var(--high)');
+    else{$('map').textContent=fm(map,map<lo&&Math.round(map)>=lo?1:0);
+      if(map<lo)pill('mapp','Hedefin altında','var(--high)');
       else if(map<65)pill('mapp','Hedef aralıkta','var(--ok)');
       else pill('mapp','Hedefe ulaşıldı','var(--ok)')}
     // Laktat
@@ -292,7 +292,7 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
       if(lac>=4)pill('lacp','≥ 4: yüksek risk','var(--high)');
       else if(lac>=2)pill('lacp','≥ 2: hipoperfüzyon','var(--warn)');
       else pill('lacp','< 2','var(--ok)')}
-    var hypo=map!==null&&Math.round(map)<lo,hl=lac!==null&&lac>=2;
+    var hypo=map!==null&&map<lo,hl=lac!==null&&lac>=2;
     // Öneriler
     if(hypo||hl)li('rxF','Sepsise bağlı hipoperfüzyon'+(hypo&&hl?' (hipotansiyon + laktat)':hypo?' (hipotansiyon)':' (laktat ≥ 2)'),'İlk 3 saatte en az 30 mL/kg kristaloid'+(wt>0?' = '+fm(30*wt,0)+' mL':'')+'; 0,9% NaCl yerine dengeli kristaloid (Ringer laktat, Plasma-Lyte) önerilir (SSC 2021, 2026).');
     else li('rxF','Hipotansiyon ve laktat yüksekliği yok','30 mL/kg hacim sepsise bağlı hipoperfüzyon veya şok içindir; hacmi klinik duruma göre bireyselleştirin.');

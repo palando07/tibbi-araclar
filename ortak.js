@@ -67,16 +67,27 @@
   // Hasta değerleriyle aynı kurallar: yalnız bu oturumda, 30 dakika işlem yapılmazsa silinir.
   var NK = 'vizit-not', bu = (location.pathname.split('/').pop() || '').replace('.html', '');
   function notOku(){ try { var o = JSON.parse(sessionStorage.getItem(NK)); if (o && Date.now() - o.t < 30 * 60 * 1000) return o.v || []; sessionStorage.removeItem(NK); } catch (e) {} return []; }
-  function notYaz(v){ try { if (v.length) sessionStorage.setItem(NK, JSON.stringify({t: Date.now(), v: v})); else sessionStorage.removeItem(NK); } catch (e) {} }
+  // Not yazılınca hasta değerlerinin süresi de yenilenir; ikisi birlikte silinir.
+  function notYaz(v){ try { if (v.length) sessionStorage.setItem(NK, JSON.stringify({t: Date.now(), v: v})); else sessionStorage.removeItem(NK);
+    var h = JSON.parse(sessionStorage.getItem('vizit-hasta')); if (h && v.length) { h.t = Date.now(); sessionStorage.setItem('vizit-hasta', JSON.stringify(h)); } } catch (e) {} }
+  // Bu sayfada kullanıcı bir değer girdi ya da seçim yaptı mı? Yapmadıysa sonuç örnek değerlerden gelir.
+  var dokunuldu = false;
+  function disButon(t){ return t.closest && t.closest('.cbtns, .gb, .ornek, .sonuca, .ilgili, header, a.back, details > summary'); }
+  ['input', 'change'].forEach(function(ev){ document.addEventListener(ev, function(e){ if (e.isTrusted && !disButon(e.target)) dokunuldu = true; }, true); });
+  document.addEventListener('click', function(e){ if (e.isTrusted && e.target.closest && e.target.closest('button, label, input') && !disButon(e.target)) dokunuldu = true; }, true);
   function notEkle(card, btn){
-    var bnt = document.querySelector('.ornek');
-    if (bnt && /Örnek değerlerle/.test(bnt.textContent) && btn.getAttribute('data-uyari') !== '1') {
+    if (!dokunuldu && btn.getAttribute('data-uyari') !== '1') {
       btn.setAttribute('data-uyari', '1'); btn.textContent = 'Örnek değerler! Yine de ekle';
       setTimeout(function(){ btn.removeAttribute('data-uyari'); btn.textContent = 'Nota ekle'; }, 4000);
       return;
     }
     btn.removeAttribute('data-uyari');
-    var satir = summary(card).split('\n')[0], ad = AN[bu], kartNo = Array.prototype.indexOf.call(document.querySelectorAll('section.card[aria-live]'), card);
+    var sl = summary(card).split('\n'), satir = sl[0], ad = AN[bu], kartNo = Array.prototype.indexOf.call(document.querySelectorAll('section.card[aria-live]'), card);
+    if (satir.indexOf(': ') < 0) {
+      var ek = sl.slice(1).filter(function(x){ return /\d/.test(x); }).slice(0, 3);
+      if (!ek.length) { btn.textContent = 'Sonuç yok'; setTimeout(function(){ btn.textContent = 'Nota ekle'; }, 1800); return; }
+      satir += ': ' + ek.join(' · ');
+    }
     if (ad && satir.toLocaleLowerCase('tr').indexOf(ad.split(' ')[0].toLocaleLowerCase('tr')) < 0) {
       var ik = satir.indexOf(': ');
       satir = ik > 0 && /^(Yorum|Sınıflama|Sonuç|Yapılacaklar|Tahmini GFR)$/.test(satir.slice(0, ik)) ? ad + satir.slice(ik) : ad + ' · ' + satir;
@@ -159,6 +170,11 @@
     } else {
       yazi.textContent = 'Örnek değerlerle açıldı. Kendi hastanızın değerlerini girin.';
       dug.textContent = 'Temizle';
+      if (notOku().length) {
+        yazi.textContent += ' Notta önceki sonuçlar var; başka hastaya geçtiyseniz Yeni hasta deyin.';
+        var dug2 = document.createElement('button'); dug2.type = 'button'; dug2.textContent = 'Yeni hasta';
+        dug2.addEventListener('click', function(){ notYaz([]); yaz({}); dug.click(); });
+      }
     }
     dug.addEventListener('click', function(){
       if (dug.textContent === 'Yeni hasta') notYaz([]);
@@ -168,7 +184,7 @@
       bant.remove();
       if (girdiler[0]) girdiler[0].focus();
     });
-    bant.appendChild(yazi); bant.appendChild(dug);
+    bant.appendChild(yazi); bant.appendChild(dug); if (dug2) bant.appendChild(dug2);
     ilkKart.parentNode.insertBefore(bant, ilkKart);
 
     function cinsKaydet(deger){ var v = oku(); v.cins = deger; yaz(v); }
@@ -300,7 +316,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v42', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v43', GB_ADRES = 'blgnonur97@gmail.com';
   var kap = document.querySelector('.wrap');
   if (kap && bu !== 'nobet-listesi') {
     var cssG = document.createElement('style');

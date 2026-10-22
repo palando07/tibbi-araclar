@@ -154,7 +154,7 @@ select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     <div class="res"><span class="num" id="ptn">–</span><span class="of">×10³/µL eşik</span><span class="pill" id="ptp"></span></div>
     <div class="sub"><span>Mevcut trombosit</span><b id="pth">–</b></div>
     <p class="advice" id="ptg"></p>
-    <div class="sub"><span>1 erişkin doz (aferez veya havuz) ile beklenen artış</span><b>~30–60 ×10³/µL</b></div>
+    <div class="sub"><span>1 erişkin doz (aferez veya havuz) ile beklenen artış</span><b>~20–40 ×10³/µL</b></div>
     <ol class="rec" id="rxP"></ol>
     <p class="note">Rutin olarak tek erişkin doz verin, sonra sayımı tekrarlayın (NICE NG24). Kanaması olmayan hastada profilaktik transfüzyon önerilmez: TTP (yaşamı tehdit eden kanama dışında kontrendike), HIT, İTP, kronik stabil kemik iliği yetmezliği, otolog KHN, aplastik anemi, deng ve trombositopeni/kanama olmadan kalp-damar cerrahisi.</p>
   </section>
@@ -245,8 +245,8 @@ select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     kvc:{t:7.5,h:8,s:'AABB 2023: kalp cerrahisinde 7,5 g/dL eşiği kullanılabilir (TRICS-III).'},
     ort:{t:8,h:8.5,s:'AABB 2023: ortopedi cerrahisi veya önceden kardiyovasküler hastalıkta 8 g/dL (FOCUS).'},
     ami:{t:10,h:10.5,s:'AABB 2025 (Pagano, koşullu öneri): akut MI’da liberal strateji, Hb < 10 g/dL (MINT 2023: 30 günde ölüm veya MI restriktif kolda %16,9, liberal kolda %14,5; RR 1,15, %95 GA 0,99–1,34). NICE 2015: AKS’de eşik 8, hedef 8–10 g/dL.'},
-    gis:{t:7,h:8,s:'ESGE 2021: ≤ 7 g/dL, hedef 7–9 g/dL (Villanueva 2013: restriktif strateji sağkalımı artırdı; varis kanamasında aşırı transfüzyon portal basıncı artırır).'},
-    gisk:{t:8,h:10,s:'ESGE 2021: akut veya kronik KV hastalık öyküsünde ≤ 8 g/dL, hedef ≥ 10 g/dL.'},
+    gis:{t:7,le:true,h:8,s:'ESGE 2021: ≤ 7 g/dL, hedef 7–9 g/dL (Villanueva 2013: restriktif strateji sağkalımı artırdı; varis kanamasında aşırı transfüzyon portal basıncı artırır).'},
+    gisk:{t:8,le:true,h:10,s:'ESGE 2021: akut veya kronik KV hastalık öyküsünde ≤ 8 g/dL, hedef ≥ 10 g/dL.'},
     onk:{t:7,h:7.5,s:'AABB 2023 (koşullu öneri, düşük kesinlik): hematoloji-onkoloji hastasında da < 7 g/dL.'}
   };
   var lastRc=null;
@@ -279,13 +279,13 @@ select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     lastRc=rc;
     var tgt=v('hbt');
     $('rxR').innerHTML='';
-    $('rbn').textContent='< '+fm(R.t);
+    $('rbn').textContent=(R.le?'≤ ':'< ')+fm(R.t);
     var inc=wt>0?70/wt:null;
     $('rbi').textContent=inc?'~'+fm(inc)+' g/dL Hb · ~%'+fm(inc*3,0)+' Hct':'–';
     if(hb===null){$('rbh').textContent='–';pill('rbp','','');$('rbu').textContent='–'}
     else{
       $('rbh').textContent=fm(hb)+' g/dL';
-      var below=hb<R.t;
+      var below=R.le?hb<=R.t:hb<R.t; // ESGE 2021: ≤ 7 / ≤ 8 g/dL
       pill('rbp',below?'Eşiğin altında: transfüzyon düşünün':'Eşiğin üstünde: rutin transfüzyon önerilmez',below?'var(--high)':'var(--ok)');
       if(!below)$('rbu').textContent='gerekmez (eşiğin üstünde)';
       else if(tgt!==null&&inc){
@@ -312,8 +312,8 @@ select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       else pill('ptp','Eşiğin üstünde: profilaksi gerekmez','var(--ok)');
       if(plt<(P.a||P.t)){
         var need=(P.a&&plt>=P.t?P.a:P.t)-plt;
-        var n1=Math.max(1,Math.ceil(need/60-1e-9)),n2=Math.max(1,Math.ceil(need/30-1e-9));
-        li('rxP',plt<P.t?'1 erişkin doz (aferez veya havuz) verin':'Daha yüksek eşiği kullanan kılavuza göre 1 erişkin doz düşünülebilir',(n1===n2?'Eşiği aşmak için ~'+n1+' doz':'Eşiği aşmak için ~'+n1+'–'+n2+' doz')+' gerekebilir (her doz ~30–60 ×10³/µL); rutin olarak birden fazla doz vermeyin, transfüzyondan 10–60 dakika sonra sayımı tekrarlayın. Girişim öncesinde sayımı girişime yakın kontrol edin.');
+        var n1=Math.max(1,Math.ceil(need/40-1e-9)),n2=Math.max(1,Math.ceil(need/20-1e-9));
+        li('rxP',plt<P.t?'1 erişkin doz (aferez veya havuz) verin':'Daha yüksek eşiği kullanan kılavuza göre 1 erişkin doz düşünülebilir',(n1===n2?'Eşiği aşmak için ~'+n1+' doz':'Eşiği aşmak için ~'+n1+'–'+n2+' doz')+' gerekebilir (70 kg erişkinde her doz ~20–40 ×10³/µL); rutin olarak birden fazla doz vermeyin, transfüzyondan 10–60 dakika sonra sayımı tekrarlayın. Girişim öncesinde sayımı girişime yakın kontrol edin.');
       }
       if(plt<10&&$('pi').value!=='hypo')li('rxP','Trombosit < 10 ×10³/µL','Kanama yoksa da profilaktik eşiğin altında.');
     }

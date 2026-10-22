@@ -209,6 +209,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
   function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()})})}
   function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  var bmiD=function(b){return [14,16,18.5].some(function(t){return b<t&&b>=t-0.05})?2:1};
   var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
   var r0=function(x){return fm(Math.round(x),0)};
   function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
@@ -219,9 +220,9 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     document.querySelectorAll('[data-bol]').forEach(function(s){s.hidden=s.dataset.bol!==bol});
     var wt=v('wt'),ht=v('ht'),sx=segVal('sx'),K=v('k'),Na=v('na');
     var okW=wt!==null&&wt>0,okH=ht!==null&&ht>0;
-    var bmi=okW&&okH?Math.round(wt/Math.pow(ht/100,2)*10)/10:null;
+    var bmi=okW&&okH?wt/Math.pow(ht/100,2):null; // eşiklerde yuvarlanmamış değer kullanılır
     var ibw=okH?(sx==='f'?45.5:50)+0.91*(ht-152.4):null;
-    $('bmio').textContent=bmi===null?'–':fm(bmi)+' kg/m²';
+    $('bmio').textContent=bmi===null?'–':fm(bmi,bmiD(bmi))+' kg/m²';
     $('ibwo').textContent=ibw===null?'–':(ibw>0?fm(ibw)+' kg':'boy çok kısa');
 
     // ===== A) İdame sıvı =====
@@ -269,7 +270,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       if(Na!==null&&Na<135)li('rxF','Na < 135 mmol/L','Hipotonik idame (dekstroz payı) hiponatremiyi kötüleştirebilir: izotonik sıvı payını artırın ve hiponatremi nedenini araştırın (Sodyum aracı).');
       if(Na!==null&&Na>145)li('rxF','Na > 145 mmol/L','Serbest su açığını ayrıca hesaplayın (Sodyum aracı); idame sodyumunu azaltın.');
       li('rxF','Alternatif (NICE örneği)','%0,18 NaCl / %4 glukoz + 27 mmol/L K, 25–30 mL/kg/gün (1. gün). Bu hazır karışım Türkiye’de her yerde bulunmayabilir; yukarıdaki %0,9 NaCl + %5 dekstroz birleşimi benzer Na, K ve glukoz sağlar.');
-      li('rxF','İzlem','Her gün klinik durum, sıvı dengesi, kilo; IV tedavi sürüyorsa en az haftada iki kez (gerekirse her gün) Na, K, üre, kreatinin. NICE, uykuyu korumak için idame sıvının gündüz saatlerinde verilmesini de önerir.');
+      li('rxF','İzlem','NICE CG174: IV sıvı sürdükçe başlangıçta en az günde bir klinik sıvı durumu, sıvı dengesi ve laboratuvar (Na, K, Cl, üre, kreatinin); kilo haftada iki kez. Uzun süreli ve stabil hastada izlem sıklığı azaltılabilir (planda belirtin). NICE, uykuyu korumak için idame sıvının gündüz saatlerinde verilmesini de önerir.');
     }
 
     // ===== B) Refeeding =====
@@ -285,7 +286,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     var high=np>=1||ns>=2,extreme=(bmi!==null&&bmi<14)||(days!==null&&days>15);
     var mark=function(id,on){var e=$(id);e.style.fontWeight=on?'700':'';e.style.color=on?'var(--high)':''};
     mark('t-b1',p1);mark('t-b2',s1&&!p1);mark('t-w1',p2);mark('t-w2',s2&&!p2);mark('t-d1',p3);mark('t-d2',s3&&!p3);mark('t-e1',p4);mark('t-h2',s4);
-    $('t-bmi').textContent=bmi===null?'–':fm(bmi);
+    $('t-bmi').textContent=bmi===null?'–':fm(bmi,bmiD(bmi));
     $('t-wl').textContent=wl===null?'–':'%'+fm(wl)+(wprev?' (hesaplanan)':'');
     $('t-d').textContent=days===null?'–':fm(days,0)+' gün';
     $('t-e').textContent=lowE.length?'düşük: '+lowE.join(', '):(K===null&&P===null&&Mg===null?'girilmedi':'normal');
@@ -311,7 +312,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       }
       $('efl').textContent=high?'20–25 mL/kg = '+r0(20*wt)+'–'+r0(25*wt)+' mL/gün':'Yukarıdaki idame bölümü';
       if(high){
-        li('rxR','Beslenmeye en çok '+r0(kcal*wt)+' kcal/gün ile başlayın',(extreme?'Aşırı yüksek risk (VKİ < 14 veya > 15 gün ihmal edilebilir alım): 5 kcal/kg/gün. ':'')+'4–7 günde yavaşça artırarak tam gereksinime ('+kgS(25,35,'kcal/gün')+', 25–35 kcal/kg) ulaşın. Dekstrozlu IV sıvılar da enerji sayılır: 1 L %5 dekstroz = 50 g = 170 kcal.');
+        li('rxR','Beslenmeye en çok '+r0(kcal*wt)+' kcal/gün ile başlayın',(extreme?'Aşırı yüksek risk (VKİ < 14 veya > 15 gün ihmal edilebilir alım): 5 kcal/kg/gün ve sürekli kalp ritmi izlemi (NICE CG32). ':'')+'4–7 günde yavaşça artırarak tam gereksinime ('+kgS(25,35,'kcal/gün')+', 25–35 kcal/kg) ulaşın. Dekstrozlu IV sıvılar da enerji sayılır: 1 L %5 dekstroz = 50 g = 170 kcal.');
         li('rxR','Tiamin 200–300 mg/gün oral, beslenmeden hemen önce ve ilk 10 gün','Ayrıca B kompleks (NICE: vitamin B co strong 1–2 tablet günde 3 kez veya gerekirse tam doz IV B vitamini preparatı) ve günde bir multivitamin/eser element. Ağızdan alamayan hastada IV tiamin; BAPEN 2024 IV 200–300 mg/gün 3 gün (yüksek riskte 5 gün) önerir.');
         li('rxR','Elektrolitler (beslenme öncesi düzey yüksek değilse)','K '+kgS(2,4,'mmol')+'/gün (%7,5 KCl ampul = 10 mmol), fosfat '+fm(0.3*wt,0)+'–'+fm(0.6*wt,0)+' mmol/gün, Mg IV '+fm(0.2*wt,0)+' mmol/gün (%15 MgSO₄ 10 mL ampul = 1,5 g ≈ 6,1 mmol → ≈ '+fm(0.2*wt/6.1)+' ampul) veya oral '+fm(0.4*wt,0)+' mmol/gün. Fosfat ürünlerinin mmol içeriği ve eşlik eden Na/K miktarı ürüne göre değişir: etiketten doğrulayın.');
         if(lowE.length)li('rxR','Beslenme öncesi düşük '+lowE.join(', '),'NICE: beslenme öncesi düzeltme zorunlu değildir; beslenmeyle birlikte yerine koyun ve sık izleyin (Elektrolit Replasmanı aracı). ASPEN: düşük düzeyler standart yaklaşımla yerine konur; ilk 3 gün 12 saatte bir düzey.');

@@ -132,7 +132,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     </div>
     <span class="lbl">Cerrahinin riski (30 gün KV ölüm, MI, inme)</span>
     <div class="seg wrapseg"><button type="button" data-g="sr" data-v="l" aria-pressed="false">Düşük &lt; %1</button><button type="button" data-g="sr" data-v="i" aria-pressed="false">Orta %1–5</button><button type="button" data-g="sr" data-v="h" aria-pressed="true">Yüksek &gt; %5</button></div>
-    <p class="note">Düşük: meme, diş, tiroid, göz, küçük jinekolojik/ortopedik/ürolojik girişim. Orta: intraperitoneal (kolesistektomi, hiatus hernisi, splenektomi), karotis girişimi, baş-boyun, majör nörolojik/ortopedik (kalça, omurga), renal nakil. Yüksek: aort ve majör vasküler, açık alt ekstremite revaskülarizasyonu, pnömonektomi, özofajektomi, pankreatoduodenektomi, karaciğer rezeksiyonu, total sistektomi, adrenalektomi (ESC 2022 tablo 5’ten seçme).</p>
+    <p class="note">Düşük: meme, diş, tiroid, göz, küçük jinekolojik/ortopedik/ürolojik girişim. Orta: intraperitoneal (kolesistektomi, hiatus hernisi, splenektomi), asemptomatik karotis (endarterektomi veya stent), semptomatik karotis endarterektomisi, EVAR, baş-boyun, majör nörolojik/ortopedik (kalça, omurga), renal nakil. Yüksek: aort ve majör vasküler, semptomatik karotis stentlemesi, açık alt ekstremite revaskülarizasyonu, pnömonektomi, özofajektomi, pankreatoduodenektomi, karaciğer rezeksiyonu, total sistektomi, adrenalektomi (ESC 2022 tablo 5’ten seçme).</p>
     <span class="lbl">Bilinen KV hastalık veya KV risk faktörü</span>
     <div class="seg"><button type="button" data-g="rf" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="rf" data-v="1" aria-pressed="true">Var</button></div>
     <p class="note">Risk faktörü: hipertansiyon, dislipidemi, sigara, diyabet, KBH vb. RCRI’de işaretli kalp/serebrovasküler madde varsa “Var” kabul edilir.</p>
@@ -177,8 +177,10 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
 
     // ESC 2022
     var age=v('age'),sr=segVal('sr'),rf=segVal('rf')==='1'||$('ihd').checked||$('hf').checked||$('cvd').checked,fc=segVal('fc'),ac=segVal('ac')==='1';
+    if(age!==null&&age<=0)age=null;
     var old=age!==null&&age>=65,grp=(old||rf)?'b':'a';
     $('rx').innerHTML='';
+    if(!ac&&!rf&&age===null){pill('gp','','');li('Yaşı girin','KV hastalık veya risk faktörü yokken ESC 2022 önerileri yaşa göre değişir (≥ 65 yaş; yüksek riskli cerrahide ≥ 45 yaş).');return;}
     if(ac){pill('gp','Acil cerrahi: ertelemeyin','var(--high)');
       li('Kardiyak testler ameliyatı geciktirmemeli','Zaman kritik cerrahide ek değerlendirme yapmadan ilerleyin; mevcut kardiyak tedaviyi sürdürün, ameliyat sonrası troponin izlemi ve yakın takip planlayın.');
       if(grp==='b'&&sr!=='l')li('Ameliyat öncesi hs-cTn ve 24 + 48. saat hs-cTn (I B)','Bilinen KVH, KV risk faktörü veya ≥ 65 yaş; ameliyat sonrası miyokard hasarını saptamak için.');

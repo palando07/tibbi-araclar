@@ -223,8 +223,8 @@ input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline
     r.src=i;
     r.els.forEach(function(el,j){
       if(j===i)return;
-      if(b===null){if(r.els[i].value==='')el.value='';return}
-      var y=fromBase(r,j,b);el.value=y>=0?raw(y,r.u[j][2]):'';
+      // Geçersiz/negatif değer: diğer kutular boşalır (eski sonuç kalmasın)
+      if(b===null)el.value='';else{var y=fromBase(r,j,b);el.value=y>=0?raw(y,r.u[j][2]):''}
       if(e&&e.isTrusted&&el.hasAttribute('data-hasta'))hastaYaz(el.getAttribute('data-hasta'),el.value)});
     ozet()}
 
@@ -276,7 +276,7 @@ input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline
     if(x!==null){mmol=tSrc==='t-meq'?x/t.val:tSrc==='t-mmol'?x:tSrc==='t-mg'?x/t.ma:x*mgml/t.ma}
     var vals={'t-meq':mmol===null?null:mmol*t.val,'t-mmol':mmol,'t-mg':mmol===null?null:mmol*t.ma,'t-ml':mmol===null?null:mmol*t.ma/mgml};
     var dec={'t-meq':2,'t-mmol':2,'t-mg':1,'t-ml':2};
-    TI.forEach(function(id){if(id===tSrc)return;if(vals[id]===null){if($(tSrc).value==='')$(id).value='';return}$(id).value=raw(vals[id],dec[id])});
+    TI.forEach(function(id){if(id===tSrc)return;$(id).value=vals[id]===null?'':raw(vals[id],dec[id])});
     $('t-mlu').textContent='mL (%'+fm(c,1)+')';
     $('t-ma').textContent=fm(t.ma,2)+' g/mol';
     $('t-val').textContent=String(t.val)+(t.val===2?' (1 mmol = 2 mEq)':' (1 mmol = 1 mEq)');
