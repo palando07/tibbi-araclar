@@ -299,6 +299,37 @@
     }, {threshold: 0}).observe(sonuc);
   }
 
+  // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
+  var SURUM = 'v42', GB_ADRES = 'blgnonur97@gmail.com';
+  var kap = document.querySelector('.wrap');
+  if (kap && bu !== 'nobet-listesi') {
+    var cssG = document.createElement('style');
+    cssG.textContent = '.gb{display:flex;flex-direction:column;gap:8px;margin-top:4px}.gb>button{align-self:center;border:0;background:none;color:var(--muted);font:500 .88rem var(--font-body);text-decoration:underline;cursor:pointer;padding:8px}' +
+      '.gb textarea{font:400 1rem var(--font-body);padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);min-height:90px;resize:vertical;width:100%;box-sizing:border-box}' +
+      '.gb .gbk{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}.gb .gbk p{margin:0;font-size:.85rem;color:var(--muted)}' +
+      '.gb .gbd{display:flex;flex-wrap:wrap;gap:8px}.gb a.gbm{background:var(--accent);color:#fff;border:1px solid var(--accent);text-decoration:none;font:600 .9rem var(--font-body);padding:8px 16px;border-radius:999px}' +
+      '.gb button:focus-visible,.gb a:focus-visible,.gb textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}';
+    document.head.appendChild(cssG);
+    var gb = document.createElement('section'); gb.className = 'gb'; gb.setAttribute('aria-label', 'Geri bildirim');
+    var ac = document.createElement('button'); ac.type = 'button'; ac.textContent = 'Hata mı gördünüz? Geri bildirim gönderin';
+    var kutu = document.createElement('div'); kutu.className = 'gbk'; kutu.hidden = true;
+    var aracAd = AN[bu] || (bu === 'index' || bu === '' ? 'Menü' : document.title);
+    kutu.innerHTML = '<strong>Geri bildirim</strong><p>Hasta adı, TC no veya hastayı tanıtacak bilgi yazmayın.</p>';
+    var ta = document.createElement('textarea'); ta.setAttribute('aria-label', 'Geri bildiriminiz'); ta.placeholder = 'Ne fark ettiniz? (yanlış sonuç, eksik bilgi, öneri…)';
+    var dd = document.createElement('div'); dd.className = 'gbd';
+    var mail = document.createElement('a'); mail.className = 'gbm'; mail.textContent = 'E-posta ile gönder';
+    var kb = document.createElement('button'); kb.type = 'button'; kb.className = 'copy'; kb.textContent = 'Kopyala';
+    function metin(){ return 'Vizit geri bildirim\nAraç: ' + aracAd + ' (' + (bu || 'index') + ')\nSürüm: ' + SURUM + '\n\n' + ta.value.trim(); }
+    function guncelle(){ mail.href = 'mailto:' + GB_ADRES + '?subject=' + encodeURIComponent('Vizit geri bildirim: ' + aracAd) + '&body=' + encodeURIComponent(metin()); }
+    ta.addEventListener('input', guncelle); guncelle();
+    kb.addEventListener('click', function(){ copy(metin(), kb); });
+    ac.addEventListener('click', function(){ kutu.hidden = !kutu.hidden; if (!kutu.hidden) ta.focus(); });
+    dd.appendChild(mail); dd.appendChild(kb);
+    kutu.appendChild(ta); kutu.appendChild(dd);
+    gb.appendChild(ac); gb.appendChild(kutu);
+    kap.appendChild(gb);
+  }
+
   // Geri bağlantısında küçük nabız işareti (logo ile uyumlu)
   document.querySelectorAll('a.back').forEach(function(a){
     if (a.textContent.trim() !== '← Vizit') return;
