@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Üst GİS Kanaması</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.rel{display:flex;flex-wrap:wrap;gap:8px}
+.rel a{color:var(--accent);font-weight:600;font-size:.88rem;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--surface)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Üst GİS Kanaması</h1>
+    <p>Resüsitasyon ve transfüzyon eşiği, endoskopi zamanlaması, PPI ve eritromisin, Forrest sınıflaması, antitrombotik yönetimi; varis kanamasında vazoaktif ilaç, antibiyotik ve preemptif TIPS</p>
+  </header>
+
+  <div class="rel"><a href="glasgow-blatchford.html">Glasgow-Blatchford skoru →</a><a href="child-pugh.html">Child-Pugh →</a><a href="siroz-asit.html">Siroz ve asit →</a></div>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="8.4"></div>
+      <div class="field"><label for="hr">Nabız <span>/dk</span></label><input id="hr" data-hasta="nabiz" type="number" inputmode="numeric" step="1" value="108"></div>
+      <div class="field"><label for="sbp">Sistolik KB <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="numeric" step="1" value="96"></div>
+      <div class="field"><label for="gbs">Glasgow-Blatchford <span>0–23</span></label><input id="gbs" type="number" inputmode="numeric" step="1" value="9"></div>
+    </div>
+    <p class="note">GBS’yi bilmiyorsanız <a href="glasgow-blatchford.html" style="color:var(--accent)">Glasgow-Blatchford</a> aracında hesaplayın; boş bırakılabilir.</p>
+    <span class="lbl">Akut veya kronik kardiyovasküler hastalık</span>
+    <div class="seg"><button type="button" data-g="cvd" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="cvd" data-v="1" aria-pressed="false">Var</button></div>
+    <span class="lbl">Kanama kaynağı</span>
+    <div class="seg"><button type="button" data-g="tip" data-v="nv" aria-pressed="true">Varis dışı (peptik)</button><button type="button" data-g="tip" data-v="v" aria-pressed="false">Varis şüphesi</button></div>
+    <p class="note">Bilinen veya şüphelenilen sirozda ve portal hipertansiyonda kaynak kesinleşene kadar varis şüphesi gibi davranın: vazoaktif ilaç ve antibiyotik başvuruda başlanır (Baveno VII; AASLD 2024).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>İlk değerlendirme ve resüsitasyon</h2>
+    <span class="lbl">Hemodinami</span>
+    <div class="res"><span class="pill" id="hdp"></span></div>
+    <div class="sub"><span>Nabız / sistolik KB</span><b id="hdo">–</b></div>
+    <span class="lbl">Eritrosit transfüzyonu</span>
+    <div class="res"><span class="num" id="hbo">–</span><span class="of">g/dL</span><span class="pill" id="trp"></span></div>
+    <div class="sub"><span>Transfüzyon eşiği</span><b id="thr">–</b></div>
+    <div class="sub"><span>Hedef Hb</span><b id="tgt">–</b></div>
+    <div class="sub"><span>Glasgow-Blatchford</span><b id="gbo">–</b></div>
+    <ol class="rec" id="rx0"></ol>
+  </section>
+
+  <section class="card nv" aria-live="polite">
+    <h2>Endoskopi öncesi (varis dışı)</h2>
+    <div class="res"><span class="pill" id="enp"></span></div>
+    <ol class="rec" id="rx1"></ol>
+  </section>
+
+  <section class="card nv">
+    <h2>Endoskopik bulgu: Forrest</h2>
+    <div class="seg wrapseg"><button type="button" data-g="fr" data-v="Ia" aria-pressed="false">Ia</button><button type="button" data-g="fr" data-v="Ib" aria-pressed="false">Ib</button><button type="button" data-g="fr" data-v="IIa" aria-pressed="true">IIa</button><button type="button" data-g="fr" data-v="IIb" aria-pressed="false">IIb</button><button type="button" data-g="fr" data-v="IIc" aria-pressed="false">IIc</button><button type="button" data-g="fr" data-v="III" aria-pressed="false">III</button></div>
+    <table class="t" id="frt">
+      <thead><tr><th>Forrest</th><th>Yeniden kanama*</th><th>Endoskopik tedavi</th></tr></thead>
+      <tbody>
+        <tr data-f="Ia"><td>Ia <small>fışkıran (arteriyel)</small></td><td>~%55<small>aktif kanama, Ia+Ib</small></td><td>Evet</td></tr>
+        <tr data-f="Ib"><td>Ib <small>sızan</small></td><td>~%55<small>aktif kanama, Ia+Ib</small></td><td>Evet</td></tr>
+        <tr data-f="IIa"><td>IIa <small>kanamayan görünür damar</small></td><td>~%43</td><td>Evet</td></tr>
+        <tr data-f="IIb"><td>IIb <small>yapışık pıhtı</small></td><td>~%22</td><td>Pıhtı kaldırma düşünülebilir</td></tr>
+        <tr data-f="IIc"><td>IIc <small>düz pigmente leke</small></td><td>~%10</td><td>Hayır</td></tr>
+        <tr data-f="III"><td>III <small>temiz taban</small></td><td>~%5</td><td>Hayır</td></tr>
+      </tbody>
+    </table>
+    <p class="note">*Endoskopik tedavi yapılmadan yeniden kanama oranları (Laine ve Peterson 1994 derlemesi); yaklaşık değerlerdir, güncel tedaviyle oranlar daha düşüktür.</p>
+  </section>
+
+  <section class="card nv" aria-live="polite">
+    <h2>Forrest’e göre tedavi ve PPI</h2>
+    <div class="res"><span class="pill" id="frp"></span></div>
+    <div class="sub"><span>Yeniden kanama riski (tedavisiz)</span><b id="fro">–</b></div>
+    <ol class="rec" id="rx2"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Antitrombotik ilaç</h2>
+    <div class="seg wrapseg"><button type="button" data-g="at" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="at" data-v="asa" aria-pressed="true">Aspirin</button><button type="button" data-g="at" data-v="dapt" aria-pressed="false">İkili antiplatelet</button><button type="button" data-g="at" data-v="vka" aria-pressed="false">Varfarin</button><button type="button" data-g="at" data-v="doac" aria-pressed="false">DOAK</button></div>
+    <ol class="rec" id="rx3" aria-live="polite"></ol>
+    <p class="note">Ayrıntılı kesme ve yeniden başlama için <a href="antikoagulan-kesme.html" style="color:var(--accent)">Antikoagülan kesme</a> aracına bakın.</p>
+  </section>
+
+  <section class="card vr">
+    <h2>Vazoaktif ilaç (varis şüphesi)</h2>
+    <table class="t">
+      <thead><tr><th>İlaç</th><th>Doz</th><th>Günlük</th></tr></thead>
+      <tbody>
+        <tr><td>Terlipressin <small>ilk 24–48 saat</small></td><td>2 mg IV 4 saatte bir<small>AASLD: 4–6 saatte bir</small></td><td>12 mg/gün<small>4 saatte bir</small></td></tr>
+        <tr><td>Terlipressin <small>sonra, kanama kontrol altında</small></td><td>1 mg IV 4 saatte bir<small>AASLD: 4–6 saatte bir</small></td><td>6 mg/gün</td></tr>
+        <tr><td>Somatostatin</td><td>250 mcg IV bolus + 250 mcg/saat<small>AASLD: 250–500 mcg/saat</small></td><td>6 mg/gün<small>infüzyon</small></td></tr>
+        <tr><td>Oktreotid</td><td>50 mcg IV bolus + 50 mcg/saat<small>AASLD: 25–50 mcg/saat</small></td><td>1,2 mg/gün<small>infüzyon</small></td></tr>
+      </tbody>
+    </table>
+    <ul class="chk">
+      <li>Varis kanamasından şüphelenilir şüphelenilmez, endoskopiden önce başlayın; tanı doğrulanırsa 2–5 gün sürdürün (Baveno VII; AASLD 2024).</li>
+      <li>Terlipressinde sodyumu izleyin (hiponatremi, özellikle karaciğer işlevi korunmuş hastada); iskemik kalp hastalığı, periferik arter hastalığı ve aritmide dikkat.</li>
+      <li>TIPS yapılmayan hastada vazoaktif ilaç kesilince non-selektif beta bloker başlayın (AASLD 2024).</li>
+    </ul>
+  </section>
+
+  <section class="card vr" aria-live="polite">
+    <h2>Varis kanaması yönetimi</h2>
+    <div class="res"><span class="pill" id="vrp"></span></div>
+    <ol class="rec" id="rx4"></ol>
+  </section>
+
+  <section class="card vr">
+    <h2>Preemptif TIPS</h2>
+    <div class="grid">
+      <div class="field"><label for="ctp">Child-Pugh puanı <span>5–15</span></label><input id="ctp" type="number" inputmode="numeric" step="1" value="10"></div>
+    </div>
+    <span class="lbl">İlk endoskopide aktif kanama</span>
+    <div class="seg"><button type="button" data-g="ab" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="ab" data-v="1" aria-pressed="true">Var</button></div>
+    <span class="lbl">HVPG &gt; 20 mmHg (ölçüldüyse)</span>
+    <div class="seg"><button type="button" data-g="hv" data-v="0" aria-pressed="true">Bilinmiyor / hayır</button><button type="button" data-g="hv" data-v="1" aria-pressed="false">Evet</button></div>
+    <p class="note">Child-Pugh puanını <a href="child-pugh.html" style="color:var(--accent)">Child-Pugh</a> aracında hesaplayabilirsiniz.</p>
+  </section>
+
+  <section class="card vr" aria-live="polite">
+    <h2>TIPS kararı</h2>
+    <div class="res"><span class="num" id="cpo">–</span><span class="of" id="cpc"></span><span class="pill" id="tpp"></span></div>
+    <ol class="rec" id="rx5"></ol>
+  </section>
+
+  <p class="note">Kaynaklar: Gralnek IM ve ark. ESGE varis dışı üst GİS kanaması kılavuzu güncellemesi 2021, Endoscopy 2021;53:300–32, doi:10.1055/a-1369-5274 (GBS ≤ 1 ayaktan izlem, Hb ≤ 7 g/dL eşiği ve 7–9 hedef, kardiyovasküler hastalıkta ≤ 8 eşiği ve ≥ 10 hedef, endoskopi öncesi yüksek doz IV PPI, eritromisin 250 mg 30–120 dk önce, ≤ 24 saatte endoskopi, ≤ 12 saatte ivedi endoskopi önerilmez, Forrest’e göre endoskopik tedavi, 80 mg + 8 mg/saat 72 saat PPI veya günde iki kez bolus/oral, aspirin, ikili antiplatelet, VKA ve DOAK yönetimi, antikoagülanı ≤ 7 gün içinde yeniden başlama); Laine L ve ark. ACG 2021 üst GİS ve ülser kanaması kılavuzu, Am J Gastroenterol 2021;116:899–917, doi:10.14309/ajg.0000000000001245 (GBS 0–1 taburcu, Hb 7 g/dL eşiği, eritromisin, 24 saat içinde endoskopi, 3 gün yüksek doz PPI ardından 2 hafta günde iki kez oral PPI); Laine L, Peterson WL. N Engl J Med 1994;331:717–27 (Forrest’e göre yeniden kanama oranları); Lau JYW ve ark. N Engl J Med 2020;382:1299–308 (GBS ≥ 12’de 6 saat içinde endoskopinin üstünlüğü yok); HALT-IT, Lancet 2020;395:1927–36 (traneksamik asit); de Franchis R ve ark. Baveno VII, J Hepatol 2022;76:959–74, doi:10.1016/j.jhep.2021.12.022 (Hb hedefi 7–8 g/dL, vazoaktif ilaç 2–5 gün, seftriakson 1 g/24 saat, 12 saat içinde endoskopi, eritromisin 250 mg, EBL, preemptif TIPS: Child-Pugh C &lt; 14 veya B &gt; 7 + aktif kanama veya HVPG &gt; 20, 72 saat içinde ideal &lt; 24 saat, PPI’nin endoskopiden sonra kesilmesi, TDP önerilmez, laktuloz); Kaplan DE ve ark. AASLD 2024 portal hipertansiyon ve varis rehberi, Hepatology 2024;79:1180–211, doi:10.1097/HEP.0000000000000647 (terlipressin 2 mg 4–6 saatte bir 24–48 saat sonra 1 mg, somatostatin 250 mcg + 250–500 mcg/saat, oktreotid 50 mcg + 25–50 mcg/saat, seftriakson en çok 5 gün, Hb ~7 g/dL, 12 saat içinde endoskopi, preemptif TIPS CTP B &gt; 7 + aktif kanama veya C 10–13, balon tamponadı en çok 24 saat); de Franchis R, Baveno VI, J Hepatol 2015;63:743–52 (antibiyotik profilaksisi en çok 7 gün). Bu araç klinik karar desteği içindir; endoskopi, girişimsel radyoloji ve cerrahi kararları ilgili ekiple birlikte verilmelidir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+
+  var FR={
+    Ia:{r:'~%55 (aktif kanama)',hi:true,t:'Endoskopik hemostaz: epinefrin enjeksiyonu + ikinci yöntem',a:'Aktif kanayan ülserde epinefrin enjeksiyonu ile birlikte temaslı termal veya mekanik (klips) tedavi (ESGE 2021, güçlü öneri). Epinefrin tek başına yeterli değildir. Standart yöntemlere dirençli kanamada topikal hemostatik toz veya kapak üstü klips (OTSC) düşünülebilir.'},
+    Ib:{r:'~%55 (aktif kanama)',hi:true,t:'Endoskopik hemostaz: epinefrin enjeksiyonu + ikinci yöntem',a:'Sızan kanamada da Ia gibi kombine tedavi: epinefrin + temaslı termal veya mekanik (ESGE 2021). Dirençli kanamada topikal hemostatik toz veya kapak üstü klips düşünülebilir.'},
+    IIa:{r:'~%43',hi:true,t:'Endoskopik hemostaz: termal, mekanik veya sklerozan',a:'Kanamayan görünür damarda temaslı/temassız termal, mekanik (klips) veya sklerozan enjeksiyon; tek başına ya da epinefrinle birlikte (ESGE 2021, güçlü öneri).'},
+    IIb:{r:'~%22',hi:true,t:'Pıhtının endoskopik olarak kaldırılması düşünülebilir',a:'Pıhtı kaldırıldıktan sonra altta aktif kanama veya görünür damar varsa endoskopik hemostaz uygulanır. Endoskopik tedavi yapılmayan yapışık pıhtıda da yüksek doz PPI verilir (ESGE 2021).'},
+    IIc:{r:'~%10',hi:false,t:'Endoskopik hemostaz önerilmez',a:'Düşük riskli bulgu. Oral PPI (standart doz) yeterlidir; seçilmiş hastada erken taburculuk düşünülebilir (ESGE 2021).'},
+    III:{r:'~%5',hi:false,t:'Endoskopik hemostaz önerilmez',a:'Temiz tabanlı ülser: oral PPI (standart doz), uygun hastada erken taburculuk (ESGE 2021).'}
+  };
+
+  function calc(){
+    var hb=v('hb'),hr=v('hr'),sbp=v('sbp'),gbs=v('gbs'),cvd=segVal('cvd')==='1',tip=segVal('tip');
+    var nv=tip==='nv';
+    document.querySelectorAll('.nv').forEach(function(e){e.hidden=!nv});
+    document.querySelectorAll('.vr').forEach(function(e){e.hidden=nv});
+
+    // 1) Hemodinami
+    var hypo=sbp!==null&&sbp<90,tachy=hr!==null&&hr>=100;
+    $('hdo').textContent=(hr!==null?fm(hr,0)+' /dk':'–')+' · '+(sbp!==null?fm(sbp,0)+' mmHg':'–');
+    if(hr===null&&sbp===null)pill('hdp','','');
+    else if(hypo)pill('hdp','Hipotansiyon (SKB < 90)'+(tachy?' + taşikardi':''),'var(--high)');
+    else if(tachy)pill('hdp','Taşikardi (nabız ≥ 100)','var(--warn)');
+    else pill('hdp','Belirgin hipotansiyon/taşikardi yok','var(--ok)');
+
+    // 2) Transfüzyon
+    $('rx0').innerHTML='';
+    var thr,tgt,trig;
+    if(nv&&!cvd){thr='≤ 7 g/dL';tgt='7–9 g/dL';trig=hb!==null&&hb<=7}
+    else if(nv){thr='≤ 8 g/dL';tgt='≥ 10 g/dL';trig=hb!==null&&hb<=8}
+    else{thr='< 7 g/dL';tgt='7–8 g/dL';trig=hb!==null&&hb<7}
+    $('thr').textContent=thr+(nv?(cvd?' (KV hastalık, ESGE)':' (ESGE, ACG)'):' (Baveno VII, AASLD)');
+    $('tgt').textContent=tgt+(!nv&&cvd?' (KV hastalıkta bireysel)':'');
+    $('hbo').textContent=hb===null?'–':fm(hb);
+    if(hb===null)pill('trp','','');
+    else if(hypo)pill('trp',trig?'Transfüzyon önerilir':'Hb eşiği tek ölçüt değil: dengesiz hasta','var(--high)');
+    else if(trig)pill('trp','Transfüzyon önerilir','var(--high)');
+    else pill('trp','Eşiğin üstünde: transfüzyon gerekmiyor','var(--ok)');
+
+    li('rx0','İki geniş çaplı periferik damar yolu, kan grubu ve çapraz karşılaştırma','Hemogram, BUN/üre, kreatinin, INR, karaciğer testleri. Hemodinami dengesizse hemen kristaloid ile volüm replasmanı (ESGE 2021); varis şüphesinde hedef doku perfüzyonunu korumak, aşırı volümden kaçınmak (Baveno VII).');
+    if(nv){
+      if(cvd)li('rx0','Kardiyovasküler hastalıkta daha liberal strateji','Hemodinamik olarak stabil hastada Hb ≤ 8 g/dL ise eritrosit transfüzyonu; transfüzyon sonrası hedef ≥ 10 g/dL (ESGE 2021).');
+      else li('rx0','Kısıtlayıcı transfüzyon','Hemodinamik olarak stabil hastada Hb ≤ 7 g/dL ise eritrosit transfüzyonu; transfüzyon sonrası hedef 7–9 g/dL (ESGE 2021; ACG 2021 eşik 7 g/dL).');
+    }else{
+      li('rx0','Kısıtlayıcı transfüzyon (varis)','Hb 7–8 g/dL arasında tutulur (Baveno VII); AASLD 2024 hedef yaklaşık 7 g/dL. Fazla transfüzyon portal basıncı artırıp yeniden kanamaya yol açabilir. Kardiyovasküler hastalık, yaş, hemodinami ve süren kanama da hesaba katılır.');
+      li('rx0','Taze donmuş plazma ve trombosit INR veya trombosit sayısına göre verilmez','Sirozda INR hemostazı yansıtmaz; TDP volüm yükü ve portal basınç artışı yapabilir (Baveno VII; AASLD 2024). Traneksamik asit ve rekombinan faktör VIIa önerilmez.');
+    }
+    if(hypo)li('rx0','Hemodinami dengesiz','Hb eşikleri hemodinamik olarak stabil hastalar içindir; süren kanama ve şokta Hb düşüşü gecikir, transfüzyonu klinik tabloya göre başlatın ve masif kanama protokolünü düşünün. Yoğun bakım değerlendirmesi.');
+    if(trig&&!hypo)li('rx0','Tek ünite verip yeniden değerlendirin','Bir ünite eritrosit süspansiyonu Hb’yi yaklaşık 1 g/dL artırır; her üniteden sonra Hb ve klinik tabloyu yeniden değerlendirin.');
+
+    if(gbs===null)$('gbo').textContent='girilmedi';
+    else{$('gbo').textContent=fm(gbs,0)+(gbs<=1?' (çok düşük risk)':'');}
+    if(gbs!==null&&gbs<=1&&nv)li('rx0','GBS ≤ 1: ayaktan izlem uygun','Yeniden kanama, 30 günlük ölüm ve hastane girişimi gereksinimi çok düşük; ayaktan endoskopi ile taburcu edilebilir (ESGE 2021, güçlü öneri; ACG 2021 GBS 0–1).');
+    else if(gbs!==null&&gbs<=1)li('rx0','GBS ≤ 1, ancak varis şüphesi var','Sirozda ve varis kanaması şüphesinde ayaktan izlem önerilmez: yatırın, vazoaktif ilaç ve antibiyotik başlayın, 12 saat içinde endoskopi.');
+    else if(gbs!==null)li('rx0','GBS ≥ 2: yatış','Hastaneye yatırın; endoskopi zamanlaması aşağıda.');
+
+    // 3) Endoskopi öncesi (varis dışı)
+    $('rx1').innerHTML='';
+    pill('enp','Resüsitasyondan sonra ≤ 24 saatte endoskopi','var(--warn)');
+    li('rx1','Endoskopi: resüsitasyondan sonra 24 saat içinde','≤ 12 saatte ivedi endoskopi, 24 saat içindeki erken endoskopiye göre sonucu iyileştirmez ve rutin önerilmez; ≤ 6 saatte endoskopi daha kötü sonuçla ilişkili olabilir (ESGE 2021). GBS ≥ 12 hastalarda bile 6 saat içinde endoskopinin üstünlüğü yoktur (Lau 2020); bu çalışma resüsitasyona yanıt vermeyen dengesiz hastaları dışlamıştır, onlarda zamanlama endoskopi ve girişimsel radyoloji ile bireysel belirlenir.');
+    li('rx1','Yüksek doz IV PPI: ör. pantoprazol veya esomeprazol 80 mg IV bolus','Endoskopi öncesi düşünülebilir; endoskopiyi geciktirmemelidir (ESGE 2021, zayıf öneri). ACG 2021 endoskopi öncesi PPI için öneri vermez.');
+    li('rx1','Eritromisin 250 mg IV, endoskopiden 30–120 dk önce','Ağır veya süren kanamada mide görüşünü iyileştirir, ikinci endoskopi gereksinimini azaltır (ESGE 2021; ACG 2021). QT uzamasında kullanmayın.');
+    li('rx1','Traneksamik asit önerilmez','HALT-IT çalışmasında ölümü azaltmadı, venöz tromboembolik olayları artırdı.');
+    if(hypo)li('rx1','Dengesiz hastada','Hava yolu güvenliği (aktif hematemez, bilinç bozukluğu), yoğun bakım, erken gastroenteroloji ve girişimsel radyoloji haberi.');
+
+    // 4) Forrest
+    $('rx2').innerHTML='';
+    var fr=segVal('fr'),F=FR[fr];
+    document.querySelectorAll('#frt tbody tr').forEach(function(r){r.classList.toggle('cur',r.dataset.f===fr)});
+    $('fro').textContent=F.r;
+    pill('frp','Forrest '+fr+(F.hi?': yüksek risk':': düşük risk'),F.hi?'var(--high)':'var(--ok)');
+    li('rx2',F.t,F.a);
+    if(F.hi){
+      li('rx2','Yüksek doz PPI 72 saat: 80 mg IV bolus + 8 mg/saat infüzyon','72 saatte infüzyonla 576 mg (bolus dahil 656 mg). Alternatif: IV bolus günde iki kez (ör. 40 mg IV 2×1) veya yüksek doz oral PPI günde iki kez (ESGE 2021). Endoskopik hemostaz yapılan ve tedavi edilmeyen IIb hastalarda.');
+      li('rx2','Sonra oral PPI günde iki kez, ilk 2 hafta','Ardından günde bir kez; süre ülserin nedenine göre (ACG 2021).');
+      li('rx2','Yeniden kanamada','Tekrar endoskopi; kapak üstü klips (OTSC) düşünülebilir. İkinci endoskopik deneme başarısızsa transkateter anjiyografik embolizasyon, yapılamıyorsa ya da başarısızsa cerrahi (ESGE 2021). Rutin ikinci bakış endoskopisi önerilmez.');
+    }else li('rx2','Oral PPI günde bir kez','Yüksek doz IV PPI gerekmez.');
+    li('rx2','Helicobacter pylori','Peptik ülser kanamasında test edin ve pozitifse eradike edin; akut dönemde negatif sonuç yanlış negatif olabilir, testi sonra tekrarlayın. NSAİİ’yi kesin.');
+
+    // 5) Antitrombotik
+    $('rx3').innerHTML='';
+    var at=segVal('at');
+    if(at==='0')li('rx3','Antitrombotik ilaç yok','—');
+    else if(at==='asa'){
+      li('rx3','Sekonder korumada düşük doz aspirini kesmeyin','Herhangi bir nedenle kesildiyse en kısa sürede, tercihen 3–5 gün içinde yeniden başlayın (ESGE 2021, güçlü öneri).');
+      li('rx3','Primer korumada aspirin','Kesin ve endikasyonunu yeniden değerlendirin.');
+    }else if(at==='dapt'){
+      li('rx3','Aspirine devam, ikinci antiplateleti (P2Y12) kesin','P2Y12 inhibitörünü en kısa sürede, tercihen 5 gün içinde yeniden başlayın; kardiyoloji ile birlikte karar verin (ESGE 2021). Süren ikili antiplatelet tedavisinde PPI eklenir.');
+    }else if(at==='vka'){
+      li('rx3','Varfarini kesin','Hemodinami dengesizse düşük doz IV K vitamini + IV protrombin kompleks konsantresi (PKK); PKK yoksa TDP. Bu işlem endoskopiyi geciktirmemelidir (ESGE 2021).');
+      li('rx3','Yeniden başlama','Kanama kontrol altına alınınca, tromboembolik riske göre tercihen 7 gün içinde ya da hemen sonrasında (ESGE 2021).');
+    }else{
+      li('rx3','DOAK’ı kesin, endoskopiyi geciktirmeyin','Ağır, süren kanamada DOAK antidotu (dabigatran için idarusizumab; anti-Xa için andeksanet alfa) veya IV PKK düşünülmeli (ESGE 2021).');
+      li('rx3','Yeniden başlama','Kanama kontrol altına alınınca, tromboembolik riske göre tercihen 7 gün içinde ya da hemen sonrasında; DOAK’ların etkisinin VKA’dan çok daha hızlı başladığını hesaba katın (ESGE 2021).');
+    }
+    if(at!=='0'&&!nv)li('rx3','Varis kanamasında antikoagülan','Kanama kontrol altına alınana kadar geçici olarak kesin; kesme süresi endikasyonun gücüne göre bireyselleştirilir (Baveno VII).');
+
+    // 6) Varis
+    $('rx4').innerHTML='';
+    pill('vrp','Endoskopi: resüsitasyondan sonra ≤ 12 saat','var(--high)');
+    li('rx4','Vazoaktif ilaç hemen, 2–5 gün','Terlipressin 2 mg IV 4 saatte bir (24–48 saat) sonra 1 mg; ya da somatostatin 250 mcg bolus + 250 mcg/saat; ya da oktreotid 50 mcg bolus + 50 mcg/saat (tablo yukarıda).');
+    li('rx4','Antibiyotik profilaksisi: seftriakson 1 g IV 24 saatte bir','Başvurudan itibaren tüm sirozlu üst GİS kanamalarında; ileri sirozda ve kinolon direncinin yüksek olduğu yerde seftriakson (Baveno VII). Süre: en çok 7 gün (Baveno VI); AASLD 2024: aktif enfeksiyon yoksa taburculuğa ya da 5 güne kadar, hangisi önceyse. Yerel direnç verisine uyun.');
+    li('rx4','Endoskopi 12 saat içinde; dengesizse güvenli olur olmaz','Özofagus varisinde band ligasyonu (EBL). İzole mide varisi (IGV1) ve kardiyayı aşan GOV2’de doku yapıştırıcısı (siyanoakrilat); GOV1’de EBL veya yapıştırıcı (Baveno VII).');
+    li('rx4','Eritromisin 250 mg IV, endoskopiden 30–120 dk önce','QT uzaması yoksa (Baveno VII; AASLD 2024: 125–250 mg).');
+    li('rx4','Yoğun bakım veya ara yoğun bakım','Bilinç bozukluğu veya aktif hematemezde endoskopi öncesi entübasyon, işlemden sonra en kısa sürede ekstübasyon. Nazogastrik sonda dikkatle (aspirasyon riski).');
+    li('rx4','Endoskopi öncesi başlanan PPI’yi işlemden sonra kesin','Başka kesin endikasyon yoksa (Baveno VII; AASLD 2024).');
+    li('rx4','Hepatik ensefalopati önlemi: laktuloz (oral veya lavman)','Kanın bağırsaktan hızlı uzaklaştırılması için (Baveno VII). Sodyumu izleyin; oral beslenmeye kanama kontrol altına alınınca başlayın.');
+    li('rx4','Kontrastlı BT veya MR','Splanknik ven trombozu, HCC ve portosistemik kollateraller için (Baveno VII).');
+    li('rx4','Dirençli kanama','Kesin tedaviye (PTFE kaplı TIPS) köprü olarak balon tamponadı (en çok 24 saat) veya kendiliğinden genişleyen metal stent; ilaç ve endoskopiye rağmen kontrol edilemeyen kanamada kurtarıcı TIPS.');
+
+    // 7) TIPS
+    $('rx5').innerHTML='';
+    var cp=v('ctp'),ab=segVal('ab')==='1',hv=segVal('hv')==='1';
+    if(cp===null||cp<5||cp>15){$('cpo').textContent='–';$('cpc').textContent='';pill('tpp','','')}
+    else{
+      cp=Math.round(cp);var cls=cp<=6?'A':cp<=9?'B':'C';
+      $('cpo').textContent=cp;$('cpc').textContent='Child-Pugh '+cls;
+      var why=null;
+      if(cp>=14){pill('tpp','TIPS boşuna olabilir','var(--warn)');
+        li('rx5','Child-Pugh ≥ 14','TIPS boşuna olabilir (MELD > 30 ve laktat > 12 mmol/L’de de); kısa sürede karaciğer nakli planlanmıyorsa karar bireysel verilir (Baveno VII).');}
+      else{
+        if(cp>=10)why='Child-Pugh C 10–13';
+        else if(cp>=8&&ab)why='Child-Pugh B > 7 + ilk endoskopide aktif kanama';
+        else if(hv)why='HVPG > 20 mmHg (yalnız Baveno VII)';
+        if(why){pill('tpp','Preemptif TIPS endike','var(--high)');
+          li('rx5','Preemptif TIPS: '+why,'PTFE kaplı stentle, ilk endoskopiden sonra 72 saat içinde, ideal olarak 24 saat içinde; mutlak kontrendikasyon yoksa (Baveno VII; AASLD 2024). TIPS yapılamayan merkezde uygun merkeze nakil.');
+          li('rx5','Kontrendikasyon sayılmaz','ACLF, başvuruda hepatik ensefalopati ve hiperbilirubinemi preemptif TIPS’e engel değildir (Baveno VII).');}
+        else{pill('tpp','Preemptif TIPS ölçütü yok','var(--ok)');
+          li('rx5','Ölçüt karşılanmadı','Ölçütler: Child-Pugh C 10–13 veya Child-Pugh B 8–9 + ilk endoskopide aktif kanama (Baveno VII ve AASLD 2024); Baveno VII’ye göre HVPG > 20 mmHg da yeterlidir. Vazoaktif ilaç + EBL sonrası, ilaç kesilince non-selektif beta bloker + EBL ile ikincil korunma.');}
+      }
+    }
+  }
+  ['cvd','tip','fr','at','ab','hv'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

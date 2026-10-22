@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>4T Skoru (HIT)</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>4T Skoru (HIT)</h1>
+    <p>Heparin ilişkili trombositopenide test öncesi olasılık ve ASH 2018’e göre ilk yaklaşım</p>
+  </header>
+
+  <section class="card">
+    <h2>Trombosit düşüşü <span class="note" style="font-weight:400">(isteğe bağlı)</span></h2>
+    <div class="grid">
+      <div class="field"><label for="pb">Başlangıç <span>×10³/µL</span></label><input id="pb" type="number" inputmode="decimal" step="any" value="240"></div>
+      <div class="field"><label for="pn">En düşük (nadir) <span>×10³/µL</span></label><input id="pn" type="number" inputmode="decimal" step="any" value="95"></div>
+      <div class="field"><label for="pc">Mevcut trombosit <span>×10³/µL</span></label><input id="pc" data-hasta="plt" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+      <div class="field"><label for="kg">Ağırlık <span>kg</span></label><input id="kg" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+    </div>
+    <p class="note">Başlangıç: heparin öncesi ya da düşüşten önceki en yüksek değer. Nadir boşsa veya mevcut değer daha düşükse hesapta mevcut değer kullanılır.</p>
+    <span class="lbl">Son 3 günde cerrahi</span>
+    <div class="seg"><button type="button" data-g="s3" data-v="0" aria-pressed="true">Hayır</button><button type="button" data-g="s3" data-v="1" aria-pressed="false">Evet</button></div>
+    <span class="lbl">Orta–ağır karaciğer yetmezliği</span>
+    <div class="seg"><button type="button" data-g="kc" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="kc" data-v="1" aria-pressed="false">Var</button></div>
+    <div class="sub"><span>Düşüş</span><b id="fall">–</b></div>
+    <div class="sub"><span>Hesaba giren en düşük değer</span><b id="nadir">–</b></div>
+    <p class="note" id="sug"></p>
+  </section>
+
+  <section class="card">
+    <div class="field"><span class="lbl">Trombositopeni</span><div class="items">
+      <label class="item"><input type="radio" name="t" value="2" checked><span class="txt">&gt; %50 düşüş ve nadir ≥ 20 ×10³/µL<small>Değiştirilmiş 4T: son 3 günde cerrahi yoksa</small></span><span class="pts">2</span></label>
+      <label class="item"><input type="radio" name="t" value="1"><span class="txt">%30–50 düşüş veya nadir 10–19 ×10³/µL<small>Değiştirilmiş 4T: son 3 günde cerrahi sonrası &gt; %50 düşüş de 1 puan</small></span><span class="pts">1</span></label>
+      <label class="item"><input type="radio" name="t" value="0"><span class="txt">&lt; %30 düşüş veya nadir &lt; 10 ×10³/µL</span><span class="pts">0</span></label>
+    </div></div>
+    <div class="field"><span class="lbl">Zamanlama (düşüş veya tromboz)</span><div class="items">
+      <label class="item"><input type="radio" name="z" value="2" checked><span class="txt">Açıkça heparinin 5–10. gününde başlangıç<small>ya da son 30 günde heparin almışsa ≤ 1 günde düşüş</small></span><span class="pts">2</span></label>
+      <label class="item"><input type="radio" name="z" value="1"><span class="txt">5–10. günle uyumlu ama net değil (eksik sayımlar)<small>10. günden sonra başlangıç ya da 30–100 gün önce heparin almışsa ≤ 1 günde düşüş</small></span><span class="pts">1</span></label>
+      <label class="item"><input type="radio" name="z" value="0"><span class="txt">≤ 4 günde düşüş, yakın zamanda heparin yok</span><span class="pts">0</span></label>
+    </div></div>
+    <div class="field"><span class="lbl">Tromboz veya diğer sekeller</span><div class="items">
+      <label class="item"><input type="radio" name="o" value="2"><span class="txt">Kanıtlanmış yeni tromboz<small>enjeksiyon yerinde cilt nekrozu, IV heparin bolusu sonrası akut sistemik reaksiyon</small></span><span class="pts">2</span></label>
+      <label class="item"><input type="radio" name="o" value="1"><span class="txt">İlerleyen veya yineleyen tromboz<small>nekrotik olmayan (eritemli) cilt lezyonları, kanıtlanmamış tromboz şüphesi</small></span><span class="pts">1</span></label>
+      <label class="item"><input type="radio" name="o" value="0" checked><span class="txt">Yok</span><span class="pts">0</span></label>
+    </div></div>
+    <div class="field"><span class="lbl">Trombositopeninin diğer nedenleri</span><div class="items">
+      <label class="item"><input type="radio" name="d" value="2"><span class="txt">Belirgin başka neden yok</span><span class="pts">2</span></label>
+      <label class="item"><input type="radio" name="d" value="1" checked><span class="txt">Olası başka neden var<small>sepsis, DIC, ilaç (ör. antibiyotik, GP IIb/IIIa), dilüsyon, kemik iliği baskılanması</small></span><span class="pts">1</span></label>
+      <label class="item"><input type="radio" name="d" value="0"><span class="txt">Kesin başka neden var</span><span class="pts">0</span></label>
+    </div></div>
+    <p class="note">Örnek seçimler işaretlenmiştir. Bilgi eksikse ASH daha yüksek puan yönünde karar vermeyi ve tablo değiştikçe skoru yeniden hesaplamayı önerir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>4T skoru</h2>
+    <div class="res"><span class="num" id="sc">–</span><span class="of">/ 8</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="adv"></p>
+    <div class="sub"><span>Meta-analizde HIT olasılığı</span><b id="ppv">–</b></div>
+    <ol class="rec" id="rx"></ol>
+    <p class="note">0–3 düşük, 4–5 orta, 6–8 yüksek olasılık (Lo 2006). Olasılık değerleri Cuker 2012 meta-analizinden (13 çalışma, 3068 hasta): düşük skorun negatif öngörü değeri %99,8; orta skorun pozitif öngörü değeri %14, yüksek skorun %64.</p>
+  </section>
+
+  <p class="note">Kaynaklar: Lo GK, Juhl D, Warkentin TE ve ark. Evaluation of pretest clinical score (4 T’s) for the diagnosis of heparin-induced thrombocytopenia in two clinical settings. J Thromb Haemost 2006;4:759–65 (4T maddeleri ve 0–3 / 4–5 / 6–8 sınırları); Linkins LA, Bates SM, Lee AY ve ark. J Thromb Haemost 2010;8:1483–5 (değiştirilmiş 4T: son 3 günde cerrahi); Cuker A, Gimotty PA, Crowther MA, Warkentin TE. Blood 2012;120:4160–7 (öngörü değerleri); Cuker A ve ark. American Society of Hematology 2018 guidelines for management of venous thromboembolism: heparin-induced thrombocytopenia. Blood Adv 2018;2:3360–92 ve ASH HIT cep rehberi (4T’nin gestalta tercihi, düşük olasılıkta test ve ampirik tedaviden kaçınma, immünoassay ve fonksiyonel test, heparinin kesilmesi, nonheparin antikoagülanlar, transfüzyon, varfarin, DOAC, kompresyon USG, tedavi süresi); argatroban ABD ürün bilgisi, Pfizer (2 µg/kg/dk, karaciğer yetmezliğinde 0,5 µg/kg/dk, aPTT 1,5–3 kat ve ≤ 100 sn, en çok 10 µg/kg/dk, 1 mg/mL, varfarine geçişte INR &gt; 4); fondaparinuks (Arixtra) ürün bilgisi (VTE tedavi dozları, CrCl &lt; 30 mL/dk’da kontrendike); rivaroksaban ve apiksaban ürün bilgileri (VTE tedavi rejimleri). Türkiye’de argatroban, bivalirudin ve danaparoid erişimi kuruma göre değişir; hastane eczanesinden doğrulayın. Bu araç klinik karar desteği içindir; tanı ve tedavi kararı hekime aittir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function rv(n){var e=document.querySelector('input[name='+n+']:checked');return e?+e.value:0}
+
+  var sonAnahtar=null;
+  function plt(){
+    var b=v('pb'),n=v('pn'),c=v('pc'),s3=segVal('s3')==='1';
+    var ns=[n,c].filter(function(x){return x!==null&&x>=0});
+    var nd=ns.length?Math.min.apply(null,ns):null;
+    if(b===null||b<=0||nd===null){$('fall').textContent='–';$('nadir').textContent='–';$('sug').textContent='Başlangıç ve en düşük trombosit girilirse Trombositopeni maddesi otomatik önerilir.';sonAnahtar=null;return}
+    var f=Math.round((b-nd)/b*100*1e6)/1e6,p,why;
+    $('fall').textContent=f>=0?'%'+fm(f):'yok (artış)';$('nadir').textContent=fm(nd)+' ×10³/µL';
+    if(nd<10){p=0;why='nadir < 10'}
+    else if(f<30){p=0;why='düşüş < %30'}
+    else if(f>50&&nd>=20){if(s3){p=1;why='> %50 düşüş ama son 3 günde cerrahi (değiştirilmiş 4T)'}else{p=2;why='> %50 düşüş ve nadir ≥ 20'}}
+    else{p=1;why=(f<=50?'%30–50 düşüş':'nadir 10–19')}
+    $('sug').textContent='Önerilen Trombositopeni puanı: '+p+' ('+why+'). Gerekirse aşağıdan elle değiştirebilirsiniz.';
+    var k=b+'|'+nd+'|'+s3;
+    if(k!==sonAnahtar){sonAnahtar=k;var r=document.querySelector('input[name=t][value="'+p+'"]');if(r)r.checked=true}
+  }
+  function calc(){
+    plt();
+    var s=rv('t')+rv('z')+rv('o')+rv('d');$('sc').textContent=s;$('rx').innerHTML='';
+    var kg=v('kg'),kc=segVal('kc')==='1';
+    if(s<=3){
+      pill('pl','Düşük olasılık','var(--ok)');$('ppv').textContent='< %1 (NÖD %99,8)';
+      $('adv').textContent='HIT olası değil. ASH: düşük olasılıkta HIT laboratuvar testi ve ampirik HIT tedavisi önerilmez (güçlü öneri).';
+      li('rx','Anti-PF4/heparin testi istemeyin','Heparine devam edilebilir. Skor emin değilse (ör. eksik bilgi) test makul olabilir.');
+      li('rx','Başka nedenleri araştırın','Sepsis, DIC, ilaç, dilüsyon, kemik iliği baskılanması, psödotrombositopeni (sitratlı tüp ile tekrar).');
+      li('rx','Klinik tablo değişirse yeniden hesaplayın','Yeni tromboz veya trombositte ek düşüş skoru yükseltebilir.');
+      return;
+    }
+    var hi=s>=6;
+    pill('pl',hi?'Yüksek olasılık':'Orta olasılık',hi?'var(--high)':'var(--warn)');
+    $('ppv').textContent=hi?'~%64':'~%14';
+    $('adv').textContent=hi?'HIT olasılığı yüksek: heparini kesin, nonheparin antikoagülan başlayın ve testi gönderin.':'HIT dışlanamaz: heparini kesin, sonuç gelene kadar nonheparin antikoagülan başlayın ve testi gönderin.';
+    li('rx','Tüm heparinleri kesin','Fraksiyone olmayan heparin, DMAH, heparinli lavaj ve heparin kaplı kateterler dahil.');
+    li('rx','Nonheparin antikoagülan başlayın (tedavi dozunda)','Seçenekler: argatroban, bivalirudin, danaparoid, fondaparinuks veya DOAC. Seçim; erişim, böbrek/karaciğer işlevi, kanama riski, klinik stabilite ve girişim gereksinimine göre yapılır.'+(hi?'':' Orta olasılıkta kanama riski yüksekse profilaktik yoğunluk düşünülebilir (ASH).'));
+    if(kg&&kg>0){
+      var d=kc?0.5:2,mgh=d*kg*60/1000;
+      li('rx','Argatroban: '+fm(d)+' µg/kg/dk = '+fm(mgh,2)+' mg/saat → 1 mg/mL çözeltide '+fm(mgh,2)+' mL/saat',(kc?'Orta–ağır karaciğer yetmezliğinde başlangıç 0,5 µg/kg/dk. ':'')+'Bolus yok. aPTT’yi 2 saat sonra ve her doz değişikliğinden sonra bakın; hedef bazalin 1,5–3 katı (≤ 100 sn). En çok 10 µg/kg/dk = '+fm(10*kg*60/1000,1)+' mL/saat.');
+      var fd=kg<50?5:(kg<=100?7.5:10);
+      li('rx','Fondaparinuks: '+fm(fd)+' mg SC günde 1 kez','Tedavi dozu kiloya göre: < 50 kg 5 mg, 50–100 kg 7,5 mg, > 100 kg 10 mg. CrCl < 30 mL/dk’da kullanmayın.');
+    }else li('rx','Doz hesabı için ağırlık girin','Argatroban ve fondaparinuks dozları kiloya göredir.');
+    li('rx','DOAC (stabil hastada)','VTE tedavi rejimleri: rivaroksaban 15 mg 2×1, 21 gün, sonra 20 mg 1×1; apiksaban 10 mg 2×1, 7 gün, sonra 5 mg 2×1. HIT’te kanıt gözlemseldir; ağır böbrek yetmezliği, yaşamı veya uzvu tehdit eden tromboz ya da yakın girişimde parenteral ajanı tercih edin.');
+    li('rx','Anti-PF4/heparin immünoassay gönderin','Pozitifse ve olanak varsa fonksiyonel test (SRA, HIPA vb.) önerilir. Orta olasılıkta immünoassay negatifse HIT büyük ölçüde dışlanır; nonheparin antikoagülan kesilip gerekirse heparine dönülebilir.');
+    li('rx','Rutin trombosit transfüzyonundan kaçının','Aktif kanama veya yüksek kanama riskli girişimde düşünülebilir.');
+    li('rx','Varfarin başlamayın','Trombosit iyileşene (genellikle ≥ 150 ×10³/µL) kadar varfarin başlanmaz; oral geçişte DOAC varfarine tercih edilir. Varfarine argatroban üzerinden geçilecekse yükleme dozu yok; argatroban ≤ 2 µg/kg/dk iken INR > 4 olunca kesilir, 4–6 saat sonra INR tekrarlanır.');
+    li('rx','Asemptomatik DVT taraması','İki taraflı alt ekstremite kompresyon USG; üst ekstremitede santral kateter varsa o kol da.');
+    li('rx','Süre','Tromboz yoksa en az trombosit iyileşmesine kadar (3 aydan uzun önerilmez); trombozlu HIT’te genellikle 3–6 ay.');
+  }
+  ['s3','kc'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

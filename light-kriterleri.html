@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Light Kriterleri</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.sub small{font-size:.78rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Light Kriterleri</h1>
+    <p>Plevral sıvı eksüda mı transüda mı: Light oranları, kalp yetmezliğinde albümin ve protein gradyanı, sıvı kolesterolü</p>
+  </header>
+
+  <section class="card">
+    <h2>Serum ve plevral sıvı</h2>
+    <p class="note">Serum ve sıvı örneklerini aynı gün (tercihen torasentezle eş zamanlı) alın.</p>
+    <div class="grid">
+      <div class="field"><label for="sp">Serum total protein <span>g/dL</span></label><input id="sp" type="number" inputmode="decimal" step="any" value="6.8"></div>
+      <div class="field"><label for="pp">Sıvı total protein <span>g/dL</span></label><input id="pp" type="number" inputmode="decimal" step="any" value="3.6"></div>
+      <div class="field"><label for="sl">Serum LDH <span>U/L</span></label><input id="sl" type="number" inputmode="decimal" step="any" value="240"></div>
+      <div class="field"><label for="pl">Sıvı LDH <span>U/L</span></label><input id="pl" type="number" inputmode="decimal" step="any" value="150"></div>
+      <div class="field"><label for="uln">Serum LDH üst sınırı <span>U/L, laboratuvarınız</span></label><input id="uln" type="number" inputmode="decimal" step="any" value="250"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Light kriterleri</h2>
+    <div class="res"><span class="num" id="cnt">–</span><span class="of">/ 3 eksüda ölçütü</span><span class="pill" id="lp"></span></div>
+    <table class="t">
+      <thead><tr><th>Ölçüt</th><th>Hesaplanan</th><th>Eksüda?</th></tr></thead>
+      <tbody>
+        <tr id="r1"><td>Sıvı / serum protein <small>eşik &gt; 0,5</small></td><td id="c1">–</td><td id="e1">–</td></tr>
+        <tr id="r2"><td>Sıvı / serum LDH <small>eşik &gt; 0,6</small></td><td id="c2">–</td><td id="e2">–</td></tr>
+        <tr id="r3"><td>Sıvı LDH &gt; ÜSL’nin 2/3’ü <small id="t3">eşik –</small></td><td id="c3">–</td><td id="e3">–</td></tr>
+      </tbody>
+    </table>
+    <p class="advice" id="ladv"></p>
+    <p class="note">Ölçütlerden en az biri varsa eksüda, hiçbiri yoksa transüda (Light 1972; BTS 2023 tablo 1). ÜSL: serum LDH’nin laboratuvar üst sınırı. Light’ın orijinal çalışmasında üçüncü ölçüt sıvı LDH &gt; 200 IU idi (o dönemki ÜSL’nin yaklaşık 2/3’ü).</p>
+  </section>
+
+  <section class="card">
+    <h2>Yalancı eksüda: kalp yetmezliği ve diüretik</h2>
+    <p class="note">Diüretik alan kalp yetmezliği hastasında sıvı protein ve LDH yükselir; transüdaların bir kısmı Light ölçütleriyle eksüda olarak sınıflanır. Klinik tablo transüdaya uyuyorsa gradyanlara bakın.</p>
+    <span class="lbl">Klinik tablo</span>
+    <div class="seg wrapseg"><button type="button" data-g="kl" data-v="0" aria-pressed="false">Belirgin değil</button><button type="button" data-g="kl" data-v="ky" aria-pressed="true">KY / diüretik</button><button type="button" data-g="kl" data-v="hh" aria-pressed="false">Siroz (hepatik hidrotoraks)</button></div>
+    <div class="grid">
+      <div class="field"><label for="sa">Serum albümin <span>g/dL</span></label><input id="sa" data-hasta="alb" type="number" inputmode="decimal" step="any" value="3.4"></div>
+      <div class="field"><label for="pa">Sıvı albümin <span>g/dL</span></label><input id="pa" type="number" inputmode="decimal" step="any" value="1.9"></div>
+      <div class="field"><label for="chol">Sıvı kolesterol <span>mg/dL, isteğe bağlı</span></label><input id="chol" type="number" inputmode="decimal" step="any" value="" placeholder="ölçülmediyse boş"></div>
+    </div>
+    <p class="note">Protein gradyanı yukarıdaki serum ve sıvı proteininden hesaplanır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Gradyanlar ve ek ölçütler</h2>
+    <div class="res"><span class="pill" id="gp"></span></div>
+    <div class="sub"><span>Albümin gradyanı (serum − sıvı) <small style="display:block;color:var(--muted)">transüda lehine &gt; 1,2 g/dL</small></span><b id="ag">–</b></div>
+    <div class="sub"><span>Protein gradyanı (serum − sıvı) <small style="display:block;color:var(--muted)">transüda lehine &gt; 3,1 g/dL</small></span><b id="pg">–</b></div>
+    <div class="sub"><span>Sıvı / serum albümin <small style="display:block;color:var(--muted)">sirozda transüda lehine &lt; 0,6</small></span><b id="ar">–</b></div>
+    <div class="sub"><span>Sıvı kolesterol <small style="display:block;color:var(--muted)">eksüda lehine &gt; 45 (meta-analiz) / &gt; 55 mg/dL</small></span><b id="ch">–</b></div>
+    <ol class="rec" id="rx"></ol>
+    <p class="note">Albümin gradyanı &gt; 1,2 g/dL (Roth 1990) KY’ye bağlı yalancı eksüdaların %83’ünü, protein gradyanı &gt; 3,1 g/dL %55’ini doğru sınıflar; KY’de albümin gradyanı tercih edilir. Hepatik hidrotoraksta sıvı/serum albümin oranı &lt; 0,6 en iyi ayırır (%77) (Bielsa 2012). Kolesterol eşikleri: &gt; 45 mg/dL (Heffner 1997 meta-analizi), &gt; 55 mg/dL (Valdés 1991), &gt; 60 mg/dL (Hamm 1987).</p>
+  </section>
+
+  <p class="note">Kaynaklar: Light RW, Macgregor MI, Luchsinger PC, Ball WC. Pleural effusions: the diagnostic separation of transudates and exudates. Ann Intern Med 1972;77:507–13 (üç ölçüt); Roberts ME ve ark. BTS Guideline for pleural disease, Thorax 2023;78(Suppl 3):s1–s42 ve özet Thorax 2023;78:1143–56 (Light ölçütleri tablosu: protein &gt; 0,5, LDH &gt; 0,6, sıvı LDH &gt; ÜSL’nin 2/3’ü; tek taraflı efüzyonda KY tanısını desteklemek için serum NT-proBNP önerisi, sıvı NT-proBNP’nin rutin istenmemesi); Roth BJ ve ark. Chest 1990;98:546–9 (albümin gradyanı 1,2 g/dL); Romero-Candeira S ve ark. Am J Med 2001;110:681–6 (diüretik etkisi, gradyanlar); Bielsa S, Porcel JM ve ark. Respirology 2012;17:721–6 (protein gradyanı &gt; 3,1, albümin gradyanı &gt; 1,2, sıvı/serum albümin &lt; 0,6); Heffner JE ve ark. Chest 1997;111:970–80 (kolesterol &gt; 45 mg/dL); Valdés L ve ark. Chest 1991;99:1097–102 (kolesterol 55 mg/dL); Hamm H ve ark. Chest 1987;92:296–302 (kolesterol 60 mg/dL). BTS 2023 albümin/protein gradyanı ve kolesterol için ayrı bir öneri içermez; bu eşikler özgün çalışmalardandır. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{minimumFractionDigits:d,maximumFractionDigits:d})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$('rx').appendChild(l)}
+  function mark(i,val){$('e'+i).textContent=val===null?'–':val?'evet':'hayır';$('r'+i).className=val?'cur':''}
+
+  function calc(){
+    var sp=v('sp'),pp=v('pp'),sl=v('sl'),pl=v('pl'),uln=v('uln'),sa=v('sa'),pa=v('pa'),chol=v('chol'),kl=segVal('kl');
+    var r1=sp>0&&pp!==null?pp/sp:null, r2=sl>0&&pl!==null?pl/sl:null, lim=uln>0?uln*2/3:null;
+    var k1=r1===null?null:r1>0.5, k2=r2===null?null:r2>0.6, k3=pl!==null&&lim!==null?pl>lim:null;
+    $('c1').textContent=r1===null?'–':fm(r1,2);$('c2').textContent=r2===null?'–':fm(r2,2);
+    $('t3').textContent=lim===null?'eşik –':'eşik > '+fm(lim,0)+' U/L';
+    $('c3').textContent=pl===null?'–':fm(pl,0)+' U/L';
+    mark(1,k1);mark(2,k2);mark(3,k3);
+    var ks=[k1,k2,k3],n=ks.filter(function(x){return x===true}).length,m=ks.filter(function(x){return x!==null}).length;
+    var ex=null;
+    if(n>0)ex=true;else if(m===3)ex=false;
+    $('cnt').textContent=m?String(n):'–';
+    if(ex===true){pill('lp','Eksüda','var(--high)');
+      $('ladv').textContent=n===1?'Tek ölçütle eksüda. Değer eşiğe yakınsa ve klinik tablo transüdaya uyuyorsa (kalp yetmezliği, siroz) aşağıdaki gradyanlara bakın.'+(m<3?' (Diğer ölçütler için değer eksik.)':''):'Eksüda: enfeksiyon, malignite, tüberküloz, pulmoner emboli gibi nedenler için sıvı hücre sayımı, glukoz, pH, kültür ve sitolojiyi değerlendirin.'}
+    else if(ex===false){pill('lp','Transüda','var(--ok)');$('ladv').textContent='Transüda: kalp yetmezliği, siroz, nefrotik sendrom, hipoalbüminemi gibi sistemik nedenlere yönelin.'}
+    else{pill('lp','','');$('ladv').textContent=m?'Eksik değer: üç ölçütün hepsi hesaplanamadı, şu an eksüda ölçütü yok.':'Değerleri girin.'}
+
+    // Gradyanlar
+    var ag=sa!==null&&pa!==null?sa-pa:null, pg=sp!==null&&pp!==null?sp-pp:null, ar=sa>0&&pa!==null?pa/sa:null;
+    $('ag').textContent=ag===null?'–':fm(ag,2)+' g/dL'+(ag>1.2?' · transüda':' · eksüda');
+    $('pg').textContent=pg===null?'–':fm(pg,2)+' g/dL'+(pg>3.1?' · transüda':' · eksüda');
+    $('ar').textContent=ar===null?'–':fm(ar,2)+(ar<0.6?' · transüda':' · eksüda');
+    $('ch').textContent=chol===null?'ölçülmedi':fm(chol,0)+' mg/dL'+(chol>55?' · eksüda':chol>45?' · eksüda (45–55 ara bölge)':' · transüda');
+    $('rx').innerHTML='';
+    var agT=ag!==null&&ag>1.2, pgT=pg!==null&&pg>3.1, arT=ar!==null&&ar<0.6;
+    if(ex!==true){pill('gp',ex===false?'Light: transüda, düzeltme gerekmez':'',ex===false?'var(--ok)':'');
+      if(ex===false)li('Gradyanlar yalnız Light ölçütleri eksüda dediğinde gerekir','Light ölçütlerinin transüda için özgüllüğü yüksektir; transüdayı yeniden sınıflamak için gradyan kullanılmaz.');}
+    else if(kl==='ky'){
+      if(agT||pgT){pill('gp','KY’ye bağlı yalancı eksüda olası: transüda','var(--warn)');
+        li(agT?'Albümin gradyanı > 1,2 g/dL':'Protein gradyanı > 3,1 g/dL','Light ölçütlerine göre eksüda olsa da diüretik altındaki kalp yetmezliği transüdası ile uyumlu. '+(agT?'':'Albümin ölçülmediyse ya da ≤ 1,2 ise protein gradyanının duyarlılığı daha düşüktür (%55).'));}
+      else if(ag===null&&pg===null){pill('gp','Gradyan hesaplanamadı','var(--muted)')}
+      else{pill('gp','Gerçek eksüda olası','var(--high)');li('Gradyanlar transüda eşiğinin altında','Kalp yetmezliği olsa da eşlik eden başka bir neden (pnömoni, malignite, pulmoner emboli) araştırın.')}
+      li('Serum NT-proBNP (BTS 2023)','Tek taraflı efüzyonda kalp yetmezliği tanısını desteklemek için serum NT-proBNP düşünülmeli; tek başına tanı için kullanılmaz. Sıvı NT-proBNP serumdan üstün değildir, rutin istenmez.');
+    }
+    else if(kl==='hh'){
+      if(arT){pill('gp','Hepatik hidrotoraksla uyumlu transüda olası','var(--warn)');li('Sıvı/serum albümin < 0,6','Sirozda Light ile eksüda görünen hepatik hidrotoraksı en iyi bu oran ayırır (Bielsa 2012). Spontan bakteriyel ampiyemi dışlamak için hücre sayımı ve kültür alın.')}
+      else if(ar===null){pill('gp','Albümin girilmedi','var(--muted)')}
+      else{pill('gp','Gerçek eksüda olası','var(--high)');li('Sıvı/serum albümin ≥ 0,6','Enfeksiyon (spontan bakteriyel ampiyem dahil), tüberküloz veya malignite açısından değerlendirin.')}
+    }
+    else{pill('gp','Eksüda: gradyan düzeltmesi için klinik şüphe yok','var(--high)');li('Klinik olarak KY veya siroz düşünüyorsanız yukarıdan seçin','Gradyanlar yalnız transüdaya uyan klinik tabloda yanlış eksüda sınıflamasını düzeltmek için kullanılır.')}
+    if(ex===true&&chol!==null){li('Sıvı kolesterolü '+fm(chol,0)+' mg/dL',chol>55?'Eksüda lehine (Valdés 1991: 55 mg/dL eşiğinde transüdaların hiçbiri bu değerin üstünde değildi).':chol>45?'Ara bölge: meta-analiz eşiği (> 45 mg/dL) eksüda, 55 mg/dL eşiği transüda der.':'Transüda lehine (≤ 45 mg/dL).');}
+  }
+  seg('kl',calc);
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

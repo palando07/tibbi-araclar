@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>4AT Deliryum Taraması</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>4AT Deliryum Taraması</h1>
+    <p>Hızlı deliryum ve bilişsel bozukluk taraması (4 ‘A’ testi)</p>
+  </header>
+
+  <section class="card">
+    <div class="field"><span class="lbl">1. Uyanıklık (Alertness)</span><div class="items">
+      <label class="item"><input type="radio" name="a1" value="0" checked><span class="txt">Normal<small>değerlendirme boyunca tamamen uyanık, ajite değil</small></span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="a1" value="0"><span class="txt">Uyandırıldıktan sonra &lt; 10 saniye hafif uyku hali, sonra normal</span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="a1" value="4"><span class="txt">Açıkça anormal<small>belirgin uykuluk, uyandırmada güçlük veya ajitasyon / hiperaktivite</small></span><span class="pts">4</span></label>
+    </div>
+    <p class="note">Uyuyorsa sesle veya omza hafifçe dokunarak uyandırmayı deneyin. Değerlendirmeye yardımcı olması için adını ve adresini söylemesini isteyin.</p></div>
+
+    <div class="field"><span class="lbl">2. AMT4</span><div class="items">
+      <label class="item"><input type="radio" name="a2" value="0"><span class="txt">Hata yok</span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="a2" value="1" checked><span class="txt">1 hata</span><span class="pts">1</span></label>
+      <label class="item"><input type="radio" name="a2" value="2"><span class="txt">≥ 2 hata veya test edilemiyor</span><span class="pts">2</span></label>
+    </div>
+    <p class="note">Sorun: yaş, doğum tarihi, bulunduğu yer (hastanenin ya da binanın adı; “hastane”, “acil” gibi makul bir tanım yeterli) ve içinde bulunulan yıl.</p></div>
+
+    <div class="field"><span class="lbl">3. Dikkat (ayları geriye sayma)</span><div class="items">
+      <label class="item"><input type="radio" name="a3" value="0"><span class="txt">7 veya daha fazla ayı doğru sayıyor</span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="a3" value="1" checked><span class="txt">Başlıyor ama &lt; 7 ay sayıyor veya başlamayı reddediyor</span><span class="pts">1</span></label>
+      <label class="item"><input type="radio" name="a3" value="2"><span class="txt">Test edilemiyor<small>hasta, uykulu ya da dikkatsiz olduğu için başlayamıyor</small></span><span class="pts">2</span></label>
+    </div>
+    <p class="note">“Aralık’tan başlayarak yılın aylarını geriye doğru sayın.” Bir kez yardım edilebilir: “Aralık’tan önceki ay hangisi?” Doğru sıra: Aralık, Kasım, Ekim, Eylül, Ağustos, Temmuz, Haziran…</p></div>
+
+    <div class="field"><span class="lbl">4. Akut değişiklik veya dalgalı seyir</span><div class="items">
+      <label class="item"><input type="radio" name="a4" value="0"><span class="txt">Hayır</span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="a4" value="4" checked><span class="txt">Evet<small>uyanıklık, biliş veya diğer zihinsel işlevlerde (ör. paranoya, halüsinasyon) son 2 haftada başlayan ve son 24 saatte hâlâ belirgin anlamlı değişiklik ya da dalgalanma</small></span><span class="pts">4</span></label>
+    </div>
+    <p class="note">Bilgi yakın, bakım veren, hemşire, aile hekimi mektubu veya dosya notlarından alınabilir.</p></div>
+    <p class="note">Örnek seçimler işaretlenmiştir. Konuşamayan veya katılamayan hastada 2. ve 3. madde “test edilemiyor” (2’şer puan) olarak puanlanır; 4AT’de “değerlendirilemez” sonucu yoktur.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>4AT skoru</h2>
+    <div class="res"><span class="num" id="sc">–</span><span class="of">/ 12</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="adv"></p>
+    <ol class="rec" id="rx"></ol>
+    <p class="note">≥ 4: olası deliryum ± bilişsel bozukluk; 1–3: olası bilişsel bozukluk; 0: deliryum veya ağır bilişsel bozukluk olası değil (4. madde için bilgi eksikse deliryum yine de olabilir). 4AT tanı koydurmaz, tarama aracıdır; kesin tanı klinik değerlendirmeyle (DSM-5) konur. İşitme kaybı, afazi veya dil engeli yorumu etkiler. Bellelli 2014’te ≥ 4 eşiği için duyarlılık %89,7, özgüllük %84,1.</p>
+  </section>
+
+  <p class="note">Kaynaklar: 4AT formu ve kullanım kılavuzu, the4AT.com (MacLullich AMJ ve ark.; madde metinleri, puanlar ve yorum sınırları); Bellelli G, Morandi A, Davis DH ve ark. Validation of the 4AT, a new instrument for rapid delirium screening: a study in 234 hospitalised older people. Age Ageing 2014;43:496–502; NICE CG103 Delirium: prevention, diagnosis and management in hospital and long-term care (2010, 2023 güncellemesi; 4AT ile değerlendirme, altta yatan neden(ler)i bulup yönetme, ilaç gözden geçirme, dehidratasyon, konstipasyon, hareketsizlik, ağrı, duyusal kayıp ve uyku, nonfarmakolojik önlemler, sıkıntılı hastada önce yatıştırma, haloperidol yalnız kısa süreli, genellikle ≤ 1 hafta, en düşük dozdan, Parkinson hastalığı ve Lewy cisimcikli demansta dikkat). Bu araç klinik karar desteği içindir; tanı ve tedavi kararı hekime aittir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function rv(n){var e=document.querySelector('input[name='+n+']:checked');return e?+e.value:0}
+  function calc(){
+    var s=rv('a1')+rv('a2')+rv('a3')+rv('a4');$('sc').textContent=s;$('rx').innerHTML='';
+    if(s>=4){
+      pill('pl','Olası deliryum','var(--high)');
+      $('adv').textContent='Olası deliryum ± bilişsel bozukluk. Klinik değerlendirmeyle tanıyı doğrulayın ve altta yatan neden(ler)i hemen araştırın.';
+      li('rx','İlaçları gözden geçirin','Yeni başlanan veya doz artırılan ilaçlar; antikolinerjikler, benzodiazepinler, opioidler, sedatifler, antihistaminikler, steroidler. Alkol veya benzodiazepin yoksunluğunu düşünün.');
+      li('rx','Enfeksiyon','İdrar, akciğer, cilt, kateter ve cerrahi bölge; ateş olmayabilir.');
+      li('rx','Metabolik ve sıvı','Dehidratasyon, Na, K, Ca, glukoz, böbrek ve karaciğer işlevi, hipoksi ve hiperkapni (kan gazı), anemi, tiroid.');
+      li('rx','İdrar retansiyonu ve konstipasyon','Mesane USG / rezidü idrar; dışkılama öyküsü ve rektal muayene.');
+      li('rx','Ağrı, uyku ve duyusal kayıp','Sözel olmayan ağrı belirtilerini de değerlendirin; gözlük ve işitme cihazı, uyku düzeni.');
+      li('rx','Diğer akut nedenler','İnme, kafa travması / subdural hematom, nöbet, akut koroner sendrom, kanama; uygunsa nörolojik muayene ve görüntüleme.');
+      li('rx','Nonfarmakolojik önlemler','Tanıdık bakım ekibi, gereksiz oda / servis değişikliğinden kaçınma, yeniden yönelim (saat, takvim, aydınlatma), aile katılımı, mobilizasyon, sıvı ve beslenme.');
+      li('rx','Sıkıntılı veya riskli hasta','Önce sözel ve sözel olmayan yatıştırma. Etkisizse veya uygun değilse kısa süreli haloperidol (genellikle ≤ 1 hafta), en düşük uygun dozdan başlayıp dikkatle titre edin; Parkinson hastalığı ve Lewy cisimcikli demansta kardiyak ve nörolojik risk yüksektir (NICE).');
+    }else if(s>=1){
+      pill('pl','Olası bilişsel bozukluk','var(--warn)');
+      $('adv').textContent='Deliryum değil, olası bilişsel bozukluk. Daha ayrıntılı bilişsel test ve yakınından öykü gerekebilir.';
+      li('rx','Ayrıntılı bilişsel değerlendirme','Ör. MoCA veya MMSE; bilinen demans ve önceki düzey ile karşılaştırın.');
+      li('rx','Yeniden tarayın','Klinik durum değişirse veya dalgalanma fark edilirse 4AT’yi tekrarlayın; deliryum demansla birlikte olabilir.');
+    }else{
+      pill('pl','Düşük olasılık','var(--ok)');
+      $('adv').textContent='Deliryum ve orta–ağır bilişsel bozukluk olası değil. 0 puan deliryumu kesin dışlamaz; 4. madde için bilgi eksikse yakınından öykü alın.';
+      li('rx','İzlem','Yeni belirti (dalgalanma, uykuluk, ajitasyon) olursa yeniden değerlendirin.');
+    }
+  }
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

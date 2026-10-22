@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KOAH ve Astım Alevlenmesi</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; KOAH / Astım seçimi, giriş kartları ve sonuç kartları */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.seg.big button{font-size:1.05rem;padding:13px 14px}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .num.w{font:700 2rem/1.1 var(--font-body)}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.note a,.advice a{color:var(--accent);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>KOAH ve Astım Alevlenmesi</h1>
+    <p>Alevlenme ciddiyeti (KOAH: Roma önerisi / GOLD; astım: GINA), yatış ve YBÜ ölçütleri, bronkodilatör, steroid, antibiyotik, oksijen hedefi, NIV ve magnezyum</p>
+  </header>
+
+  <div class="seg big" role="group" aria-label="Hastalık"><button type="button" data-g="dz" data-v="koah" aria-pressed="true">KOAH</button><button type="button" data-g="dz" data-v="astim" aria-pressed="false">Astım</button></div>
+
+  <section class="card">
+    <h2>Hasta ve vital bulgular</h2>
+    <div class="grid">
+      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="any" value="67"></div>
+      <div class="field"><label for="kilo">Ağırlık <span>kg</span></label><input id="kilo" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="72"></div>
+      <div class="field"><label for="rr">Solunum sayısı <span>/dk</span></label><input id="rr" type="number" inputmode="decimal" step="any" value="26"></div>
+      <div class="field"><label for="hr">Nabız <span>/dk</span></label><input id="hr" data-hasta="nabiz" type="number" inputmode="decimal" step="any" value="104"></div>
+      <div class="field"><label for="spo2">SpO₂ oda havası <span>%</span></label><input id="spo2" type="number" inputmode="decimal" step="any" value="89"></div>
+    </div>
+    <p class="note">SpO₂ oda havasında ölçülmüş olmalı; nabız oksimetresi koyu tenli hastalarda satürasyonu olduğundan yüksek gösterebilir (GOLD, GINA).</p>
+  </section>
+
+  <!-- ================= KOAH ================= -->
+  <div id="koah" class="wrap" style="max-width:none;margin:0">
+    <section class="card">
+      <h2>KOAH alevlenmesi: bulgular</h2>
+      <div class="grid">
+        <div class="field"><label for="vas">Dispne VAS <span>0–10</span></label><input id="vas" type="number" inputmode="decimal" step="any" value="7"></div>
+        <div class="field"><label for="crp">CRP <span>mg/L</span></label><input id="crp" type="number" inputmode="decimal" step="any" value="28"></div>
+        <div class="field"><label for="bspo2">Bazal SpO₂ <span>% (biliniyorsa)</span></label><input id="bspo2" type="number" inputmode="decimal" step="any" value=""></div>
+      </div>
+      <h3>Arter kan gazı</h3>
+      <div class="grid">
+        <div class="field"><label for="ph">pH</label><input id="ph" type="number" inputmode="decimal" step="any" value="7.32"></div>
+        <div class="field"><label for="pco2">PaCO₂ <span>mmHg</span></label><input id="pco2" type="number" inputmode="decimal" step="any" value="54"></div>
+        <div class="field"><label for="po2">PaO₂ <span>mmHg</span></label><input id="po2" type="number" inputmode="decimal" step="any" value="56"></div>
+      </div>
+      <p class="note">CRP mg/L girilir (mg/dL × 10 = mg/L). Kan gazının ayrıntılı yorumu (kompanzasyon, anyon açığı, karışık bozukluk) için <a href="kan-gazi.html">Kan Gazı Yorumu</a>. Kronik hiperkapnisi olan hastada belirleyici olan yeni gelişen veya kötüleşen hiperkapni ve asidozdur.</p>
+    </section>
+
+    <section class="card" aria-live="polite">
+      <h2>Alevlenme ciddiyeti (Roma önerisi)</h2>
+      <div class="res"><span class="num w" id="ksev">–</span><span class="pill" id="ksevp"></span></div>
+      <div class="sub"><span>Dispne VAS ≥ 5</span><b id="kc1">–</b></div>
+      <div class="sub"><span>Solunum sayısı ≥ 24/dk</span><b id="kc2">–</b></div>
+      <div class="sub"><span>Nabız ≥ 95/dk</span><b id="kc3">–</b></div>
+      <div class="sub"><span>SpO₂ &lt; %92 ve/veya bazalden &gt; 3 puan düşüş</span><b id="kc4">–</b></div>
+      <div class="sub"><span>CRP ≥ 10 mg/L</span><b id="kc5">–</b></div>
+      <div class="sub"><span>Karşılanan ölçüt (orta için ≥ 3)</span><b id="kcn">–</b></div>
+      <div class="sub"><span>Kan gazı: pH &lt; 7,35 ve PaCO₂ &gt; 45 (ağır)</span><b id="kabg">–</b></div>
+      <ol class="rec" id="rxK"></ol>
+      <p class="note">Roma önerisi (GOLD 2023’ten bu yana): 5 değişkenden en az 3’ü eşiği aşarsa orta, kan gazında yeni gelişen/kötüleşen hiperkapni ve asidoz (PaCO₂ &gt; 45 mmHg, pH &lt; 7,35) varsa ağır. Orta alevlenmede kan gazı hipoksemi (PaO₂ ≤ 60 mmHg) ve/veya hiperkapni gösterebilir ama asidoz yoktur. Ayırıcı tanıda kalp yetmezliği, pnömoni ve pulmoner emboliyi düşünün.</p>
+    </section>
+
+    <section class="card">
+      <h2>Yatış ve YBÜ ölçütleri</h2>
+      <span class="lbl">Hastane yatışı (GOLD)</span>
+      <div class="items">
+        <label class="item"><input type="checkbox" id="h1"><span class="txt">Ağır belirtiler<small>istirahat dispnesinde ani kötüleşme, yüksek solunum sayısı, satürasyon düşüşü, konfüzyon, uykuya eğilim</small></span></label>
+        <label class="item"><input type="checkbox" id="h2"><span class="txt">Akut solunum yetmezliği</span></label>
+        <label class="item"><input type="checkbox" id="h3"><span class="txt">Yeni fizik bulgu<small>siyanoz, periferik ödem</small></span></label>
+        <label class="item"><input type="checkbox" id="h4"><span class="txt">Başlangıç tedavisine yanıtsızlık</span></label>
+        <label class="item"><input type="checkbox" id="h5"><span class="txt">Ciddi eşlik eden hastalık<small>kalp yetmezliği, yeni aritmi</small></span></label>
+        <label class="item"><input type="checkbox" id="h6"><span class="txt">Evde yetersiz destek</span></label>
+      </div>
+      <span class="lbl">Yoğun bakım</span>
+      <div class="items">
+        <label class="item"><input type="checkbox" id="i1"><span class="txt">Acil başlangıç tedavisine yeterli yanıt vermeyen ağır dispne</span></label>
+        <label class="item"><input type="checkbox" id="i2"><span class="txt">Bilinç değişikliği<small>konfüzyon, letarji, koma</small></span></label>
+        <label class="item"><input type="checkbox" id="i3"><span class="txt">O₂ ve NIV’e rağmen süren hipoksemi veya asidoz<small>PaO₂ &lt; 40 mmHg ve/veya pH &lt; 7,25</small></span></label>
+        <label class="item"><input type="checkbox" id="i4"><span class="txt">İnvaziv mekanik ventilasyon gereksinimi veya NIV başarısızlığı</span></label>
+        <label class="item"><input type="checkbox" id="i5"><span class="txt">Hemodinamik instabilite<small>vazopressör gereksinimi</small></span></label>
+      </div>
+    </section>
+
+    <section class="card" aria-live="polite">
+      <h2>Tedavi yeri ve solunum desteği</h2>
+      <div class="res"><span class="pill" id="kyer"></span></div>
+      <div class="sub"><span>Oksijen hedefi</span><b>SpO₂ %88–92</b></div>
+      <div class="sub"><span>NIV: pH ≤ 7,35 ve PaCO₂ ≥ 45 mmHg</span><b id="kniv">–</b></div>
+      <ol class="rec" id="rxY"></ol>
+    </section>
+
+    <section class="card">
+      <h2>Antibiyotik endikasyonu</h2>
+      <span class="lbl">Ana (kardinal) belirtiler: Anthonisen</span>
+      <div class="items">
+        <label class="item"><input type="checkbox" id="a1" checked><span class="txt">Dispnede artış</span></label>
+        <label class="item"><input type="checkbox" id="a2" checked><span class="txt">Balgam miktarında artış</span></label>
+        <label class="item"><input type="checkbox" id="a3" checked><span class="txt">Balgam pürülansı<small>renk değişikliği: sarı, yeşil</small></span></label>
+        <label class="item"><input type="checkbox" id="a4"><span class="txt">Ek küçük ölçüt<small>son 5 günde üst solunum yolu enfeksiyonu, başka nedeni olmayan ateş, wheezing veya öksürükte artış, solunum sayısı ya da nabızda bazale göre %20 artış</small></span></label>
+        <label class="item"><input type="checkbox" id="a5"><span class="txt">Mekanik ventilasyon<small>NIV veya invaziv</small></span></label>
+      </div>
+      <span class="lbl">Pseudomonas / dirençli Gram-negatif riski</span>
+      <div class="items">
+        <label class="item"><input type="checkbox" id="p1"><span class="txt">Önceden P. aeruginosa üremesi veya kolonizasyonu</span></label>
+        <label class="item"><input type="checkbox" id="p2"><span class="txt">Yakın zamanda hastane yatışı</span></label>
+        <label class="item"><input type="checkbox" id="p3"><span class="txt">Sık antibiyotik kullanımı<small>son 1 yılda ≥ 4 kür</small></span></label>
+        <label class="item"><input type="checkbox" id="p4"><span class="txt">Çok ağır hava yolu obstrüksiyonu<small>FEV₁ &lt; %30</small></span></label>
+        <label class="item"><input type="checkbox" id="p5"><span class="txt">Sistemik steroid kullanımı<small>son 2 haftada &gt; 10 mg/gün prednizolon</small></span></label>
+        <label class="item"><input type="checkbox" id="p6"><span class="txt">Bronşektazi</span></label>
+      </div>
+    </section>
+
+    <section class="card" aria-live="polite">
+      <h2>Antibiyotik kararı</h2>
+      <div class="res"><span class="pill" id="abp"></span></div>
+      <div class="sub"><span>Anthonisen tipi</span><b id="abt">–</b></div>
+      <div class="sub"><span>CRP</span><b id="abc">–</b></div>
+      <ol class="rec" id="rxA"></ol>
+      <p class="note">Dozlar normal böbrek işlevi içindir; eGFR düşükse <a href="bobrek-ilac-dozu.html">Böbrekte İlaç Dozu</a>. Pnömoni eşlik ediyorsa <a href="ampirik-antibiyotik.html">Ampirik Antibiyotik</a> ve <a href="curb-65.html">CURB-65</a>.</p>
+    </section>
+
+    <section class="card">
+      <h2>KOAH alevlenmesinde ilaç ve dozlar</h2>
+      <table class="t">
+        <thead><tr><th>İlaç</th><th>Doz</th></tr></thead>
+        <tbody>
+          <tr><td>Salbutamol nebül <small>SABA</small></td><td>2,5–5 mg; yanıta göre tekrarlanır</td></tr>
+          <tr><td>İpratropium nebül <small>SAMA, SABA ile birlikte</small></td><td>0,5 mg; 4–6 saatte bir</td></tr>
+          <tr><td>Prednizolon</td><td>40 mg/gün PO, 5 gün <small>IV ile oral eşit etkili; azaltarak kesme gerekmez</small></td></tr>
+          <tr><td>Oksijen</td><td>Hedef SpO₂ %88–92 <small>Venturi maske daha kontrollü FiO₂ sağlar</small></td></tr>
+        </tbody>
+      </table>
+      <ul class="chk">
+        <li>SABA ± SAMA ilk bronkodilatördür; ölçülü doz inhaler (gerekirse spacer ile) veya nebülizatörle verilir. Nebülizatör hava ile çalıştırılmalı; oksijenle çalıştırılan nebülizatör PaCO₂’yi artırabilir (GOLD).</li>
+        <li>Uzun etkili bronkodilatörlere alevlenme sırasında devam edin veya taburculuktan önce başlayın. IV metilksantin (teofilin, aminofilin) önerilmez.</li>
+        <li>Steroidin daha uzun kürleri pnömoni ve mortalite riskini artırır. Kan eozinofili düşük hastada steroid etkisi daha az olabilir. Nebül budesonid bazı hastalarda alternatif olabilir.</li>
+        <li>Yatan hastada tromboprofilaksi verin (<a href="vte-profilaksisi.html">VTE Profilaksisi</a>). Solunum uyarıcıları (doksapram, kafein) önerilmez.</li>
+        <li>Ağır alevlenmede kan gazını sık tekrarlayın: CO₂ retansiyonu ve kötüleşen asidoz. HFNT, hiperkapnik alevlenmede NIV’in yerine geçmez (ERS).</li>
+        <li>Taburculuk sonrası 1 ay içinde erken kontrol ve 3. ayda kontrol planlayın (GOLD).</li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- ================= ASTIM ================= -->
+  <div id="astim" class="wrap" style="max-width:none;margin:0" hidden>
+    <section class="card">
+      <h2>Astım alevlenmesi: bulgular</h2>
+      <span class="lbl">Konuşma ve pozisyon</span>
+      <div class="seg wrapseg"><button type="button" data-g="sp" data-v="s" aria-pressed="false">Cümle kurar</button><button type="button" data-g="sp" data-v="p" aria-pressed="true">Kısa ifadeler</button><button type="button" data-g="sp" data-v="w" aria-pressed="false">Konuşamaz</button></div>
+      <p class="note">Cümle kurar: yatabilir. Kısa ifadeler: oturmayı tercih eder. Konuşamaz: içemez, yatamaz.</p>
+      <span class="lbl">Bilinç</span>
+      <div class="seg wrapseg"><button type="button" data-g="mn" data-v="n" aria-pressed="true">Normal</button><button type="button" data-g="mn" data-v="a" aria-pressed="false">Ajite</button><button type="button" data-g="mn" data-v="d" aria-pressed="false">Uykulu / konfüze</button></div>
+      <div class="items">
+        <label class="item"><input type="checkbox" id="sil"><span class="txt">Sessiz veya çok sessiz göğüs</span></label>
+        <label class="item"><input type="checkbox" id="cya"><span class="txt">Siyanoz</span></label>
+      </div>
+      <h3>Tepe akım hızı (PEF)</h3>
+      <div class="grid">
+        <div class="field"><label for="pef">Ölçülen PEF <span>L/dk</span></label><input id="pef" type="number" inputmode="decimal" step="any" value="210"></div>
+      </div>
+      <span class="lbl">Referans değer</span>
+      <div class="seg"><button type="button" data-g="ref" data-v="pb" aria-pressed="true">Kişisel en iyi</button><button type="button" data-g="ref" data-v="pr" aria-pressed="false">Beklenen (hesapla)</button></div>
+      <div class="grid" id="w-pb">
+        <div class="field"><label for="pb">Kişisel en iyi PEF <span>L/dk</span></label><input id="pb" type="number" inputmode="decimal" step="any" value="450"></div>
+      </div>
+      <div id="w-pr" hidden>
+        <div class="seg" style="margin-bottom:12px"><button type="button" data-g="sx" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="sx" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div>
+        <div class="grid">
+          <div class="field"><label for="boy">Boy <span>cm</span></label><input id="boy" data-hasta="boy" type="number" inputmode="decimal" step="any" value="170"></div>
+        </div>
+        <p class="note" style="margin-top:8px">Beklenen PEF: Nunn ve Gregg 1989 (erişkin). Erkek: e^(0,544·ln yaş − 0,0151·yaş − 74,7/boy + 5,48); kadın: e^(0,376·ln yaş − 0,0120·yaş − 58,8/boy + 5,63). Kişisel en iyi değer biliniyorsa onu kullanın.</p>
+      </div>
+    </section>
+
+    <section class="card" aria-live="polite">
+      <h2>Alevlenme ciddiyeti (GINA)</h2>
+      <div class="res"><span class="num" id="pefp">–</span><span class="of">% PEF</span><span class="pill" id="asevp"></span></div>
+      <div class="sub"><span>Referans PEF</span><b id="pref">–</b></div>
+      <div class="sub"><span>SpO₂ (hafif ≥ 94 · orta ≥ 92 · ağır &lt; 92)</span><b id="as1">–</b></div>
+      <div class="sub"><span>Solunum sayısı (ağır &gt; 30/dk)</span><b id="as2">–</b></div>
+      <div class="sub"><span>Nabız (ağır &gt; 120/dk)</span><b id="as3">–</b></div>
+      <div class="sub"><span>PEF (hafif &gt; 70 · orta 50–70 · ağır &lt; 50)</span><b id="as4">–</b></div>
+      <ol class="rec" id="rxS"></ol>
+    </section>
+
+    <section class="card" aria-live="polite">
+      <h2>Astım alevlenmesi tedavisi</h2>
+      <ol class="rec" id="rxT"></ol>
+      <table class="t">
+        <thead><tr><th>Magnezyum sülfat 2 g IV</th><th>Hacim ve hız</th></tr></thead>
+        <tbody>
+          <tr><td>%15 ampul <small>150 mg/mL; Türkiye’de yaygın 10 mL = 1,5 g</small></td><td>13,3 mL <small>+ 100 mL SF = 113 mL, 20 dk’da 340 mL/saat</small></td></tr>
+          <tr><td>%50 <small>500 mg/mL</small></td><td>4 mL <small>+ 100 mL SF = 104 mL, 20 dk’da 312 mL/saat</small></td></tr>
+        </tbody>
+      </table>
+      <p class="note">Salbutamol ölçülü doz inhaler 100 mcg/puf, ipratropium 20 mcg/puf (GINA). Spacer ile her seferinde 1 puf verin, her puftan önce inhaleri çalkalayın; nefes tutamayacak kadar dispneikse tidal solunumla. Solunum yolu enfeksiyonu olasıysa nebülizatörden kaçının. Rutin akciğer grafisi, kan gazı veya antibiyotik önerilmez; sedatif vermeyin. Kan gazı alındıysa yorum için <a href="kan-gazi.html">Kan Gazı Yorumu</a>.</p>
+    </section>
+
+    <section class="card">
+      <h2>Taburculuk değerlendirmesi</h2>
+      <div class="grid">
+        <div class="field"><label for="pef2">Tedavi sonrası PEF <span>L/dk</span></label><input id="pef2" type="number" inputmode="decimal" step="any" value=""></div>
+        <div class="field"><label for="spo2b">Taburculuk öncesi SpO₂ <span>% oda havası</span></label><input id="spo2b" type="number" inputmode="decimal" step="any" value=""></div>
+      </div>
+      <div class="items">
+        <label class="item"><input type="checkbox" id="d1"><span class="txt">Son salbutamol dozundan en az 1–2 saat sonra “hafif” ölçütlerini karşılıyor</span></label>
+        <label class="item"><input type="checkbox" id="d2"><span class="txt">Evde yeterli destek ve kaynak var</span></label>
+      </div>
+    </section>
+
+    <section class="card" aria-live="polite">
+      <h2>Yatış / taburculuk kararı</h2>
+      <div class="res"><span class="pill" id="dcp"></span></div>
+      <div class="sub"><span>Tedavi sonrası PEF (&gt; %70 gerekir)</span><b id="dc1">–</b></div>
+      <div class="sub"><span>SpO₂ oda havası (≥ %92 gerekir)</span><b id="dc2">–</b></div>
+      <ol class="rec" id="rxD"></ol>
+    </section>
+  </div>
+
+  <p class="note">Kaynaklar: GOLD 2026 raporu (goldcopd.org; Bölüm 4 baştan yazıldı, alevlenme yönetiminin temel önerileri 2023’ten beri aynı çerçevede); Agustí A, Celli BR ve ark. GOLD 2023 Yönetici Özeti, Eur Respir J 2023;61:2300239, doi:10.1183/13993003.00239-2023 (Roma ciddiyet sınıflaması, yatış ölçütleri, SABA ± SAMA, hava ile nebülizasyon, prednizon 40 mg 5 gün, antibiyotik endikasyonu ve 5–7 gün süre, aminopenisilin-klavulanat / makrolid / tetrasiklin / seçilmiş hastada kinolon, SpO₂ %88–92, NIV ilk tercih, HFNT); Celli BR ve ark. Roma önerisi, Am J Respir Crit Care Med 2021;204:1251–8 (VAS ≥ 5, SS ≥ 24, nabız ≥ 95, SpO₂ &lt; %92 veya &gt; %3 düşüş, CRP ≥ 10 mg/L, ≥ 3 ölçüt; ağırda PaCO₂ &gt; 45 ve pH &lt; 7,35); Anthonisen NR ve ark. Ann Intern Med 1987;106:196–204 (alevlenme tipleri); Butler CC ve ark. PACE, N Engl J Med 2019;381:111–20, doi:10.1056/NEJMoa1803185 (CRP rehberli antibiyotik); GOLD NIV ölçütü (pH ≤ 7,35 ve PaCO₂ ≥ 45 mmHg) ve YBÜ ölçütleri (PaO₂ &lt; 40 mmHg, pH &lt; 7,25): GOLD raporu, ikincil kaynaklardan (RCEM Learning, UCSF Hospitalist Handbook) doğrulandı; salbutamol 2,5–5 mg ve ipratropium 0,5 mg nebül: RCEM, UCSF. GINA 2026 Özet Rehberi, Şekil 9 ve birinci basamak alevlenme yönetimi (ciddiyet ölçütleri, salbutamol 4 / 4–6 / 6–10 puf, nebül 2,5 / 5 mg, ipratropium 4 puf, O₂ hedefi %92–95, prednizolon 40–50 mg 5–7 gün, YBÜ’ye nakil, taburculuk ölçütleri); GINA 2025 raporu (SABA dozları aşırı kullanımı önlemek için netleştirildi, nebül magnezyum artık önerilmiyor); GINA 2024 ve öncesi acil servis ciddiyet tablosu (nabız &gt; 120/dk, ajitasyon ağır bulgu); IV magnezyum sülfat 2 g 20 dk ve IV metilprednizolon 1 mg/kg: ABEM Key Advance, Acute Asthma in Adults 2024 (GINA 2023’e dayanır); Nunn AJ, Gregg I. BMJ 1989;298:1068–70 (beklenen PEF). Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat(String($(id).value).replace(',','.'));return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var f2=function(x){return x.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()})})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  var ck=function(id){return $(id).checked};
+  var yn=function(b){return b===null?'veri yok':b?'evet':'hayır'};
+  var HIGH='var(--high)',WARN='var(--warn)',OK='var(--ok)',LOW='var(--low)';
+
+  function koah(){
+    var vas=v('vas'),rr=v('rr'),hr=v('hr'),sp=v('spo2'),bsp=v('bspo2'),crp=v('crp'),ph=v('ph'),pc=v('pco2'),po=v('po2');
+    var c=[vas===null?null:vas>=5, rr===null?null:rr>=24, hr===null?null:hr>=95,
+      sp===null?null:(sp<92||(bsp!==null&&bsp-sp>3)), crp===null?null:crp>=10];
+    var lab=[vas===null?'':fm(vas)+' / 10',rr===null?'':fm(rr,0)+'/dk',hr===null?'':fm(hr,0)+'/dk',
+      sp===null?'':'%'+fm(sp,0)+(bsp!==null?' (bazal %'+fm(bsp,0)+')':''),crp===null?'':fm(crp)+' mg/L'];
+    var n=0,k=0;c.forEach(function(x,i){if(x!==null)k++;if(x)n++;$('kc'+(i+1)).textContent=x===null?'veri yok':(x?'evet':'hayır')+' · '+lab[i]});
+    $('kcn').textContent=n+' / 5'+(k<5?' ('+k+' girildi)':'');
+    var abg=ph!==null&&pc!==null, acid=abg&&ph<7.35&&pc>45;
+    $('kabg').textContent=abg?(acid?'evet':'hayır')+' · pH '+f2(ph)+', PaCO₂ '+fm(pc,0):'kan gazı yok';
+    $('rxK').innerHTML='';
+    var sev;
+    if(acid){sev=3;$('ksev').textContent='Ağır';pill('ksevp','Hiperkapnik asidoz','var(--high)')}
+    else if(n>=3){sev=2;$('ksev').textContent='Orta';pill('ksevp','≥ 3 ölçüt','var(--warn)')}
+    else if(k===0&&!abg){sev=0;$('ksev').textContent='–';pill('ksevp','','')}
+    else{sev=1;$('ksev').textContent='Hafif';pill('ksevp','< 3 ölçüt'+(k<5?' (eksik veri)':''),'var(--ok)')}
+    if(sev===3)li('rxK','Ağır alevlenme: pH '+f2(ph)+', PaCO₂ '+fm(pc,0)+' mmHg','Akut hiperkapnik solunum yetmezliği. Kontrollü oksijen, NIV değerlendirmesi ve yakın kan gazı izlemi; yatış gerekir.');
+    else if(sev===2){li('rxK','Orta alevlenme',n+' ölçüt eşiği aşıyor.'+(abg?'':' Solunum desteği gereksinimini belirlemek için arter kan gazı alın.'));}
+    else if(sev===1)li('rxK','Hafif alevlenme','Roma ölçütlerinden 3’ü karşılanmıyor.'+(k<5?' '+(5-k)+' değişken girilmedi; sınıflama eksik veriyle yapıldı.':'')+' Yatış ölçütlerini ayrıca değerlendirin.');
+    if(abg&&!acid&&((po!==null&&po<=60)||pc>45))li('rxK','Kan gazında '+[(po!==null&&po<=60)?'hipoksemi (PaO₂ ≤ 60)':'',pc>45?'hiperkapni (PaCO₂ > 45)':''].filter(Boolean).join(' ve ')+', asidoz yok','Roma sınıflamasında orta alevlenmeyle uyumlu bulgu; ağır için asidoz gerekir. Kronik hiperkapnide bikarbonat yüksekliğine bakın.');
+    if(sp!==null&&sp<88)li('rxK','SpO₂ %'+fm(sp,0)+': oksijen başlayın','Hedef %88–92; titrasyondan sonra kan gazını tekrarlayın.');
+    else if(sp!==null&&sp>92&&sp<=100)li('rxK','SpO₂ %'+fm(sp,0),'Oksijen alıyorsa hedefin (%88–92) üstünde: hiperoksi hiperkapniyi kötüleştirebilir, oksijeni azaltın.');
+
+    // Tedavi yeri
+    var hosp=['h1','h2','h3','h4','h5','h6'].some(ck);
+    var icuAuto=(ph!==null&&ph<7.25)||(po!==null&&po<40);
+    var icu=['i1','i2','i3','i4','i5'].some(ck);
+    var niv=ph!==null&&pc!==null&&ph<=7.35&&pc>=45;
+    $('kniv').textContent=ph===null||pc===null?'kan gazı yok':niv?'evet':'hayır';
+    $('rxY').innerHTML='';
+    if(icu)pill('kyer','Yoğun bakım','var(--high)');
+    else if(icuAuto)pill('kyer','YBÜ değerlendirmesi','var(--high)');
+    else if(hosp||niv||sev===3)pill('kyer','Hastane yatışı','var(--warn)');
+    else pill('kyer','Ayaktan tedavi düşünülebilir','var(--ok)');
+    if(niv)li('rxY','NIV endikasyonu: pH '+f2(ph)+' ≤ 7,35 ve PaCO₂ '+fm(pc,0)+' ≥ 45 mmHg','NIV ilk tercih ventilasyon yöntemidir: entübasyon, komplikasyon, yatış süresi ve mortaliteyi azaltır. Uygun izlem yapılabilen birimde başlatın, 1–2 saatte kan gazını tekrarlayın. NIV başarısız olursa invaziv ventilasyon. En az 4 saat desteksiz soluyabilen hastada NIV doğrudan kesilebilir. Ayrıca şiddetli dispne ve solunum kası yorgunluğu bulgusu ya da oksijene rağmen süren hipoksemi de NIV nedenidir (GOLD).');
+    else if(ph!==null&&pc!==null)li('rxY','Kan gazında NIV ölçütü yok','Şiddetli dispne, solunum kası yorgunluğu (yardımcı kas, paradoks solunum) veya oksijene rağmen süren hipoksemi varsa yine NIV düşünün.');
+    if(icuAuto){var r=[];if(ph!==null&&ph<7.25)r.push('pH '+f2(ph)+' < 7,25');if(po!==null&&po<40)r.push('PaO₂ '+fm(po,0)+' < 40 mmHg');
+      li('rxY','YBÜ ölçütü: '+r.join(', '),'O₂ ve NIV’e rağmen süren ya da kötüleşen hipoksemi/asidoz yoğun bakım endikasyonudur; entübasyon hazırlığı ve tedavi sınırları (hasta tercihi, ileri yaşam planı) konuşulmalı.');}
+    if(icu)li('rxY','Yoğun bakım ölçütü işaretlendi','İnvaziv ventilasyon kararında altta yatan nedenin geri dönüşlülüğü, hastanın istekleri ve yoğun bakım olanağı göz önüne alınır.');
+    if(hosp&&!icu&&!icuAuto)li('rxY','GOLD yatış ölçütü var','Hastane servisinde veya acil gözlem biriminde tedavi; hipoksemide kontrollü oksijen.');
+    if(!hosp&&!icu&&!icuAuto&&!niv&&sev!==3)li('rxY','Yatış ölçütü işaretlenmedi','Ayaktan: SABA ± SAMA, prednizolon 40 mg × 5 gün, endikasyon varsa antibiyotik; 1 ay içinde kontrol. Kötüleşirse başvurmasını söyleyin.');
+    li('rxY','Oksijen: hedef SpO₂ %88–92','Venturi maske (%24–28) burun kanülünden daha kontrollüdür. Oksijen başladıktan veya değiştirildikten sonra kan gazını tekrarlayın.');
+
+    // Antibiyotik
+    var dy=ck('a1'),vol=ck('a2'),pur=ck('a3'),mn=ck('a4'),mv=ck('a5');
+    var nc=(dy?1:0)+(vol?1:0)+(pur?1:0);
+    var typ=nc===3?'Tip 1 (3 ana belirti)':nc===2?'Tip 2 (2 ana belirti)':nc===1&&mn?'Tip 3 (1 ana + küçük ölçüt)':nc===1?'1 ana belirti (küçük ölçüt yok)':'ana belirti yok';
+    $('abt').textContent=typ;
+    var ind=mv||(pur&&nc>=2);
+    var pse=['p1','p2','p3','p4','p5','p6'].some(ck);
+    $('abc').textContent=crp===null?'girilmedi':fm(crp)+' mg/L'+(crp<20?' (< 20)':crp<=40?' (20–40)':' (> 40)');
+    $('rxA').innerHTML='';
+    if(ind)pill('abp',(!mv&&crp!==null&&crp<20)?'Belirtiye göre endike, CRP düşük':'Antibiyotik endike',(!mv&&crp!==null&&crp<20)?'var(--warn)':'var(--high)');
+    else if(nc===0)pill('abp','Antibiyotik gerekmez','var(--ok)');
+    else pill('abp','Antibiyotik önerilmez','var(--ok)');
+    if(mv)li('rxA','Mekanik ventilasyon (NIV veya invaziv)','Antibiyotik mortaliteyi ve nozokomiyal pnömoniyi azaltır; balgam/aspirat kültürü alın.');
+    else if(ind)li('rxA','Balgam pürülansı + '+(nc-1)+' diğer ana belirti','Anthonisen tip 1 veya pürülansın dahil olduğu tip 2: antibiyotik önerilir. GOLD 2023 metni: balgam miktarı ve pürülansı birlikte artmış hastalar.');
+    else if(nc>0&&!pur)li('rxA','Balgam pürülansı yok','Pürülan olmayan alevlenmede antibiyotiğin yararı gösterilmemiştir.');
+    else if(pur&&nc===1)li('rxA','Yalnız balgam pürülansı','Tek ana belirtiyle antibiyotik genellikle gerekmez; klinik ve CRP ile değerlendirin.');
+    if(crp!==null){
+      if(crp<20)li('rxA','CRP < 20 mg/L','PACE çalışmasının rehberinde antibiyotiğin büyük olasılıkla yararsız olduğu aralık; CRP rehberli yaklaşım antibiyotik kullanımını zarar olmadan azalttı (birinci basamak).');
+      else if(crp<=40)li('rxA','CRP 20–40 mg/L','PACE rehberi: özellikle pürülan balgam varsa antibiyotik yararlı olabilir.');
+      else li('rxA','CRP > 40 mg/L','PACE rehberi: antibiyotik yararlı olabilir. Pnömoniyi dışlamak için akciğer grafisi.');
+    }
+    if(ind||mv){
+      if(!pse){
+        li('rxA','İlk seçenek: amoksisilin-klavulanat','875/125 mg PO 12 saatte bir (Türkiye’de 1 g tablet) veya IV 1,2 g 8 saatte bir.');
+        li('rxA','Alternatif: makrolid veya tetrasiklin','Klaritromisin 500 mg PO 12 saatte bir; azitromisin 500 mg PO günde bir, 3 gün; doksisiklin 100 mg PO 12 saatte bir (ilk gün 200 mg yükleme yapılabilir). Seçimi yerel direnç verisine göre yapın.');
+      }else{
+        li('rxA','Pseudomonas riski: antipsödomonal kapsam','Balgam kültürü alın. Oral: siprofloksasin 750 mg PO 12 saatte bir veya levofloksasin 750 mg PO günde bir. IV (ağır veya ağızdan alamayan): piperasilin-tazobaktam 4,5 g IV 6 saatte bir, sefepim 2 g IV 8 saatte bir veya siprofloksasin 400 mg IV 8 saatte bir.');
+        li('rxA','Kültürle daraltın','Sık alevlenen, ağır obstrüksiyonlu veya mekanik ventilasyon gereken hastada Gram-negatif (Pseudomonas) ve dirençli patojen olasılığı artar (GOLD).');
+      }
+      li('rxA','Süre 5–7 gün','Ağızdan alabilen hastada oral yol tercih edilir; IV başlandıysa klinik düzelince orale geçin.');
+    }
+  }
+
+  function asthma(){
+    var age=v('yas'),wt=v('kilo'),rr=v('rr'),hr=v('hr'),sp=v('spo2'),pef=v('pef'),ref=segVal('ref'),sx=segVal('sx'),boy=v('boy');
+    $('w-pb').hidden=ref!=='pb';$('w-pr').hidden=ref==='pb';
+    var rv=null,rtxt='–';
+    if(ref==='pb'){rv=v('pb');rtxt=rv?fm(rv,0)+' L/dk (kişisel en iyi)':'–'}
+    else if(age&&boy&&age>=15){rv=sx==='f'?Math.exp(0.376*Math.log(age)-0.0120*age-58.8/boy+5.63):Math.exp(0.544*Math.log(age)-0.0151*age-74.7/boy+5.48);rtxt=fm(rv,0)+' L/dk (beklenen)'}
+    else if(ref==='pr')rtxt=age!==null&&age<15?'denklem erişkin içindir':'yaş ve boy gerekir';
+    $('pref').textContent=rtxt;
+    var pp=pef!==null&&rv?pef/rv*100:null;
+    $('pefp').textContent=pp===null?'–':fm(pp,0);
+    var spk=segVal('sp'),mn=segVal('mn'),sil=ck('sil'),cya=ck('cya');
+    // 0 hafif, 1 orta, 2 ağır, 3 hayatı tehdit
+    var lv=0,why=[];
+    function up(l,t){if(l>lv)lv=l;if(l>=2)why.push(t)}
+    if(spk==='p')up(1);else if(spk==='w')up(2,'konuşamıyor/içemiyor/yatamıyor');
+    if(mn==='a')up(2,'ajitasyon');
+    if(mn==='d')up(3,'uykulu veya konfüze');if(sil)up(3,'sessiz göğüs');if(cya)up(3,'siyanoz');
+    if(sp!==null){if(sp<92)up(2,'SpO₂ < %92');else if(sp<94)up(1)}
+    if(rr!==null&&rr>30)up(2,'solunum sayısı > 30');
+    if(hr!==null&&hr>120)up(2,'nabız > 120');
+    if(pp!==null){if(pp<50)up(2,'PEF < %50');else if(pp<=70)up(1)}
+    $('as1').textContent=sp===null?'veri yok':'%'+fm(sp,0)+(sp<92?' · ağır':sp<94?' · orta':' · hafif');
+    $('as2').textContent=rr===null?'veri yok':fm(rr,0)+'/dk'+(rr>30?' · ağır':'');
+    $('as3').textContent=hr===null?'veri yok':fm(hr,0)+'/dk'+(hr>120?' · ağır':'');
+    $('as4').textContent=pp===null?'veri yok':'%'+fm(pp,0)+(pp<50?' · ağır':pp<=70?' · orta':' · hafif');
+    var names=['Hafif','Orta','Ağır','Hayatı tehdit edici'],cols=[OK,WARN,HIGH,HIGH];
+    pill('asevp',names[lv],cols[lv]);
+    $('rxS').innerHTML='';
+    if(lv===3)li('rxS','Hayatı tehdit edici alevlenme: '+why.filter(function(t){return /uykulu|sessiz|siyanoz/.test(t)}).join(', '),'Yoğun bakıma nakil (GINA). Beklerken SABA + ipratropium, oksijen, sistemik steroid; IV magnezyum. Entübasyon için anestezi/yoğun bakım çağırın.');
+    else if(lv===2)li('rxS','Ağır alevlenme: '+why.join(', '),'Acil olarak akut bakım birimine nakil/acil servis. Hemen SABA + ipratropium, kontrollü oksijen, sistemik steroid.');
+    else if(lv===1)li('rxS','Orta alevlenme','Kısa ifadelerle konuşur, oturmayı tercih eder, ajite değil; SpO₂ ≥ %92; PEF %50–70.');
+    else li('rxS','Hafif alevlenme','Cümle kurar, yatabilir, ajite değil; SpO₂ ≥ %94; PEF > %70.');
+    if(pp===null)li('rxS','PEF girilmedi','Sınıflama klinik bulgulara göre yapıldı; mümkünse tedavi başlarken ve 1. saatte PEF ölçün.');
+    if(hr!==null&&hr>120&&why.length===1)li('rxS','Yalnız nabız > 120/dk ağır düzeyde','Nabız ölçütü GINA 2024 ve önceki acil servis tablosundandır; GINA 2025–2026 birinci basamak şemasında yer almaz. SABA da taşikardi yapar; klinik bütünlükle değerlendirin.');
+    if(age!==null&&age<12)li('rxS','12 yaş altı','Bu araçtaki doz ve eşikler erişkin ve ≥ 12 yaş adölesan içindir; çocuklarda GINA çocuk bölümlerini ve PRAM gibi skorları kullanın.');
+
+    // Tedavi
+    $('rxT').innerHTML='';
+    if(lv===0){li('rxT','Salbutamol 4 puf (400 mcg) inhaler + spacer','veya budesonid-formoterol 160/4,5 mcg 2 puf. Yanıtı değerlendirin; gerekirse 30–60 dk sonra bir kez tekrarlayın.');
+      li('rxT','Sistemik steroid: hafif alevlenmede genellikle gerekmez','Yanıt yetersizse veya son zamanlarda ağır alevlenme öyküsü varsa prednizolon 40–50 mg sabah, 5–7 gün.');}
+    if(lv===1){li('rxT','Salbutamol 4–6 puf inhaler + spacer (veya nebül 2,5 mg)','Gerekirse 20–30 dk arayla en çok 3 kez.');
+      li('rxT','İpratropium 4 puf (80 mcg)','Gerekiyor ve varsa her salbutamolle birlikte, en çok 3 kez; başlangıç SABA’ya yanıt yetersizse ekleyin.');}
+    if(lv>=2){li('rxT','Salbutamol 6–10 puf inhaler + spacer (veya nebül 5 mg)','Gerekirse 20–30 dakikada bir tekrarlayın.'+(lv===3?' Hayatı tehdit edici durumda nebülü kesintisiz/art arda verin.':''));
+      li('rxT','İpratropium 4 puf (80 mcg) her salbutamolle, en çok 3 kez','Ağır alevlenmede SABA ile birlikte hastaneye yatışı azaltır. Nebül alternatifi: 0,5 mg (ABEM; GINA 2026 özet rehberinde nebül dozu yok).');}
+    if(lv>=1){li('rxT','Prednizolon 40–50 mg PO sabah, 5–7 gün','Azaltarak kesme gerekmez. Ağızdan alamıyorsa IV metilprednizolon 1 mg/kg'+(wt?' = '+fm(Math.round(wt),0)+' mg':'')+' (ABEM; GINA 2026 özet rehberinde IV doz verilmez). Oral ve IV eşit etkilidir.');}
+    if(lv>=1||(sp!==null&&sp<92))li('rxT','Oksijen: hedef SpO₂ %92–95','GINA 2026 özet rehberi; GINA 2024 ve öncesi erişkinde %93–95. Yüksek akımlı %100 oksijenden kaçının; titre edin. Rakım ve ten rengini hesaba katın.');
+    if(lv>=2)li('rxT','IV magnezyum sülfat 2 g, 20 dakikada, tek doz','Rutin değil: başlangıç tedavisine (ilk 1 saat) yanıt vermeyen ağır alevlenmede, süren hipoksemide veya başvuruda FEV₁ < %25–30’da düşünün. Nebül magnezyum GINA 2025’ten bu yana önerilmiyor. Hacim tablosu aşağıda.');
+    li('rxT','1. saatte (veya daha erken) yanıtı değerlendirin','PEF/FEV₁ ölçün. Kötüleşirse veya yanıt yoksa akut bakım birimine/YBÜ’ye nakil. Uykulu, konfüze veya sessiz göğüs: yoğun bakım.');
+    if(lv>=2)li('rxT','İzlem','Kardiyak monitör, sık vital bulgu; kan gazı yalnız PEF/FEV₁ < %50 veya yanıtsızlıkta, hiperkapniyi değerlendirmek için düşünün (normal ya da yükselen PaCO₂ kötü bulgudur). Ayrıntılı yorum: Kan Gazı Yorumu aracı.');
+
+    // Taburculuk
+    var pef2=v('pef2'),spb=v('spo2b'),d1=ck('d1'),d2=ck('d2');
+    var pp2=pef2!==null&&rv?pef2/rv*100:null;
+    $('dc1').textContent=pp2===null?'veri yok':'%'+fm(pp2,0)+' ('+fm(pef2,0)+' L/dk)';
+    $('dc2').textContent=spb===null?'veri yok':'%'+fm(spb,0);
+    var okP=pp2!==null&&pp2>70,okS=spb!==null&&spb>=92;
+    var miss=[];if(!d1)miss.push('son SABA’dan ≥ 1–2 saat sonra hafif ölçütler');if(!(pp2!==null&&pp2>70))miss.push('PEF > %70');if(!okS)miss.push('SpO₂ ≥ %92 oda havası');if(!d2)miss.push('evde yeterli destek');
+    $('rxD').innerHTML='';
+    if(lv===3)pill('dcp','Yoğun bakım','var(--high)');
+    else if(!miss.length)pill('dcp','Taburculuk ölçütleri karşılandı','var(--ok)');
+    else if(pef2===null&&spb===null&&!d1&&!d2)pill('dcp','Tedavi sonrası değerlendirme bekleniyor','var(--low)');
+    else pill('dcp','Taburculuk ölçütleri eksik: izlem / yatış','var(--warn)');
+    if(miss.length&&lv<3)li('rxD','Eksik ölçüt: '+miss.join(', '),'GINA: dört ölçütün tümü sağlanmalı. Saatte 1–2’den sık SABA gereksinimi, süren hipoksemi veya kötüleşmede yatırın.');
+    if(pp2!==null&&pp2<50)li('rxD','Tedavi sonrası PEF < %50','Yanıt yetersiz; yatış ve ağır alevlenme tedavisine devam.');
+    if(!miss.length||lv<3){
+      li('rxD','Taburculukta','İdame ICS başlayın veya artırın: erişkinde tercihen basamak 4 ICS-formoterol idame ve semptom giderici (MART), yoksa orta doz ICS-LABA. Rahatlatıcıyı yalnız gerektiğinde kullanmasını söyleyin. Oral prednizolonu 5–7 güne tamamlayın; inhaler tekniği, uyum ve yazılı eylem planını gözden geçirin.');
+      li('rxD','Ölümcül astım için risk faktörlerini sorgulayın','Önceki entübasyon/YBÜ yatışı, son 1 yılda yatış veya acil başvurusu, şu an veya yakın zamanda oral steroid, ICS kullanmama, ayda > 1 kutu SABA, psikososyal sorun, besin alerjisi. Varsa eşiği düşük tutun.');
+    }
+  }
+
+  function calc(){
+    var dz=segVal('dz');
+    $('koah').hidden=dz!=='koah';$('astim').hidden=dz!=='astim';
+    koah();asthma();
+  }
+  ['dz','sp','mn','ref','sx'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

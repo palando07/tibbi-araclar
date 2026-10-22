@@ -14,7 +14,7 @@
   var css = document.createElement('style');
   css.textContent = '.copy{align-self:flex-start;border:1px solid var(--line);background:var(--bg);color:var(--accent);' +
     'font:600 .9rem var(--font-body);padding:8px 16px;border-radius:999px;cursor:pointer}' +
-    '.copy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}' +
+    '.copy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}.cbtns{display:flex;flex-wrap:wrap;gap:8px}' +
     '.field label.item{font:inherit;letter-spacing:normal;color:inherit;text-transform:none}';
   document.head.appendChild(css);
 
@@ -63,13 +63,44 @@
     else fallback();
   }
 
+  // Vizit notu: "Nota ekle" sonucun ilk satırını aynı hastanın notuna ekler (menüdeki Hasta kartında toplanır).
+  // Hasta değerleriyle aynı kurallar: yalnız bu oturumda, 30 dakika işlem yapılmazsa silinir.
+  var NK = 'vizit-not', bu = (location.pathname.split('/').pop() || '').replace('.html', '');
+  function notOku(){ try { var o = JSON.parse(sessionStorage.getItem(NK)); if (o && Date.now() - o.t < 30 * 60 * 1000) return o.v || []; sessionStorage.removeItem(NK); } catch (e) {} return []; }
+  function notYaz(v){ try { if (v.length) sessionStorage.setItem(NK, JSON.stringify({t: Date.now(), v: v})); else sessionStorage.removeItem(NK); } catch (e) {} }
+  function notEkle(card, btn){
+    var bnt = document.querySelector('.ornek');
+    if (bnt && /Örnek değerlerle/.test(bnt.textContent) && btn.getAttribute('data-uyari') !== '1') {
+      btn.setAttribute('data-uyari', '1'); btn.textContent = 'Örnek değerler! Yine de ekle';
+      setTimeout(function(){ btn.removeAttribute('data-uyari'); btn.textContent = 'Nota ekle'; }, 4000);
+      return;
+    }
+    btn.removeAttribute('data-uyari');
+    var satir = summary(card).split('\n')[0], ad = AN[bu], kartNo = Array.prototype.indexOf.call(document.querySelectorAll('section.card[aria-live]'), card);
+    if (ad && satir.toLocaleLowerCase('tr').indexOf(ad.split(' ')[0].toLocaleLowerCase('tr')) < 0) {
+      var ik = satir.indexOf(': ');
+      satir = ik > 0 && /^(Yorum|Sınıflama|Sonuç|Yapılacaklar|Tahmini GFR)$/.test(satir.slice(0, ik)) ? ad + satir.slice(ik) : ad + ' · ' + satir;
+    }
+    var v = notOku().filter(function(n){ return !(n.k === bu && n.c === kartNo); });
+    v.push({k: bu, c: kartNo, s: satir}); if (v.length > 30) v.shift();
+    notYaz(v);
+    btn.textContent = 'Notta ✓ (' + v.length + ')';
+    setTimeout(function(){ btn.textContent = 'Nota ekle'; }, 1800);
+  }
+
   document.querySelectorAll('section.card[aria-live]').forEach(function(card){
+    var sira = document.createElement('div'); sira.className = 'cbtns';
     var btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopyala';
     btn.setAttribute('aria-label', 'Sonucu kopyala');
     btn.addEventListener('click', function(){ copy(summary(card), btn); });
+    var nb = document.createElement('button');
+    nb.type = 'button'; nb.className = 'copy'; nb.textContent = 'Nota ekle';
+    nb.setAttribute('aria-label', 'Sonucu hasta notuna ekle');
+    nb.addEventListener('click', function(){ notEkle(card, nb); });
+    sira.appendChild(btn); sira.appendChild(nb);
     var before = card.querySelector('.note, .f, .warnbox');
-    card.insertBefore(btn, before);
+    card.insertBefore(sira, before);
   });
 
   // Hasta değerleri: [data-hasta] alanlarına elle girilen değerler araçlar arasında taşınır.
@@ -78,7 +109,7 @@
   var AD = {yas:'Yaş', kilo:'Kilo', boy:'Boy', kreatinin:'Kreatinin', egfr:'eGFR', na:'Na', k:'K', glukoz:'Glukoz', ure:'Üre',
     hb:'Hb', alb:'Albümin', bil:'Bilirubin', inr:'INR', plt:'Trombosit', ca:'Ca', sbp:'Sistolik', dbp:'Diyastolik', nabiz:'Nabız'};
   function oku(){ try { var o = JSON.parse(sessionStorage.getItem(HK)); if (o && Date.now() - o.t < SURE) return o.v || {}; sessionStorage.removeItem(HK); } catch (e) {} return {}; }
-  function yaz(v){ try { if (Object.keys(v).length) sessionStorage.setItem(HK, JSON.stringify({t: Date.now(), v: v})); else sessionStorage.removeItem(HK); } catch (e) {} }
+  function yaz(v){ try { if (Object.keys(v).length) sessionStorage.setItem(HK, JSON.stringify({t: Date.now(), v: v})); else sessionStorage.removeItem(HK); } catch (e) {} var n = notOku(); if (n.length) notYaz(n); }
   function gecerli(el){ var k = el.getAttribute('data-hasta-kosul'); return !k || !!document.querySelector(k); }
   function tetikle(el){ el.dispatchEvent(new Event('input', {bubbles: true})); el.dispatchEvent(new Event('change', {bubbles: true})); }
 
@@ -130,6 +161,7 @@
       dug.textContent = 'Temizle';
     }
     dug.addEventListener('click', function(){
+      if (dug.textContent === 'Yeni hasta') notYaz([]);
       yaz({});
       girdiler.forEach(function(el){ if (el.value !== '') { el.value = ''; tetikle(el); } });
       document.querySelectorAll('input[type=checkbox]').forEach(function(el){ if (el.checked && !el.closest('header')) { el.checked = false; tetikle(el); } });
@@ -171,21 +203,21 @@
     'hipertansif-acil':'Hipertansif acil','infuzyon-hizi':'İnfüzyon hızı','ampirik-antibiyotik':'Ampirik antibiyotik','curb-65':'CURB-65','news2':'NEWS2',
     'qsofa':'qSOFA','glasgow-koma':'Glasgow Koma Skalası','anemi':'Anemi yaklaşımı','diyabet-tedavi':'Tip 2 diyabet tedavisi','insulin-dozu':'İnsülin dozu',
     'steroid-esdegeri':'Steroid eşdeğeri','opioid-donusumu':'Opioid dönüşümü','iv-demir':'IV demir dozu','vki':'VKİ ve VYA','tiroid-testi':'Tiroid testi yorumu',
-    'levotiroksin':'Levotiroksin dozu','stop-bang':'STOP-BANG'};
+    'levotiroksin':'Levotiroksin dozu','stop-bang':'STOP-BANG','birim-cevirici':'Birim çevirici','idame-sivi':'İdame sıvı ve refeeding','pesi':'PESI ve sPESI','hit-4t':'4T skoru (HIT)','rcri':'RCRI (ameliyat öncesi)','ust-gis-kanama':'Üst GİS kanaması','sepsis-sivi':'Sepsiste sıvı ve vazopresör','koah-astim':'KOAH ve astım alevlenmesi','tiroid-krizi':'Tiroid krizi ve miksödem','transfuzyon':'Transfüzyon eşikleri','light-kriterleri':'Light kriterleri','delirium-4at':'4AT deliryum taraması'};
   var IL = {
     'egfr':['kreatinin-klerensi','bobrek-ilac-dozu','akut-bobrek-hasari','elektrolit-replasmani'],
     'kreatinin-klerensi':['bobrek-ilac-dozu','egfr','antikoagulan-kesme','akut-bobrek-hasari'],
     'bobrek-ilac-dozu':['kreatinin-klerensi','egfr','akut-bobrek-hasari','ampirik-antibiyotik'],
     'akut-bobrek-hasari':['bobrek-ilac-dozu','elektrolit-replasmani','kan-gazi','acil-tedavi'],
     'elektrolit':['kan-gazi','osmolalite','elektrolit-replasmani','hiponatremi-tani'],
-    'elektrolit-replasmani':['elektrolit','acil-tedavi','infuzyon-hizi','egfr'],
+    'elektrolit-replasmani':['elektrolit','idame-sivi','acil-tedavi','birim-cevirici'],
     'kan-gazi':['elektrolit','osmolalite','akut-bobrek-hasari','acil-tedavi'],
     'hiponatremi-tani':['sodyum','osmolalite','acil-tedavi','tiroid-testi'],
     'sodyum':['hiponatremi-tani','acil-tedavi','osmolalite','elektrolit'],
     'osmolalite':['hiponatremi-tani','elektrolit','kan-gazi','sodyum'],
     'af-skor':['antikoagulan-kesme','kreatinin-klerensi','bobrek-ilac-dozu','varfarin-inr'],
     'qtc':['elektrolit-replasmani','elektrolit','af-skor'],
-    'wells-pe':['vte-profilaksisi','antikoagulan-kesme','heart-skoru','news2'],
+    'wells-pe':['pesi','vte-profilaksisi','antikoagulan-kesme','heart-skoru'],
     'vte-profilaksisi':['wells-pe','kreatinin-klerensi','antikoagulan-kesme','vki'],
     'antikoagulan-kesme':['varfarin-inr','kreatinin-klerensi','af-skor','bobrek-ilac-dozu'],
     'varfarin-inr':['antikoagulan-kesme','af-skor','glasgow-blatchford'],
@@ -196,7 +228,7 @@
     'siroz-asit':['child-pugh','meld-na','glasgow-blatchford','hiponatremi-tani'],
     'child-pugh':['meld-na','siroz-asit','fib-4','bobrek-ilac-dozu'],
     'meld-na':['child-pugh','siroz-asit','fib-4'],
-    'glasgow-blatchford':['anemi','antikoagulan-kesme','child-pugh','varfarin-inr'],
+    'glasgow-blatchford':['ust-gis-kanama','anemi','transfuzyon','antikoagulan-kesme'],
     'pankreatit':['news2','elektrolit-replasmani','r-faktor','kan-gazi'],
     'r-faktor':['fib-4','child-pugh','pankreatit'],
     'fib-4':['child-pugh','meld-na','r-faktor','siroz-asit'],
@@ -206,20 +238,31 @@
     'ampirik-antibiyotik':['bobrek-ilac-dozu','curb-65','qsofa','news2'],
     'curb-65':['ampirik-antibiyotik','news2','qsofa'],
     'news2':['qsofa','curb-65','ampirik-antibiyotik','glasgow-koma'],
-    'qsofa':['news2','ampirik-antibiyotik','ortalama-arter-basinci','kan-gazi'],
+    'qsofa':['sepsis-sivi','news2','ampirik-antibiyotik','kan-gazi'],
     'glasgow-koma':['news2','hipertansif-acil','acil-tedavi'],
-    'anemi':['iv-demir','glasgow-blatchford','egfr'],
+    'anemi':['iv-demir','transfuzyon','glasgow-blatchford','egfr'],
     'diyabet-tedavi':['insulin-dozu','egfr','prevent','vki'],
     'insulin-dozu':['diyabet-tedavi','steroid-esdegeri','acil-tedavi','egfr'],
     'steroid-esdegeri':['insulin-dozu','acil-tedavi'],
     'opioid-donusumu':['infuzyon-hizi','bobrek-ilac-dozu'],
     'iv-demir':['anemi','egfr'],
     'vki':['kreatinin-klerensi','stop-bang','prevent','diyabet-tedavi'],
-    'tiroid-testi':['levotiroksin','hiponatremi-tani','anemi'],
+    'tiroid-testi':['levotiroksin','tiroid-krizi','hiponatremi-tani','anemi'],
     'levotiroksin':['tiroid-testi','vki'],
-    'stop-bang':['vki','prevent']
+    'stop-bang':['vki','prevent','rcri'],
+    'birim-cevirici':['elektrolit-replasmani','elektrolit','egfr','kan-gazi'],
+    'idame-sivi':['elektrolit-replasmani','sodyum','vki','infuzyon-hizi'],
+    'pesi':['wells-pe','vte-profilaksisi','antikoagulan-kesme','hit-4t'],
+    'hit-4t':['antikoagulan-kesme','vte-profilaksisi','transfuzyon','kreatinin-klerensi'],
+    'rcri':['stop-bang','antikoagulan-kesme','egfr','heart-skoru'],
+    'ust-gis-kanama':['glasgow-blatchford','transfuzyon','child-pugh','antikoagulan-kesme'],
+    'sepsis-sivi':['qsofa','ampirik-antibiyotik','infuzyon-hizi','news2'],
+    'koah-astim':['kan-gazi','news2','ampirik-antibiyotik','curb-65'],
+    'tiroid-krizi':['tiroid-testi','levotiroksin','steroid-esdegeri','acil-tedavi'],
+    'transfuzyon':['anemi','iv-demir','ust-gis-kanama','varfarin-inr'],
+    'light-kriterleri':['siroz-asit','ampirik-antibiyotik','pesi'],
+    'delirium-4at':['elektrolit','hiponatremi-tani','glasgow-koma','opioid-donusumu']
   };
-  var bu = (location.pathname.split('/').pop() || '').replace('.html', '');
   if (IL[bu]) {
     var css3 = document.createElement('style');
     css3.textContent = '.ilgili{display:flex;flex-direction:column;gap:8px}.ilgili h2{margin:8px 0 0;font:700 .78rem var(--font-body);text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}' +

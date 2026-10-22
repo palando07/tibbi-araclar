@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tiroid Krizi ve Miksödem Koması</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.item input[type=checkbox]{border-radius:4px}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+.tw{overflow-x:auto}
+table.t.dz td:first-child{width:34%}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Tiroid Krizi ve Miksödem Koması</h1>
+    <p>Burch-Wartofsky ve JTA ölçütleri, Popoveniuc miksödem koma skoru; kiloya göre tedavi dozları (TEMD 2025 esas)</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="60"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="decimal" step="1" value="45"></div>
+      <div class="field"><label for="hr">Nabız <span>/dk</span></label><input id="hr" data-hasta="nabiz" type="number" inputmode="decimal" step="1" value="136"></div>
+      <div class="field"><label for="tc">Vücut sıcaklığı <span>°C</span></label><input id="tc" type="number" inputmode="decimal" step="0.1" value="39.0"></div>
+      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="138"></div>
+      <div class="field"><label for="glu">Glukoz <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="142"></div>
+    </div>
+    <span class="lbl">Tablo</span>
+    <div class="seg"><button type="button" data-g="tab" data-v="a" aria-pressed="true">Tiroid krizi</button><button type="button" data-g="tab" data-v="b" aria-pressed="false">Miksödem koması</button></div>
+    <p class="note">Nabız ve sıcaklık her iki skorda da kullanılır. AF’de ventrikül hızını girin.</p>
+  </section>
+
+  <!-- ===================== A) TİROİD KRİZİ ===================== -->
+  <div id="pa" style="display:contents">
+  <section class="card">
+    <h2>Burch-Wartofsky Puan Skalası</h2>
+    <div class="sub"><span>Sıcaklık (girilen değerden)</span><b id="bt">–</b></div>
+    <div class="sub"><span>Taşikardi (girilen nabızdan)</span><b id="bh">–</b></div>
+    <div class="field"><span class="lbl">Santral sinir sistemi bulguları</span><div class="items">
+      <label class="item"><input type="radio" name="cns" value="0"><span class="txt">Yok</span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="cns" value="10" checked><span class="txt">Hafif<small>ajitasyon</small></span><span class="pts">10</span></label>
+      <label class="item"><input type="radio" name="cns" value="20"><span class="txt">Orta<small>deliryum, psikoz, aşırı letarji</small></span><span class="pts">20</span></label>
+      <label class="item"><input type="radio" name="cns" value="30"><span class="txt">Ağır<small>konvülsiyon veya koma</small></span><span class="pts">30</span></label>
+    </div></div>
+    <div class="field"><span class="lbl">Gastrointestinal-hepatik bulgular</span><div class="items">
+      <label class="item"><input type="radio" name="gi" value="0"><span class="txt">Yok</span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="gi" value="10" checked><span class="txt">Orta<small>diyare, bulantı/kusma, karın ağrısı</small></span><span class="pts">10</span></label>
+      <label class="item"><input type="radio" name="gi" value="20"><span class="txt">Ağır<small>açıklanamayan sarılık</small></span><span class="pts">20</span></label>
+    </div></div>
+    <div class="field"><span class="lbl">Konjestif kalp yetersizliği</span><div class="items">
+      <label class="item"><input type="radio" name="chf" value="0"><span class="txt">Yok</span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="chf" value="5" checked><span class="txt">Hafif<small>ayak bileği ödemi</small></span><span class="pts">5</span></label>
+      <label class="item"><input type="radio" name="chf" value="10"><span class="txt">Orta<small>bibaziler raller</small></span><span class="pts">10</span></label>
+      <label class="item"><input type="radio" name="chf" value="15"><span class="txt">Ağır<small>akciğer ödemi</small></span><span class="pts">15</span></label>
+    </div></div>
+    <span class="lbl">Atriyal fibrilasyon</span>
+    <div class="seg"><button type="button" data-g="af" data-v="0" aria-pressed="true">Yok · 0</button><button type="button" data-g="af" data-v="10" aria-pressed="false">Var · 10</button></div>
+    <span class="lbl">Tetikleyici (kolaylaştırıcı) olay</span>
+    <div class="seg"><button type="button" data-g="pre" data-v="0" aria-pressed="false">Yok · 0</button><button type="button" data-g="pre" data-v="10" aria-pressed="true">Var · 10</button></div>
+    <p class="note">Tetikleyiciler: antitiroid ilacın kesilmesi, enfeksiyon (en sık), tiroid veya tiroid dışı cerrahi, iyot yükü (kontrast, amiodaron), RAİ, Mİ, inme, akut pankreatit, DKA, pulmoner emboli, travma, doğum, immün kontrol noktası inhibitörleri (TEMD Tablo 28.2).</p>
+    <span class="lbl">Serbest T3 ve/veya T4 (JTA ölçütleri için)</span>
+    <div class="seg"><button type="button" data-g="ft" data-v="1" aria-pressed="true">Yüksek</button><button type="button" data-g="ft" data-v="0" aria-pressed="false">Sonuç yok</button></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Tiroid krizi olasılığı</h2>
+    <div class="res"><span class="num" id="bw">–</span><span class="of">BWPS puanı</span><span class="pill" id="bwp"></span></div>
+    <div class="sub"><span>Sıcaklık</span><b id="c1">–</b></div>
+    <div class="sub"><span>SSS</span><b id="c2">–</b></div>
+    <div class="sub"><span>GİS-hepatik</span><b id="c3">–</b></div>
+    <div class="sub"><span>Taşikardi</span><b id="c4">–</b></div>
+    <div class="sub"><span>KKY</span><b id="c5">–</b></div>
+    <div class="sub"><span>AF</span><b id="c6">–</b></div>
+    <div class="sub"><span>Tetikleyici</span><b id="c7">–</b></div>
+    <div class="sub"><span>JTA ölçütleri (Akamizu 2012)</span><b id="jta">–</b></div>
+    <ol class="rec" id="rxB"></ol>
+    <p class="note">BWPS: &lt; 25 olası değil, 25–44 yaklaşan kriz (kriz tehdidi), ≥ 45 kriz. Duyarlı ama özgül değildir; yüksek ateşli influenza gibi tabloları ayıramaz. Taşikardi bandı orijinal 1993 tablosundaki gibi 90–109/dk = 5 puan; TEMD Tablo 28.1 bu bandı 100–109 olarak yazar. TEMD tablosunda tetikleyici “var 0 / yok 10” olarak basılmıştır; orijinal skalada tetikleyici <b>varsa</b> 10 puandır ve burada öyle hesaplanır.</p>
+  </section>
+
+  <section class="card">
+    <h2>Tiroid krizi tedavisi</h2>
+    <span class="lbl">Antitiroid ilaç</span>
+    <div class="seg"><button type="button" data-g="ati" data-v="ptu" aria-pressed="true">PTU</button><button type="button" data-g="ati" data-v="mmi" aria-pressed="false">Metimazol</button></div>
+    <span class="lbl">İyot preparatı</span>
+    <div class="seg wrapseg"><button type="button" data-g="iy" data-v="lug" aria-pressed="true">Lugol</button><button type="button" data-g="iy" data-v="sski" aria-pressed="false">SSKİ</button></div>
+    <span class="lbl">Beta bloker yolu</span>
+    <div class="seg"><button type="button" data-g="bb" data-v="po" aria-pressed="true">Oral propranolol</button><button type="button" data-g="bb" data-v="iv" aria-pressed="false">IV esmolol</button></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Tiroid krizi: dozlar</h2>
+    <div class="res"><span class="pill" id="txp"></span></div>
+    <div class="tw"><table class="t dz">
+      <thead><tr><th>İlaç</th><th>TEMD 2025</th><th>ATA 2016</th></tr></thead>
+      <tbody id="tA"></tbody>
+    </table></div>
+    <ol class="rec" id="rxA"></ol>
+    <p class="note">Sıra: önce antitiroid ilaç (yeni hormon yapımı), en az 1 saat sonra iyot (salınımı keser), beta bloker, glukokortikoid (T4→T3 dönüşümü, olası adrenal rezerv yetersizliği), destek ve tetikleyicinin tedavisi. Hesaplanan dozlar kılavuz aralıklarıdır; klinik duruma göre uyarlayın.</p>
+  </section>
+  </div>
+
+  <!-- ===================== B) MİKSÖDEM KOMASI ===================== -->
+  <div id="pb" style="display:contents" hidden>
+  <section class="card">
+    <h2>Miksödem koması tanı skoru</h2>
+    <div class="sub"><span>Hipotermi (girilen sıcaklıktan)</span><b id="mt">–</b></div>
+    <div class="sub"><span>Bradikardi (girilen nabızdan)</span><b id="mh">–</b></div>
+    <div class="field"><span class="lbl">Santral sinir sistemi</span><div class="items">
+      <label class="item"><input type="radio" name="ms" value="0"><span class="txt">Yok</span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="ms" value="10"><span class="txt">Somnolans / letarji</span><span class="pts">10</span></label>
+      <label class="item"><input type="radio" name="ms" value="15" checked><span class="txt">Obtundasyon</span><span class="pts">15</span></label>
+      <label class="item"><input type="radio" name="ms" value="20"><span class="txt">Stupor</span><span class="pts">20</span></label>
+      <label class="item"><input type="radio" name="ms" value="30"><span class="txt">Koma / nöbet</span><span class="pts">30</span></label>
+    </div></div>
+    <div class="field"><span class="lbl">Gastrointestinal bulgular</span><div class="items">
+      <label class="item"><input type="radio" name="mg" value="0"><span class="txt">Yok</span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="mg" value="5" checked><span class="txt">Anoreksi, karın ağrısı, kabızlık</span><span class="pts">5</span></label>
+      <label class="item"><input type="radio" name="mg" value="15"><span class="txt">Azalmış barsak motilitesi</span><span class="pts">15</span></label>
+      <label class="item"><input type="radio" name="mg" value="20"><span class="txt">Paralitik ileus</span><span class="pts">20</span></label>
+    </div></div>
+    <span class="lbl">Tetikleyici olay</span>
+    <div class="seg"><button type="button" data-g="mp" data-v="0" aria-pressed="false">Yok · 0</button><button type="button" data-g="mp" data-v="10" aria-pressed="true">Var · 10</button></div>
+    <p class="note">Enfeksiyon, soğuk maruziyeti, travma, cerrahi, GİS kanama, yanık; ilaçlar (sedatif, anestetik, narkotik, lityum, fenitoin, amiodaron, pembrolizumab) veya levotiroksinin bırakılması.</p>
+    <div class="field"><span class="lbl">Diğer kardiyovasküler bulgular</span><div class="items">
+      <label class="item"><input type="checkbox" id="k1" data-p="10"><span class="txt">Diğer EKG değişiklikleri<small>QT uzaması, düşük voltaj, dal bloğu, nonspesifik ST-T, AV blok</small></span><span class="pts">10</span></label>
+      <label class="item"><input type="checkbox" id="k2" data-p="10"><span class="txt">Perikardiyal veya plevral efüzyon</span><span class="pts">10</span></label>
+      <label class="item"><input type="checkbox" id="k3" data-p="15"><span class="txt">Akciğer ödemi</span><span class="pts">15</span></label>
+      <label class="item"><input type="checkbox" id="k4" data-p="15"><span class="txt">Kardiyomegali</span><span class="pts">15</span></label>
+      <label class="item"><input type="checkbox" id="k5" data-p="20"><span class="txt">Hipotansiyon</span><span class="pts">20</span></label>
+    </div></div>
+    <div class="field"><span class="lbl">Metabolik bozukluklar</span><div class="items">
+      <label class="item"><input type="checkbox" id="m3" data-p="10"><span class="txt">Hipoksemi</span><span class="pts">10</span></label>
+      <label class="item"><input type="checkbox" id="m4" data-p="10"><span class="txt">Hiperkapni</span><span class="pts">10</span></label>
+      <label class="item"><input type="checkbox" id="m5" data-p="10"><span class="txt">GFR azalması</span><span class="pts">10</span></label>
+    </div></div>
+    <div class="sub"><span>Hiponatremi (Na &lt; 135)</span><b id="mna">–</b></div>
+    <div class="sub"><span>Hipoglisemi (glukoz &lt; 70)</span><b id="mgl">–</b></div>
+    <span class="lbl">Kardiyak risk (KAH, aritmi, Mİ öyküsü)</span>
+    <div class="seg"><button type="button" data-g="kr" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="kr" data-v="1" aria-pressed="false">Var</button></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Miksödem koması olasılığı</h2>
+    <div class="res"><span class="num" id="mx">–</span><span class="of">Popoveniuc puanı</span><span class="pill" id="mxp"></span></div>
+    <div class="sub"><span>Termoregülasyon</span><b id="d1">–</b></div>
+    <div class="sub"><span>SSS</span><b id="d2">–</b></div>
+    <div class="sub"><span>GİS</span><b id="d3">–</b></div>
+    <div class="sub"><span>Tetikleyici</span><b id="d4">–</b></div>
+    <div class="sub"><span>Kardiyovasküler (bradikardi dahil)</span><b id="d5">–</b></div>
+    <div class="sub"><span>Metabolik</span><b id="d6">–</b></div>
+    <p class="advice" id="mxa"></p>
+    <p class="note">Popoveniuc 2014: ≥ 60 yüksek olasılık (tanısal), 25–59 miksödem koması riski, &lt; 25 olası değil. TEMD 2025 metni risk aralığını 45–59 olarak verir; 25–44 arası yalnız orijinal skora göre risklidir. Skor az sayıda hastadan türetilmiştir; tanı öykü, muayene, diğer koma nedenlerinin dışlanması ve tiroid testleriyle konur. Hiponatremi ve hipoglisemi eşiklerini makale tanımlamaz; burada Na &lt; 135 mmol/L ve glukoz &lt; 70 mg/dL kabul edildi.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Miksödem koması: tedavi</h2>
+    <div class="res"><span class="pill" id="mtp"></span></div>
+    <div class="tw"><table class="t dz">
+      <thead><tr><th>İlaç</th><th>Doz</th><th>Bu hasta</th></tr></thead>
+      <tbody id="tB"></tbody>
+    </table></div>
+    <ol class="rec" id="rxM"></ol>
+    <p class="note">Miksödem komasından şüpheleniliyorsa laboratuvar onayı beklenmeden tedaviye başlanır (TEMD). Tedaviden önce TSH, sT4 ve kortizol (mümkünse kosintropin öncesi/sonrası) için kan alın. Yoğun bakımda izleyin.</p>
+  </section>
+  </div>
+
+  <p class="note">Kaynaklar: <b>TEMD Tiroid Hastalıkları Tanı ve Tedavi Kılavuzu 2025</b>, Bölüm 28 (tiroid krizi: Tablo 28.1 tanı kriterleri, Tablo 28.2 risk faktörleri, PTU 200–400 mg 6–8 saatte bir, MMI 20–25 mg 6 saatte bir, ATİ’den ≥ 1 saat sonra SSKİ 3–5 damla 6 saatte bir veya Lugol 4–8 damla 6–8 saatte bir, propranolol 60–80 mg 6 saatte bir, esmolol 50–100 µg/kg/dk, hidrokortizon 50–100 mg 6–8 saatte bir, lityum, kolestiramin, plazmaferez) ve Bölüm 29 (miksödem koması: IV T4 200–400 µg yükleme, sonra 1,6 µg/kg/gün dozunun %75’i IV; T3 5–20 µg, sonra 2,5–10 µg 8 saatte bir; stres dozu glukokortikoid; pasif ısıtma; Türkiye’de 2024’ten beri 500 µg IV T4 preparatı; oral 300–500 µg yükleme vaka serileri; skor eşiği ≥ 60 ve 45–59); Burch HB, Wartofsky L. Life-threatening thyrotoxicosis. Thyroid storm. Endocrinol Metab Clin North Am 1993;22:263–77 (puan skalası); Ross DS ve ark. 2016 ATA hipertiroidi ve tirotoksikoz kılavuzu, Thyroid 2016;26:1343–421 (PTU 500–1000 mg yükleme sonra 250 mg 4 saatte bir, MMI 60–80 mg/gün, propranolol 60–80 mg 4 saatte bir, SSKİ 5 damla 6 saatte bir, hidrokortizon 300 mg yükleme sonra 100 mg 8 saatte bir, asetaminofen tercihi, salisilattan kaçınma); Akamizu T ve ark. Thyroid 2012;22:661–79 (JTA tanı ölçütleri); Satoh T ve ark. JTA/JES 2016 tiroid krizi kılavuzu, Endocr J 2016;63:1025–64 (JTA organ bulgusu tanımları); Popoveniuc G ve ark. A diagnostic scoring system for myxedema coma. Endocr Pract 2014;20:808–17; Jonklaas J ve ark. ATA 2014 hipotiroidi tedavi kılavuzu, Thyroid 2014;24:1670–751 (IV LT4/T3 dozları, hidrokortizon); Spasovski G ve ark. Avrupa hiponatremi kılavuzu, Eur J Endocrinol 2014;170:G1–47 (%3 NaCl 150 mL). Parasetamol dozu ürün bilgisinden. Bu araç klinik karar desteği içindir; tedavi kararı hekime aittir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat(String($(id).value).replace(',','.'));return isFinite(x)?x:null};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function rad(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?+e.value:0}
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function row(tb,a,b,c){var tr=document.createElement('tr');[a,b,c].forEach(function(t,i){var td=document.createElement('td');
+    if(i===0&&t.indexOf('|')>0){var s=t.split('|');td.textContent=s[0];var sm=document.createElement('small');sm.textContent=s[1];td.appendChild(sm)}else td.textContent=t;tr.appendChild(td)});$(tb).appendChild(tr)}
+  var pt=function(p){return p+' puan'};
+
+  // Burch-Wartofsky 1993 (°F bantları, 0,1 °C yuvarlamayla TEMD Tablo 28.1 °C bantlarına eşdeğer)
+  function bwTemp(t){if(t===null)return null;t=Math.round(t*10)/10;
+    if(t<37.2)return 0;if(t<=37.7)return 5;if(t<=38.3)return 10;if(t<=38.8)return 15;if(t<=39.4)return 20;if(t<=39.9)return 25;return 30}
+  function bwHR(h){if(h===null)return null;if(h<90)return 0;if(h<110)return 5;if(h<120)return 10;if(h<130)return 15;if(h<140)return 20;return 25}
+  // Popoveniuc 2014
+  function mxTemp(t){if(t===null)return null;if(t<32)return 20;if(t<=35)return 10;return 0}
+  function mxHR(h){if(h===null)return null;if(h<40)return 30;if(h<50)return 20;if(h<60)return 10;return 0}
+
+  function calc(){
+    var tab=segVal('tab');$('pa').hidden=tab!=='a';$('pb').hidden=tab!=='b';
+    var wt=v('wt'),age=v('age'),hr=v('hr'),t=v('tc'),na=v('na'),glu=v('glu');
+
+    // ---------- A) BWPS ----------
+    var s1=bwTemp(t),s4=bwHR(hr),s2=rad('cns'),s3=rad('gi'),s5=rad('chf'),s6=+segVal('af'),s7=+segVal('pre');
+    $('bt').textContent=s1===null?'sıcaklık girilmedi':fm(t)+' °C → '+pt(s1);
+    $('bh').textContent=s4===null?'nabız girilmedi':fm(hr,0)+'/dk → '+pt(s4);
+    var bw=(s1||0)+s2+s3+(s4||0)+s5+s6+s7;
+    $('bw').textContent=bw;
+    [s1,s2,s3,s4,s5,s6,s7].forEach(function(x,i){$('c'+(i+1)).textContent=x===null?'–':pt(x)});
+    var lvl=bw>=45?2:bw>=25?1:0;
+    pill('bwp',lvl===2?'≥ 45: tiroid krizi':lvl===1?'25–44: yaklaşan kriz':'< 25: kriz olası değil',lvl===2?'var(--high)':lvl===1?'var(--warn)':'var(--ok)');
+    // JTA 2012
+    var ft=segVal('ft')==='1',cns=s2>=10,fev=t!==null&&t>=38,tac=hr!==null&&hr>=130,hf=s5>=15,gih=s3>=10;
+    var n=(fev?1:0)+(tac?1:0)+(hf?1:0)+(gih?1:0);
+    var pat1=(cns&&n>=1)||(!cns&&n>=3),jt;
+    if(ft&&pat1)jt='TS1 (kesin)';else if(ft&&n===2)jt='TS2 (şüpheli)';else if(!ft&&pat1)jt='TS2 (sT3/sT4 yok)';else jt='karşılanmadı';
+    $('jta').textContent=jt;
+    $('rxB').innerHTML='';
+    if(lvl===2)li('rxB','Tiroid krizi: yoğun bakımda acil tedavi','TEMD: kriz şüphesinde tedaviye ivedilikle, mümkünse yoğun bakımda başlanır. Laboratuvar sonucunu beklemeyin.');
+    else if(lvl===1)li('rxB','Yaklaşan kriz (kriz tehdidi)','TEMD: kriz tehdidi taşıyan hastada da destek tedavisi (sıvı, kortikosteroid, sedatif) ve altta yatan hastalığın tedavisi. ATA 2016: 25–44 puanda agresif tedavi kararı klinik yargıya dayanır.');
+    else li('rxB','BWPS < 25','Tiroid krizi olası değil; tirotoksikozu ve diğer ateş/taşikardi nedenlerini değerlendirin.');
+    li('rxB','JTA: '+jt,'Ön koşul tirotoksikoz (sT3/sT4 yüksek). TS1: SSS bulgusu + ≥ 1 diğer bulgu veya SSS’siz ≥ 3 bulgu. TS2: 2 bulgu ya da TS1 görünümü ama sT3/sT4 sonucu yok. Bulgular: ateş ≥ 38 °C, nabız ≥ 130/dk, KKY (akciğer ödemi, akciğer alanlarının yarısından fazlasında ral, kardiyojenik şok, NYHA IV veya Killip ≥ III), GİS-hepatik (bulantı, kusma, ishal veya bilirubin > 3 mg/dL). Burada SSS = BWPS SSS ≥ hafif, KKY = akciğer ödemi seçimi olarak yaklaşık eşlendi.');
+    if(hr!==null&&hr>=90&&hr<100)li('rxB','Nabız 90–99/dk','Orijinal skalada 5 puan; TEMD Tablo 28.1’de bu aralık puan almaz (TEMD toplamı 5 puan düşük olur).');
+
+    // ---------- A) Tedavi ----------
+    $('tA').innerHTML='';$('rxA').innerHTML='';
+    var ati=segVal('ati'),iy=segVal('iy'),bb=segVal('bb');
+    pill('txp',lvl===2?'Tüm basamaklar, yoğun bakım':lvl===1?'Klinik karara göre yoğun tedavi':'Skor düşük: doz bilgi amaçlı',lvl===2?'var(--high)':lvl===1?'var(--warn)':'var(--ok)');
+    if(ati==='ptu')row('tA','1. PTU|ilk seçenek (T4→T3 dönüşümünü de bloke eder)','200–400 mg PO 6–8 saatte bir (600–1600 mg/gün; 50 mg tablet: 4–8 tablet/doz)','500–1000 mg yükleme, sonra 250 mg 4 saatte bir (1500 mg/gün)');
+    else row('tA','1. Metimazol|PTU kullanılamıyorsa','20–25 mg PO 6 saatte bir (80–100 mg/gün)','60–80 mg/gün (bölünmüş dozlarda)');
+    if(iy==='lug')row('tA','2. Lugol|ATİ’den ≥ 1 saat sonra','4–8 damla PO 6–8 saatte bir (1 damla 6,25 mg iyot: 25–50 mg iyot/doz)','SSKİ 5 damla (0,25 mL, 250 mg) 6 saatte bir');
+    else row('tA','2. SSKİ|ATİ’den ≥ 1 saat sonra','3–5 damla PO 6 saatte bir (1 damla 37,5 mg iyot: 112,5–187,5 mg iyot/doz)','5 damla (0,25 mL, 250 mg) PO 6 saatte bir');
+    if(bb==='po')row('tA','3. Propranolol|selektif olmayan BB tercih (TEMD)','60–80 mg PO 6 saatte bir (240–320 mg/gün)','60–80 mg PO 4 saatte bir (360–480 mg/gün)');
+    else{var e1=wt?fm(0.25*wt)+'–'+fm(0.5*wt)+' mg':'250–500 µg/kg',e2=wt?fm(0.05*wt*60)+'–'+fm(0.1*wt*60)+' mg/saat = '+fm(0.05*wt*6)+'–'+fm(0.1*wt*6)+' mL/saat (10 mg/mL)':'50–100 µg/kg/dk';
+      row('tA','3. Esmolol IV|kalp yetersizliği, kusma veya oral alamama','50–100 µg/kg/dk IV'+(wt?' → '+e2:''),'250–500 µg/kg yükleme'+(wt?' ('+e1+')':'')+', sonra 50–100 µg/kg/dk')}
+    row('tA','4. Hidrokortizon IV','50–100 mg IV 6–8 saatte bir (150–400 mg/gün)','300 mg IV yükleme, sonra 100 mg 8 saatte bir');
+    var par=wt===null?'1 g 6 saatte bir (≥ 50 kg)':wt>=50?'1 g PO/IV 6 saatte bir, en çok 4 g/gün':fm(Math.round(15*wt))+' mg (15 mg/kg) 6 saatte bir, en çok '+fm(Math.round(60*wt))+' mg/gün';
+    row('tA','5. Ateş|parasetamol (asetaminofen)','Ateş düşürücü “gereğinde” (ilaç adı verilmez)',par+'; salisilat vermeyin');
+    li('rxA','Farklar: TEMD ile ATA 2016','ATİ dozları: TEMD PTU 200–400 mg 6–8 saatte bir (yükleme dozu yok) ve MMI 20–25 mg 6 saatte bir önerir; ATA PTU 500–1000 mg yükleme + 250 mg 4 saatte bir, MMI 60–80 mg/gün. Propranolol aralığı TEMD’de 6 saatte bir, ATA’da 4 saatte bir. Hidrokortizon TEMD’de 50–100 mg 6–8 saatte bir, ATA’da 300 mg yükleme + 100 mg 8 saatte bir.');
+    li('rxA','İyodu antitiroid ilaçtan en az 1 saat sonra başlayın','Önce verilirse yeni hormon sentezi için substrat olur. Alternatif: sodyum ipodat 1–3 g/gün PO (TEMD; ulaşılabilirliği sınırlı). Oral alamayan hastada PTU/MMI rektal (süpozituvar/lavman) verilebilir.');
+    if(s5>=10||bb==='iv')li('rxA','Kalp yetersizliğinde beta bloker dikkatle','Belirgin KKY veya şokta propranolol yerine kısa etkili IV esmolol tercih edin ve hemodinamiyi yakından izleyin. Alternatif oral BB: atenolol 50–200 mg/gün, metoprolol 100–200 mg/gün, nadolol 40–80 mg/gün (TEMD).');
+    if(s6)li('rxA','Atriyal fibrilasyon','Hız kontrolü beta blokerle; tromboembolik risk açısından antikoagülasyonu değerlendirin (ATA 2016).');
+    if(s3>=20)li('rxA','Açıklanamayan sarılık','PTU hepatotoksisitesi açısından karaciğer testlerini izleyin; ağır karaciğer hasarında MMI veya plazmaferez/cerrahi seçeneklerini endokrinolojiyle tartışın.');
+    li('rxA','Destek tedavisi','Sıvı ve elektrolit (ateş, kusma ve ishalde açık büyük olabilir), glukoz içeren sıvı, soğutma, sedasyon; tetikleyiciyi (enfeksiyon, Mİ, pankreatit, travma) tedavi edin. Salisilat TBG’ye bağlı hormonu serbestleştirdiği için kullanılmaz.');
+    li('rxA','Ek ve son basamak','Lityum karbonat 300 mg PO 8 saatte bir (iyot kullanılamıyorsa), kolestiramin 4 g PO günde 4 kez (TEMD). Yanıtsızlık veya ilaç yan etkisinde plazmaferez; etkisi 1–2 gün sürer, ardından tiroidektomi düşünün.');
+
+    // ---------- B) Popoveniuc ----------
+    var m1=mxTemp(t),mh=mxHR(hr),m2=rad('ms'),m3=rad('mg'),m4=+segVal('mp');
+    var kc=0;['k1','k2','k3','k4','k5'].forEach(function(id){if($(id).checked)kc+=+$(id).dataset.p});
+    var hna=na!==null&&na<135,hgl=glu!==null&&glu<70,mc=(hna?10:0)+(hgl?10:0);
+    ['m3','m4','m5'].forEach(function(id){if($(id).checked)mc+=10});
+    $('mt').textContent=m1===null?'sıcaklık girilmedi':fm(t)+' °C → '+pt(m1);
+    $('mh').textContent=mh===null?'nabız girilmedi':fm(hr,0)+'/dk → '+pt(mh);
+    $('mna').textContent=na===null?'Na girilmedi':(hna?'evet → 10 puan':'hayır → 0');
+    $('mgl').textContent=glu===null?'glukoz girilmedi':(hgl?'evet → 10 puan':'hayır → 0');
+    var cv=(mh||0)+kc,mx=(m1||0)+m2+m3+m4+cv+mc;
+    $('mx').textContent=mx;
+    $('d1').textContent=m1===null?'–':pt(m1);$('d2').textContent=pt(m2);$('d3').textContent=pt(m3);$('d4').textContent=pt(m4);$('d5').textContent=pt(cv);$('d6').textContent=pt(mc);
+    var ml=mx>=60?3:mx>=45?2:mx>=25?1:0;
+    pill('mxp',ml===3?'≥ 60: yüksek olasılık':ml===2?'45–59: risk':ml===1?'25–44: risk (yalnız orijinal skor)':'< 25: olası değil',ml===3?'var(--high)':ml>=1?'var(--warn)':'var(--ok)');
+    $('mxa').textContent=ml===3?'Miksödem koması için tanısal düzeyde. Tiroid testlerini beklemeden tedaviye başlayın.':ml===2?'Miksödem koması riski (hem TEMD hem orijinal). Klinik şüphe varsa tedaviyi geciktirmeyin.':ml===1?'Orijinal Popoveniuc skorunda risk aralığı (25–59); TEMD metni bu aralığı 45’ten başlatır. Klinik tabloyla birlikte değerlendirin.':'Miksödem koması olası değil; diğer koma nedenlerini araştırın.';
+
+    // ---------- B) Tedavi ----------
+    $('tB').innerHTML='';$('rxM').innerHTML='';
+    var kr=segVal('kr')==='1',old=age!==null&&age>=65,light=wt!==null&&wt<50,low=kr||old||light;
+    var why=[];if(old)why.push('yaş ≥ 65');if(kr)why.push('kardiyak risk');if(light)why.push('düşük kilo');
+    pill('mtp',ml>=2?'Tedaviyi hemen başlatın':'Klinik şüpheye göre',ml>=2?'var(--high)':'var(--warn)');
+    row('tB','Levotiroksin IV yükleme|ilk gün, tek doz','200–400 µg IV',low?'200 µg (alt sınır: '+why.join(', ')+')':'200–400 µg; risk yoksa 300–400 µg düşünülebilir');
+    var md=wt?1.6*wt*0.75:null;
+    row('tB','Levotiroksin IV idame|ertesi günden itibaren','1,6 µg/kg/gün × 0,75 IV',md?fm(Math.round(md),0)+' µg/gün IV ('+fm(wt)+' kg × 1,2 µg/kg)':'kilo girin');
+    row('tB','Liotironin (T3) IV|isteğe bağlı, T4’e ek','5–20 µg yükleme, sonra 2,5–10 µg 8 saatte bir',low?'alt doz: 5 µg yükleme, 2,5 µg 8 saatte bir':'5–20 µg yükleme, 2,5–10 µg 8 saatte bir');
+    row('tB','Hidrokortizon IV|adrenal yetmezlik dışlanana kadar','Stres dozu (TEMD); 100 mg IV 8 saatte bir (ATA 2014)','100 mg IV 8 saatte bir (300 mg/gün)');
+    li('rxM','Türkiye: IV levotiroksin','2024’ten beri miksödem koması endikasyonlu 500 µg IV levotiroksin flakonu var; hazırlama ve seyreltmeyi ürün bilgisine göre yapın. IV T4’e ulaşılamazsa oral T4 de etkili olabilir: vaka serilerinde 300–500 µg oral yükleme (TEMD). Oral emilim %75–80’dir; iyileşince oral idameye bu oranla geçin.');
+    li('rxM','Doz sınırları ve izlem','Çok yüksek (T4 > 500 µg, T3 ≥ 75 µg) ve çok düşük dozlar ara dozlardan daha az etkili görünür; tedavi sırasında yüksek serum T3 mortaliteyle ilişkilidir. Serum T4 ve T3’ü 1–2 günde bir ölçün; hedef mental durum, sıcaklık, solunum, kardiyovasküler durum ve elektrolitlerde düzelmedir.');
+    if(t!==null&&t<35)li('rxM','Hipotermi ('+fm(t)+' °C): pasif ısıtma','Battaniyeyle pasif ısıtma tercih edilir; aktif ısıtma vazodilatasyon ve hipotansiyonu kötüleştirebilir.');
+    if(na!==null&&na<135)li('rxM','Hiponatremi (Na '+fm(na)+')','Hipotonik (dilüe) sıvılardan kaçının; sıvı kısıtlayın. Ağır belirtide (nöbet, koma) %3 NaCl 150 mL 20 dakikada, gerekirse tekrarlayın (Avrupa 2014); ilk 24 saatte artış en çok 10 mmol/L. Ayrıntı: Hiponatremi tanısı ve Sodyum araçları.');
+    if(glu!==null&&glu<70)li('rxM','Hipoglisemi (glukoz '+fm(glu,0)+' mg/dL)','IV dekstroz (örn. %50 dekstroz 50 mL = 25 g) ve dekstrozlu idame sıvısı; adrenal yetmezliği düşünün, hidrokortizonu geciktirmeyin.');
+    if($('m3').checked||$('m4').checked)li('rxM','Hipoksemi / hiperkapni','Solunum desteği; gerekirse mekanik ventilasyon. Makroglossi ve farenks ödemi nedeniyle zor hava yolu bekleyin.');
+    else li('rxM','Solunum','Kan gazını izleyin: hipoventilasyon ve hiperkapni sıktır; mekanik ventilasyon gerekebilir.');
+    if($('k5').checked)li('rxM','Hipotansiyon','İzotonik sıvı; sıvıya yanıtsız ağır hipotansiyonda T4 etkisi ortaya çıkana kadar vazopresör.');
+    li('rxM','Tetikleyici ve ilaçlar','Kültürler negatif çıkana kadar ampirik antibiyotik düşünün. Sedatif, opioid ve anesteziklerden kaçının; ilaç klirensi azalmıştır.');
+  }
+  ['tab','af','pre','ft','ati','iy','bb','mp','kr'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

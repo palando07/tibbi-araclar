@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PESI ve sPESI</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.sub small{font-size:.78rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>PESI ve sPESI</h1>
+    <p>Akut pulmoner embolide 30 günlük mortalite ve ESC 2019 erken ölüm riski sınıflaması</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <span class="lbl">Skor</span>
+    <div class="seg"><button type="button" data-g="mod" data-v="both" aria-pressed="true">İkisi birden</button><button type="button" data-g="mod" data-v="pesi" aria-pressed="false">PESI</button><button type="button" data-g="mod" data-v="spesi" aria-pressed="false">sPESI</button></div>
+    <div class="grid">
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="72"></div>
+      <div class="field" id="w-sex"><span class="lbl">Cinsiyet</span><div class="seg"><button type="button" data-g="sex" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="sex" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div></div>
+      <div class="field"><label for="hr">Nabız <span>/dk</span></label><input id="hr" data-hasta="nabiz" type="number" inputmode="numeric" step="1" value="112"></div>
+      <div class="field"><label for="sbp">Sistolik KB <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="numeric" step="1" value="118"></div>
+      <div class="field" id="w-rr"><label for="rr">Solunum sayısı <span>/dk</span></label><input id="rr" type="number" inputmode="numeric" step="1" value="24"></div>
+      <div class="field" id="w-t"><label for="tmp">Ateş <span>°C</span></label><input id="tmp" type="number" inputmode="decimal" step="any" value="36.8"></div>
+      <div class="field"><label for="sat">SaO₂ <span>%, O₂ ile ya da O₂’siz</span></label><input id="sat" type="number" inputmode="numeric" step="any" value="91"></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="ca"><span class="txt">Kanser<small>aktif veya öyküde</small></span><span class="pts" id="p-ca">+30</span></label>
+      <label class="item"><input type="checkbox" id="hf" checked><span class="txt">Kalp yetmezliği</span><span class="pts" id="p-hf">+10</span></label>
+      <label class="item"><input type="checkbox" id="cld"><span class="txt">Kronik akciğer hastalığı</span><span class="pts" id="p-cld">+10</span></label>
+      <label class="item" id="w-ams"><input type="checkbox" id="ams"><span class="txt">Bilinç değişikliği<small>dezoryantasyon, letarji, stupor veya koma</small></span><span class="pts">+60</span></label>
+    </div>
+    <p class="note" id="spn" hidden>sPESI’de kalp yetmezliği veya kronik akciğer hastalığı tek madde (“kronik kardiyopulmoner hastalık”, +1) sayılır.</p>
+  </section>
+
+  <section class="card" aria-live="polite" id="k-pesi">
+    <h2>PESI</h2>
+    <div class="res"><span class="num" id="ps">–</span><span class="of">puan</span><span class="pill" id="pc"></span></div>
+    <div class="sub"><span>30 günlük mortalite (Aujesky 2005)</span><b id="pm">–</b></div>
+    <table class="t">
+      <thead><tr><th>Sınıf</th><th>Puan</th><th>30 gün mortalite</th></tr></thead>
+      <tbody id="ptb">
+        <tr data-c="1"><td>I <small>çok düşük</small></td><td>≤ 65</td><td>%0–1,6</td></tr>
+        <tr data-c="2"><td>II <small>düşük</small></td><td>66–85</td><td>%1,7–3,5</td></tr>
+        <tr data-c="3"><td>III <small>orta</small></td><td>86–105</td><td>%3,2–7,1</td></tr>
+        <tr data-c="4"><td>IV <small>yüksek</small></td><td>106–125</td><td>%4,0–11,4</td></tr>
+        <tr data-c="5"><td>V <small>çok yüksek</small></td><td>&gt; 125</td><td>%10,0–24,5</td></tr>
+      </tbody>
+    </table>
+    <p class="f" id="pf">–</p>
+    <p class="note">Puan = yaş + erkek 10 + kanser 30 + KY 10 + kronik akciğer hastalığı 10 + nabız ≥ 110: 20 + SKB &lt; 100: 30 + solunum ≥ 30: 20 + ateş &lt; 36 °C: 20 + bilinç değişikliği 60 + SaO₂ &lt; %90: 20. Mortalite aralıkları türetme ve iki doğrulama örnekleminin en düşük ve en yüksek değerleridir.</p>
+  </section>
+
+  <section class="card" aria-live="polite" id="k-spesi">
+    <h2>sPESI</h2>
+    <div class="res"><span class="num" id="ss">–</span><span class="of">/ 6</span><span class="pill" id="sc"></span></div>
+    <div class="sub"><span>30 günlük mortalite (Jiménez 2010)</span><b id="sm">–</b></div>
+    <p class="f" id="sf">–</p>
+    <p class="note">Her biri 1 puan: yaş &gt; 80, kanser, kronik kardiyopulmoner hastalık (KY veya kronik akciğer hastalığı), nabız ≥ 110, SKB &lt; 100, SaO₂ &lt; %90. 0 puan düşük risk: 30 günlük mortalite %1,0 (türetme) ve %1,1 (RIETE doğrulama); ≥ 1 puanda %10,9 ve %8,9.</p>
+  </section>
+
+  <section class="card">
+    <h2>ESC 2019 risk sınıflaması</h2>
+    <span class="lbl">Hemodinamik instabilite</span>
+    <div class="seg"><button type="button" data-g="hd" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="hd" data-v="1" aria-pressed="false">Var</button></div>
+    <p class="note">Kardiyak arrest, obstrüktif şok (SKB &lt; 90 mmHg veya ≥ 90 için vazopresör gereksinimi + uç organ hipoperfüzyonu) ya da başka nedene bağlanamayan, &gt; 15 dk süren SKB &lt; 90 mmHg veya ≥ 40 mmHg düşüş.</p>
+    <span class="lbl">RV disfonksiyonu (TTE veya BT anjiyografi)</span>
+    <div class="seg"><button type="button" data-g="rv" data-v="u" aria-pressed="false">Bakılmadı</button><button type="button" data-g="rv" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="rv" data-v="1" aria-pressed="true">Var</button></div>
+    <p class="note">Ör. TTE’de RV/LV çap oranı ≥ 1,0 ve TAPSE &lt; 16 mm; BT’de RV/LV çap oranı ≥ 1,0.</p>
+    <span class="lbl">Kardiyak troponin</span>
+    <div class="seg"><button type="button" data-g="tn" data-v="u" aria-pressed="false">Bakılmadı</button><button type="button" data-g="tn" data-v="0" aria-pressed="true">Normal</button><button type="button" data-g="tn" data-v="1" aria-pressed="false">Yüksek</button></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Erken ölüm riski (ESC 2019)</h2>
+    <div class="res"><span class="pill" id="ep"></span></div>
+    <div class="sub"><span>Klinik skor (PESI III–V veya sPESI ≥ 1)</span><b id="eq" style="white-space:normal;text-align:right">–</b></div>
+    <div class="sub"><span>RV disfonksiyonu · troponin</span><b id="er" style="white-space:normal;text-align:right">–</b></div>
+    <ol class="rec" id="rx"></ol>
+    <table class="t">
+      <thead><tr><th>Risk</th><th>İnstabilite</th><th>PESI III–V / sPESI ≥ 1</th><th>RV · troponin</th></tr></thead>
+      <tbody id="etb">
+        <tr data-r="h"><td>Yüksek</td><td>+</td><td><small>gerekmez</small></td><td><small>gerekmez</small></td></tr>
+        <tr data-r="ih"><td>Orta-yüksek</td><td>−</td><td>+</td><td>ikisi de +</td></tr>
+        <tr data-r="il"><td>Orta-düşük</td><td>−</td><td>+</td><td>biri + veya ikisi de −</td></tr>
+        <tr data-r="l"><td>Düşük</td><td>−</td><td>−</td><td>isteğe bağlı; bakıldıysa ikisi de −</td></tr>
+      </tbody>
+    </table>
+    <p class="note">PESI I–II veya sPESI 0 olduğu hâlde RV disfonksiyonu ya da troponin yüksekliği varsa hasta orta risk grubunda sınıflanır (ESC 2019 tablo 8, dipnot e). “İkisi birden” modunda PESI III–V ya da sPESI ≥ 1’den biri yeterli sayılır. AHA/ACC 2026 PE kılavuzu farklı (A–E) bir klinik sınıflama getirmiştir; bu sayfa ESC 2019 sınıflamasını uygular.</p>
+  </section>
+
+  <p class="note">Kaynaklar: Aujesky D ve ark. Derivation and validation of a prognostic model for pulmonary embolism. Am J Respir Crit Care Med 2005;172:1041–6 (PESI’nin 11 değişkeni, puanları, sınıf eşikleri ve 30 günlük mortalite); Jiménez D ve ark. Simplification of the pulmonary embolism severity index. Arch Intern Med 2010;170:1383–9 (sPESI’nin 6 değişkeni, %1,0/%1,1 ve %10,9/%8,9 mortalite); Konstantinides SV ve ark. 2019 ESC Guidelines for the diagnosis and management of acute pulmonary embolism, Eur Heart J 2020;41:543–603 (hemodinamik instabilite tanımı, tablo 8 risk sınıfları ve dipnotları, RV ve troponin ölçütleri, risk grubuna göre tedavi önerileri). Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$('rx').appendChild(l)}
+  var CL=['','I','II','III','IV','V'],MR=['','%0–1,6','%1,7–3,5','%3,2–7,1','%4,0–11,4','%10,0–24,5'];
+  var CC=['','var(--ok)','var(--ok)','var(--warn)','var(--high)','var(--high)'];
+
+  function calc(){
+    var mod=segVal('mod'),age=v('age'),hr=v('hr'),sbp=v('sbp'),rr=v('rr'),t=v('tmp'),sat=v('sat');
+    var male=segVal('sex')==='m',ca=$('ca').checked,hf=$('hf').checked,cld=$('cld').checked,ams=$('ams').checked;
+    var showP=mod!=='spesi',showS=mod!=='pesi';
+    $('k-pesi').hidden=!showP;$('k-spesi').hidden=!showS;
+    $('w-sex').hidden=$('w-rr').hidden=$('w-t').hidden=$('w-ams').hidden=!showP;
+    $('spn').hidden=showP;
+    $('p-ca').textContent=showP?'+30':'+1';$('p-hf').textContent=$('p-cld').textContent=showP?'+10':'+1';
+
+    // PESI
+    var pesi=null,cls=null,parts=[];
+    if(age!==null){
+      pesi=age;parts.push('yaş '+age);
+      function add(c,p,n){if(c){pesi+=p;parts.push(n+' '+p)}}
+      add(male,10,'erkek');add(ca,30,'kanser');add(hf,10,'KY');add(cld,10,'akciğer');
+      add(hr!==null&&hr>=110,20,'nabız≥110');add(sbp!==null&&sbp<100,30,'SKB<100');add(rr!==null&&rr>=30,20,'SS≥30');
+      add(t!==null&&t<36,20,'ateş<36');add(ams,60,'bilinç');add(sat!==null&&sat<90,20,'SaO₂<90');
+      cls=pesi<=65?1:pesi<=85?2:pesi<=105?3:pesi<=125?4:5;
+    }
+    $('ps').textContent=pesi===null?'–':String(Math.round(pesi*10)/10).replace('.',',');
+    if(cls){pill('pc','Sınıf '+CL[cls],CC[cls]);$('pm').textContent=MR[cls]}else{pill('pc','','');$('pm').textContent='–'}
+    $('pf').textContent=pesi===null?'Yaşı girin.':parts.join(' + ')+' = '+$('ps').textContent;
+    document.querySelectorAll('#ptb tr').forEach(function(r){r.className=+r.dataset.c===cls?'cur':''});
+
+    // sPESI
+    var s=0,sp=[];
+    function a1(c,n){if(c){s++;sp.push(n)}}
+    a1(age!==null&&age>80,'yaş > 80');a1(ca,'kanser');a1(hf||cld,'kronik kardiyopulmoner hastalık');
+    a1(hr!==null&&hr>=110,'nabız ≥ 110');a1(sbp!==null&&sbp<100,'SKB < 100');a1(sat!==null&&sat<90,'SaO₂ < %90');
+    $('ss').textContent=String(s);
+    if(s===0){pill('sc','Düşük risk','var(--ok)');$('sm').textContent='%1,0–1,1'}else{pill('sc','Yüksek risk (≥ 1)','var(--high)');$('sm').textContent='%8,9–10,9'}
+    $('sf').textContent=s?sp.join(' · '):'Hiçbir madde yok';
+
+    // ESC 2019
+    var hd=segVal('hd')==='1',rv=segVal('rv'),tn=segVal('tn');
+    var pHigh=cls!==null&&cls>=3,sHigh=s>=1,clin;
+    clin=mod==='pesi'?pHigh:mod==='spesi'?sHigh:(pHigh||sHigh);
+    var clinKnown=mod==='spesi'||cls!==null;
+    $('eq').textContent=!clinKnown?'–':mod==='both'?('PESI '+(cls?CL[cls]:'–')+' · sPESI '+s+(pHigh!==sHigh&&cls?' (uyumsuz)':'')+' → '+(clin?'yüksek':'düşük')):(clin?'yüksek':'düşük');
+    var yz={u:'bakılmadı','0':'yok','1':'var'},tz={u:'bakılmadı','0':'normal','1':'yüksek'};
+    $('er').textContent='RV '+yz[rv]+' · troponin '+tz[tn];
+    var risk,col;$('rx').innerHTML='';
+    if(hd){risk='h'}
+    else if(clin){risk=(rv==='1'&&tn==='1')?'ih':'il'}
+    else{risk=(rv==='1'||tn==='1')?'il':'l'}
+    document.querySelectorAll('#etb tr').forEach(function(r){r.className=r.dataset.r===risk?'cur':''});
+    if(risk==='h'){pill('ep','Yüksek risk','var(--high)');
+      li('Sistemik trombolitik tedavi (I B)','Hemodinamik instabilitede reperfüzyon; antikoagülasyona fraksiyone olmayan heparinle (yükleme dozu dahil) başlayın.');
+      li('Tromboliz kontrendike veya başarısızsa','Cerrahi pulmoner embolektomi (I C); alternatif olarak perkütan kateter yönlendirmeli tedavi (IIa C).');
+      li('Vazopresör ve dikkatli sıvı','Norepinefrin ve/veya dobutamin düşünülmeli; agresif sıvı yüklemesi önerilmez.');}
+    else if(risk==='ih'){pill('ep','Orta-yüksek risk','var(--high)');
+      li('Parenteral antikoagülasyon ve monitörizasyon','İlk saatlerde-günlerde monitörize izlem önerilir; çoğu hastada DMAH tercih edilir.');
+      li('Kötüleşmede kurtarma trombolizi (I B)','Hemodinamik bozulma gelişirse kurtarma trombolizi veya alternatif olarak cerrahi embolektomi ya da kateter tedavisi.');
+      li('Rutin primer sistemik tromboliz önerilmez (III B)','Kanama riski faydayı aşar.');}
+    else if(risk==='il'){pill('ep','Orta-düşük risk','var(--warn)');
+      li('Antikoagülasyon, hastanede izlem','Rutin primer tromboliz önerilmez (III B). Uygunsa DOAK tercih edilir.');
+      if(!clin)li('Klinik skor düşük ama RV veya troponin anormal','ESC 2019 bu hastayı orta risk grubuna alır; erken taburculuk için uygun değildir.');
+      else if(rv==='u'||tn==='u')li('RV veya troponin değerlendirmesi eksik','İkisi de pozitif çıkarsa hasta orta-yüksek risktir; değerlendirmeyi tamamlayın.');}
+    else{pill('ep','Düşük risk','var(--ok)');
+      li('Erken taburculuk ve ayaktan tedavi düşünülmeli (IIa A)','Eşlik eden ciddi hastalık yoksa ve uygun ayaktan bakım/antikoagülasyon sağlanabiliyorsa. DOAK tercih edilir.');
+      if(rv==='u'||tn==='u')li('RV ve troponin bakılması isteğe bağlı','Bakıldıysa ikisinin de normal olması gerekir; anormallik hastayı orta-düşük riske taşır.');}
+  }
+  ['mod','sex','hd','rv','tn'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

@@ -51,6 +51,18 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Tip 2 diyabet tedavisi (HbA1c hedefi, ilaç seçimi) | `diyabet-tedavi.html` |
 | İnsülin dozu (bazal-bolus, düzeltme skalası, steroid NPH, titrasyon) | `insulin-dozu.html` |
 | Nöbet takip listesi: menüde yok, ayrı uygulama (nobet.webmanifest; veriler yalnız cihazda, localStorage) | `nobet-listesi.html` |
+| Birim çevirici (konvansiyonel ↔ SI, mEq ↔ mg) | `birim-cevirici.html` |
+| İdame sıvı ve refeeding riski (NICE CG174/CG32, ASPEN) | `idame-sivi.html` |
+| PESI ve sPESI (pulmoner emboli, ESC 2019 risk sınıfı) | `pesi.html` |
+| 4T skoru (heparin ilişkili trombositopeni, ASH 2018) | `hit-4t.html` |
+| RCRI (ameliyat öncesi kardiyak risk, ESC 2022) | `rcri.html` |
+| Üst GİS kanaması (ESGE 2021, Baveno VII) | `ust-gis-kanama.html` |
+| Sepsiste sıvı ve vazopresör (SSC 2021/2026) | `sepsis-sivi.html` |
+| KOAH ve astım alevlenmesi (GOLD, GINA) | `koah-astim.html` |
+| Tiroid krizi ve miksödem koması (TEMD 2025) | `tiroid-krizi.html` |
+| Transfüzyon eşikleri (AABB 2023/2025, BSH) | `transfuzyon.html` |
+| Light kriterleri (plevral sıvı) | `light-kriterleri.html` |
+| 4AT deliryum taraması | `delirium-4at.html` |
 
 Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz. Hiçbir hasta verisi kaydedilmez. Ortak kod (Kopyala düğmesi, çevrimdışı çalışma) `ortak.js` dosyasındadır.
 

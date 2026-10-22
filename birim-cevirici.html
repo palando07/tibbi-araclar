@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Birim Çevirici</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; arama, analit grupları (her satırda birbirine bağlı birim kutuları), özet kartı, mEq ↔ mg */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input[type=search]{font:500 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.seg.wrapseg{flex-wrap:wrap}
+.seg.sm button{font-size:.85rem;padding:7px 10px}
+#tuzlar button{flex:1 1 30%}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.4rem/1 var(--font-num);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right;min-width:0;overflow-wrap:anywhere}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.card h3{margin:4px 0 0;font-size:1rem}
+/* Çevirici satırları */
+.cv{display:flex;flex-direction:column;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
+.cv:first-of-type{border-top:0;padding-top:0}
+.cv .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.cv .hd b{font-size:1rem}
+.cv .hd small{color:var(--muted);font:500 .78rem var(--font-num)}
+.cv .row{display:grid;gap:8px}
+.cv .row.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cv .row.n3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cv input[type=number]{font-size:1.05rem;padding:9px 10px;-moz-appearance:textfield;appearance:textfield}
+.cv input::-webkit-outer-spin-button,.cv input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.cv .field label{font-size:.75rem;letter-spacing:.02em;overflow-wrap:anywhere}
+.cv .nt{margin:0;font-size:.8rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Birim Çevirici</h1>
+    <p>Laboratuvar değerleri için konvansiyonel ↔ SI dönüşümü; bir kutuya yazın, diğerleri anında dolar. Altta ilaç tuzlarında mEq ↔ mg.</p>
+  </header>
+
+  <section class="card">
+    <input type="search" id="ara" placeholder="Analit ara: kreatinin, BUN, HbA1c…" aria-label="Analit ara" autocomplete="off">
+    <p class="note" id="yok" hidden>Eşleşen analit yok.</p>
+  </section>
+
+  <div id="gruplar" style="display:contents"></div>
+
+  <section class="card" aria-live="polite" id="ozet">
+    <h2>Dönüştürülen değerler</h2>
+    <div id="ozl"></div>
+    <p class="advice" id="bos">Henüz değer girilmedi. Herhangi bir kutuya değer yazın.</p>
+    <p class="note">Yuvarlanmış değerlerdir. Faktörler molekül ağırlığından hesaplanır; klinik karar için laboratuvarınızın referans aralığını ve birimini esas alın.</p>
+  </section>
+
+  <section class="card">
+    <h2>mEq ↔ mg (ilaç tuzları)</h2>
+    <span class="lbl">Tuz</span>
+    <div class="seg wrapseg sm" id="tuzlar"></div>
+    <span class="lbl">Çözelti</span>
+    <div class="seg wrapseg sm" id="konslar"></div>
+    <div class="grid">
+      <div class="field"><label for="t-meq">Miktar <span>mEq</span></label><input id="t-meq" type="number" inputmode="decimal" step="any" min="0" value="20"></div>
+      <div class="field"><label for="t-mmol">Miktar <span>mmol</span></label><input id="t-mmol" type="number" inputmode="decimal" step="any" min="0"></div>
+      <div class="field"><label for="t-mg">Tuz <span>mg</span></label><input id="t-mg" type="number" inputmode="decimal" step="any" min="0"></div>
+      <div class="field"><label for="t-ml">Hacim <span id="t-mlu">mL</span></label><input id="t-ml" type="number" inputmode="decimal" step="any" min="0"></div>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>mEq ↔ mg sonucu</h2>
+    <div class="res"><span class="num" id="t-num">–</span><span class="of" id="t-of"></span><span class="pill" id="t-pill"></span></div>
+    <div class="sub"><span>Molekül ağırlığı</span><b id="t-ma">–</b></div>
+    <div class="sub"><span>Valans</span><b id="t-val">–</b></div>
+    <div class="sub"><span>Miktar</span><b id="t-mik">–</b></div>
+    <div class="sub"><span>1 g tuzda</span><b id="t-1g">–</b></div>
+    <div class="sub" id="t-els"><span>Elemental</span><b id="t-el">–</b></div>
+    <div class="sub"><span>Çözelti hacmi</span><b id="t-vol">–</b></div>
+    <p class="f">mg = mEq × molekül ağırlığı ÷ valans · mEq = mg × valans ÷ molekül ağırlığı · mmol = mEq ÷ valans</p>
+    <p class="note" id="t-not"></p>
+  </section>
+
+  <p class="note">Kaynaklar: AMA Manual of Style, SI dönüşüm tablosu (Young DS, Ann Intern Med 1987;106:114–29 temelli); MSD Manual “Clinical Chemistry SI Conversion Factors” tablosu (kreatinin 88,4; bilirubin 17,104; glukoz 0,05551; kalsiyum 0,25; magnezyum 0,411 mmol/L ve mEq/L × 0,5 = mmol/L; fosfor 0,323; ürik asit 59,5; kolesterol 0,02586; trigliserid 0,0113; BUN 0,357; laktat 0,111; ferritin 2,247; B12 0,7373; folat 2,266; sT4 12,871; TSH 1; amonyak NH₃ 0,5872, N 0,714); Labcorp SI Unit Conversion Table (ferritin ng/mL = µg/L, B12 0,738, magnezyum 0,4114); NGSP/IFCC ana denklemi: NGSP (%) = 0,09148 × IFCC (mmol/mol) + 2,152 (Hoelzel W ve ark. Clin Chem 2004;50:166–74; ngsp.org); hemoglobin mmol/L: Hb(Fe) monomer molar kütlesi 16 114 g/mol (ICSH/IFCC; g/dL × 0,6206); üre ↔ BUN: üre molar kütlesi 60,06, iki azot 28,014 g/mol (BUN = üre ÷ 2,14). Tuzlar: Pfizer/Hospira magnezyum sülfat enjeksiyonu prospektüsü (MgSO₄·7H₂O 246,47 g/mol; %50 = 4,06 mEq/mL); FDA onaylı kalsiyum glukonat enjeksiyonu prospektüsü (1 mL %10 = 9,3 mg elemental Ca = 0,465 mEq); KCl 74,55, NaCl 58,44, NaHCO₃ 84,01 g/mol. Ampul içeriği ürüne göre değişebilir: kullandığınız ürünün etiketini kontrol edin. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  function fm(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d})}
+  function num(s){if(s===''||s==null)return null;var x=parseFloat(String(s).replace(',','.'));return isFinite(x)&&x>=0?x:null}
+  function raw(x,d){var p=Math.pow(10,d);return String(Math.round(x*p)/p)}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+
+  // Her analit: birimler [etiket, çarpan (ilk birim × çarpan = bu birim), ondalık, data-hasta, örnek değer].
+  // Ure: üre 60,06 g/mol, BUN (2 N) 28,014 g/mol. Hb(Fe) monomer 16 114 g/mol.
+  var UB=28.014/60.06;
+  var G=[
+    {id:'bob',ad:'Böbrek ve elektrolit',r:[
+      {id:'kr',ad:'Kreatinin',k:'creatinine krea',u:[['mg/dL',1,2,'kreatinin',1.2],['µmol/L',88.4,0]],f:'mg/dL × 88,4 = µmol/L'},
+      {id:'ure',ad:'Üre / BUN',k:'urea bun kan üre azotu urea nitrogen',u:[['mg/dL üre',1,1,'ure',40],['mg/dL BUN',UB,1],['mmol/L',10/60.06,2]],f:'BUN = üre ÷ 2,14 · BUN × 0,357 = mmol/L · üre × 0,1665 = mmol/L',nt:'Türkiye’de laboratuvarlar çoğunlukla “üre” (mg/dL) bildirir; ABD kaynakları ve skorlar (BUN/kreatinin, Glasgow-Blatchford) BUN kullanır. mmol/L değeri üre ve BUN için aynıdır.'},
+      {id:'na',ad:'Sodyum',k:'na natrium',u:[['mEq/L',1,0],['mmol/L',1,0,'na',140]],f:'1 mEq/L = 1 mmol/L (tek değerlikli)'},
+      {id:'k',ad:'Potasyum',k:'k kalium',u:[['mEq/L',1,1],['mmol/L',1,1,'k',4.2]],f:'1 mEq/L = 1 mmol/L (tek değerlikli)'},
+      {id:'cl',ad:'Klor',k:'cl klorür chloride',u:[['mEq/L',1,0],['mmol/L',1,0]],f:'1 mEq/L = 1 mmol/L (tek değerlikli)'},
+      {id:'ca',ad:'Kalsiyum',k:'ca calcium',u:[['mg/dL',1,1,'ca',9.2],['mmol/L',1/4.008,2],['mEq/L',2/4.008,2]],f:'mg/dL × 0,2495 = mmol/L · mmol/L × 2 = mEq/L',nt:'İyonize kalsiyum da aynı faktörle çevrilir (normal ≈ 1,15–1,30 mmol/L ≈ 4,6–5,2 mg/dL).'},
+      {id:'mg',ad:'Magnezyum',k:'mg magnesium',u:[['mg/dL',1,2],['mmol/L',1/2.4305,2],['mEq/L',2/2.4305,2]],f:'mg/dL × 0,4114 = mmol/L · mmol/L × 2 = mEq/L'},
+      {id:'p',ad:'Fosfor (inorganik fosfat)',k:'p fosfat phosphate phosphorus',u:[['mg/dL',1,1],['mmol/L',1/3.0974,2]],f:'mg/dL × 0,3229 = mmol/L'},
+      {id:'ua',ad:'Ürik asit',k:'urik asit uric acid ürat',u:[['mg/dL',1,1],['µmol/L',59.48,0]],f:'mg/dL × 59,48 = µmol/L'}
+    ]},
+    {id:'met',ad:'Glukoz ve lipid',r:[
+      {id:'glu',ad:'Glukoz',k:'glucose şeker kan şekeri',u:[['mg/dL',1,0,'glukoz',110],['mmol/L',0.05551,1]],f:'mg/dL × 0,0555 = mmol/L (mmol/L × 18 = mg/dL)'},
+      {id:'a1c',ad:'HbA1c',k:'a1c hba1c glikozile hemoglobin ifcc ngsp dcct',u:[['% (NGSP/DCCT)',null,1],['mmol/mol (IFCC)',null,0]],f:'IFCC = (NGSP − 2,152) ÷ 0,09148 · NGSP = 0,09148 × IFCC + 2,152',a1c:true},
+      {id:'tk',ad:'Total kolesterol',k:'kolesterol cholesterol tk lipid',u:[['mg/dL',1,0],['mmol/L',0.02586,2]],f:'mg/dL × 0,02586 = mmol/L'},
+      {id:'ldl',ad:'LDL kolesterol',k:'ldl kolesterol cholesterol lipid',u:[['mg/dL',1,0],['mmol/L',0.02586,2]],f:'mg/dL × 0,02586 = mmol/L'},
+      {id:'hdl',ad:'HDL kolesterol',k:'hdl kolesterol cholesterol lipid',u:[['mg/dL',1,0],['mmol/L',0.02586,2]],f:'mg/dL × 0,02586 = mmol/L'},
+      {id:'tg',ad:'Trigliserid',k:'tg trigliserit triglyceride lipid',u:[['mg/dL',1,0],['mmol/L',0.01129,2]],f:'mg/dL × 0,01129 = mmol/L (trioleine göre)'}
+    ]},
+    {id:'kc',ad:'Karaciğer, protein ve metabolik',r:[
+      {id:'bil',ad:'Bilirubin (total / direkt)',k:'bilirubin total direkt indirekt',u:[['mg/dL',1,2,'bil',1],['µmol/L',17.104,0]],f:'mg/dL × 17,1 = µmol/L'},
+      {id:'alb',ad:'Albümin',k:'albumin protein',u:[['g/dL',1,1,'alb',3.8],['g/L',10,0]],f:'g/dL × 10 = g/L'},
+      {id:'nh3',ad:'Amonyak',k:'amonyak ammonia nh3',u:[['µg/dL',1,0],['µmol/L',0.5872,0]],f:'µg/dL × 0,5872 = µmol/L (NH₃)',nh3:true,nt:'Laboratuvarınız µg/dL değerini NH₃ olarak mı, azot (N) olarak mı bildiriyor? Varsayılan NH₃ (0,5872); azot temelinde çarpan 0,714. Çoğu laboratuvar doğrudan µmol/L bildirir.'},
+      {id:'lak',ad:'Laktat',k:'laktat lactate lactic',u:[['mg/dL',1,1],['mmol/L',0.111,1]],f:'mg/dL × 0,111 = mmol/L (mmol/L × 9 = mg/dL)'}
+    ]},
+    {id:'hem',ad:'Hematoloji ve vitamin',r:[
+      {id:'hb',ad:'Hemoglobin',k:'hb hgb hemoglobin',u:[['g/dL',1,1,'hb',12.5],['g/L',10,0],['mmol/L',0.6206,1]],f:'g/dL × 10 = g/L · g/dL × 0,6206 = mmol/L (Hb(Fe) monomer)',nt:'mmol/L esas olarak Hollanda’da kullanılır.'},
+      {id:'fer',ad:'Ferritin',k:'ferritin demir',u:[['ng/mL',1,0],['µg/L',1,0],['pmol/L',2.247,0]],f:'ng/mL = µg/L · ng/mL × 2,247 = pmol/L'},
+      {id:'b12',ad:'Vitamin B12',k:'b12 kobalamin cobalamin',u:[['pg/mL',1,0],['pmol/L',0.7378,0]],f:'pg/mL × 0,7378 = pmol/L'},
+      {id:'fol',ad:'Folat',k:'folat folik asit folate',u:[['ng/mL',1,1],['nmol/L',2.266,1]],f:'ng/mL × 2,266 = nmol/L'}
+    ]},
+    {id:'tir',ad:'Tiroid',r:[
+      {id:'tsh',ad:'TSH',k:'tsh tirotropin tiroid',u:[['µIU/mL',1,2],['mIU/L',1,2]],f:'µIU/mL = mIU/L (sayısal olarak aynı)'},
+      {id:'t4',ad:'Serbest T4 (sT4)',k:'st4 ft4 tiroksin free t4 tiroid',u:[['ng/dL',1,2],['pmol/L',12.87,1]],f:'ng/dL × 12,87 = pmol/L'}
+    ]}
+  ];
+
+  // Satırları oluştur
+  var host=$('gruplar'),ROWS=[];
+  G.forEach(function(g){
+    var s=document.createElement('section');s.className='card';s.id='g-'+g.id;
+    var h=document.createElement('h2');h.textContent=g.ad;s.appendChild(h);
+    g.r.forEach(function(r){
+      var d=document.createElement('div');d.className='cv';d.dataset.ara=(r.ad+' '+r.k).toLocaleLowerCase('tr-TR');
+      var hd=document.createElement('div');hd.className='hd';
+      var b=document.createElement('b');b.textContent=r.ad;var sm=document.createElement('small');sm.textContent=r.f;sm.id=r.id+'-f';
+      hd.appendChild(b);hd.appendChild(sm);d.appendChild(hd);
+      if(r.nh3){var sg=document.createElement('div');sg.className='seg sm';
+        sg.innerHTML='<button type="button" data-g="nh3" data-v="nh3" aria-pressed="true">NH₃ temelinde (× 0,5872)</button><button type="button" data-g="nh3" data-v="n" aria-pressed="false">Azot (N) temelinde (× 0,714)</button>';
+        d.appendChild(sg)}
+      var row=document.createElement('div');row.className='row n'+r.u.length;
+      r.els=r.u.map(function(u,i){
+        var fd=document.createElement('div');fd.className='field';
+        var lb=document.createElement('label'),inp=document.createElement('input');
+        inp.id=r.id+'-'+i;lb.htmlFor=inp.id;lb.textContent=u[0];
+        inp.type='number';inp.inputMode='decimal';inp.step='any';inp.min='0';
+        inp.setAttribute('aria-label',r.ad+' '+u[0]);
+        if(u[3])inp.setAttribute('data-hasta',u[3]);
+        if(u[4]!=null)inp.value=u[4];
+        inp.addEventListener('input',function(e){conv(r,i,e)});
+        fd.appendChild(lb);fd.appendChild(inp);row.appendChild(fd);return inp});
+      d.appendChild(row);
+      if(r.nt){var p=document.createElement('p');p.className='nt';p.textContent=r.nt;d.appendChild(p)}
+      r.box=d;s.appendChild(d);ROWS.push(r)});
+    g.el=s;host.parentNode.insertBefore(s,host)});
+  host.remove();
+
+  function nh3f(){return segVal('nh3')==='n'?0.714:0.5872}
+  function mult(r,i){if(r.nh3&&i===1)return nh3f();return r.u[i][1]}
+  // i. birimdeki değerden ilk birime; ilk birimden j. birime
+  function toBase(r,i,x){if(r.a1c)return i===0?x:0.09148*x+2.152;return x/mult(r,i)}
+  function fromBase(r,j,b){if(r.a1c)return j===0?b:(b-2.152)/0.09148;return b*mult(r,j)}
+
+  // SI tarafına yazılınca konvansiyonel [data-hasta] alanı programla dolar; ortak.js yalnız elle girileni kaydettiği için burada eşitlenir.
+  function hastaYaz(a,val){try{var o=JSON.parse(sessionStorage.getItem('vizit-hasta'))||{};var v=(o.t&&Date.now()-o.t<30*60*1000)?(o.v||{}):{};
+    if(val==='')delete v[a];else v[a]=val;
+    if(Object.keys(v).length)sessionStorage.setItem('vizit-hasta',JSON.stringify({t:Date.now(),v:v}));else sessionStorage.removeItem('vizit-hasta')}catch(e){}}
+
+  function conv(r,i,e){
+    var x=num(r.els[i].value);
+    var b=x===null?null:toBase(r,i,x);
+    r.src=i;
+    r.els.forEach(function(el,j){
+      if(j===i)return;
+      if(b===null){if(r.els[i].value==='')el.value='';return}
+      var y=fromBase(r,j,b);el.value=y>=0?raw(y,r.u[j][2]):'';
+      if(e&&e.isTrusted&&el.hasAttribute('data-hasta'))hastaYaz(el.getAttribute('data-hasta'),el.value)});
+    ozet()}
+
+  function ozet(){
+    var o=$('ozl');o.innerHTML='';var n=0;
+    ROWS.forEach(function(r){
+      var i=r.src||0,x=num(r.els[i].value);if(x===null)return;
+      var b=toBase(r,i,x),parts=[];
+      r.u.forEach(function(u,j){var y=j===i?x:fromBase(r,j,b);if(y>=0)parts.push(fm(y,j===i?4:u[2])+' '+u[0])});
+      var s=document.createElement('div');s.className='sub';
+      var a=document.createElement('span');a.textContent=r.ad+(r.nh3?(segVal('nh3')==='n'?' (N)':' (NH₃)'):'');
+      var v=document.createElement('b');v.textContent=parts.join(' = ');
+      s.appendChild(a);s.appendChild(v);o.appendChild(s);n++});
+    $('bos').hidden=n>0}
+
+  seg('nh3',function(){var r=ROWS.filter(function(q){return q.nh3})[0];$(r.id+'-f').textContent=segVal('nh3')==='n'?'µg/dL × 0,714 = µmol/L (azot)':'µg/dL × 0,5872 = µmol/L (NH₃)';conv(r,r.src||0)});
+
+  // Arama
+  function norm(s){return s.toLocaleLowerCase('tr-TR')}
+  $('ara').addEventListener('input',function(){
+    var q=norm(this.value.trim()),any=false;
+    ROWS.forEach(function(r){r.box.hidden=!!q&&r.box.dataset.ara.indexOf(q)<0});
+    G.forEach(function(g){var vis=g.r.some(function(r){return !r.box.hidden});g.el.hidden=!vis;if(vis)any=true;
+      var first=true;g.r.forEach(function(r){if(!r.box.hidden){r.box.style.borderTop=first?'0':'';r.box.style.paddingTop=first?'0':'';first=false}})});
+    $('yok').hidden=any});
+
+  // Başlangıç: örnek değerlerden diğer kutuları doldur
+  ROWS.forEach(function(r){var i=r.els.findIndex(function(el){return el.value!==''});if(i>=0)conv(r,i)});
+  ozet();
+
+  // ---- mEq ↔ mg ----
+  // [ad, molekül ağırlığı, valans, elemental (ad, atom ağırlığı) | null, çözeltiler (% a/h), not]
+  var T={
+    kcl:{ad:'KCl',tam:'Potasyum klorür',ma:74.55,val:1,el:null,ks:[7.5,15],not:'%7,5 KCl ≈ 1 mEq/mL (10 mL ampul ≈ 10 mEq); %15 KCl ≈ 2 mEq/mL. Konsantre KCl mutlaka seyreltilerek verilir.'},
+    nacl:{ad:'NaCl',tam:'Sodyum klorür',ma:58.44,val:1,el:null,ks:[0.9,3],not:'%0,9 NaCl = 154 mEq/L Na; %3 NaCl = 513 mEq/L Na. 1 g NaCl ≈ 17,1 mEq Na (≈ 393 mg Na).'},
+    hco3:{ad:'NaHCO₃',tam:'Sodyum bikarbonat',ma:84.01,val:1,el:null,ks:[8.4],not:'%8,4 NaHCO₃ = 1 mEq/mL (Na ve HCO₃ için ayrı ayrı).'},
+    cag:{ad:'Ca glukonat',tam:'Kalsiyum glukonat',ma:430.37,val:2,el:['Ca',40.078],ks:[10],not:'Prospektüs değerleri (1 mL %10 = 9,3 mg elemental Ca = 0,465 mEq) susuz tuz molekül ağırlığına (430,4) karşılık gelir; monohidrat (448,4) ile hesaplanırsa 1 g = 4,46 mEq. Kalsiyum klorür (%10 = 1,36 mEq/mL) ile karıştırmayın.'},
+    mgs:{ad:'MgSO₄',tam:'Magnezyum sülfat heptahidrat (MgSO₄·7H₂O)',ma:246.47,val:2,el:['Mg',24.305],ks:[15,50],not:'%50 MgSO₄ = 4,06 mEq/mL; %15 = 1,22 mEq/mL. 1 g MgSO₄·7H₂O = 8,11 mEq = 4,06 mmol Mg (≈ 98,6 mg elemental Mg).'}
+  };
+  var tz=$('tuzlar');Object.keys(T).forEach(function(k,i){var b=document.createElement('button');b.type='button';b.dataset.g='tuz';b.dataset.v=k;b.setAttribute('aria-pressed',i===0);b.textContent=T[k].ad;tz.appendChild(b)});
+  function konsOlustur(){var t=T[segVal('tuz')],kz=$('konslar');kz.innerHTML='';
+    t.ks.forEach(function(c,i){var b=document.createElement('button');b.type='button';b.dataset.g='kons';b.dataset.v=c;b.setAttribute('aria-pressed',i===0);b.textContent='%'+fm(c,1)+' ('+fm(c*10/t.ma*t.val,2)+' mEq/mL)';kz.appendChild(b)});
+    seg('kons',function(){tCalc('t-mg')})}
+  var TI=['t-meq','t-mmol','t-mg','t-ml'],tSrc='t-meq';
+  function tCalc(src){
+    if(src)tSrc=src;
+    var t=T[segVal('tuz')],c=parseFloat(segVal('kons')),mgml=c*10;
+    var x=num($(tSrc).value),mmol=null;
+    if(x!==null){mmol=tSrc==='t-meq'?x/t.val:tSrc==='t-mmol'?x:tSrc==='t-mg'?x/t.ma:x*mgml/t.ma}
+    var vals={'t-meq':mmol===null?null:mmol*t.val,'t-mmol':mmol,'t-mg':mmol===null?null:mmol*t.ma,'t-ml':mmol===null?null:mmol*t.ma/mgml};
+    var dec={'t-meq':2,'t-mmol':2,'t-mg':1,'t-ml':2};
+    TI.forEach(function(id){if(id===tSrc)return;if(vals[id]===null){if($(tSrc).value==='')$(id).value='';return}$(id).value=raw(vals[id],dec[id])});
+    $('t-mlu').textContent='mL (%'+fm(c,1)+')';
+    $('t-ma').textContent=fm(t.ma,2)+' g/mol';
+    $('t-val').textContent=String(t.val)+(t.val===2?' (1 mmol = 2 mEq)':' (1 mmol = 1 mEq)');
+    $('t-1g').textContent=fm(1000*t.val/t.ma,2)+' mEq · '+fm(1000/t.ma,2)+' mmol'+(t.el?' · '+fm(1000/t.ma*t.el[1],1)+' mg '+t.el[0]:'');
+    $('t-els').hidden=!t.el;
+    $('t-not').textContent=t.tam+': '+t.not;
+    if(mmol===null){$('t-num').textContent='–';$('t-of').textContent='';pill('t-pill','','');$('t-mik').textContent=$('t-el').textContent=$('t-vol').textContent='–';return}
+    var mg=mmol*t.ma;
+    $('t-num').textContent=mg>=1000?fm(mg/1000,3):fm(mg,1);$('t-of').textContent=(mg>=1000?'g ':'mg ')+t.ad;
+    pill('t-pill',fm(mmol*t.val,2)+' mEq','var(--accent)');
+    $('t-mik').textContent=fm(mmol*t.val,2)+' mEq = '+fm(mmol,2)+' mmol = '+fm(mg,1)+' mg';
+    if(t.el)$('t-el').textContent=fm(mmol*t.el[1],1)+' mg '+t.el[0]+' ('+fm(mmol,2)+' mmol)';
+    $('t-vol').textContent=fm(mg/mgml,2)+' mL %'+fm(c,1)+' '+t.ad}
+  seg('tuz',function(){konsOlustur();tCalc()});
+  konsOlustur();
+  TI.forEach(function(id){$(id).addEventListener('input',function(){tCalc(id)})});
+  tCalc('t-meq');
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sepsiste Sıvı ve Vazopresör</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+a.in{color:var(--accent);font-weight:600}
+.seg.wrapseg button{flex:1 1 30%;white-space:nowrap;padding:11px 6px;font-size:.88rem}
+.sub b.w{white-space:normal;text-align:right}
+ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;font-size:.92rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Sepsiste Sıvı ve Vazopresör</h1>
+    <p>30 mL/kg kristaloid, OAB hedefi, laktat; norepinefrin, vazopressin, epinefrin ve dobutamin için gerçek mL/saat; hidrokortizon ve antibiyotik zamanlaması (SSC 2021 ve 2026)</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="58"></div>
+      <div class="field"><label for="sbp">Sistolik <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="numeric" step="1" value="84"></div>
+      <div class="field"><label for="dbp">Diyastolik <span>mmHg</span></label><input id="dbp" data-hasta="dbp" type="number" inputmode="numeric" step="1" value="48"></div>
+      <div class="field"><label for="lac">Laktat <span id="u-lac">mmol/L</span></label><input id="lac" type="number" inputmode="decimal" step="any" value="3.4"></div>
+    </div>
+    <span class="lbl">Laktat birimi</span>
+    <div class="seg"><button type="button" data-g="lu" data-v="mmol" aria-pressed="true">mmol/L</button><button type="button" data-g="lu" data-v="mg" aria-pressed="false">mg/dL</button></div>
+    <span class="lbl">Kalp yetmezliği, ileri KBH/diyaliz veya sıvı yükü riski</span>
+    <div class="seg"><button type="button" data-g="hf" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="hf" data-v="1" aria-pressed="false">Var</button></div>
+    <p class="note">Laktat mg/dL ÷ 9,01 = mmol/L. Kilo olarak gerçek ağırlık kullanılır; kılavuz obezde hangi kilonun kullanılacağını belirtmez.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>İlk resüsitasyon</h2>
+    <span class="lbl">Kristaloid, ilk 3 saatte en az 30 mL/kg</span>
+    <div class="res"><span class="num" id="vol">–</span><span class="of">mL</span><span class="pill" id="volp"></span></div>
+    <div class="sub"><span>3 saate yayılırsa</span><b id="volh">–</b></div>
+    <div class="sub"><span>500 mL bolus sayısı</span><b id="voln">–</b></div>
+    <div class="sub"><span>250 / 500 mL bolus</span><b id="volk">–</b></div>
+    <span class="lbl">Ortalama arter basıncı (OAB)</span>
+    <div class="res"><span class="num" id="map">–</span><span class="of">mmHg</span><span class="pill" id="mapp"></span></div>
+    <div class="sub"><span>Hedef</span><b class="w" id="mapt">–</b></div>
+    <span class="lbl">Laktat</span>
+    <div class="res"><span class="num" id="lacn">–</span><span class="of">mmol/L</span><span class="pill" id="lacp"></span></div>
+    <ol class="rec" id="rxF"></ol>
+    <p class="f">OAB = (SKB + 2 × DKB) ÷ 3 · Hacim = 30 mL × kg</p>
+  </section>
+
+  <div id="drugs"></div>
+
+  <section class="card">
+    <h2>Hidrokortizon</h2>
+    <span class="lbl">Norepinefrin veya epinefrin ≥ 0,25 mcg/kg/dk başlandıktan sonra en az 4 saattir sürüyor mu?</span>
+    <div class="seg"><button type="button" data-g="h4" data-v="0" aria-pressed="true">Hayır</button><button type="button" data-g="h4" data-v="1" aria-pressed="false">Evet</button></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Kortikosteroid kararı</h2>
+    <div class="res"><span class="pill" id="hcp"></span></div>
+    <div class="sub"><span>Norepinefrin hesaplayıcısındaki doz</span><b id="hcn">–</b></div>
+    <table class="t">
+      <thead><tr><th>Şema</th><th>Doz</th></tr></thead>
+      <tbody>
+        <tr><td>Aralıklı <small>SSC 2021 tipik doz</small></td><td>50 mg IV 6 saatte bir = 200 mg/gün</td></tr>
+        <tr><td>Sürekli infüzyon <small>200 mg / 50 mL, 24 saatte</small></td><td>2,1 mL/saat (8,3 mg/saat)</td></tr>
+      </tbody>
+    </table>
+    <ol class="rec" id="rxH"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Antibiyotik zamanlaması</h2>
+    <ul class="chk">
+      <li><b>Şok olası veya kesin ya da sepsis olasılığı yüksek:</b> antimikrobiyali hemen, ideal olarak tanımadan sonraki 1 saat içinde başlayın (SSC 2021 ve 2026, güçlü öneri).</li>
+      <li><b>Şoksuz olası sepsis:</b> enfeksiyon dışı nedenleri hızla araştırın; enfeksiyon kuşkusu sürerse sepsisten ilk kuşkulanıldığı andan itibaren 3 saat içinde başlayın.</li>
+      <li>Mümkünse antibiyotikten önce kan kültürü alın, ama antibiyotiği geciktirmeyin. Kaynak kontrolünü (apse drenajı, enfekte kateter vb.) erken planlayın.</li>
+      <li>Ampirik seçim ve dozlar için <a class="in" href="ampirik-antibiyotik.html">Ampirik Antibiyotik</a> aracına bakın.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>İlgili araçlar</h2>
+    <ul class="links">
+      <li><a class="in" href="qsofa.html">qSOFA</a> ve <a class="in" href="news2.html">NEWS2</a>: tarama ve kötüleşme izlemi (SSC tarama için qSOFA’yı tek başına önermez).</li>
+      <li><a class="in" href="ortalama-arter-basinci.html">Ortalama Arter Basıncı</a>: ayrıntılı OAB ve nabız basıncı.</li>
+      <li><a class="in" href="infuzyon-hizi.html">İnfüzyon Hızı</a>: diğer ilaçlar ve şırınga pompası hesapları.</li>
+      <li><a class="in" href="ampirik-antibiyotik.html">Ampirik Antibiyotik</a>: odak ve risk faktörüne göre seçim.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: Evans L ve ark. Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2021, Crit Care Med 2021;49:e1063–143 (en az 30 mL/kg kristaloid ilk 3 saatte, başlangıç OAB hedefi 65 mmHg, laktat ve kapiller dolum zamanı ile yönlendirme, dengeli kristaloid, norepinefrin ilk seçenek, NE 0,25–0,5 mcg/kg/dk aralığında vazopressin eklenmesi, epinefrin, dobutamin, periferik başlama, hidrokortizon 200 mg/gün NE veya epinefrin ≥ 0,25 mcg/kg/dk ≥ 4 saat, antibiyotik 1 saat / 3 saat); Prescott HC, Antonelli M, Alhazzani W ve ark. Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2026, Crit Care Med 2026, doi:10.1097/CCM.0000000000007075 (en az 30 mL/kg, OAB 65 mmHg; ≥ 65 yaşta 60–65 mmHg; ardışık laktat; yalnız kristaloid, ek albümin yerine; artan NE dozunda vazopressin; IV kortikosteroid; antibiyotik hemen, ideal 1 saat içinde); Levy MM, Evans LE, Rhodes A. The Surviving Sepsis Campaign Bundle: 2018 update, Crit Care Med 2018;46:997–1000 (başlangıç laktatı &gt; 2 mmol/L ise tekrar ölçüm, hipotansiyon veya laktat ≥ 4 mmol/L’de 30 mL/kg); Singer M ve ark. Sepsis-3, JAMA 2016;315:801–10 (septik şok: OAB ≥ 65 için vazopresör ve yeterli sıvıya rağmen laktat &gt; 2 mmol/L); Russell JA ve ark. VASST, N Engl J Med 2008;358:877–87 (vazopressin 0,01–0,03 U/dk); Annane D ve ark. APROCCHSS, N Engl J Med 2018;378:809–18 ve Venkatesh B ve ark. ADRENAL, N Engl J Med 2018;378:797–808 (hidrokortizon 200 mg/gün); Stenor 4 mg/4 mL (Eczacıbaşı) ve Nefrinor 4 mg/4 mL (INCPHARMA) KÜB, TİTCK (her ampul 8 mg norepinefrin bitartarat = 4 mg norepinefrin baz; dozlar baz üzerindendir; %5 dekstroz veya %5 dekstroz–%0,9 NaCl karışımında seyreltme). Bu araç klinik karar desteği içindir; ilaç hazırlama ve hızları kurum protokolü ve pompa kütüphanesiyle karşılaştırın.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var e=$(id);if(!e)return null;var x=parseFloat(String(e.value).replace(',','.'));return isFinite(x)?x:null};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  // Pompa hızını 0,1 mL/saat hassasiyetle gösterir
+  var rate=function(x){return fm(Math.round(x*10)/10,1)+' mL/saat'};
+
+  // İlaç tanımları. c: hazır çözeltiler [miktar, hacim mL]; miktar mg (mcg/mL = mg×1000/mL) veya ünite.
+  var D=[
+    {p:'ne',n:'Norepinefrin',sub:'İlk seçenek vazopresör. Miktar baz olarak (Türkiye ampulü 4 mg/4 mL = 4 mg baz).',au:'mg',kg:true,u:'mcg/kg/dk',
+     c:[[4,250],[8,250],[16,250],[4,50],[8,50]],ci:0,d:0.1,r:26,tab:[0.05,0.1,0.15,0.2,0.25,0.3,0.4,0.5,0.75,1]},
+    {p:'vp',n:'Vazopressin',sub:'NE’ye ek, sabit doz 0,03 U/dk (titre edilmez).',au:'U',kg:false,u:'U/dk',
+     c:[[20,100],[40,100],[20,50]],ci:0,d:0.03,r:9,tab:[0.01,0.02,0.03]},
+    {p:'ep',n:'Epinefrin',sub:'NE + vazopressine rağmen yetersiz OAB’de eklenir; kardiyak disfonksiyonda tek başına da seçenek.',au:'mg',kg:true,u:'mcg/kg/dk',
+     c:[[4,250],[1,100],[4,50]],ci:0,d:0.05,r:13,tab:[0.01,0.02,0.05,0.1,0.15,0.2,0.3,0.5]},
+    {p:'db',n:'Dobutamin',sub:'Kardiyak disfonksiyon + yeterli sıvı ve OAB’ye rağmen süren hipoperfüzyonda NE’ye eklenir.',au:'mg',kg:true,u:'mcg/kg/dk',
+     c:[[250,250],[500,250],[250,50]],ci:0,d:2.5,r:10.5,tab:[2.5,5,7.5,10,15,20]}
+  ];
+  var h='';
+  D.forEach(function(x){
+    var segc=x.c.map(function(c,i){return '<button type="button" data-g="'+x.p+'c" data-v="'+i+'" aria-pressed="'+(i===x.ci)+'">'+fm(c[0])+' '+x.au+'/'+c[1]+' mL</button>'}).join('')+'<button type="button" data-g="'+x.p+'c" data-v="x" aria-pressed="false">Diğer</button>';
+    h+='<section class="card"><h2>'+x.n+'</h2><p class="note">'+x.sub+'</p>'+
+      '<span class="lbl">Hazırlanan çözelti</span><div class="seg wrapseg">'+segc+'</div>'+
+      '<div class="grid" id="'+x.p+'-cx" hidden><div class="field"><label for="'+x.p+'-a">Miktar <span>'+(x.au==='U'?'ünite':'mg')+'</span></label><input id="'+x.p+'-a" type="number" inputmode="decimal" step="any" value="'+x.c[0][0]+'"></div>'+
+      '<div class="field"><label for="'+x.p+'-v">Toplam hacim <span>mL</span></label><input id="'+x.p+'-v" type="number" inputmode="decimal" step="any" value="'+x.c[0][1]+'"></div></div>'+
+      '<div class="seg"><button type="button" data-g="'+x.p+'y" data-v="d" aria-pressed="true">Dozdan hıza</button><button type="button" data-g="'+x.p+'y" data-v="r" aria-pressed="false">Hızdan doza</button></div>'+
+      '<div class="grid"><div class="field" id="'+x.p+'-wd"><label for="'+x.p+'-d">Doz <span>'+x.u+'</span></label><input id="'+x.p+'-d" type="number" inputmode="decimal" step="any" value="'+x.d+'"></div>'+
+      '<div class="field" id="'+x.p+'-wr" hidden><label for="'+x.p+'-r">Hız <span>mL/saat</span></label><input id="'+x.p+'-r" type="number" inputmode="decimal" step="any" value="'+x.r+'"></div></div></section>'+
+      '<section class="card" aria-live="polite"><h2>'+x.n+' hızı</h2>'+
+      '<div class="res"><span class="num" id="'+x.p+'-o">–</span><span class="of" id="'+x.p+'-ou"></span><span class="pill" id="'+x.p+'-p"></span></div>'+
+      '<div class="sub"><span>Konsantrasyon</span><b class="w" id="'+x.p+'-k">–</b></div>'+
+      '<div class="sub"><span>'+(x.kg?'Doz':'Hız')+'</span><b class="w" id="'+x.p+'-m">–</b></div>'+
+      '<div class="sub"><span>Torba/şırınga biter</span><b id="'+x.p+'-s">–</b></div>'+
+      '<table class="t"><thead><tr><th>Doz <small>'+x.u+'</small></th><th>Hız</th><th>'+(x.kg?'mcg/dk':'U/saat')+'</th></tr></thead><tbody id="'+x.p+'-t"></tbody></table>'+
+      '<ol class="rec" id="'+x.p+'-x"></ol></section>';
+  });
+  $('drugs').outerHTML=h;
+
+  var neDose=null;
+  function drug(x,wt){
+    var ci=segVal(x.p+'c'),cx=ci==='x';$(x.p+'-cx').hidden=!cx;
+    var amt=cx?v(x.p+'-a'):x.c[+ci][0],vol=cx?v(x.p+'-v'):x.c[+ci][1];
+    var dir=segVal(x.p+'y');$(x.p+'-wd').hidden=dir!=='d';$(x.p+'-wr').hidden=dir==='d';
+    $(x.p+'-x').innerHTML='';$(x.p+'-t').innerHTML='';
+    var conc=amt>0&&vol>0?(x.au==='U'?amt/vol:amt*1000/vol):null; // mcg/mL veya U/mL
+    var cu=x.au==='U'?' U/mL':' mcg/mL';
+    $(x.p+'-k').textContent=conc?fm(conc,conc<1?2:1)+cu+' ('+fm(amt)+' '+x.au+' / '+fm(vol)+' mL)':'–';
+    var need=x.kg&&!(wt>0);
+    // per 1 dose unit -> amount per hour
+    var perH=function(d){return x.kg?d*wt*60:d*60};
+    var dose=null,r=null;
+    if(conc&&!need){
+      if(dir==='d'){dose=v(x.p+'-d');if(dose!==null&&dose>=0)r=perH(dose)/conc}
+      else{r=v(x.p+'-r');if(r!==null&&r>=0)dose=r*conc/(x.kg?wt*60:60)}
+    }
+    if(dose===null||r===null){$(x.p+'-o').textContent='–';$(x.p+'-ou').textContent='';$(x.p+'-m').textContent=$(x.p+'-s').textContent='–';pill(x.p+'-p',need?'Ağırlık girin':'','var(--muted)');}
+    else{
+      if(dir==='d'){$(x.p+'-o').textContent=fm(Math.round(r*10)/10,1);$(x.p+'-ou').textContent='mL/saat'}
+      else{$(x.p+'-o').textContent=fm(dose,dose<1?3:1);$(x.p+'-ou').textContent=x.u}
+      $(x.p+'-m').textContent=x.kg?fm(dose,3)+' mcg/kg/dk = '+fm(dose*wt,1)+' mcg/dk':fm(dose,3)+' U/dk = '+fm(dose*60,2)+' U/saat';
+      $(x.p+'-s').textContent=r>0?fm(vol/r,1)+' saatte':'–';
+    }
+    if(conc&&!need){x.tab.forEach(function(d){var tr=document.createElement('tr');if(dose!==null&&Math.abs(d-dose)<1e-9)tr.className='cur';
+      var c=[fm(d,3),rate(perH(d)/conc),x.kg?fm(d*wt,1):fm(d*60,2)];c.forEach(function(t){var td=document.createElement('td');td.textContent=t;tr.appendChild(td)});$(x.p+'-t').appendChild(tr)})}
+    var X=x.p+'-x';
+    if(x.p==='ne'){neDose=dose;
+      if(dose!==null){
+        if(dose>1)pill('ne-p','> 1: refrakter şok','var(--high)');
+        else if(dose>0.5)pill('ne-p','> 0,5: yüksek doz','var(--high)');
+        else if(dose>=0.25)pill('ne-p','0,25–0,5: vazopressin eşiği','var(--warn)');
+        else if(dose>=0.05)pill('ne-p','Olağan aralık','var(--ok)');
+        else pill('ne-p','< 0,05: düşük','var(--low)');
+      }
+      li(X,'Başlangıç 0,05–0,1 mcg/kg/dk'+(wt>0&&conc?' = '+rate(0.05*wt*60/conc)+' – '+rate(0.1*wt*60/conc):''),'OAB ≥ 65 mmHg hedefine göre titre edin (çoğu protokolde 5–15 dakikada bir; kurum protokolüne bakın). Sıvıyla hedef sağlanamıyorsa veya derin hipotansiyonda sıvıyı beklemeden başlayın.');
+      if(dose!==null&&dose>=0.25)li(X,'Vazopressin 0,03 U/dk eklemeyi düşünün','SSC 2021: NE’yi daha da artırmak yerine, genellikle NE 0,25–0,5 mcg/kg/dk aralığında. SSC 2026: “artan NE dozunda” ekleyin (sayısal eşik yok; panelin ortanca uygulaması 0,3). Aynı eşik hidrokortizon için de geçerlidir (≥ 4 saat).');
+      li(X,'Periferik yoldan başlanabilir','Merkezi kateteri beklemeyin; antekübitale yakın büyük periferik ven, kısa süre ve sık ekstravazasyon kontrolü (SSC 2021 ve 2026). Süre ve doz için güvenli sınır kılavuzda belirtilmez.');
+      li(X,'Bitartarat mı baz mı?','Türkiye’deki 4 mg/4 mL ampuller (ör. Stenor, Nefrinor) 8 mg norepinefrin bitartarat = 4 mg norepinefrin baz içerir; KÜB dozları baz üzerindendir. 4 mg/250 mL = 16 mcg/mL baz. Etiketinde “2 mg/mL tartarat” yazan ürün 1 mg/mL baza eşittir; farklı bir ürün kullanıyorsanız etiketi kontrol edin.');
+      li(X,'Seyreltme','KÜB: %5 dekstroz veya %5 dekstroz + %0,9 NaCl karışımı (dekstroz oksidasyonu önler); tuz kısıtlamalı hastada yalnız %5 dekstroz. Kan veya plazmayla aynı hattan vermeyin.');
+    }
+    if(x.p==='vp'){
+      if(dose!==null){if(dose>0.04+1e-9)pill('vp-p','> 0,04 U/dk: kurtarma dozu','var(--high)');else if(dose>0.03+1e-9)pill('vp-p','0,03–0,04 U/dk','var(--warn)');else if(Math.abs(dose-0.03)<1e-9)pill('vp-p','Önerilen sabit doz','var(--ok)');else pill('vp-p','< 0,03 U/dk','var(--warn)')}
+      li(X,'0,03 U/dk sabit'+(conc?' = '+rate(0.03*60/conc):''),'Titre edilmez (SSC 2026). 0,03–0,04 U/dk üzerindeki dozlar kardiyak, dijital ve splanknik iskemiyle ilişkilidir ve kurtarma tedavisine saklanır (SSC 2016). VASST: 0,01–0,03 U/dk.');
+      li(X,'Türkiye’de erişim','Vazopressin (arginin vazopressin) ruhsat ve bulunurluğu kuruma göre değişebilir; terlipressin farklı bir ilaçtır ve bu dozla yer değiştirmez. (Bu bilgi doğrulanmadı; eczanenize danışın.)');
+    }
+    if(x.p==='ep'){
+      if(dose!==null){if(dose>0.5)pill('ep-p','> 0,5: yüksek doz','var(--high)');else if(dose>=0.25)pill('ep-p','≥ 0,25: hidrokortizon eşiği','var(--warn)');else pill('ep-p','Olağan aralık','var(--ok)')}
+      li(X,'Başlangıç 0,01–0,05 mcg/kg/dk'+(wt>0&&conc?' = '+rate(0.01*wt*60/conc)+' – '+rate(0.05*wt*60/conc):''),'OAB’ye göre titre edin. Laktatı yükseltebilir (beta-2 etkisi) ve laktatla yönlendirilen resüsitasyonu yanıltabilir; taşiaritmi. Başlangıç dozu kılavuzda yer almaz, yaygın uygulamadır.');
+      li(X,'Hazırlama','1 mg/1 mL ampul: 4 ampul 250 mL’ye = 16 mcg/mL; 4 ampul 50 mL’ye = 80 mcg/mL (şırınga pompası).');
+    }
+    if(x.p==='db'){
+      if(dose!==null){if(dose>20)pill('db-p','> 20 mcg/kg/dk','var(--high)');else if(dose>=2)pill('db-p','2–20 mcg/kg/dk','var(--ok)');else pill('db-p','< 2 mcg/kg/dk','var(--low)')}
+      li(X,'2–2,5 mcg/kg/dk ile başlayın'+(wt>0&&conc?' = '+rate(2.5*wt*60/conc):''),'Perfüzyon belirteçleri ve kalp hızına göre 2,5 mcg/kg/dk basamaklarla, olağan üst sınır 20 mcg/kg/dk. Vazopresörün yerine değil, ona ek olarak verilir; hipotansiyonu ve taşiaritmiyi artırabilir.');
+      li(X,'Ne zaman?','Ekokardiyografide sol ventrikül disfonksiyonu + yeterli volüm ve OAB’ye rağmen süren hipoperfüzyon (laktat, kapiller dolum, idrar). Alternatif: NE yerine tek başına epinefrin (SSC 2021 ve 2026, zayıf öneri).');
+    }
+  }
+
+  function calc(){
+    var wt=v('wt'),age=v('age'),s=v('sbp'),d=v('dbp'),lu=segVal('lu'),hf=segVal('hf')==='1';
+    $('u-lac').textContent=lu==='mg'?'mg/dL':'mmol/L';
+    var lr=v('lac'),lac=lr===null?null:(lu==='mg'?lr/9.01:lr);
+    $('rxF').innerHTML='';
+    // Sıvı
+    if(wt>0){var V=30*wt;$('vol').textContent=fm(V,0);$('volh').textContent=rate(V/3);$('voln').textContent=fm(V/500,1)+' × 500 mL';
+      $('volk').textContent=fm(250/wt,1)+' / '+fm(500/wt,1)+' mL/kg';
+      pill('volp',hf?'Dikkat: küçük bolus':'İlk 3 saatte',hf?'var(--warn)':'var(--accent)')}
+    else{$('vol').textContent=$('volh').textContent=$('voln').textContent=$('volk').textContent='–';pill('volp','','')}
+    // OAB
+    var map=s!==null&&d!==null&&s>0&&d>0?(s+2*d)/3:null,old=age!==null&&age>=65,lo=old?60:65;
+    $('mapt').textContent=old?'60–65 mmHg (≥ 65 yaş, SSC 2026)':'≥ 65 mmHg';
+    if(map===null){$('map').textContent='–';pill('mapp','','')}
+    else{$('map').textContent=fm(map,0);
+      if(Math.round(map)<lo)pill('mapp','Hedefin altında','var(--high)');
+      else if(map<65)pill('mapp','Hedef aralıkta','var(--ok)');
+      else pill('mapp','Hedefe ulaşıldı','var(--ok)')}
+    // Laktat
+    if(lac===null){$('lacn').textContent='–';pill('lacp','','')}
+    else{$('lacn').textContent=fm(lac,1);
+      if(lac>=4)pill('lacp','≥ 4: yüksek risk','var(--high)');
+      else if(lac>=2)pill('lacp','≥ 2: hipoperfüzyon','var(--warn)');
+      else pill('lacp','< 2','var(--ok)')}
+    var hypo=map!==null&&Math.round(map)<lo,hl=lac!==null&&lac>=2;
+    // Öneriler
+    if(hypo||hl)li('rxF','Sepsise bağlı hipoperfüzyon'+(hypo&&hl?' (hipotansiyon + laktat)':hypo?' (hipotansiyon)':' (laktat ≥ 2)'),'İlk 3 saatte en az 30 mL/kg kristaloid'+(wt>0?' = '+fm(30*wt,0)+' mL':'')+'; 0,9% NaCl yerine dengeli kristaloid (Ringer laktat, Plasma-Lyte) önerilir (SSC 2021, 2026).');
+    else li('rxF','Hipotansiyon ve laktat yüksekliği yok','30 mL/kg hacim sepsise bağlı hipoperfüzyon veya şok içindir; hacmi klinik duruma göre bireyselleştirin.');
+    li('rxF','Kalp ya da böbrek yetmezliğinde dikkat'+(hf?' (bu hastada var)':''),'Hacmi tek seferde değil, 250–500 mL bolus'+(wt>0?' ('+fm(250/wt,1)+'–'+fm(500/wt,1)+' mL/kg)':'')+' olarak verin ve her bolustan sonra yanıtı değerlendirin: OAB, kalp hızı, kapiller dolum, idrar, laktat; akciğer raller/oksijen ihtiyacı ve dinamik ölçümler (pasif bacak kaldırma, atım hacmi değişimi, nabız basıncı değişimi). Sıvı yanıtı yoksa veya yüklenme bulgusu varsa durun ve vazopresörü erken başlatın.');
+    if(hypo)li('rxF','OAB '+fm(map,0)+' mmHg: hedefin altında','Sıvıya rağmen OAB < '+lo+' mmHg ise norepinefrin başlayın (aşağıda). Derin hipotansiyonda (ör. DKB < 40 mmHg) sıvı sürerken başlanabilir.'+(old?' ≥ 65 yaşta SSC 2026, 60–65 mmHg aralığını yüksek hedeflere tercih eder.':''));
+    if(lac!==null&&lac>=2)li('rxF','Laktat '+fm(lac,1)+' mmol/L: 2–4 saatte tekrar ölçün','Laktat düşüşünü resüsitasyonu yönlendirmek için kullanın (SSC 2021 ve 2026, ardışık ölçüm); 2018 paketi başlangıç > 2 mmol/L ise tekrar ölçümü önerir. Yalnız laktatı normalleştirmek için agresif sıvı vermeyin; kapiller dolum zamanını ek belirteç olarak kullanın.'+(lac>=4?' Laktat ≥ 4 mmol/L, hipotansiyondan bağımsız olarak 30 mL/kg sıvı ve yakın izlem gerektiren yüksek riskli gruptur.':''));
+    if(hypo&&lac!==null&&lac>2)li('rxF','Septik şok ölçütü (Sepsis-3)','Yeterli sıvıya rağmen OAB ≥ 65 mmHg için vazopresör gerekiyor ve laktat > 2 mmol/L ise septik şok: hastane mortalitesi > %40. Yoğun bakım değerlendirmesi.');
+    li('rxF','Albümin','SSC 2021: büyük hacimde kristaloid alan hastada albümin eklenebilir. SSC 2026: rutin olarak yalnız kristaloid önerilir; büyük hacimden sonra veya sirozda albümin uygun olabilir. Nişasta (HES) ve jelatin kullanmayın.');
+
+    D.forEach(function(x){drug(x,wt)});
+
+    // Hidrokortizon
+    $('rxH').innerHTML='';
+    var h4=segVal('h4')==='1';
+    $('hcn').textContent=neDose===null?'–':fm(neDose,3)+' mcg/kg/dk';
+    var hi=neDose!==null&&neDose>=0.25;
+    if(h4)pill('hcp','Hidrokortizon başlayın','var(--high)');
+    else if(hi)pill('hcp','Doz eşikte: 4 saati bekleyin','var(--warn)');
+    else pill('hcp','Şu an eşik yok','var(--ok)');
+    li('rxH','SSC 2021: NE veya epinefrin ≥ 0,25 mcg/kg/dk, başlandıktan ≥ 4 saat sonra','Tipik doz IV hidrokortizon 200 mg/gün: 50 mg 6 saatte bir veya sürekli infüzyon. SSC 2026 IV kortikosteroidi önerir, eşik ve doz tanımlamaz; panelin büyük çoğunluğu 200 mg/gün hidrokortizon kullanır.');
+    li('rxH','Süre ve kesme','Vazopresör kesilene kadar sürdürün; klinik düzelmede kılavuz azaltma şeması önermez (SSC 2026 panelinin çoğu azaltmadan keser). Fludrokortizon 50 mcg/gün PO isteğe bağlıdır (APROCCHSS); rutin öneri yoktur.');
+    li('rxH','Yan etki','Hiperglisemi (kan şekerini izleyin, hedef 144–180 mg/dL), hipernatremi; kas güçsüzlüğü.');
+  }
+  ['lu','hf','h4'].forEach(function(g){seg(g,calc)});
+  D.forEach(function(x){seg(x.p+'c',calc);seg(x.p+'y',calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

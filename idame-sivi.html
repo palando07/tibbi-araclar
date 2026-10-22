@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>İdame Sıvı ve Refeeding</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; hasta kartı, bölüm seçici, giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.seg.wrapseg{flex-wrap:wrap}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.88rem;table-layout:fixed}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>İdame Sıvı ve Refeeding</h1>
+    <p>Erişkinde IV idame sıvısı, sodyum, potasyum ve glukoz (NICE CG174); yeniden beslenme sendromu riski ve önleme (NICE CG32, ASPEN 2020)</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="wt">Gerçek kilo <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="ht">Boy <span>cm</span></label><input id="ht" data-hasta="boy" type="number" inputmode="decimal" step="any" value="170"></div>
+      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="4.0"></div>
+      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="139"></div>
+    </div>
+    <span class="lbl">Cinsiyet</span>
+    <div class="seg"><button type="button" data-g="sx" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="sx" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div>
+    <div class="sub"><span>VKİ</span><b id="bmio">–</b></div>
+    <div class="sub"><span>İdeal kilo (Devine)</span><b id="ibwo">–</b></div>
+  </section>
+
+  <div class="seg" role="group" aria-label="Bölüm"><button type="button" data-g="bol" data-v="s" aria-pressed="true">İdame sıvı</button><button type="button" data-g="bol" data-v="r" aria-pressed="false">Refeeding riski</button></div>
+
+  <!-- A) İdame sıvı -->
+  <section class="card" data-bol="s">
+    <h2>İdame sıvı: hasta grubu</h2>
+    <p class="note">Yalnız rutin idame içindir: resüsitasyon, süren kayıp (dren, stoma, ishal, ateş) veya yeniden dağılım (ödem, sepsis) varsa ayrıca hesaplanır. Ağızdan veya enteral alım mümkünse onu tercih edin.</p>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="c-old"><span class="txt">Yaşlı veya kırılgan</span></label>
+      <label class="item"><input type="checkbox" id="c-ren"><span class="txt">Böbrek yetmezliği</span></label>
+      <label class="item"><input type="checkbox" id="c-hf"><span class="txt">Kalp yetmezliği</span></label>
+      <label class="item"><input type="checkbox" id="c-mal"><span class="txt">Malnütrisyon ve refeeding riski<small id="c-mal-h">Refeeding bölümündeki sonuca bakın</small></span></label>
+    </div>
+    <span class="lbl">Reçete hacmi (mL/kg/gün)</span>
+    <div class="seg"><button type="button" data-g="hz" data-v="20" aria-pressed="false">20</button><button type="button" data-g="hz" data-v="25" aria-pressed="true">25</button><button type="button" data-g="hz" data-v="30" aria-pressed="false">30</button></div>
+  </section>
+
+  <section class="card" aria-live="polite" data-bol="s">
+    <h2>Günlük idame ihtiyacı</h2>
+    <div class="res"><span class="num" id="tot">–</span><span class="of">mL/gün</span><span class="pill" id="totp"></span></div>
+    <div class="sub"><span>Hız (24 saat)</span><b id="rate">–</b></div>
+    <div class="sub"><span>Hesap kilosu</span><b id="dwo">–</b></div>
+    <div class="sub"><span>Önerilen aralık</span><b id="rng">–</b></div>
+    <div class="sub"><span>Sodyum · Potasyum · Klor (~1 mmol/kg/gün)</span><b id="elec">–</b></div>
+    <div class="sub"><span>Glukoz (açlık ketozunu sınırlamak için)</span><b>50–100 g/gün</b></div>
+    <h3>Örnek reçete</h3>
+    <table class="t">
+      <thead><tr><th>Sıvı</th><th>Hacim</th><th>%7,5 KCl (1 mL = 1 mmol)</th></tr></thead>
+      <tbody>
+        <tr><td>%0,9 NaCl <small>154 mmol/L Na</small></td><td id="r-sf">–</td><td id="r-sfk">–</td></tr>
+        <tr><td>%5 dekstroz <small>50 g/L glukoz</small></td><td id="r-d5">–</td><td id="r-d5k">–</td></tr>
+      </tbody>
+    </table>
+    <div class="sub"><span>Reçetenin verdiği</span><b id="rx-got">–</b></div>
+    <div class="sub"><span>Holliday-Segar 4-2-1 (karşılaştırma)</span><b id="hs">–</b></div>
+    <ol class="rec" id="rxF"></ol>
+    <p class="note">%7,5 KCl ampul: 10 mL = 750 mg KCl = 10 mmol (mEq) K (Elektrolit Replasmanı aracıyla aynı). Torbaları art arda, 24 saate yayarak aynı saatlik hızla verin; potasyumu enjektörle mL olarak çekip her torbada aynı konsantrasyon olacak şekilde dağıtın (her 1000 mL’de en çok 40 mmol, periferik hız en çok 10 mmol/saat). Ampulü torbaya ekledikten sonra torbayı birkaç kez ters çevirerek karıştırın ve etiketleyin. IV potasyum asla bolus verilmez.</p>
+  </section>
+
+  <section class="card" data-bol="s">
+    <h2>Neden 4-2-1 değil?</h2>
+    <p class="advice">Holliday-Segar (ilk 10 kg için 4, sonraki 10 kg için 2, üstü için 1 mL/kg/saat) 1957’de çocuklarda enerji harcamasından türetilmiştir. Erişkinde üst sınırı olmadığından 70 kg’da 110 mL/saat (2640 mL/gün) verir; NICE CG174’e göre günde 2,5 L’nin üzeri hiponatremi riskini artırır ve erişkin idame 25–30 mL/kg/gün ile hesaplanır. Bu nedenle bu araç 4-2-1’i yalnız karşılaştırma için gösterir.</p>
+  </section>
+
+  <!-- B) Refeeding -->
+  <section class="card" data-bol="r" hidden>
+    <h2>Refeeding riski: bilgiler</h2>
+    <p class="note">Kilo ve boy “Hasta” kartından alınır; VKİ buradan hesaplanır. Elektrolitler beslenme öncesi değerlerdir; potasyum “Hasta” kartındadır.</p>
+    <div class="grid">
+      <div class="field"><label for="wl">İstemsiz kilo kaybı, son 3–6 ay <span>%</span></label><input id="wl" type="number" inputmode="decimal" step="any" value="12"></div>
+      <div class="field"><label for="days">Çok az / hiç beslenme <span>gün</span></label><input id="days" type="number" inputmode="decimal" step="1" value="6"></div>
+      <div class="field"><label for="p">Fosfor <span>mg/dL</span></label><input id="p" type="number" inputmode="decimal" step="any" value="3.0"></div>
+      <div class="field"><label for="mg">Magnezyum <span>mg/dL</span></label><input id="mg" type="number" inputmode="decimal" step="any" value="1.9"></div>
+    </div>
+    <div class="field"><label for="wprev">Kilo kaybını önceki kilodan hesapla (isteğe bağlı) <span>önceki kilo, kg</span></label><input id="wprev" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 3–6 ay önce"></div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="h-alc"><span class="txt">Alkol kötüye kullanımı öyküsü</span></label>
+      <label class="item"><input type="checkbox" id="h-drug"><span class="txt">İlaç öyküsü<small>insülin, kemoterapi, antiasitler veya diüretikler</small></span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite" data-bol="r" hidden>
+    <h2>Refeeding riski (NICE CG32)</h2>
+    <div class="res"><span class="pill" id="rfp"></span></div>
+    <div class="sub"><span>Birincil ölçüt (biri yeter)</span><b id="prim">–</b></div>
+    <div class="sub"><span>İkincil ölçüt (en az iki)</span><b id="sec">–</b></div>
+    <table class="t">
+      <thead><tr><th>Ölçüt</th><th>Birincil</th><th>İkincil</th></tr></thead>
+      <tbody>
+        <tr><td>VKİ <small id="t-bmi">–</small></td><td id="t-b1">&lt; 16</td><td id="t-b2">&lt; 18,5</td></tr>
+        <tr><td>Kilo kaybı 3–6 ay <small id="t-wl">–</small></td><td id="t-w1">&gt; %15</td><td id="t-w2">&gt; %10</td></tr>
+        <tr><td>Az/hiç beslenme <small id="t-d">–</small></td><td id="t-d1">&gt; 10 gün</td><td id="t-d2">&gt; 5 gün</td></tr>
+        <tr><td>Düşük K, P veya Mg <small id="t-e">–</small></td><td id="t-e1">var</td><td>–</td></tr>
+        <tr><td>Alkol / ilaç öyküsü <small id="t-h">–</small></td><td>–</td><td id="t-h2">var</td></tr>
+      </tbody>
+    </table>
+    <h3>Başlangıç planı (gerçek kilo ile)</h3>
+    <div class="sub"><span>Başlangıç enerjisi</span><b id="kc">–</b></div>
+    <div class="sub"><span>Hedef (4–7. günde)</span><b id="kcg">–</b></div>
+    <div class="sub"><span>Potasyum (2–4 mmol/kg/gün)</span><b id="ek">–</b></div>
+    <div class="sub"><span>Fosfat (0,3–0,6 mmol/kg/gün)</span><b id="ep">–</b></div>
+    <div class="sub"><span>Magnezyum (IV 0,2 · oral 0,4 mmol/kg/gün)</span><b id="em">–</b></div>
+    <div class="sub"><span>IV sıvı (CG174)</span><b id="efl">–</b></div>
+    <ol class="rec" id="rxR"></ol>
+    <p class="note">NICE CG32 elektrolit dozları yüksek riskli hastada, beslenme öncesi düzey yüksek değilse verilmesi önerilen “olası gereksinim”dir; beslenme ürününün ve sıvıların içerdiği elektrolitler de bu toplama dahildir. Beslenme öncesi düşük düzeyi düzeltmek için beslenmeyi geciktirmek gerekmez. Böbrek yetmezliğinde dozları azaltın ve sık izleyin.</p>
+  </section>
+
+  <section class="card" data-bol="r" hidden>
+    <h2>NICE CG32 ile ASPEN 2020 farkları</h2>
+    <table class="t">
+      <thead><tr><th>Konu</th><th>NICE CG32</th><th>ASPEN 2020</th></tr></thead>
+      <tbody>
+        <tr><td>Risk sınıfı</td><td>Yüksek risk: 1 birincil veya 2 ikincil ölçüt</td><td>Orta risk: 2 ölçüt; belirgin risk: 1 ölçüt</td></tr>
+        <tr><td>VKİ</td><td>&lt; 16 / &lt; 18,5</td><td>&lt; 16 belirgin; 16–18,5 orta</td></tr>
+        <tr><td>Kilo kaybı</td><td>3–6 ayda &gt; %15 / &gt; %10</td><td>1 ayda %5 orta; 3 ayda %7,5 veya 6 ayda &gt; %10 belirgin</td></tr>
+        <tr><td>Beslenmeme</td><td>&gt; 10 gün / &gt; 5 gün</td><td>5–6 gün orta; &gt; 7 gün belirgin (veya akut hastalıkta &gt; 7 gün gereksinimin &lt; %75’i / &gt; 5 gün &lt; %50’si)</td></tr>
+        <tr><td>Ek ölçüt</td><td>Alkol, insülin, kemoterapi, antiasit, diüretik</td><td>Deri altı yağ ve kas kaybı, risk taşıyan hastalıklar (ör. alkol kullanım bozukluğu, anoreksiya nervoza, malabsorpsiyon, bariatrik cerrahi)</td></tr>
+        <tr><td>Başlangıç</td><td>En çok 10 kcal/kg/gün; aşırı riskte 5 kcal/kg/gün</td><td>100–150 g dekstroz veya 10–20 kcal/kg/gün (ilk 24 saat)</td></tr>
+        <tr><td>Artırma</td><td>4–7 günde tam gereksinime</td><td>Her 1–2 günde hedefin %33’ü; elektrolit düşerse kaloriyi %50 azaltın</td></tr>
+        <tr><td>Tiamin</td><td>200–300 mg/gün oral, beslenmeden hemen önce ve ilk 10 gün; B kompleks + multivitamin</td><td>100 mg beslenme veya dekstrozlu sıvıdan önce; 100 mg/gün 5–7 gün (ağır açlıkta, alkolde daha uzun); multivitamin ≥ 10 gün</td></tr>
+        <tr><td>Elektrolit</td><td>Düzey yüksek değilse profilaktik K, P, Mg</td><td>Düzey normalse profilaktik doz için öneri yok; düşükse standart replasman; ilk 3 gün 12 saatte bir düzey</td></tr>
+        <tr><td>İzlem</td><td>Sıvı dengesi; aritmide sürekli ritim izlemi</td><td>İlk 24 saatte 4 saatte bir vital bulgu</td></tr>
+      </tbody>
+    </table>
+    <p class="note">ASPEN eşikleri uzman görüşüne dayanır ve randomize çalışmayla test edilmemiştir. Yoğun bakımda refeeding hipofosfatemisi gelişen hastada kalori kısıtlaması randomize çalışmada sağkalımı iyileştirmiştir (Doig 2015). Türkiye’ye özgü ulusal bir refeeding kılavuzu bulunamadı.</p>
+  </section>
+
+  <p class="note">Kaynaklar: NICE CG174, Intravenous fluid therapy in adults in hospital, 2013, son güncelleme 5 Mayıs 2017 (rutin idame 25–30 mL/kg/gün su, ~1 mmol/kg/gün Na, K, Cl, 50–100 g/gün glukoz; obezde ideal kilo ve alt aralık, nadiren &gt; 3 L/gün, VKİ &gt; 40’ta uzman desteği; yaşlı/kırılgan, böbrek veya kalp yetmezliği, malnütrisyon ve refeeding riskinde 20–25 mL/kg/gün; &gt; 2,5 L/gün hiponatremi riski; örnek %0,18 NaCl/%4 glukoz + 27 mmol/L K); NICE CG32, Nutrition support for adults, 2006, güncelleme 2017 (refeeding yüksek risk ölçütleri, 10 ve 5 kcal/kg/gün, 4–7 gün, tiamin 200–300 mg, B kompleks, K 2–4, fosfat 0,3–0,6, Mg 0,2 IV / 0,4 oral mmol/kg/gün; &gt; 5 gün az beslenmede ilk 2 gün gereksinimin en çok %50’si; 25–35 kcal/kg/gün); da Silva JSV ve ark. ASPEN consensus recommendations for refeeding syndrome. Nutr Clin Pract 2020;35:178–95, doi:10.1002/ncp.10474 (risk tablosu, 100–150 g dekstroz veya 10–20 kcal/kg, %33 artış, %50 azaltma, tiamin 100 mg 5–7 gün, multivitamin, izlem); BAPEN 2024 refeeding tiamin rehberi (NICE ve ASPEN tiamin dozlarının karşılaştırması); Holliday MA, Segar WE. Pediatrics 1957;19:823–32 (4-2-1 kuralı); Devine BJ. Drug Intell Clin Pharm 1974;8:650–5 (ideal kilo); Doig GS ve ark. Lancet Respir Med 2015;3:943–52 (kalori kısıtlaması); Türkiye’deki %7,5 potasyum klorür ampul ürün bilgisi (75 mg/mL, 10 mL). Bu araç klinik karar desteği içindir; sıvı reçetesi günlük klinik değerlendirme, sıvı dengesi, kilo ve elektrolitlerle yeniden gözden geçirilmelidir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()})})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var r0=function(x){return fm(Math.round(x),0)};
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  var MG_SO4_MMOL=4.06; // 1 g MgSO4·7H2O = 4,06 mmol Mg; %15 10 mL ampul = 1,5 g
+
+  function calc(){
+    var bol=segVal('bol');
+    document.querySelectorAll('[data-bol]').forEach(function(s){s.hidden=s.dataset.bol!==bol});
+    var wt=v('wt'),ht=v('ht'),sx=segVal('sx'),K=v('k'),Na=v('na');
+    var okW=wt!==null&&wt>0,okH=ht!==null&&ht>0;
+    var bmi=okW&&okH?Math.round(wt/Math.pow(ht/100,2)*10)/10:null;
+    var ibw=okH?(sx==='f'?45.5:50)+0.91*(ht-152.4):null;
+    $('bmio').textContent=bmi===null?'–':fm(bmi)+' kg/m²';
+    $('ibwo').textContent=ibw===null?'–':(ibw>0?fm(ibw)+' kg':'boy çok kısa');
+
+    // ===== A) İdame sıvı =====
+    $('rxF').innerHTML='';
+    var red=$('c-old').checked||$('c-ren').checked||$('c-hf').checked||$('c-mal').checked;
+    var obese=bmi!==null&&bmi>=30&&ibw!==null&&ibw>0&&ibw<wt;
+    var dw=okW?(obese?ibw:wt):null;
+    var lo=red?20:25,hi=red?25:(obese?25:30);
+    var sel=parseFloat(segVal('hz'));
+    if(dw===null){['tot','rate','dwo','rng','elec','r-sf','r-sfk','r-d5','r-d5k','rx-got','hs'].forEach(function(i){$(i).textContent='–'});pill('totp','','')}
+    else{
+      var tot=sel*dw,capped=false;
+      if(obese&&tot>3000){tot=3000;capped=true}
+      $('tot').textContent=r0(tot);
+      var inR=sel>=lo&&sel<=hi;
+      pill('totp',inR?'Önerilen aralıkta':(sel>hi?'Aralığın üstünde':'Aralığın altında'),inR?'var(--ok)':'var(--warn)');
+      $('rate').textContent=fm(tot/24)+' mL/saat';
+      $('dwo').textContent=fm(dw)+' kg'+(obese?' (ideal kilo; obez)':' (gerçek kilo)');
+      $('rng').textContent=(lo===hi?lo+' mL/kg':lo+'–'+hi+' mL/kg')+' = '+(lo===hi?r0(lo*dw):r0(lo*dw)+'–'+r0(Math.min(hi*dw,obese?3000:1e9)))+' mL/gün';
+      $('elec').textContent='~'+r0(dw)+' mmol/gün';
+      // Reçete: Na ihtiyacını %0,9 NaCl, kalanını %5 dekstroz verir
+      var naNeed=dw*1;
+      var sf=Math.round(naNeed/0.154/50)*50; if(sf>tot)sf=Math.floor(tot/50)*50;
+      var d5=Math.max(0,tot-sf);
+      var kHi=K!==null&&K>5.0,kLo=K!==null&&K<3.5;
+      var kTot=kHi?0:Math.round(dw*1);
+      var kSF=tot>0?Math.round(kTot*sf/tot):0,kD5=kTot-kSF;
+      var cSF=sf>0?kSF/sf*1000:0,cD5=d5>0?kD5/d5*1000:0,cAll=tot>0?kTot/tot*1000:0;
+      $('r-sf').textContent=r0(sf)+' mL';$('r-d5').textContent=r0(d5)+' mL';
+      $('r-sfk').textContent=kSF?fm(kSF,0)+' mL = '+fm(kSF,0)+' mmol ('+r0(cSF)+' mmol/L)':'–';
+      $('r-d5k').textContent=kD5?fm(kD5,0)+' mL = '+fm(kD5,0)+' mmol ('+r0(cD5)+' mmol/L)':'–';
+      var naGot=sf*0.154,gGot=d5*0.05,kGot=kTot,clGot=naGot+kGot;
+      $('rx-got').textContent='Na '+r0(naGot)+' · K '+kGot+' · Cl '+r0(clGot)+' mmol; glukoz '+r0(gGot)+' g'+(kTot?'; KCl toplam '+Math.ceil(kTot/10)+' ampul açılır':'');
+      var hs=wt>20?(60+(wt-20)):(wt>10?40+2*(wt-10):4*wt);
+      $('hs').textContent=fm(hs)+' mL/saat = '+r0(hs*24)+' mL/gün';
+      li('rxF','Toplam '+r0(tot)+' mL/gün = '+fm(tot/24)+' mL/saat',(red?'Azaltılmış hacim grubunda (yaşlı/kırılgan, böbrek veya kalp yetmezliği, malnütrisyon/refeeding riski) NICE 20–25 mL/kg/gün önerir. ':'NICE CG174 rutin idame: 25–30 mL/kg/gün. ')+(obese?'Obez hastada ideal kiloyla ve alt aralıkla hesaplanır; nadiren > 3 L/gün gerekir'+(capped?' (3000 mL ile sınırlandı)':'')+'. ':'')+'Ağızdan veya enteral alım ve ilaç sulandırmaları toplam sıvıdan düşülmelidir.');
+      if(sel>hi)li('rxF','Seçilen hacim önerilen aralığın üstünde',red?'Bu hasta grubunda 20–25 mL/kg/gün düşünün.':'Erişkin idame en çok 30 mL/kg/gün; obezde alt aralık.');
+      if(tot>2500)li('rxF','Günde > 2,5 L: hiponatremi riski artar','NICE CG174. Sodyumu günlük izleyin; hipotonik sıvı payını azaltmayı düşünün.');
+      if(bmi!==null&&bmi>40)li('rxF','VKİ > 40: uzman desteği alın','NICE CG174, obez hastada sıvı reçetesi.');
+      if(gGot<50)li('rxF','Glukoz '+r0(gGot)+' g/gün: hedefin (50–100 g) altında','%5 dekstroz payını artırın veya %10 dekstroz kullanın; sodyumu ayrı izleyin.');
+      else if(gGot>100)li('rxF','Glukoz '+r0(gGot)+' g/gün: 100 g üzerinde','Diyabet veya refeeding riskinde glukoz yükünü azaltın.');
+      if(kHi)li('rxF','K > 5,0 mmol/L: idame potasyumu eklenmedi','Hiperkalemi düzelene ve böbrek işlevi değerlendirilene kadar potasyumsuz sıvı.');
+      else if(kLo)li('rxF','K < 3,5 mmol/L: idame dozu açığı kapatmaz','Eksikliği ayrıca yerine koyun (Elektrolit Replasmanı aracı); hipokalemi düzeltilirken KCl’yi dekstrozlu sıvıya değil %0,9 NaCl’ye koymak tercih edilir.');
+      if(cAll>40.5)li('rxF','Periferik yolda potasyum > 40 mmol/L','Potasyumu daha büyük hacme dağıtın, bir kısmını ağızdan verin veya santral yol kullanın. Periferik hız en çok 10 mmol/saat.');
+      if(Na!==null&&Na<135)li('rxF','Na < 135 mmol/L','Hipotonik idame (dekstroz payı) hiponatremiyi kötüleştirebilir: izotonik sıvı payını artırın ve hiponatremi nedenini araştırın (Sodyum aracı).');
+      if(Na!==null&&Na>145)li('rxF','Na > 145 mmol/L','Serbest su açığını ayrıca hesaplayın (Sodyum aracı); idame sodyumunu azaltın.');
+      li('rxF','Alternatif (NICE örneği)','%0,18 NaCl / %4 glukoz + 27 mmol/L K, 25–30 mL/kg/gün (1. gün). Bu hazır karışım Türkiye’de her yerde bulunmayabilir; yukarıdaki %0,9 NaCl + %5 dekstroz birleşimi benzer Na, K ve glukoz sağlar.');
+      li('rxF','İzlem','Her gün klinik durum, sıvı dengesi, kilo; IV tedavi sürüyorsa en az haftada iki kez (gerekirse her gün) Na, K, üre, kreatinin. NICE, uykuyu korumak için idame sıvının gündüz saatlerinde verilmesini de önerir.');
+    }
+
+    // ===== B) Refeeding =====
+    $('rxR').innerHTML='';
+    var wprev=v('wprev'),wl=v('wl');
+    if(wprev!==null&&wprev>0&&okW){wl=Math.max(0,(wprev-wt)/wprev*100)}
+    var days=v('days'),P=v('p'),Mg=v('mg');
+    var lowE=[];if(K!==null&&K<3.5)lowE.push('K');if(P!==null&&P<2.5)lowE.push('P');if(Mg!==null&&Mg<1.7)lowE.push('Mg');
+    var hist=$('h-alc').checked||$('h-drug').checked;
+    var p1=bmi!==null&&bmi<16,p2=wl!==null&&wl>15,p3=days!==null&&days>10,p4=lowE.length>0;
+    var s1=bmi!==null&&bmi<18.5,s2=wl!==null&&wl>10,s3=days!==null&&days>5,s4=hist;
+    var np=[p1,p2,p3,p4].filter(Boolean).length,ns=[s1,s2,s3,s4].filter(Boolean).length;
+    var high=np>=1||ns>=2,extreme=(bmi!==null&&bmi<14)||(days!==null&&days>15);
+    var mark=function(id,on){var e=$(id);e.style.fontWeight=on?'700':'';e.style.color=on?'var(--high)':''};
+    mark('t-b1',p1);mark('t-b2',s1&&!p1);mark('t-w1',p2);mark('t-w2',s2&&!p2);mark('t-d1',p3);mark('t-d2',s3&&!p3);mark('t-e1',p4);mark('t-h2',s4);
+    $('t-bmi').textContent=bmi===null?'–':fm(bmi);
+    $('t-wl').textContent=wl===null?'–':'%'+fm(wl)+(wprev?' (hesaplanan)':'');
+    $('t-d').textContent=days===null?'–':fm(days,0)+' gün';
+    $('t-e').textContent=lowE.length?'düşük: '+lowE.join(', '):(K===null&&P===null&&Mg===null?'girilmedi':'normal');
+    $('t-h').textContent=hist?'var':'yok';
+    $('prim').textContent=np+' / 4';$('sec').textContent=ns+' / 4';
+    $('c-mal-h').textContent=high?'Refeeding bölümü: yüksek risk; bu kutuyu işaretleyin':'Refeeding bölümü: yüksek risk ölçütü yok';
+    if(high)pill('rfp',extreme?'Yüksek risk: aşırı yüksek':'Yüksek risk',extreme?'var(--high)':'var(--warn)');
+    else pill('rfp','Yüksek risk ölçütü yok','var(--ok)');
+    var kgS=function(a,b,u){return okW?(b===undefined?r0(a*wt):fm(a*wt,0)+'–'+fm(b*wt,0))+' '+u:'–'};
+    if(!okW){['kc','kcg','ek','ep','em','efl'].forEach(function(i){$(i).textContent='–'})}
+    else{
+      var kcal=extreme?5:10;
+      $('kcg').textContent=kgS(25,35,'kcal/gün');
+      if(high){
+        $('kc').textContent='en çok '+r0(kcal*wt)+' kcal/gün ('+kcal+' kcal/kg)';
+        $('ek').textContent=kgS(2,4,'mmol/gün');
+        $('ep').textContent=fm(0.3*wt,0)+'–'+fm(0.6*wt,0)+' mmol/gün';
+        var mIV=0.2*wt,mPO=0.4*wt;
+        $('em').textContent='IV '+fm(mIV,0)+' mmol (≈ '+fm(mIV/MG_SO4_MMOL)+' g MgSO₄) · oral '+fm(mPO,0)+' mmol';
+      }else{
+        $('kc').textContent=days!==null&&days>5?'ilk 2 gün gereksinimin en çok %50’si':'tam gereksinim';
+        $('ek').textContent=$('ep').textContent=$('em').textContent='düzeye göre';
+      }
+      $('efl').textContent=high?'20–25 mL/kg = '+r0(20*wt)+'–'+r0(25*wt)+' mL/gün':'Yukarıdaki idame bölümü';
+      if(high){
+        li('rxR','Beslenmeye en çok '+r0(kcal*wt)+' kcal/gün ile başlayın',(extreme?'Aşırı yüksek risk (VKİ < 14 veya > 15 gün ihmal edilebilir alım): 5 kcal/kg/gün. ':'')+'4–7 günde yavaşça artırarak tam gereksinime ('+kgS(25,35,'kcal/gün')+', 25–35 kcal/kg) ulaşın. Dekstrozlu IV sıvılar da enerji sayılır: 1 L %5 dekstroz = 50 g = 170 kcal.');
+        li('rxR','Tiamin 200–300 mg/gün oral, beslenmeden hemen önce ve ilk 10 gün','Ayrıca B kompleks (NICE: vitamin B co strong 1–2 tablet günde 3 kez veya gerekirse tam doz IV B vitamini preparatı) ve günde bir multivitamin/eser element. Ağızdan alamayan hastada IV tiamin; BAPEN 2024 IV 200–300 mg/gün 3 gün (yüksek riskte 5 gün) önerir.');
+        li('rxR','Elektrolitler (beslenme öncesi düzey yüksek değilse)','K '+kgS(2,4,'mmol')+'/gün (%7,5 KCl ampul = 10 mmol), fosfat '+fm(0.3*wt,0)+'–'+fm(0.6*wt,0)+' mmol/gün, Mg IV '+fm(0.2*wt,0)+' mmol/gün (%15 MgSO₄ 10 mL ampul = 1,5 g ≈ 6,1 mmol → ≈ '+fm(0.2*wt/6.1)+' ampul) veya oral '+fm(0.4*wt,0)+' mmol/gün. Fosfat ürünlerinin mmol içeriği ve eşlik eden Na/K miktarı ürüne göre değişir: etiketten doğrulayın.');
+        if(lowE.length)li('rxR','Beslenme öncesi düşük '+lowE.join(', '),'NICE: beslenme öncesi düzeltme zorunlu değildir; beslenmeyle birlikte yerine koyun ve sık izleyin (Elektrolit Replasmanı aracı). ASPEN: düşük düzeyler standart yaklaşımla yerine konur; ilk 3 gün 12 saatte bir düzey.');
+        li('rxR','Sıvı ve kalp','Dolaşım hacmini düzeltin, sıvı dengesini ve klinik durumu yakından izleyin. Aritmisi olan veya gelişen hastada sürekli ritim izlemi. CG174: refeeding riskinde idame 20–25 mL/kg/gün.');
+        li('rxR','ASPEN 2020 karşılaştırması','Başlangıç 100–150 g dekstroz veya 10–20 kcal/kg = '+kgS(10,20,'kcal')+' (ilk 24 saat); her 1–2 günde hedefin %33’ü artırılır; elektrolitler düşerse kaloriyi %50 azaltın. Tiamin 100 mg beslenme öncesi, 100 mg/gün 5–7 gün.');
+      }else{
+        if(days!==null&&days>5)li('rxR','> 5 gün az beslenme','NICE: ilk 2 gün gereksinimin en çok %50’si ile başlayın; refeeding bulgusu yoksa artırın.');
+        li('rxR','Yüksek risk ölçütü yok','Beslenme sırasında K, P, Mg izlemi sürsün; ASPEN orta risk ölçütlerine (aşağıdaki tablo) de bakın.');
+      }
+    }
+  }
+  ['sx','bol','hz'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
