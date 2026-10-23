@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hepatik Ensefalopati</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+.seg.wh button{flex:1 1 30%;padding:11px 8px}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Hepatik Ensefalopati</h1>
+    <p>West Haven ve ISHEN evresi, GKS ve hava yolu, tetikleyici araştırması, laktuloz, rifaksimin, PEG, beslenme ve amonyak yorumu</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="131"></div>
+      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="3.2"></div>
+      <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.4"></div>
+      <div class="field"><label for="bcr">Bazal kreatinin <span>mg/dL</span></label><input id="bcr" type="number" inputmode="decimal" step="any" value="0.9"></div>
+      <div class="field"><label for="bil">Total bilirubin <span>mg/dL</span></label><input id="bil" data-hasta="bil" type="number" inputmode="decimal" step="any" value="3.1"></div>
+      <div class="field"><label for="inr">INR</label><input id="inr" data-hasta="inr" type="number" inputmode="decimal" step="any" value="1.7"></div>
+      <div class="field"><label for="alb">Albümin <span>g/dL</span></label><input id="alb" data-hasta="alb" type="number" inputmode="decimal" step="any" value="2.9"></div>
+    </div>
+    <p class="note">Asitte veya ödemde kalori ve protein hesabı için kuru (ya da boya göre ideal) kiloyu girin (ESPEN 2019). Bilirubin, INR ve albümin Child-Pugh ve MELD-Na araçlarına taşınır.</p>
+  </section>
+
+  <section class="card">
+    <h2>Evre</h2>
+    <span class="lbl">West Haven evresi</span>
+    <div class="seg wrapseg wh">
+      <button type="button" data-g="wh" data-v="0" aria-pressed="false">Bozukluk yok</button><button type="button" data-g="wh" data-v="m" aria-pressed="false">Minimal</button><button type="button" data-g="wh" data-v="1" aria-pressed="false">Evre 1</button><button type="button" data-g="wh" data-v="2" aria-pressed="true">Evre 2</button><button type="button" data-g="wh" data-v="3" aria-pressed="false">Evre 3</button><button type="button" data-g="wh" data-v="4" aria-pressed="false">Evre 4</button>
+    </div>
+    <table class="t" id="wht">
+      <thead><tr><th>Evre</th><th>Bulgular (AASLD/EASL 2014)</th></tr></thead>
+      <tbody>
+        <tr data-v="0"><td>Bozukluk yok</td><td>Ensefalopati yok, HE öyküsü yok; testler normal.</td></tr>
+        <tr data-v="m"><td>Minimal</td><td>Klinik bulgu yok; psikometrik veya nörofizyolojik testlerde bozukluk.</td></tr>
+        <tr data-v="1"><td>1</td><td>Hafif farkındalık kaybı, öfori veya anksiyete, dikkat süresinde kısalma, toplama/çıkarmada bozulma, uyku ritmi değişikliği. Yönelimi tam; bazale göre gerileme.<small>Bulgular çoğu zaman tekrarlanabilir değildir.</small></td></tr>
+        <tr data-v="2"><td>2</td><td>Letarji veya apati, zamana yönelim bozukluğu, belirgin kişilik değişikliği, uygunsuz davranış, dispraksi, asteriksis.<small>Zamanda en az 3 soruda yanlış.</small></td></tr>
+        <tr data-v="3"><td>3</td><td>Somnolans–yarı stupor, uyarana yanıt var, konfüzyon, ağır yönelim bozukluğu, tuhaf davranış.<small>Yerde de en az 3 soruda yanlış.</small></td></tr>
+        <tr data-v="4"><td>4</td><td>Koma: ağrılı uyarana bile yanıt yok.</td></tr>
+      </tbody>
+    </table>
+    <div class="grid">
+      <div class="field"><label for="gcs">Glasgow Koma Skalası <span>3–15</span></label><input id="gcs" type="number" inputmode="numeric" step="1" value="" placeholder="evre 3–4’te gir"></div>
+    </div>
+    <p class="note">GKS’yi <a href="glasgow-koma.html" style="color:var(--accent)">Glasgow Koma Skalası</a> aracında hesaplayabilirsiniz.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Sınıflama ve bakım düzeyi</h2>
+    <div class="res"><span class="num" id="whn">–</span><span class="pill" id="ishp"></span></div>
+    <div class="sub"><span>ISHEN</span><b id="isho">–</b></div>
+    <div class="sub"><span>GKS</span><b id="gcso">–</b></div>
+    <div class="sub"><span>Bakım yeri</span><b id="yer">–</b></div>
+    <ol class="rec" id="rxE"></ol>
+    <p class="note">ISHEN: “covert” minimal HE ile evre 1’i, “overt” evre 2–4’ü kapsar (AASLD/EASL 2014). EASL 2022 de overt HE’yi West Haven ≥ 2 olarak tanımlar.</p>
+  </section>
+
+  <section class="card">
+    <h2>Tetikleyiciler</h2>
+    <p class="note">Her atakta tümünü araştırın; işaretlenmemiş olması tetikleyicinin olmadığını göstermez. Na, K ve kreatinin “Hasta” kartından otomatik değerlendirilir.</p>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="t-inf"><span class="txt">Enfeksiyon / SBP<small>Asit varsa tanısal parasentez (PMN &gt; 250/mm³), kan ve idrar kültürü, akciğer grafisi, tam kan, CRP.</small></span></label>
+      <label class="item"><input type="checkbox" id="t-gib"><span class="txt">GİS kanama<small>Hb, melena için rektal tuşe, BUN; hemodinamik izlem ve endoskopi.</small></span></label>
+      <label class="item"><input type="checkbox" id="t-diu"><span class="txt">Diüretik fazlalığı / hipovolemi<small>Kilo ve ortostatik ölçüm, kreatinin, BUN, Na; aldığı diüretik dozları.</small></span></label>
+      <label class="item"><input type="checkbox" id="t-kal"><span class="txt">Hipokalemi / metabolik alkaloz<small>K, Mg, venöz kan gazı (pH, HCO₃).</small></span></label>
+      <label class="item"><input type="checkbox" id="t-na"><span class="txt">Hiponatremi<small>Na, serum osmolalitesi, volüm durumu.</small></span></label>
+      <label class="item"><input type="checkbox" id="t-kon"><span class="txt">Konstipasyon<small>Son dışkılama, laktuloz uyumu, rektal tuşe; ileus şüphesinde ayakta direkt grafi.</small></span></label>
+      <label class="item"><input type="checkbox" id="t-sed"><span class="txt">Sedatif / opioid / alkol<small>İlaç listesi (benzodiazepin, opioid, nöroleptik, antihistaminik, gabapentinoid), idrar ilaç taraması, kan alkolü.</small></span></label>
+      <label class="item"><input type="checkbox" id="t-aki"><span class="txt">Böbrek hasarı<small>Kreatinin (bazale göre), BUN, idrar sodyumu ve sediment, böbrek USG.</small></span></label>
+      <label class="item"><input type="checkbox" id="t-tips"><span class="txt">Yakın zamanda TIPS<small>Doppler USG ile şant açıklığı ve akımı; girişimsel radyoloji ile görüşme.</small></span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Tetikleyici araştırması</h2>
+    <div class="res"><span class="num" id="tn">–</span><span class="of" id="tof">tetikleyici</span><span class="pill" id="tp"></span></div>
+    <div class="sub"><span>Na &lt; 135 mmol/L</span><b id="fna">–</b></div>
+    <div class="sub"><span>K &lt; 3,5 mmol/L</span><b id="fk">–</b></div>
+    <div class="sub"><span>AKI (bazale göre ≥ 0,3 mg/dL veya ≥ 1,5 kat)</span><b id="faki">–</b></div>
+    <ol class="rec" id="rxT"></ol>
+    <p class="note">Ayırıcı tanı (AASLD/EASL 2014; EASL 2022): glukoz (hipoglisemi), elektrolitler, tam kan, enflamatuvar belirteçler, TSH, kan alkolü, ilaç taraması; fokal bulgu, düşme/travma veya açıklanamayan bilinç bozukluğunda beyin görüntülemesi; gerekirse lomber ponksiyon ve EEG. Alkol kullanımında Wernicke açısından tiamin verin.</p>
+  </section>
+
+  <section class="card">
+    <h2>Tedavi</h2>
+    <span class="lbl">Ağızdan güvenle alabiliyor mu?</span>
+    <div class="seg"><button type="button" data-g="po" data-v="1" aria-pressed="true">Evet</button><button type="button" data-g="po" data-v="0" aria-pressed="false">Hayır</button></div>
+    <span class="lbl">Overt HE öyküsü (bu atak dahil)</span>
+    <div class="seg wrapseg"><button type="button" data-g="atak" data-v="0" aria-pressed="false">Hiç yok</button><button type="button" data-g="atak" data-v="1" aria-pressed="true">İlk atak</button><button type="button" data-g="atak" data-v="2" aria-pressed="false">2. atak veya sonrası</button></div>
+    <p class="note">EASL 2022: ilk ataktan sonraki 6 ay içinde bir veya daha fazla yeni overt atak olursa rifaksimin eklenir; AASLD/EASL 2014: ikinci ataktan sonra.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Tedavi planı</h2>
+    <div class="res"><span class="pill" id="rxp"></span></div>
+    <ol class="rec" id="rxR"></ol>
+    <p class="note">Laktuloz şurubu 667–670 mg/mL: 25 mL ≈ 16,7 g. Aşırı doz aspirasyon, dehidratasyon, hipernatremi, perianal irritasyona yol açar ve HE’yi tetikleyebilir (AASLD/EASL 2014).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Beslenme hedefi</h2>
+    <table class="t">
+      <thead><tr><th>Hedef</th><th>Kg başına</th><th>Günlük</th></tr></thead>
+      <tbody>
+        <tr><td>Enerji <small>AASLD/EASL 2014, ideal kilo</small></td><td>35–40 kcal</td><td id="kc1">–</td></tr>
+        <tr><td>Enerji <small>ESPEN 2019, malnütrisyon/sarkopeni</small></td><td>30–35 kcal</td><td id="kc2">–</td></tr>
+        <tr><td>Protein <small>AASLD/EASL 2014</small></td><td>1,2–1,5 g</td><td id="pr1">–</td></tr>
+        <tr><td>Protein <small>ESPEN: malnütrisyon yok 1,2; malnütrisyon/sarkopeni 1,5</small></td><td>1,2 / 1,5 g</td><td id="pr2">–</td></tr>
+        <tr><td>Oral BCAA <small>ESPEN: protein “intoleransı” varsa</small></td><td>0,25 g</td><td id="bc">–</td></tr>
+      </tbody>
+    </table>
+    <ul class="chk">
+      <li>HE’de protein kısıtlanmaz: kısıtlama protein katabolizmasını artırır (ESPEN 2019 öneri 54; AASLD/EASL 2014).</li>
+      <li>Gün içine yayılmış 3–5 küçük öğün ve gece geç atıştırma (karbonhidratlı) ile açlık süresini kısaltın (ESPEN öneri 58).</li>
+      <li>Tekrarlayan veya sürekli HE’de hayvansal protein yerine bitkisel ve süt proteini düşünülebilir (EASL 2022, zayıf öneri).</li>
+      <li>Fazla kilolu veya obez sirozluda artırılmış enerji önerilmez (ESPEN öneri 51).</li>
+      <li>Oral alamayan, öksürük ve yutma refleksi bozuk evre 3–4 hastada enteral beslenme (nazogastrik tüp; özofagus varisi mutlak kontrendikasyon değildir); enteral olamıyorsa parenteral (ESPEN).</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Amonyak</h2>
+    <div class="grid">
+      <div class="field"><label for="nh3">Plazma amonyak <span>µmol/L</span></label><input id="nh3" type="number" inputmode="decimal" step="any" value="95"></div>
+      <div class="field"><label for="nh3u">Laboratuvar üst sınırı <span>µmol/L</span></label><input id="nh3u" type="number" inputmode="decimal" step="any" value="50"></div>
+    </div>
+    <p class="note">Doğru örnekleme önemlidir: turnike veya yumruk sıkmadan, venöz kan buzda ve hemen laboratuvara. µg/dL’yi µmol/L’ye çevirmek için 0,587 ile çarpın.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Amonyak yorumu</h2>
+    <div class="res"><span class="num" id="nr">–</span><span class="of">× üst sınır</span><span class="pill" id="np"></span></div>
+    <p class="advice" id="na2"></p>
+    <p class="note">EASL 2022: deliryum veya ensefalopatisi olan karaciğer hastasında plazma amonyağı ölçülmeli; normal değer HE tanısını sorgulatır. AASLD/EASL 2014: yüksek amonyak tek başına tanı, evreleme veya prognoz değeri katmaz; normal değer tanının yeniden değerlendirilmesini gerektirir.</p>
+  </section>
+
+  <p class="note">Kaynaklar: Vilstrup H ve ark. AASLD/EASL 2014 kronik karaciğer hastalığında hepatik ensefalopati kılavuzu, Hepatology 2014;60:715–35, doi:10.1002/hep.27210 (West Haven ve ISHEN tanımları, covert = minimal + evre 1, GKS kullanımı, hava yolunu koruyamayan hastanın yoğun bakımda izlenmesi, tetikleyici sıklıkları, hiponatremi ve böbrek işlev bozukluğu risk etkenleri, TIPS sonrası 1 yılda %10–50 overt HE, benzodiazepin şüphesinde flumazenil, laktuloz 25 mL 1–2 saatte bir en az 2 yumuşak dışkıya kadar ve sonra günde 2–3 dışkı, ilk ataktan sonra laktuloz ve ikinci ataktan sonra rifaksimin ile sekonder profilaksi, TIPS sonrası rutin profilaksi önerilmez, amonyak, 35–40 kcal/kg ideal kilo ve 1,2–1,5 g/kg protein, PEG’in doğrulanması gerektiği); EASL 2022 hepatik ensefalopati klinik uygulama kılavuzu, J Hepatol 2022;77:807–24, doi:10.1016/j.jhep.2022.06.001 (overt HE = West Haven ≥ 2, evre 3–4’te GKS eklenmesi ve yoğun bakım, GKS &lt; 7’de hava yolunun korunamaması, amonyak ölçümü ve normal değerin tanıyı sorgulatması, tetikleyiciler, GİS kanamasında laktuloz/mannitol veya lavmanla kanın uzaklaştırılması, 6 ay içinde tekrar atakta rifaksimin, acil olmayan TIPS öncesi rifaksimin, bitkisel/süt proteini); Plauth M ve ark. ESPEN 2019 karaciğer hastalığında klinik beslenme kılavuzu, Clin Nutr 2019;38:485–521, doi:10.1016/j.clnu.2018.12.022 (asitte ideal kilo, öneri 51–54 ve 57–60: 30–35 kcal/kg, protein 1,2 ve 1,5 g/kg, protein kısıtlaması yok, gece atıştırması, BCAA 0,25 g/kg/gün, enteral beslenme); Bass NM ve ark. N Engl J Med 2010;362:1071–81, doi:10.1056/NEJMoa0907893 (rifaksimin 550 mg günde iki kez, hastaların &gt; %90’ı laktuloz alıyordu); Rahimi RS ve ark. HELP, JAMA Intern Med 2014;174:1727–33, doi:10.1001/jamainternmed.2014.4746 (4 L PEG-3350 elektrolit solüsyonu); Colidur Fort 550 mg KÜB, Drogsan (Türkiye’de 18 yaş ve üstünde overt HE ataklarının tekrarını azaltma endikasyonu, günde iki kez); İlko Hepazec 550 mg KT. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var s=$(id).value;if(s==='')return null;var x=parseFloat(s);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  var yn=function(b){return b===null?'veri yok':b?'evet':'hayır'};
+  var ck=function(id){return $(id).checked};
+  var rng=function(a,b,u){return fm(a,0)+'–'+fm(b,0)+' '+u};
+
+  function calc(){
+    var wh=segVal('wh'),wt=v('wt'),na=v('na'),k=v('k'),cr=v('cr'),bcr=v('bcr'),gcs=v('gcs');
+    if(wt!==null&&wt<=0)wt=null;
+    if(na!==null&&na<=0)na=null;if(k!==null&&k<=0)k=null;if(cr!==null&&cr<=0)cr=null;
+    var g=wh===null?null:(wh==='0'?0:wh==='m'?0.5:parseInt(wh,10));
+    var overt=g!==null&&g>=2,covert=wh==='m'||wh==='1',sev=g!==null&&g>=3;
+
+    // 1) Sınıflama
+    $('rxE').innerHTML='';
+    document.querySelectorAll('#wht tbody tr').forEach(function(tr){tr.className=tr.dataset.v===wh?'cur':''});
+    var gcsOk=gcs!==null&&gcs===Math.round(gcs)&&gcs>=3&&gcs<=15;
+    if(wh===null){$('whn').textContent='–';pill('ishp','','');$('isho').textContent=$('yer').textContent='–'}
+    else{
+      $('whn').textContent=wh==='0'?'HE yok':wh==='m'?'Minimal':'Evre '+wh;
+      if(overt){pill('ishp','Overt HE',sev?'var(--high)':'var(--warn)');$('isho').textContent='overt'}
+      else if(covert){pill('ishp','Covert HE','var(--low)');$('isho').textContent='covert'}
+      else{pill('ishp','Ensefalopati yok','var(--ok)');$('isho').textContent='bozukluk yok'}
+      $('yer').textContent=sev?'yoğun bakım':(gcsOk&&gcs<=8)?'yoğun bakım (GKS ≤ 8)':overt?'yatış':covert?'ayaktan izlem olabilir (tetikleyici varsa yatış)':'–';
+    }
+    $('gcso').textContent=gcs===null?(sev?'girilmedi':'–'):gcsOk?fm(gcs,0)+' / 15':'geçersiz (3–15 tam sayı)';
+    if(wh==='0')li('rxE','HE bulgusu yok','Bilinç bozukluğu varsa başka nedenleri araştırın; sirozlu hastada risk grubundaysa minimal HE için psikometrik test düşünülebilir.');
+    if(wh==='m')li('rxE','Minimal HE','Tanı psikometrik (ör. PHES, Stroop/animal naming) veya nörofizyolojik testle konur. Tedavi kişiye göre karar verilir (AASLD/EASL 2014); EASL 2022 covert HE’de emilmeyen disakkarit (laktuloz) önerir. Araç kullanımı ve düşme riskini konuşun.');
+    if(wh==='1')li('rxE','Evre 1 (covert)','Bulgular hafif ve kişiye bağlıdır; bazale göre değişimi değerlendirin. Tetikleyicileri arayın, laktuloz başlanabilir; ilerleme açısından yakın izleyin.');
+    if(wh==='2')li('rxE','Evre 2: overt HE','Genellikle yatış. Diğer bilinç bozukluğu nedenlerini dışlayın, tetikleyicileri düzeltin ve ampirik laktuloz başlayın (AASLD/EASL 2014). Asteriksis ve zamanda yönelim bozukluğu tipiktir.');
+    if(sev){
+      li('rxE','Evre '+wh+': yoğun bakım','EASL 2022: evre 3–4 hastada aspirasyon riski vardır ve yoğun bakımda tedavi edilmelidir. GKS ile izleyin (West Haven’a ek olarak). Yatak başı 30°, oral alım kesilir; ilaç nazogastrik tüp veya lavmanla.');
+      if(gcs===null)li('rxE','GKS’yi değerlendirin','Evre 3–4’te bilinç düzeyini GKS ile kaydedin ve seri izleyin.');
+    }
+    if(gcsOk){
+      if(gcs<=8)li('rxE','GKS '+fm(gcs,0)+': hava yolu koruması','Hava yolunu koruyamayan hasta: entübasyonu değerlendirin. EASL 2022: GKS < 7’de solunum fonksiyonu tehlikededir. HE kılavuzları entübasyon için kesin GKS eşiği vermez; ≤ 8 genel hava yolu uygulamasıdır.');
+      if(gcs<=8&&wh!==null&&!sev)li('rxE','GKS seçilen evreyle uyumsuz','GKS '+fm(gcs,0)+' evre 3–4 düzeyinde bilinç bozukluğu gösterir; evreyi yeniden değerlendirin. Hava yolu riski nedeniyle yoğun bakım (EASL 2022).');
+      if(gcs>=14&&wh==='4')li('rxE','GKS seçilen evreyle uyumsuz','Evre 4 ağrılı uyarana bile yanıtsız komadır; GKS 14–15 ile bağdaşmaz. GKS’yi veya evreyi yeniden değerlendirin.');
+    }
+
+    // 2) Tetikleyiciler
+    $('rxT').innerHTML='';
+    var fNa=na===null?null:na<135, fK=k===null?null:k<3.5;
+    var fA=null,dd=null,rr=null;
+    if(cr!==null&&bcr!==null&&bcr>0){dd=Math.round((cr-bcr)*1e9)/1e9;rr=Math.round(cr/bcr*1e9)/1e9;fA=dd>=0.3||rr>=1.5}
+    $('fna').textContent=yn(fNa)+(na!==null?' ('+fm(na,2)+')':'');
+    $('fk').textContent=yn(fK)+(k!==null?' ('+fm(k,2)+')':'');
+    $('faki').textContent=fA===null?(cr!==null?'bazal Kr yok':'veri yok'):yn(fA)+' ('+(dd>=0?'+':'')+fm(dd,2)+' mg/dL; '+fm(rr,2)+' kat)';
+    var L=[],missing=fNa===null||fK===null||fA===null;
+    if(ck('t-inf'))L.push(['Enfeksiyon / SBP','Kültürleri alıp ampirik antibiyotiği geciktirmeyin. Asit varsa tanısal parasentez: PMN > 250/mm³ SBP’dir (Siroz ve asit aracı).']);
+    if(ck('t-gib'))L.push(['GİS kanama','Kanın bağırsaktan hızla uzaklaştırılması: laktuloz veya mannitol (nazogastrik) ya da laktuloz lavmanı (EASL 2022). Varis kanamasında vazoaktif ilaç, seftriakson ve 12 saat içinde endoskopi (Üst GİS kanaması aracı).']);
+    if(ck('t-diu'))L.push(['Diüretik fazlalığı / hipovolemi','Diüretiği kesin; volüm açığını kristaloid veya albüminle yerine koyun.']);
+    if(ck('t-kal')||fK)L.push(['Hipokalemi'+(fK?' (K '+fm(k,2)+' mmol/L)':'')+' / alkaloz','Hipokalemi ve alkaloz böbrekte amonyak yapımını ve beyne geçişini artırır. K ve Mg’yi yerine koyun (Elektrolit replasmanı aracı), kıvrım diüretiğini gözden geçirin.']);
+    if(ck('t-na')||fNa)L.push(['Hiponatremi'+(fNa?' (Na '+fm(na,2)+' mmol/L)':''),'HE için bağımsız risk etkenidir (AASLD/EASL 2014). Diüretiği gözden geçirin; kronik hiponatremiyi yavaş düzeltin, sirozda osmotik demiyelinizasyon riski yüksektir (Hiponatremi tanısı aracı).']);
+    if(ck('t-kon'))L.push(['Konstipasyon','Laktuloz dozunu artırın; oral alamıyorsa lavman. Obstrüksiyon veya ileus varsa laktulozdan kaçının.']);
+    if(ck('t-sed'))L.push(['Sedatif / opioid / alkol','İlacı kesin. Benzodiazepin toksisitesi düşünülüyorsa flumazenil yardımcı olabilir (AASLD/EASL 2014); opioidde nalokson düşünün.']);
+    if(ck('t-aki')||fA)L.push(['Böbrek hasarı'+(fA?' (Kr '+fm(cr,2)+', bazal '+fm(bcr,2)+')':''),'Böbrek işlev bozukluğu HE riskini artırır (AASLD/EASL 2014). Diüretik ve nefrotoksikleri kesin, albüminle volüm verin; HRS-AKI açısından değerlendirin (Siroz ve asit aracı).']);
+    if(ck('t-tips'))L.push(['TIPS sonrası HE','TIPS sonrası 1 yılda overt HE %10–50. Rutin profilaksi önerilmez (AASLD/EASL 2014); tedaviye dirençli HE’de şant daraltma veya kapatma girişimsel radyolojiyle değerlendirilir. EASL 2022: önceden overt HE geçirmiş hastada acil olmayan TIPS öncesi rifaksimin düşünülebilir.']);
+    $('tn').textContent=String(L.length);
+    if(L.length){pill('tp',L.length+' tetikleyici: düzeltin','var(--high)');L.forEach(function(x){li('rxT',x[0],x[1])})}
+    else{pill('tp','Tetikleyici bulunmadı','var(--warn)');
+      li('rxT','Hiçbir tetikleyici işaretlenmedi'+(missing?' ve bazı laboratuvar değerleri eksik':''),'Bu, tetikleyici olmadığını göstermez. Enfeksiyon (tanısal parasentez dahil), kanama, elektrolit, böbrek işlevi, ilaçlar ve konstipasyonun tümünü araştırın; olguların bir kısmında neden bulunamaz.')}
+    if(missing&&L.length)li('rxT','Eksik veri','Na, K veya bazal/güncel kreatinin girilmedi; bu tetikleyiciler değerlendirilemedi.');
+
+    // 3) Tedavi
+    $('rxR').innerHTML='';
+    var po=segVal('po')==='1',atak=segVal('atak');
+    if(wh===null)pill('rxp','Evre seçin','var(--muted)');
+    else if(overt)pill('rxp','Overt HE: akut tedavi','var(--high)');
+    else if(covert)pill('rxp','Covert HE: kişiye göre','var(--warn)');
+    else pill('rxp',atak==='0'||atak===null?'Tedavi gerekmiyor':'Sekonder profilaksi','var(--ok)');
+    if(overt){
+      li('rxR','1. Destek ve ayırıcı tanı','Bilinç bozukluğunun diğer nedenlerini arayın, tetikleyicileri düzeltin ve ampirik HE tedavisini hemen başlayın (AASLD/EASL 2014).');
+      if(po&&!sev)li('rxR','2. Laktuloz 25 mL ağızdan 1–2 saatte bir','En az 2 yumuşak dışkı olana kadar; sonra doz günde 2–3 yumuşak dışkı olacak şekilde ayarlanır (AASLD/EASL 2014). Sık kullanılan idame başlangıcı 25 mL 12 saatte birdir (kılavuz sabit idame dozu vermez).');
+      else{
+        li('rxR','2. Laktuloz '+(sev?'(evre '+wh+': ağızdan verilmez)':'(ağızdan alamıyor)'),'Nazogastrik tüple 25 mL 1–2 saatte bir, en az 2 yumuşak dışkıya kadar; ya da laktuloz lavmanı: 300 mL laktuloz + 700 mL su = 1 L, 30–60 dk tutulur, 6–8 saatte bir, ağızdan alabilir hale gelene kadar. Lavman dozu kılavuzlarda verilmez; yaygın uygulamadır.');
+        if(sev&&po)li('rxR','Evre '+wh+' ile “ağızdan alabiliyor” seçildi','Evre 3–4 hastada aspirasyon riski vardır (EASL 2022); yutmayı yeniden değerlendirin.');
+      }
+      li('rxR','Alternatif: PEG-3350 elektrolit solüsyonu 4 L','4 saatte, ağızdan veya nazogastrik tüple tek doz (HELP, 2014: 24. saatte laktulozdan daha hızlı düzelme). Küçük tek merkezli çalışma; AASLD/EASL 2014 doğrulanması gerektiğini belirtir. Bilinci kapalı hastada aspirasyona dikkat.');
+      li('rxR','Rifaksimin akut atakta','Laktuloza yanıtsız hastada ek olarak düşünülebilir; kanıtın ana dayanağı sekonder profilaksidir. Dirençli olguda alternatifler: oral BCAA, IV L-ornitin L-aspartat, neomisin veya metronidazol (AASLD/EASL 2014; doz kılavuzda verilmez).');
+    }else if(covert){
+      li('rxR','Laktuloz (kişiye göre)','Günde 2–3 yumuşak dışkı hedefiyle titre edin. Minimal/covert HE’de tedavi kararı kişiye göre verilir (AASLD/EASL 2014); EASL 2022 emilmeyen disakkarit önerir.');
+    }
+    if(atak==='1')li('rxR','Sekonder profilaksi: laktuloz','İlk overt ataktan sonra uzun süreli laktuloz, günde 2–3 yumuşak dışkı (AASLD/EASL 2014; EASL 2022). Tetikleyici kontrol altına alınmışsa ve karaciğer işlevi düzelmişse kesilebilir. İlk overt atakta nakil merkezine yönlendirmeyi düşünün (EASL 2022).');
+    if(atak==='2')li('rxR','Rifaksimin 550 mg günde 2 kez + laktuloz','İkinci ve sonraki overt atakların önlenmesinde laktuloza ek (AASLD/EASL 2014; EASL 2022: ilk ataktan sonra 6 ay içinde yeni atak). Bass 2010: 6 ayda atak riski %46’dan %22’ye. Türkiye’de 550 mg film tablet var (Colidur Fort, Hepazec 550; KÜB endikasyonu: 18 yaş ve üstünde overt HE tekrarını azaltma). Tekrarlayan veya sürekli HE’de karaciğer nakli değerlendirmesi.');
+    if(atak==='0'&&!overt&&!covert)li('rxR','Birincil profilaksi genellikle gerekmez','Siroz tanılı hastada rutin HE profilaksisi önerilmez; varis kanamasında kanın bağırsaktan uzaklaştırılması (laktuloz) önerilir (AASLD/EASL 2014; EASL 2022).');
+    if(atak==='0'&&overt)li('rxR','Overt HE öyküsü “hiç yok” seçildi','Bu atak overt ise “İlk atak” seçin; sekonder profilaksi önerisi buna göre gösterilir.');
+
+    // 4) Beslenme
+    if(wt===null){['kc1','kc2','pr1','pr2','bc'].forEach(function(id){$(id).textContent='kilo girin'})}
+    else{$('kc1').textContent=rng(35*wt,40*wt,'kcal');$('kc2').textContent=rng(30*wt,35*wt,'kcal');
+      $('pr1').textContent=rng(1.2*wt,1.5*wt,'g');$('pr2').textContent=fm(1.2*wt,0)+' / '+fm(1.5*wt,0)+' g';
+      $('bc').textContent=fm(0.25*wt,0)+' g'}
+
+    // 5) Amonyak
+    var nh=v('nh3'),ul=v('nh3u');
+    if(nh===null||nh<=0){$('nr').textContent='–';pill('np','','');$('na2').textContent='Amonyak girilmedi: yorum yapılmadı. Normal kabul etmeyin.'}
+    else if(ul===null||ul<=0){$('nr').textContent='–';pill('np','Üst sınırı girin','var(--muted)');$('na2').textContent='Laboratuvarınızın üst sınırı girilmeden normal/yüksek ayrımı yapılmaz.'}
+    else{var r=nh/ul;$('nr').textContent=fm(r,2);
+      if(nh<=ul){pill('np','Normal','var(--low)');$('na2').textContent='Normal amonyak HE tanısını sorgulatır (EASL 2022; AASLD/EASL 2014): başka bilinç bozukluğu nedenlerini (sepsis, ilaç, hipoglisemi, Wernicke, intrakraniyal olay, nöbet) araştırın. Örnekleme hatası çoğu zaman yalancı yüksekliğe yol açar.'}
+      else{pill('np','Yüksek','var(--warn)');$('na2').textContent='HE ile uyumlu, ancak yüksek amonyak tek başına tanı, evre veya prognoz bilgisi vermez (AASLD/EASL 2014); tanı klinik olarak konur. Tedaviyi amonyak düzeyine göre izlemeyin. Sirozsuz hastada başka hiperamonyemi nedenlerini (üre döngüsü, valproat, üreteroenterostomi, portosistemik şant) düşünün.'}}
+  }
+  ['wh','po','atak'].forEach(function(gr){seg(gr,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

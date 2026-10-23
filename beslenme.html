@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Beslenme Hesabı</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right;min-width:0}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.item input[type=radio]{border-radius:50%}
+input[type=number]::placeholder{color:var(--muted);font-weight:400;font-size:1rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Beslenme Hesabı</h1>
+    <p>Malnütrisyon taraması (NRS-2002), enerji ve protein ihtiyacı, enteral infüzyon hızı ve parenteral glukoz infüzyon hızı (ESPEN, ASPEN, KDOQI, EASL)</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="wt">Gerçek kilo <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="ht">Boy <span>cm</span></label><input id="ht" data-hasta="boy" type="number" inputmode="decimal" step="any" value="170"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="decimal" step="1" value="62"></div>
+    </div>
+    <span class="lbl">Cinsiyet</span>
+    <div class="seg"><button type="button" data-g="sx" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="sx" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div>
+    <p class="note">Cinsiyet yalnız ASPEN obez YBÜ hesabındaki Devine ideal kilosu için kullanılır.</p>
+  </section>
+
+  <!-- 1) NRS-2002 -->
+  <section class="card">
+    <h2>1. Malnütrisyon taraması: NRS-2002</h2>
+    <span class="lbl">Ön tarama (biri evet ise ana taramaya geçin)</span>
+    <div class="items">
+      <div class="item" style="cursor:default"><span class="txt">VKİ &lt; 20,5 kg/m²<small>Kilo ve boydan hesaplanır</small></span><b class="pts" id="pre-bmi">–</b></div>
+      <label class="item"><input type="checkbox" id="p-wl" checked><span class="txt">Son 3 ayda kilo kaybı</span></label>
+      <label class="item"><input type="checkbox" id="p-int" checked><span class="txt">Son 1 haftada besin alımında azalma</span></label>
+      <label class="item"><input type="checkbox" id="p-sev"><span class="txt">Ağır hastalık<small>ör. yoğun bakım hastası</small></span></label>
+    </div>
+    <span class="lbl">Beslenme durumunda bozulma</span>
+    <div class="items">
+      <label class="item"><input type="radio" name="ns" value="0"><span class="txt">Yok<small>Normal beslenme durumu</small></span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="ns" value="1"><span class="txt">Hafif<small>3 ayda &gt; %5 kilo kaybı veya son haftada alım ihtiyacın %50–75’i</small></span><span class="pts">1</span></label>
+      <label class="item"><input type="radio" name="ns" value="2" checked><span class="txt">Orta<small>2 ayda &gt; %5 kilo kaybı veya VKİ 18,5–20,5 + genel durum bozuk veya son haftada alım %25–50</small></span><span class="pts">2</span></label>
+      <label class="item"><input type="radio" name="ns" value="3"><span class="txt">Ağır<small>1 ayda &gt; %5 (3 ayda &gt; %15) kilo kaybı veya VKİ &lt; 18,5 + genel durum bozuk veya son haftada alım %0–25</small></span><span class="pts">3</span></label>
+    </div>
+    <span class="lbl">Hastalık şiddeti (artmış ihtiyaç)</span>
+    <div class="items">
+      <label class="item"><input type="radio" name="ds" value="0"><span class="txt">Yok<small>Normal beslenme ihtiyacı</small></span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="ds" value="1" checked><span class="txt">Hafif<small>Kalça kırığı; akut komplikasyonlu kronik hasta: siroz, KOAH, kronik hemodiyaliz, diyabet, kanser</small></span><span class="pts">1</span></label>
+      <label class="item"><input type="radio" name="ds" value="2"><span class="txt">Orta<small>Majör karın cerrahisi, inme, ağır pnömoni, hematolojik malignite</small></span><span class="pts">2</span></label>
+      <label class="item"><input type="radio" name="ds" value="3"><span class="txt">Ağır<small>Kafa travması, kemik iliği nakli, YBÜ hastası (APACHE II &gt; 10)</small></span><span class="pts">3</span></label>
+    </div>
+    <p class="note">Yaş ≥ 70 ise toplam puana 1 eklenir (Hasta kartındaki yaştan). Orijinal tabloda (Kondrup 2003) orta bozulmadaki alım aralığı %25–60’tır ve hafif düzeydeki %50–75 ile çakışır; burada çakışmayı gideren DGEM uyarlamasındaki %25–50 kullanıldı. Alım %50–60 ise klinik yargıyla hafif veya orta seçin.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>NRS-2002 sonucu</h2>
+    <div class="res"><span class="num" id="nrs">–</span><span class="of">/ 7 puan</span><span class="pill" id="nrsp"></span></div>
+    <div class="sub"><span>Ön tarama</span><b id="nrs-pre">–</b></div>
+    <div class="sub"><span>Beslenme durumu + hastalık şiddeti</span><b id="nrs-ab">–</b></div>
+    <div class="sub"><span>Yaş ≥ 70 (+1)</span><b id="nrs-age">–</b></div>
+    <p class="advice" id="nrsa"></p>
+  </section>
+
+  <!-- 2) Enerji / protein -->
+  <section class="card">
+    <h2>2. Enerji ve protein ihtiyacı</h2>
+    <span class="lbl">Klinik durum</span>
+    <div class="seg wrapseg">
+      <button type="button" data-g="dur" data-v="srv" aria-pressed="true">Stabil servis</button>
+      <button type="button" data-g="dur" data-v="ybu" aria-pressed="false">YBÜ akut evre</button>
+      <button type="button" data-g="dur" data-v="yas" aria-pressed="false">Yaşlı</button>
+      <button type="button" data-g="dur" data-v="kbh" aria-pressed="false">KBH (diyaliz dışı)</button>
+      <button type="button" data-g="dur" data-v="dz" aria-pressed="false">Diyaliz</button>
+      <button type="button" data-g="dur" data-v="sir" aria-pressed="false">Siroz</button>
+    </div>
+    <div id="w-sir" hidden>
+      <span class="lbl">Asit (kuru kilo tahmini, EASL 2019)</span>
+      <div class="seg wrapseg"><button type="button" data-g="asc" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="asc" data-v="5" aria-pressed="false">Hafif −%5</button><button type="button" data-g="asc" data-v="10" aria-pressed="false">Orta −%10</button><button type="button" data-g="asc" data-v="15" aria-pressed="false">Şiddetli −%15</button></div>
+      <div class="items" style="margin-top:12px">
+        <label class="item"><input type="checkbox" id="edema"><span class="txt">Bilateral pretibial ödem<small>ayrıca −%5</small></span></label>
+        <label class="item"><input type="checkbox" id="sarc"><span class="txt">Malnütrisyon veya sarkopeni<small>protein 1,5 g/kg (ESPEN 2019 karaciğer)</small></span></label>
+      </div>
+      <div class="field" style="margin-top:12px"><label for="dry">Bilinen kuru kilo (isteğe bağlı) <span>kg</span></label><input id="dry" type="number" inputmode="decimal" step="any" value="" placeholder="parasentez sonrası veya asit öncesi kilo"></div>
+    </div>
+    <div class="grid">
+      <div class="field"><label for="tk">Hedef enerji <span>kcal/kg/gün</span></label><input id="tk" type="number" inputmode="decimal" step="any" value="" placeholder="önerilen"></div>
+      <div class="field"><label for="tp">Hedef protein <span>g/kg/gün</span></label><input id="tp" type="number" inputmode="decimal" step="any" value="" placeholder="önerilen"></div>
+    </div>
+    <p class="note">Hedef alanları boş bırakılırsa seçilen durum için önerilen değer kullanılır; değer girerseniz o kullanılır. VKİ ≥ 30’da hesap ESPEN düzeltilmiş kilosuyla yapılır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Günlük enerji ve protein hedefi</h2>
+    <div class="res"><span class="num" id="kcal">–</span><span class="of">kcal/gün</span><span class="pill" id="kcalp"></span></div>
+    <div class="res"><span class="num" id="prot">–</span><span class="of">g protein/gün</span></div>
+    <div class="sub"><span>Hesap kilosu</span><b id="cw">–</b></div>
+    <div class="sub"><span>VKİ</span><b id="bmio">–</b></div>
+    <div class="sub"><span>İdeal kilo (VKİ 25 × boy²)</span><b id="ibwo">–</b></div>
+    <div class="sub"><span>Kullanılan enerji · protein</span><b id="perkg">–</b></div>
+    <div class="sub"><span>Kılavuz aralığı: enerji</span><b id="erng">–</b></div>
+    <div class="sub"><span>Kılavuz aralığı: protein</span><b id="prng">–</b></div>
+    <ol class="rec" id="rxE"></ol>
+  </section>
+
+  <!-- 3) Enteral -->
+  <section class="card">
+    <h2>3. Enteral beslenme</h2>
+    <span class="lbl">Ürün enerji yoğunluğu</span>
+    <div class="seg"><button type="button" data-g="dens" data-v="1" aria-pressed="true">1,0 kcal/mL</button><button type="button" data-g="dens" data-v="1.5" aria-pressed="false">1,5 kcal/mL</button><button type="button" data-g="dens" data-v="2" aria-pressed="false">2,0 kcal/mL</button></div>
+    <div class="grid">
+      <div class="field"><label for="hrs">İnfüzyon süresi <span>saat/gün</span></label><input id="hrs" type="number" inputmode="decimal" step="any" value="20"></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="rf"><span class="txt">Refeeding riski var<small><a href="idame-sivi.html">İdame Sıvı ve Refeeding</a> aracında değerlendirin</small></span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Enteral hedef hız</h2>
+    <div class="res"><span class="num" id="mlh">–</span><span class="of">mL/saat</span><span class="pill" id="enp"></span></div>
+    <div class="sub"><span>Hedef hacim</span><b id="mld">–</b></div>
+    <div class="sub"><span>Verdiği enerji</span><b id="enk">–</b></div>
+    <div class="sub"><span>Başlangıç hızı</span><b id="st">–</b></div>
+    <div class="sub" id="s-rf" hidden><span>Refeeding başlangıcı (10 kcal/kg/gün)</span><b id="rfst">–</b></div>
+    <ol class="rec" id="rxN"></ol>
+  </section>
+
+  <!-- 4) Parenteral -->
+  <section class="card">
+    <h2>4. Parenteral beslenme: kısa not ve glukoz infüzyon hızı</h2>
+    <ul class="chk">
+      <li>Bağırsak çalışıyorsa enteral yol tercih edilir; parenteral beslenme (PN) enteral beslenme mümkün değilse veya yetersizse eklenir. YBÜ’de tam enteral veya PN hedefine 3–7 günde ulaşılır (ESPEN 2019).</li>
+      <li><b>Santral PN:</b> periferik sınırı aşan (yaklaşık 850–900 mOsm/L üzeri) ve çoğu tam PN karışımı için santral venöz kateter veya PICC gerekir; uzun süreli PN de santral yol ister.</li>
+      <li><b>Periferik PN:</b> kısa süreli ve düşük ozmolariteli karışımlar; ESPEN 2009 damar yolu kılavuzu üst sınırı 850 mOsm/L verir (ASPEN 900 mOsm/L). Periferik karışım hacmi büyük olduğundan sıvı kısıtlı hastada uygun değildir.</li>
+      <li>Dekstrozlu idame sıvıları ve propofol (lipid) de enerji sayılır.</li>
+    </ul>
+    <div class="grid">
+      <div class="field"><label for="dx">Dekstroz <span>%</span></label><input id="dx" type="number" inputmode="decimal" step="any" value="10"></div>
+      <div class="field"><label for="dxr">Hız <span>mL/saat</span></label><input id="dxr" type="number" inputmode="decimal" step="any" value="80"></div>
+    </div>
+    <p class="note">Kilo Hasta kartından alınır (gerçek kilo; obezde düzeltilmiş kiloya göre değer de gösterilir).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Glukoz infüzyon hızı</h2>
+    <div class="res"><span class="num" id="gir">–</span><span class="of">mg/kg/dk</span><span class="pill" id="girp"></span></div>
+    <div class="sub" id="s-gira" hidden><span>Düzeltilmiş kiloya göre</span><b id="gira">–</b></div>
+    <div class="sub"><span>Glukoz</span><b id="gday">–</b></div>
+    <div class="sub"><span>4 mg/kg/dk için hız</span><b id="r4">–</b></div>
+    <div class="sub"><span>5 mg/kg/dk için hız</span><b id="r5">–</b></div>
+    <div class="sub"><span>Yalnız dekstrozun ozmolaritesi</span><b id="osm">–</b></div>
+    <p class="f">mg/kg/dk = dekstroz % × 10 (mg/mL) × mL/saat ÷ 60 ÷ kg</p>
+    <ol class="rec" id="rxP"></ol>
+  </section>
+
+  <p class="note">Kaynaklar: Kondrup J ve ark. Nutritional risk screening (NRS 2002): a new method based on an analysis of controlled clinical trials. Clin Nutr 2003;22:321–36 ve ESPEN guidelines for nutrition screening 2002, Clin Nutr 2003;22:415–21 (ön tarama, beslenme durumu ve hastalık şiddeti puanları, yaş ≥ 70 için +1, ≥ 3 risk; &lt; 3’te haftalık yeniden tarama); Singer P ve ark. ESPEN guideline on clinical nutrition in the intensive care unit. Clin Nutr 2019;38:48–79, doi:10.1016/j.clnu.2018.08.037 (erken evrede EE’nin %70’ini aşmayan hipokalorik beslenme, ölçüm yoksa 20–25 kcal/kg/gün, protein 1,3 g/kg/gün kademeli, hedefe 3–7 günde ve 48 saatten önce değil, glukoz ≤ 5 mg/kg/dk, obezde düzeltilmiş kilo = ideal kilo + 0,33 × (gerçek − ideal), ideal kilo VKİ 25’e göre); Singer P ve ark. ESPEN practical and partially revised guideline: clinical nutrition in the intensive care unit. Clin Nutr 2023;42:1671–89, doi:10.1016/j.clnu.2023.07.011 (aynı enerji, protein ve glukoz değerleri; obezde ideal kiloya fazla kilonun %20–25’i eklenir); Gomes F ve ark. ESPEN guidelines on nutritional support for polymorbid internal medicine patients. Clin Nutr 2018;37:336–53, doi:10.1016/j.clnu.2017.06.025 (&gt; 65 yaş 27 kcal/kg, ağır zayıfta 30 kcal/kg yavaş artış, protein en az 1,0 g/kg); Thibault R ve ark. ESPEN guideline on hospital nutrition. Clin Nutr 2021;40:5684–709, doi:10.1016/j.clnu.2021.09.039 (hastane diyeti 25–30 kcal/kg gerçek kilo, protein ≥ 1,2 g/kg); Volkert D ve ark. ESPEN guideline on clinical nutrition and hydration in geriatrics. Clin Nutr 2019;38:10–47, doi:10.1016/j.clnu.2018.05.024 (30 kcal/kg yol gösterici değer, protein en az 1 g/kg; 2022 pratik sürümü aynı değerler); McClave SA ve ark. SCCM/ASPEN 2016, JPEN 2016;40:159–211, doi:10.1177/0148607115621863 (obez YBÜ: VKİ 30–50’de 11–14 kcal/kg gerçek kilo, &gt; 50’de 22–25 kcal/kg ideal kilo; protein VKİ 30–40’ta 2,0, ≥ 40’ta 2,5 g/kg ideal kilo); Compher C ve ark. ASPEN 2022, JPEN 2022;46:12–41, doi:10.1002/jpen.2267 (YBÜ ilk 7–10 gün 12–25 kcal/kg/gün, protein 1,2–2,0 g/kg/gün); Ikizler TA ve ark. KDOQI Clinical Practice Guideline for Nutrition in CKD: 2020 Update. Am J Kidney Dis 2020;76(3 Suppl 1):S1–107, doi:10.1053/j.ajkd.2020.05.006 (25–35 kcal/kg/gün; diyaliz dışı evre 3–5 metabolik stabil hastada protein 0,55–0,6, diyabetikte 0,6–0,8 g/kg; hemodiyaliz ve periton diyalizinde 1,0–1,2 g/kg); EASL Clinical Practice Guidelines on nutrition in chronic liver disease. J Hepatol 2019;70:172–93, doi:10.1016/j.jhep.2018.06.024 (obez olmayan sirozda ≥ 35 kcal/kg, protein 1,2–1,5 g/kg, asitte kuru kilo: hafif %5, orta %10, şiddetli %15, ödem için ayrıca %5; obezde −500–800 kcal/gün ve &gt; 1,5 g/kg protein); Plauth M ve ark. ESPEN guideline on clinical nutrition in liver disease. Clin Nutr 2019;38:485–521, doi:10.1016/j.clnu.2018.12.022 (30–35 kcal/kg, protein 1,2 g/kg, malnütrisyon/sarkopenide 1,5 g/kg, obezde enerji artırılmaz, PEG yalnız istisnai); Pittiruti M ve ark. ESPEN guidelines on parenteral nutrition: central venous catheters. Clin Nutr 2009;28:365–77 (periferik PN &lt; 850 mOsm/L); NICE CG32, Nutrition support for adults, 2006, güncelleme 2017 (refeeding yüksek riskte 10 kcal/kg/gün başlangıç). Türkiye’ye özgü erişkin enerji/protein hesap kılavuzu bulunamadı. Bu araç klinik karar desteği içindir; beslenme planı diyetisyen/beslenme destek ekibiyle, kilo, alım, glisemi ve elektrolit izlemiyle her gün gözden geçirilmelidir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var s=$(id).value;if(s===''||s===null)return null;var x=parseFloat(String(s).replace(',','.'));return isFinite(x)?x:null};
+  var pos=function(x){return x!==null&&x>0?x:null};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()})})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function radio(name){var r=document.querySelector('input[name="'+name+'"]:checked');return r?parseInt(r.value,10):null}
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var r0=function(x){return fm(Math.round(x),0)};
+  // Eşik yakınında yuvarlama yanıltmasın: ham değer eşiğin altındaysa ve 1 ondalıkta eşiğe yuvarlanıyorsa 2 ondalık göster
+  var near=function(x,ts){return ts.some(function(t){return x<t&&x>=t-0.05})?2:1};
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  var dash=function(ids){ids.forEach(function(i){$(i).textContent='–'})};
+
+  // Durumlara göre önerilen değerler (kcal/kg/gün, g/kg/gün)
+  var D={
+    srv:{ad:'Stabil servis hastası',k:27.5,kr:[25,30],p:1.2,pr:[1.0,1.5],kay:'ESPEN 2021 hastane beslenmesi (25–30 kcal/kg; protein ≥ 1,2 g/kg) · ESPEN 2018 polimorbid (protein ≥ 1,0 g/kg)'},
+    ybu:{ad:'YBÜ akut evre',k:17.5,kr:[14,17.5],p:1.3,pr:[1.3,1.3],kay:'ESPEN 2019 YBÜ: 20–25 kcal/kg tahmini harcamanın ≤ %70’i; protein 1,3 g/kg kademeli'},
+    yas:{ad:'Yaşlı',k:30,kr:[30,30],p:1.0,pr:[1.0,1.5],kay:'ESPEN 2019 geriatri (Volkert): 30 kcal/kg yol gösterici; protein en az 1 g/kg'},
+    kbh:{ad:'KBH evre 3–5, diyaliz dışı',k:30,kr:[25,35],p:0.6,pr:[0.55,0.8],kay:'KDOQI 2020: 25–35 kcal/kg; protein 0,55–0,6 g/kg (diyabetikte 0,6–0,8)'},
+    dz:{ad:'Hemodiyaliz / periton diyalizi',k:30,kr:[25,35],p:1.2,pr:[1.0,1.2],kay:'KDOQI 2020: 25–35 kcal/kg; protein 1,0–1,2 g/kg'},
+    sir:{ad:'Siroz',k:35,kr:[30,35],p:1.2,pr:[1.2,1.5],kay:'EASL 2019: ≥ 35 kcal/kg (obez değilse), protein 1,2–1,5 g/kg · ESPEN 2019 karaciğer: 30–35 kcal/kg'}
+  };
+  var rng=function(a,u,d){return a[0]===a[1]?fm(a[0],d)+' '+u:fm(a[0],d)+'–'+fm(a[1],d)+' '+u};
+
+  var state={};
+  function calc(){
+    var wt=pos(v('wt')),ht=pos(v('ht')),age=v('age'),sx=segVal('sx'),dur=segVal('dur'),d=D[dur];
+    var hm=ht?ht/100:null;
+    $('w-sir').hidden=dur!=='sir';
+    $('tk').placeholder='önerilen '+fm(d.k);$('tp').placeholder='önerilen '+fm(d.p,2);
+
+    // Siroz: kuru kilo
+    var dryIn=pos(v('dry')),ascP=parseFloat(segVal('asc'))+($('edema').checked?5:0);
+    var baseW=wt,dryNote='';
+    if(dur==='sir'&&wt){
+      if(dryIn){baseW=dryIn;dryNote='bilinen kuru kilo'}
+      else if(ascP>0){baseW=wt*(1-ascP/100);dryNote='kuru kilo tahmini (−%'+ascP+')'}
+    }
+    var bmi=baseW&&hm?baseW/(hm*hm):null;       // eşiklerde ham değer
+    var bmiA=wt&&hm?wt/(hm*hm):null;            // NRS için gerçek kilo VKİ
+    var ibw=hm?25*hm*hm:null;                   // ESPEN: VKİ 25'e göre ideal kilo
+    var obese=bmi!==null&&bmi>=30&&ibw!==null&&baseW>ibw;
+    var adj=obese?ibw+0.33*(baseW-ibw):null;
+    var cw=obese?adj:baseW;
+    state={wt:wt,cw:cw,obese:obese,adj:adj,bmi:bmi,ibw:ibw};
+
+    $('bmio').textContent=bmi===null?(wt&&!ht?'boy girilmedi':'–'):fm(bmi,near(bmi,[18.5,20.5,30]))+' kg/m²'+(dur==='sir'&&baseW!==wt?' (kuru kilo)':'');
+    $('ibwo').textContent=ibw===null?'–':fm(ibw)+' kg';
+
+    // ===== 1) NRS-2002 =====
+    var preBmi=bmiA===null?null:bmiA<20.5;
+    $('pre-bmi').textContent=preBmi===null?'veri yok':(preBmi?'evet':'hayır')+' ('+fm(bmiA,near(bmiA,[20.5]))+')';
+    var preAny=preBmi===true||$('p-wl').checked||$('p-int').checked||$('p-sev').checked;
+    var ns=radio('ns'),ds=radio('ds');
+    var ageOk=age!==null&&age>=0,agePt=ageOk&&age>=70?1:0;
+    $('nrs-pre').textContent=preAny?'pozitif (ana tarama)':(preBmi===null?'negatif; VKİ bilinmiyor':'negatif');
+    $('nrs-age').textContent=ageOk?(agePt?'+1 ('+fm(age,0)+' yaş)':'0 ('+fm(age,0)+' yaş)'):'yaş girilmedi';
+    if(ns===null||ds===null){dash(['nrs','nrs-ab']);pill('nrsp','','');$('nrsa').textContent='Beslenme durumu ve hastalık şiddetini seçin.'}
+    else{
+      var tot=ns+ds+agePt;
+      $('nrs-ab').textContent=ns+' + '+ds;
+      $('nrs').textContent=tot;
+      if(!preAny){pill('nrsp','Ön tarama negatif','var(--ok)');$('nrsa').textContent='Ön taramada tüm yanıtlar hayır: haftada bir yeniden tarayın. Majör ameliyat planlanıyorsa koruyucu beslenme planı düşünün. Ana tarama puanı bilgi amaçlı gösterilir.'+(preBmi===null?' VKİ hesaplanamadı (kilo/boy eksik); VKİ < 20,5 ise ön tarama pozitiftir.':'')}
+      else if(tot>=3){pill('nrsp','Beslenme riski var (≥ 3)','var(--high)');$('nrsa').textContent='Beslenme bakım planı başlatın: enerji ve protein hedefini aşağıda hesaplayın, alımı izleyin; yeterli ağızdan alım olmuyorsa oral destek, ardından enteral, gerekirse parenteral beslenme. Refeeding riskini İdame Sıvı ve Refeeding aracında değerlendirin.'+(!ageOk?' Yaş girilmedi: ≥ 70 ise puan 1 artar.':'')}
+      else{pill('nrsp','Risk yok (< 3)','var(--ok)');$('nrsa').textContent='Haftada bir yeniden tarayın; majör ameliyat planlanıyorsa koruyucu beslenme planı düşünün.'+(!ageOk&&tot===2?' Dikkat: yaş girilmedi; hasta ≥ 70 yaşındaysa puan 3 olur (risk var).':'')}
+    }
+
+    // ===== 2) Enerji / protein =====
+    $('rxE').innerHTML='';
+    var tkIn=pos(v('tk')),tpIn=pos(v('tp'));
+    var kpk=tkIn!==null?tkIn:d.k,ppk=tpIn!==null?tpIn:d.p;
+    if(dur==='sir'&&tpIn===null&&$('sarc').checked)ppk=1.5;
+    if(dur==='sir'&&obese&&tkIn===null)kpk=30;
+    if(dur==='sir'&&obese&&tpIn===null)ppk=1.5;
+    $('erng').textContent=rng(d.kr,'kcal/kg')+(cw?' = '+(d.kr[0]===d.kr[1]?r0(d.kr[0]*cw):r0(d.kr[0]*cw)+'–'+r0(d.kr[1]*cw))+' kcal':'');
+    $('prng').textContent=(dur==='yas'?'≥ 1 g/kg':rng(d.pr,'g/kg',2))+(cw?' = '+(d.pr[0]===d.pr[1]?r0(d.pr[0]*cw):r0(d.pr[0]*cw)+'–'+r0(d.pr[1]*cw))+' g':'');
+    var kcal=null;
+    if(!cw){dash(['kcal','prot','cw','perkg']);pill('kcalp','','');li('rxE','Kilo girin','Gerçek kilo olmadan enerji ve protein hesaplanamaz.')}
+    else{
+      kcal=kpk*cw;var prot=ppk*cw;
+      $('kcal').textContent=r0(kcal);$('prot').textContent=r0(prot);
+      pill('kcalp',d.ad,'var(--low)');
+      $('cw').textContent=fm(cw)+' kg ('+(obese?'düzeltilmiş kilo; VKİ ≥ 30':(dryNote||'gerçek kilo'))+')';
+      $('perkg').textContent=fm(kpk)+' kcal/kg · '+fm(ppk,2)+' g/kg'+(tkIn!==null||tpIn!==null?' (girilen)':'');
+      li('rxE','Kaynak: '+d.ad,d.kay+'.');
+      if(obese)li('rxE','Obez hasta (VKİ '+fm(bmi,near(bmi,[30]))+'): düzeltilmiş kilo '+fm(adj)+' kg','ESPEN 2019 YBÜ: düzeltilmiş kilo = ideal kilo + 0,33 × (gerçek − ideal); ideal kilo VKİ 25’e göre ('+fm(ibw)+' kg). ESPEN 2023 kısmi güncellemesi ise ideal kiloya fazla kilonun yalnız %20–25’ini eklemeyi önerir (ideal kilo tanımı da farklı); bu yöntemle hedef biraz daha düşük çıkar. Gerçek kiloyla hesap fazla beslemeye yol açar. Mümkünse indirekt kalorimetri kullanın.');
+      if(ht===null&&wt)li('rxE','Boy girilmedi: obezite değerlendirilemedi','Gerçek kilo kullanıldı. VKİ ≥ 30 ise düzeltilmiş kilo gerekir.');
+      if(bmi!==null&&bmi<18.5)li('rxE','Zayıf hasta (VKİ < 18,5): gerçek kilo kullanılır','İdeal kilo kullanılmaz (fazla besleme ve refeeding riski; ESPEN 2019 YBÜ). ESPEN 2018: ağır zayıfta hedef 30 kcal/kg = '+r0(30*cw)+' kcal/gün, yavaş ve dikkatli artış. Refeeding riskini değerlendirin.');
+      if(dur==='ybu'){
+        li('rxE','Hedefe kademeli ulaşın','İlk 48 saatte hedefin tamamı verilmez; enteral veya PN tam hedefine 3–7 günde ulaşılır. Tahmini harcama 20–25 kcal/kg = '+r0(20*cw)+'–'+r0(25*cw)+' kcal; erken evrede bunun en çok %70’i. 3. günden sonra ölçülen harcamanın %80–100’üne çıkılabilir (indirekt kalorimetriyle). Denklemle tahmin ediliyorsa ilk hafta %70’in altında kalın. ASPEN 2022: ilk 7–10 gün 12–25 kcal/kg = '+r0(12*cw)+'–'+r0(25*cw)+' kcal, protein 1,2–2,0 g/kg.');
+        if(obese&&wt&&bmi!==null){
+          var hm2=hm*hm,dev=ht?((sx==='f'?45.5:50)+0.91*(ht-152.4)):null;
+          var t=bmi<=50?'VKİ 30–50: 11–14 kcal/kg gerçek kilo = '+r0(11*baseW)+'–'+r0(14*baseW)+' kcal/gün':'VKİ > 50: 22–25 kcal/kg ideal kilo = '+(dev?r0(22*dev)+'–'+r0(25*dev)+' kcal/gün':'–');
+          var pp=dev?(bmi<40?'protein 2,0 g/kg ideal kilo = '+r0(2*dev)+' g/gün':'protein 2,5 g/kg ideal kilo’ya kadar = '+r0(2.5*dev)+' g/gün'):'';
+          li('rxE','ASPEN/SCCM 2016 obez YBÜ alternatifi (yüksek proteinli hipokalorik)',t+'; '+pp+' (ideal kilo Devine '+(dev?fm(dev)+' kg':'–')+'). ESPEN 2019 ise protein 1,3 g/kg düzeltilmiş kilo = '+r0(1.3*adj)+' g/gün önerir.');
+        }
+      }
+      if(dur==='srv'&&ageOk&&age>65)li('rxE','> 65 yaş polimorbid hasta','ESPEN 2018 polimorbid: 27 kcal/kg = '+r0(27*cw)+' kcal/gün; yaşlıda (ESPEN 2019 geriatri) 30 kcal/kg = '+r0(30*cw)+' kcal/gün. Yaşlı seçeneğine bakın.');
+      if(dur==='kbh')li('rxE','Protein kısıtlaması yalnız metabolik olarak stabil hastada','KDOQI 2020 değerleri ayaktan, metabolik olarak stabil ve yakın izlenen hasta içindir: protein 0,55–0,6 g/kg (diyabetikte 0,6–0,8 g/kg) = '+r0(0.55*cw)+'–'+r0(0.8*cw)+' g/gün. Akut hastalık, katabolizma veya malnütrisyonda hedef bireyselleştirilir; diyaliz başlayınca 1,0–1,2 g/kg.');
+      if(dur==='dz')li('rxE','Diyaliz','Diyalizle aminoasit kaybı olur; hemodiyaliz ve periton diyalizinde 1,0–1,2 g/kg = '+r0(1.0*cw)+'–'+r0(1.2*cw)+' g/gün (KDOQI 2020). Kilo olarak diyaliz sonrası (kuru) kilo kullanılır.');
+      if(dur==='sir'){
+        li('rxE','Sirozda kilo ve öğün düzeni','Asitte kuru kilo kullanılır: parasentez sonrası veya asit öncesi kilo, yoksa gerçek kilodan hafif %5, orta %10, şiddetli asitte %15 ve bilateral ödemde ayrıca %5 çıkarılır (EASL 2019; doğrulanmamış ama tekrarlanabilir yöntem). Açlık sürelerini kısaltın: günde 3–5 öğün ve gece geç atıştırma. Ensefalopatide protein kısıtlanmaz (ESPEN 2019).');
+        if(obese)li('rxE','Obez sirozda enerji artırılmaz','ESPEN 2019: obez sirozda artırılmış enerji önerilmez; EASL 2019: −500–800 kcal/gün hafif hipokalorik diyet ve > 1,5 g/kg protein. Kılavuzlarda obez siroz için kg başına sabit değer yoktur; burada düzeltilmiş kiloyla 30 kcal/kg ve 1,5 g/kg kullanıldı (doğrulanmadı, bireyselleştirin).');
+        li('rxE','Enteral yol','Özofagus varisi nazogastrik sonda için mutlak kontrendikasyon değildir; PEG asit ve varis nedeniyle yalnız istisnai durumda (ESPEN 2019).');
+      }
+      li('rxE','Glisemi','Beslenme başlayınca kan şekerini izleyin; hiperglisemide İnsülin dozu aracı.');
+    }
+
+    // ===== 3) Enteral =====
+    $('rxN').innerHTML='';
+    var dens=parseFloat(segVal('dens')),hrs=pos(v('hrs')),rf=$('rf').checked;
+    $('s-rf').hidden=!rf;
+    if(hrs!==null&&hrs>24){dash(['mlh','mld','enk','st','rfst']);pill('enp','Süre ≤ 24 saat olmalı','var(--warn)')}
+    else if(kcal===null||hrs===null){dash(['mlh','mld','enk','st','rfst']);pill('enp','','');li('rxN','Kilo ve infüzyon süresi gerekli','Hedef hız için kilo (enerji hedefi) ve günlük infüzyon süresini girin.')}
+    else{
+      var mld=kcal/dens,mlh=mld/hrs;
+      $('mld').textContent=r0(mld)+' mL/gün';
+      $('mlh').textContent=fm(mlh,0);
+      $('enk').textContent=r0(mlh*hrs*dens)+' kcal/gün ('+fm(dens)+' kcal/mL)';
+      pill('enp',fm(hrs)+' saatte',rf?'var(--warn)':'var(--ok)');
+      $('st').textContent=mlh<=20?fm(mlh,0)+' mL/saat (hedef zaten düşük)':'10–20 mL/saat';
+      if(rf){
+        var rk=10*state.wt,rml=rk/dens/hrs;
+        $('rfst').textContent=fm(rml,0)+' mL/saat = '+r0(rk)+' kcal/gün';
+        li('rxN','Refeeding riski: düşük başlayın, idame-sivi.html’de değerlendirin','NICE CG32 yüksek riskte en çok 10 kcal/kg/gün (gerçek kilo '+fm(state.wt)+' kg) = '+r0(rk)+' kcal/gün ≈ '+fm(rml,0)+' mL/saat ('+fm(hrs)+' saatte); aşırı yüksek riskte 5 kcal/kg/gün = '+fm(rml/2,0)+' mL/saat. 4–7 günde hedefe çıkın. Tiamin beslenmeden önce, K, P, Mg yerine koyma ve izlem için İdame Sıvı ve Refeeding aracına bakın.');
+      }
+      if(dur==='ybu')li('rxN','YBÜ: 10–20 mL/saat ile başlayıp hedefe 3–7 günde ulaşın','ESPEN 2019: enteral beslenme düşük hızla başlar, tolerans (kusma, distansiyon, ishal; gastrik rezidü > 500 mL/6 saat ise ara verin veya prokinetik) izlenerek kademeli artırılır; ilk 48 saatte tam hedef verilmez. Hedef '+fm(mlh,0)+' mL/saat.');
+      else{
+        var steps=Math.max(0,Math.ceil((mlh-20)/20));
+        li('rxN','10–20 mL/saat ile başlayın, tolere ediyorsa 4–8 saatte bir 10–20 mL/saat artırın',steps?'Örnek: 20 mL/saat başlangıç, 6 saatte bir +20 mL/saat ile '+fm(mlh,0)+' mL/saat hedefe yaklaşık '+steps*6+' saatte ulaşılır. Bu artış şeması yaygın uygulamadır; kılavuzlar sabit hız vermez, kurum protokolünü izleyin.':'Hedef hız başlangıç aralığında; doğrudan hedefle başlanabilir.');
+      }
+      if(mlh>150)li('rxN','Yüksek hız: '+fm(mlh,0)+' mL/saat','Daha yoğun ürün (1,5 veya 2,0 kcal/mL) veya daha uzun infüzyon süresi düşünün; sıvı kısıtlı hastada (kalp, böbrek, karaciğer yetmezliği) yoğun ürün tercih edilir.');
+      li('rxN','Protein ve sıvı','Ürünlerin protein içeriği farklıdır: günlük '+r0(mld)+' mL ürünün verdiği protein = etiketteki g/100 mL × '+fm(mld/100)+'. Bunu protein hedefiyle ('+(state.cw?r0(ppk*state.cw):'–')+' g/gün) karşılaştırın; eksikse yüksek proteinli ürün veya protein modülü ekleyin. Ürünün su içeriği ve sonda yıkama suyu toplam sıvıya dahildir; ek sıvı ihtiyacını İdame Sıvı aracıyla hesaplayın.');
+      li('rxN','Sürekli infüzyon ve ara','Günlük '+fm(hrs)+' saat infüzyon, ilaç etkileşimi (ör. fenitoin, levotiroksin) ve mobilizasyon için ara bırakır. Baş 30–45° yukarıda tutulur.');
+    }
+
+    // ===== 4) GİH =====
+    $('rxP').innerHTML='';
+    var dx=v('dx'),dxr=v('dxr'),w=state.wt;
+    if(dx===null||dxr===null||w===null||dx<0||dxr<0){dash(['gir','gira','gday','r4','r5','osm']);pill('girp','','');$('s-gira').hidden=true;li('rxP','Dekstroz yüzdesi, hız ve kilo gerekli','')}
+    else if(dx>70){dash(['gir','gira','gday','r4','r5','osm']);pill('girp','Dekstroz % geçersiz','var(--warn)');$('s-gira').hidden=true}
+    else{
+      var mgml=dx*10,gir=mgml*dxr/60/w,g=dx/100*dxr*24;
+      $('gir').textContent=fm(gir,2);
+      if(gir>5)pill('girp','> 5: ESPEN üst sınırı aşıldı','var(--high)');
+      else if(gir>4)pill('girp','4–5: üst sınıra yakın','var(--warn)');
+      else pill('girp','≤ 4: uygun','var(--ok)');
+      $('s-gira').hidden=!state.obese;
+      if(state.obese)$('gira').textContent=fm(mgml*dxr/60/state.adj,2)+' mg/kg/dk ('+fm(state.adj)+' kg)';
+      $('gday').textContent=r0(g)+' g/gün = '+r0(g*3.4)+' kcal/gün';
+      $('r4').textContent=mgml>0?fm(4*w*60/mgml,0)+' mL/saat':'–';
+      $('r5').textContent=mgml>0?fm(5*w*60/mgml,0)+' mL/saat':'–';
+      var osm=dx*50.5;
+      $('osm').textContent='≈ '+r0(osm)+' mOsm/L'+(osm>850?' (periferik için yüksek)':'');
+      li('rxP','Hesap: '+fm(dx)+'% = '+fm(mgml,0)+' mg/mL; '+fm(dxr)+' mL/saat; '+fm(w)+' kg (gerçek kilo)','Dekstroz monohidrat 3,4 kcal/g. ESPEN 2019 YBÜ: parenteral glukoz veya enteral karbonhidrat ≤ 5 mg/kg/dk. ≤ 4 mg/kg/dk kritik hastada sık kullanılan pratik hedeftir (kılavuz değeri değil).');
+      if(gir>5)li('rxP','Glukoz yükünü azaltın','Fazla glukoz hiperglisemi, karaciğer yağlanması ve CO₂ üretiminde artışa yol açar. Hızı '+fm(5*w*60/mgml,0)+' mL/saatin altına indirin veya enerjinin bir kısmını lipitle verin.');
+      if(osm>850)li('rxP','Periferik yol için uygun değil','Yalnız dekstrozun ozmolaritesi ≈ '+r0(osm)+' mOsm/L; aminoasit ve elektrolitlerle karışımın ozmolaritesi daha yüksektir. Periferik PN için < 850 mOsm/L (ESPEN 2009); bu yoğunlukta santral yol gerekir.');
+      if(kcal!==null)li('rxP','Hedefin payı','Bu dekstroz '+r0(g*3.4)+' kcal/gün verir: enerji hedefinin (%'+fm(g*3.4/kcal*100,0)+') kadarı. Glukozlu idame sıvılarını da enerji hesabına katın.');
+    }
+  }
+  seg('dur',function(){$('tk').value='';$('tp').value='';calc()});
+  ['sx','asc','dens'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

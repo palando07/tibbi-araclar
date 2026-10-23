@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alkol Yoksunluğu</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; hasta kartı, sekme, giriş kartları ve sonuç kartları */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+/* CIWA-Ar puan düğmeleri: 0–7 tek satırda */
+.ciwa{display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--line)}
+.ciwa:first-of-type{border-top:0;padding-top:0}
+.ciwa .q{font-size:.85rem;color:var(--muted);margin:0}
+.seg.sc button{padding:10px 0;font:600 1rem var(--font-num)}
+.ciwa .an{font-size:.88rem;margin:0;min-height:1.3em}
+.ciwa .an.bos{color:var(--high);font-weight:600}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+.tabs{position:sticky;top:0;z-index:2;background:var(--bg);padding-block:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Alkol Yoksunluğu</h1>
+    <p>CIWA-Ar ile semptoma göre benzodiazepin, tiamin (Wernicke), deliryum tremens ve nöbet uyarıları, yatış ölçütleri; PAWSS ile ağır yoksunluk riski</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="1" value="54"></div>
+      <div class="field"><label for="glu">Glukoz <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="96"></div>
+      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="134"></div>
+      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="3.3"></div>
+    </div>
+    <span class="lbl">Karaciğer yetmezliği / dekompanse siroz</span>
+    <div class="seg"><button type="button" data-g="kc" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="kc" data-v="1" aria-pressed="false">Var</button></div>
+  </section>
+
+  <div class="tabs" role="group" aria-label="Sekme">
+    <div class="seg"><button type="button" data-g="tab" data-v="ciwa" aria-pressed="true">CIWA-Ar ve tedavi</button><button type="button" data-g="tab" data-v="pawss" aria-pressed="false">PAWSS (risk)</button></div>
+  </div>
+
+  <!-- ===== Sekme 1: CIWA-Ar ===== -->
+  <div id="t-ciwa" style="display:contents">
+  <section class="card" id="ciwaCard">
+    <h2>CIWA-Ar (10 madde)</h2>
+    <p class="note">Her maddeyi hastaya sorarak ve gözlemleyerek puanlayın. Ara puanlar (ör. 2–3, 5–6) tanımlı iki düzey arasındaki şiddet içindir. Örnek puanlar işaretlenmiştir.</p>
+    <div id="ciwaItems"></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>CIWA-Ar puanı</h2>
+    <div class="res"><span class="num" id="cs">–</span><span class="of">/ 67</span><span class="pill" id="cp"></span></div>
+    <div class="sub"><span>Puanlanan madde</span><b id="cn">–</b></div>
+    <table class="t" id="ct">
+      <thead><tr><th>CIWA-Ar</th><th>Şiddet (ASAM 2020)</th></tr></thead>
+      <tbody>
+        <tr data-r="0"><td>&lt; 10</td><td>Hafif <small>ek ilaç genellikle gerekmez</small></td></tr>
+        <tr data-r="1"><td>10–18</td><td>Orta</td></tr>
+        <tr data-r="2"><td>≥ 19</td><td>Ağır <small>nöbet veya deliryum eşlik ederse komplike</small></td></tr>
+      </tbody>
+    </table>
+    <p class="advice" id="cadv"></p>
+  </section>
+
+  <section class="card">
+    <h2>Benzodiazepin seçimi</h2>
+    <div class="seg wrapseg"><button type="button" data-g="bz" data-v="dz" aria-pressed="true">Diazepam</button><button type="button" data-g="bz" data-v="lz" aria-pressed="false">Lorazepam</button><button type="button" data-g="bz" data-v="cd" aria-pressed="false">Klordiazepoksit</button></div>
+    <span class="lbl">Ağızdan alabiliyor mu?</span>
+    <div class="seg"><button type="button" data-g="po" data-v="1" aria-pressed="true">Evet</button><button type="button" data-g="po" data-v="0" aria-pressed="false">Hayır (kusma, ağır ajitasyon)</button></div>
+    <p class="note">Uzun etkili ajan (diazepam, klordiazepoksit) daha düzgün bir yoksunluk sağlar. Yaşlıda ve karaciğer yetmezliğinde aktif metabolitler birikir; karaciğerde oksidatif metabolizmaya uğramayan lorazepam tercih edilir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Semptoma göre doz ve tekrar aralığı</h2>
+    <div class="res"><span class="num" id="dz">–</span><span class="pill" id="dp"></span></div>
+    <div class="sub"><span>CIWA-Ar tekrar</span><b id="rint">–</b></div>
+    <ol class="rec" id="rxB"></ol>
+    <p class="note">Doz eşiği CIWA-Ar ≥ 10 (ASAM 2020; bazı hastane protokolleri ≥ 8 kullanır). Kılavuz aralıklarından bu araçta orta yoksunlukta alt, ağır yoksunlukta üst doz gösterilir: diazepam 10–20 mg, lorazepam 2–4 mg, klordiazepoksit 50–100 mg (ASAM örneği 25–100 mg) ağızdan. Hasta iletişim kuramıyorsa (deliryum, entübasyon, ağır sedasyon) CIWA-Ar geçerli değildir.</p>
+  </section>
+  </div>
+
+  <!-- ===== Sekme 2: PAWSS ===== -->
+  <div id="t-pawss" style="display:none">
+  <section class="card">
+    <h2>PAWSS</h2>
+    <span class="lbl">Eşik: son 30 günde alkol aldı mı ya da gelişte kan alkolü pozitif mi?</span>
+    <div class="seg"><button type="button" data-g="p0" data-v="1" data-sk aria-pressed="true">Evet</button><button type="button" data-g="p0" data-v="0" data-sk aria-pressed="false">Hayır</button></div>
+    <h3>Hasta görüşmesi (her biri 1 puan)</h3>
+    <div id="pawssItems"></div>
+    <h3>Klinik bulgu (her biri 1 puan)</h3>
+    <div class="grid">
+      <div class="field"><label for="bal">Gelişte kan alkol düzeyi <span>mg/dL</span></label><input id="bal" type="number" inputmode="decimal" step="any" value="" placeholder="ölçülmedi"></div>
+    </div>
+    <p class="note">9. Kan alkol düzeyi ≥ 200 mg/dL (= 2 g/L, yaklaşık ‰ 2). Boş bırakılırsa bilinmiyor sayılır.</p>
+    <div id="pawssItems2"></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>PAWSS sonucu</h2>
+    <div class="res"><span class="num" id="ps">–</span><span class="of">/ 10</span><span class="pill" id="pp"></span></div>
+    <div class="sub"><span>Yanıtlanmayan madde</span><b id="pu">–</b></div>
+    <ol class="rec" id="rxP"></ol>
+    <p class="note">PAWSS ≥ 4: komplike yoksunluk (nöbet, deliryum tremens, halüsinoz) için yüksek risk. Maldonado 2015 prospektif doğrulamasında (403 dahiliye ve cerrahi yatan hasta) ≥ 4 eşiğinde duyarlılık %93,1, özgüllük %99,5. PAWSS bir öngörü aracıdır; yoksunluğun şiddetini CIWA-Ar ile izleyin.</p>
+  </section>
+  </div>
+
+  <!-- ===== Ortak bölümler ===== -->
+  <section class="card">
+    <h2>Tiamin ve Wernicke ensefalopatisi</h2>
+    <span class="lbl">Caine ölçütleri (alkol kullananda ≥ 2 = klinik WE tanısı)</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="w1"><span class="txt">Beslenme yetersizliği<small>malnütrisyon, düşük VKİ, uzun süre yetersiz beslenme, kusma</small></span></label>
+      <label class="item"><input type="checkbox" id="w2"><span class="txt">Göz bulguları<small>oftalmopleji, nistagmus, bakış felci</small></span></label>
+      <label class="item"><input type="checkbox" id="w3"><span class="txt">Serebellar bozukluk<small>ataksi, yürüme bozukluğu</small></span></label>
+      <label class="item"><input type="checkbox" id="w4"><span class="txt">Mental durum değişikliği veya hafif bellek bozukluğu</span></label>
+    </div>
+    <span class="lbl">Parenteral profilaksi gerektiren durum (EFNS / RCP; NICE: malnütrisyon veya dekompanse karaciğer + acil başvuru/yatış)</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="r1" checked><span class="txt">Acile başvurdu veya akut hastalık/yaralanmayla yattı</span></label>
+      <label class="item"><input type="checkbox" id="r2"><span class="txt">Malnütrisyon veya malabsorpsiyon (ya da riski)</span></label>
+      <label class="item"><input type="checkbox" id="r3"><span class="txt">Dekompanse karaciğer hastalığı</span></label>
+      <label class="item"><input type="checkbox" id="r4"><span class="txt">Ağır/komplike yoksunluk veya yoğun bakım</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Tiamin dozu</h2>
+    <div class="res"><span class="pill" id="tp"></span></div>
+    <div class="sub"><span>Caine ölçütü</span><b id="tc">–</b></div>
+    <ol class="rec" id="rxT"></ol>
+    <p class="note">Türkiye: Bemiks kompoze ampul yalnız 25 mg tiamin içerir (2 mL; IM veya infüzyon), bu dozlar için yetersizdir. Benexol B12 film tablet 250 mg tiamin içerir (ağızdan). Tek bileşenli parenteral tiamin olarak Vi-Plex B1 200 mg/2 mL ampul (Osel) ruhsatlı görünür, ancak Sağlık Bakanlığı pasif ürün fiyat listesindedir; uygulama yolu ve bulunabilirliği hastane eczanesiyle doğrulayın (gerekirse yurt dışı ilaç temini).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Yatış ve izlem</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="f1"><span class="txt">Nöbet (şimdi veya bu yoksunlukta)</span></label>
+      <label class="item"><input type="checkbox" id="f2"><span class="txt">Deliryum, halüsinasyon veya yönelim bozukluğu</span></label>
+      <label class="item"><input type="checkbox" id="f3"><span class="txt">Hemodinamik instabilite, ateş veya solunum sıkıntısı</span></label>
+      <label class="item"><input type="checkbox" id="f4"><span class="txt">Ciddi eşlik eden hastalık<small>sepsis, GİS kanama, pankreatit, kafa travması, karaciğer yetmezliği</small></span></label>
+      <label class="item"><input type="checkbox" id="f5"><span class="txt">Tekrarlanan dozlara rağmen ajitasyon veya ağır tremor</span></label>
+      <label class="item"><input type="checkbox" id="f6"><span class="txt">Kırılgan hasta<small>bilişsel bozukluk, çoklu hastalık, sosyal destek yok</small></span></label>
+    </div>
+    <div class="res"><span class="pill" id="ap"></span></div>
+    <ol class="rec" id="rxY"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Deliryum tremens ve nöbet uyarıları</h2>
+    <table class="t">
+      <thead><tr><th>Son içkiden sonra</th><th>Tablo</th></tr></thead>
+      <tbody>
+        <tr><td>6–24 saat</td><td>Hafif yoksunluk <small>tremor, terleme, bulantı, anksiyete, uykusuzluk, taşikardi</small></td></tr>
+        <tr><td>6–48 saat</td><td>Yoksunluk nöbeti <small>genellikle jeneralize tonik-klonik, tekrarlayabilir</small></td></tr>
+        <tr><td>12–48 saat</td><td>Alkolik halüsinoz <small>bilinç açık, genellikle görsel halüsinasyon</small></td></tr>
+        <tr><td>48–96 saat</td><td>Deliryum tremens <small>dalgalı bilinç, dikkat bozukluğu, ağır otonom hiperaktivite; 1–8 gün sürebilir</small></td></tr>
+      </tbody>
+    </table>
+    <ul class="chk">
+      <li>DT habercileri: CIWA-Ar’nin dozlara rağmen yükselmesi, yönelim bozukluğu (10. madde ≥ 2), halüsinasyon (2., 4., 6. madde ≥ 4), belirgin taşikardi, hipertansiyon, ateş.</li>
+      <li>DT riski: önceki DT veya yoksunluk nöbeti, PAWSS ≥ 4, eşlik eden akut hastalık, ileri yaş, gelişte yüksek kan alkolüne rağmen yoksunluk bulgusu, hipokalemi, trombositopeni.</li>
+      <li>Nöbette: hızlı etkili benzodiazepin (diazepam IV; ASAM: lorazepam veya diazepam, IV tercih, IM de etkili). Fenitoin yoksunluk nöbetinde kullanılmaz (NICE). Nöbet sonrası 6–24 saat boyunca 1–2 saatte bir değerlendirme (ASAM). İlk nöbet, fokal nöbet, travma veya uzamış postiktal dönemde görüntüleme ve diğer nedenleri araştırın.</li>
+      <li>DT’de: hafif uyku hâli (uyandırılabilir) hedeflenene kadar IV benzodiazepin; çok yüksek dozlar gerekebilir; solunum depresyonu, aşırı sedasyon izlenir (ASAM). NICE: ilk seçenek oral lorazepam; belirti sürer veya ağızdan alamazsa parenteral lorazepam veya haloperidol. Antipsikotik yalnız benzodiazepine ek olarak (nöbet eşiğini düşürür).</li>
+      <li>Ayırıcı tanı: hipoglisemi, Wernicke, hepatik ensefalopati, kafa travması (subdural hematom), menenjit/sepsis, hiponatremi, diğer madde yoksunluğu veya zehirlenme.</li>
+      <li>Elektrolit ve sıvı: K ve Mg düzeltin (Mg yalnız düşükse, aritmi veya nöbet öyküsünde; rutin Mg’nin yoksunluğa etkisi yok, ASAM). Kronik hiponatremiyi yavaş düzeltin. Malnütrisyonda refeeding riski (fosfat).</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: Sullivan JT, Sykora K, Schneiderman J, Naranjo CA, Sellers EM. Assessment of alcohol withdrawal: the revised Clinical Institute Withdrawal Assessment for Alcohol scale (CIWA-Ar). Br J Addict 1989;84:1353–7 (10 madde, puan aralıkları, en yüksek 67; formdaki not: &lt; 10 puan alan hasta genellikle ek ilaca gerek duymaz); The ASAM Clinical Practice Guideline on Alcohol Withdrawal Management. J Addict Med 2020;14(3S Suppl 1):1–72 (Tablo 1 şiddet: CIWA-Ar &lt; 10 hafif, 10–18 orta, ≥ 19 ağır; semptoma göre tedavi tercih; örnek dozlar klordiazepoksit 25–100 mg CIWA-Ar ≥ 10, ön yükleme diazepam 20 mg saatte bir CIWA-Ar &lt; 10 olana dek; yatanlarda 24 saat 1–4 saatte bir, CIWA-Ar 24 saat &lt; 10 ise 4–8 saatte bir değerlendirme; karaciğer hastalığında karaciğerde daha az metabolize olan benzodiazepin; tiamin ayaktan 100 mg/gün PO, yatanda 100 mg/gün IV/IM 3–5 gün, glukozla sıra fark etmez; nöbet ve deliryum yönetimi; PAWSS); NICE CG100 Alcohol-use disorders: diagnosis and management of physical complications (2010, 2017 güncellemesi; yatış ölçütleri, semptoma göre rejim, DT’de oral lorazepam, nöbette lorazepam, fenitoin yok, oral ve parenteral tiamin profilaksisi, WE şüphesinde en az 5 gün parenteral tiamin); Galvin R ve ark. EFNS guidelines for diagnosis, therapy and prevention of Wernicke encephalopathy. Eur J Neurol 2010;17:1408–18 (Caine’in 4 ölçütünden 2’si; tiamin 200 mg günde 3 kez, tercihen IV, her türlü karbonhidrattan önce; acile başvuran risk altındaki herkese parenteral tiamin); Thomson AD ve ark. Royal College of Physicians report on alcohol: guidelines for managing Wernicke’s encephalopathy in the accident and emergency department. Alcohol Alcohol 2002;37:513–21; Thiamine hydrochloride 125 mg/mL enjeksiyon KÜB (İngiltere, emc; WE tedavisi 500–750 mg IV günde 3 kez en az 2 gün, yanıt varsa 250 mg/gün 5 gün; profilaksi 250 mg/gün IM/IV 3–5 gün; 50–250 mL’de 30 dakikada; glukozdan önce veya birlikte); Maldonado JR ve ark. Alcohol 2014;48:375–90 ve Alcohol Alcohol 2015;50:509–18 (PAWSS maddeleri, ≥ 4 eşiği); Mayo-Smith MF. JAMA 1997;278:144–51 ve Mayo-Smith MF ve ark. Arch Intern Med 2004;164:1405–12 (semptoma göre doz, deliryumda hafif sedasyon hedefi; IV diazepam 5–10 mg 5–10 dakikada bir ikincil kaynaktan); Makdissi R, Stewart SH. Addict Sci Clin Pract 2013;8:11 (semptoma göre örnek rejimler: diazepam 10–20 mg, lorazepam 2–4 mg, klordiazepoksit 50 mg, CIWA-Ar &lt; 10 olana dek saatte bir); Schuckit MA. N Engl J Med 2014;371:2109–13 (yoksunluk zaman çizelgesi). Türkiye ürünleri: TİTCK KÜB ve ilaç veri tabanları (Diazem 2/5/10 mg kapsül, Nervium 5 mg tablet, Diazem ve Diazepam-Koçak 10 mg/2 mL ampul, rektal diazepam; Ativan Expidet 1 ve 2,5 mg ağızda hızlı çözünen tablet, parenteral lorazepam listelenmemiş; klordiazepoksit yalnız 5 mg’lık klidinyumlu kombinasyonlarda: Klipaks, Libkol). Bu araç klinik karar desteği içindir; tanı ve tedavi kararı hekime aittir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+
+  // CIWA-Ar maddeleri (Sullivan 1989): ad, soru/gözlem, en yüksek puan, tanımlı düzeyler; örnek puan
+  var HAL=['yok','çok hafif','hafif','orta','orta-ağır halüsinasyon','ağır halüsinasyon','çok ağır halüsinasyon','sürekli halüsinasyon'];
+  var C=[
+    ['1. Bulantı ve kusma','“Mideniz bulanıyor mu? Kustunuz mu?” Gözlem.',7,{0:'Bulantı ve kusma yok',1:'Kusmasız hafif bulantı',4:'Öğürmeyle birlikte aralıklı bulantı',7:'Sürekli bulantı, sık öğürme ve kusma'},1],
+    ['2. Dokunsal bozukluk','“Kaşıntı, iğnelenme-karıncalanma, yanma, uyuşma ya da derinizde böcek yürüyormuş gibi bir his var mı?” Gözlem.',7,{0:'Yok',1:'Çok hafif kaşıntı, karıncalanma, yanma veya uyuşma',2:'Hafif kaşıntı, karıncalanma, yanma veya uyuşma',3:'Orta düzeyde kaşıntı, karıncalanma, yanma veya uyuşma',4:'Orta-ağır halüsinasyon',5:'Ağır halüsinasyon',6:'Çok ağır halüsinasyon',7:'Sürekli halüsinasyon'},0],
+    ['3. Tremor','Kollar önde uzatılmış, parmaklar ayrık. Gözlem.',7,{0:'Tremor yok',1:'Görülmüyor, parmak uçlarından hissediliyor',4:'Orta: kollar uzatılınca belirgin',7:'Ağır: kollar uzatılmasa da var'},4],
+    ['4. İşitsel bozukluk','“Çevrenizdeki seslerin daha çok farkında mısınız? Sert mi geliyor, korkutuyor mu? Rahatsız eden ya da orada olmadığını bildiğiniz şeyler duyuyor musunuz?” Gözlem.',7,{0:'Yok',1:'Seslerde çok hafif sertlik veya korkutuculuk',2:'Hafif sertlik veya korkutuculuk',3:'Orta düzeyde sertlik veya korkutuculuk',4:'Orta-ağır halüsinasyon',5:'Ağır halüsinasyon',6:'Çok ağır halüsinasyon',7:'Sürekli halüsinasyon'},0],
+    ['5. Nöbetler hâlinde terleme','Gözlem.',7,{0:'Ter görülmüyor',1:'Belli belirsiz terleme, avuç içi nemli',4:'Alında belirgin ter damlaları',7:'Sırılsıklam terleme'},1],
+    ['6. Görsel bozukluk','“Işık çok parlak mı, rengi farklı mı, gözünüzü acıtıyor mu? Rahatsız eden ya da orada olmadığını bildiğiniz şeyler görüyor musunuz?” Gözlem.',7,{0:'Yok',1:'Çok hafif ışık duyarlılığı',2:'Hafif duyarlılık',3:'Orta düzeyde duyarlılık',4:'Orta-ağır halüsinasyon',5:'Ağır halüsinasyon',6:'Çok ağır halüsinasyon',7:'Sürekli halüsinasyon'},0],
+    ['7. Anksiyete','“Kendinizi gergin hissediyor musunuz?” Gözlem.',7,{0:'Anksiyete yok, rahat',1:'Hafif anksiyöz',4:'Orta düzeyde anksiyöz ya da tetikte; anksiyete çıkarsanıyor',7:'Ağır deliryum veya akut şizofrenik tepkideki akut panik düzeyi'},4],
+    ['8. Baş ağrısı, başta dolgunluk','“Başınızda farklı bir his var mı? Başınızın çevresinde bant varmış gibi mi?” Baş dönmesi veya sersemlik puanlanmaz.',7,{0:'Yok',1:'Çok hafif',2:'Hafif',3:'Orta',4:'Orta-ağır',5:'Ağır',6:'Çok ağır',7:'Aşırı ağır'},1],
+    ['9. Ajitasyon','Gözlem.',7,{0:'Normal etkinlik',1:'Normalden biraz fazla etkinlik',4:'Orta derecede kıpır kıpır ve huzursuz',7:'Görüşmenin çoğunda ileri geri yürüyor ya da sürekli çırpınıyor'},1],
+    ['10. Yönelim ve bilinç bulanıklığı','“Bugün günlerden ne? Neredesiniz? Ben kimim?”',4,{0:'Yönelimi tam, ardışık toplama yapabiliyor',1:'Ardışık toplama yapamıyor veya tarihten emin değil',2:'Tarihte en çok 2 takvim günü yanılıyor',3:'Tarihte 2 takvim gününden fazla yanılıyor',4:'Yer ve/veya kişi yönelimi bozuk'},0]
+  ];
+  function anchor(d,s){if(d[s]!=null)return d[s];var lo=s,hi=s;while(d[lo]==null)lo--;while(d[hi]==null)hi++;return 'Ara düzey: “'+d[lo]+'” ile “'+d[hi]+'” arası'}
+  var box=$('ciwaItems');
+  C.forEach(function(c,i){
+    var w=el('div','ciwa');w.appendChild(el('span','lbl',c[0]));w.appendChild(el('p','q',c[1]));
+    var s=el('div','seg sc');s.setAttribute('role','group');s.setAttribute('aria-label',c[0]);
+    for(var p=0;p<=c[2];p++){var b=el('button',null,String(p));b.type='button';b.dataset.g='c'+i;b.dataset.v=p;b.setAttribute('data-sk','');b.setAttribute('aria-pressed',p===c[4]?'true':'false');s.appendChild(b)}
+    w.appendChild(s);var a=el('p','an');a.id='an'+i;w.appendChild(a);box.appendChild(w);
+  });
+
+  // PAWSS maddeleri (Maldonado 2014)
+  var P1=['1. Son 30 günde sarhoş oldu mu?','2. Daha önce alkol kullanım bozukluğu için rehabilitasyon veya tedavi gördü mü? (yatarak/ayaktan program veya AA toplantıları)','3. Daha önce (şiddeti ne olursa olsun) alkol yoksunluğu yaşadı mı?','4. Daha önce “blackout” (alkole bağlı bellek boşluğu) yaşadı mı?','5. Daha önce alkol yoksunluğu nöbeti geçirdi mi?','6. Daha önce deliryum tremens geçirdi mi?','7. Son 90 günde alkolü benzodiazepin veya barbitürat gibi “downer”larla birlikte kullandı mı?','8. Son 90 günde alkolü başka bir madde ile birlikte kullandı mı?'];
+  var PEX=[1,0,1,0,0,0,0,0];
+  function ynSeg(g,label,def){var w=el('div','field');w.appendChild(el('span','lbl',label));var s=el('div','seg');
+    [['1','Evet'],['0','Hayır']].forEach(function(o){var b=el('button',null,o[1]);b.type='button';b.dataset.g=g;b.dataset.v=o[0];b.setAttribute('data-sk','');b.setAttribute('aria-pressed',String(def===+o[0]));s.appendChild(b)});
+    w.appendChild(s);return w}
+  P1.forEach(function(t,i){$('pawssItems').appendChild(ynSeg('q'+i,t,PEX[i]))});
+  $('pawssItems2').appendChild(ynSeg('q9','10. Otonom hiperaktivite var mı? (nabız > 120/dk, tremor, terleme, ajitasyon, bulantı)',1));
+
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+
+  var lastCiwa=null,lastPawss=null;
+  function calc(){
+    // Sekme
+    var tab=segVal('tab');$('t-ciwa').style.display=tab==='ciwa'?'contents':'none';$('t-pawss').style.display=tab==='pawss'?'contents':'none';
+    var yas=v('yas'),glu=v('glu'),na=v('na'),k=v('k'),kc=segVal('kc')==='1';
+
+    // ---- CIWA-Ar ----
+    var sum=0,n=0;
+    C.forEach(function(c,i){var s=segVal('c'+i),a=$('an'+i);
+      if(s===null){a.textContent='Puanlanmadı';a.className='an bos'}
+      else{n++;sum+=+s;a.textContent=s+': '+anchor(c[3],+s);a.className='an'}});
+    var full=n===C.length;
+    // Eşik karşılaştırması ham toplamla; eksik maddede yalnız alt sınır kesin
+    var lvl=sum>=19?2:sum>=10?1:0; // alt sınıra göre
+    lastCiwa={sum:sum,full:full,lvl:lvl,n:n};
+    $('cn').textContent=n+' / 10';
+    document.querySelectorAll('#ct tbody tr').forEach(function(tr){tr.className=(n>0&&(full||lvl>0)&&+tr.dataset.r===lvl)?'cur':''});
+    if(n===0){$('cs').textContent='–';pill('cp','Puanlanmadı','var(--muted)');$('cadv').textContent='CIWA-Ar maddelerini puanlayın.'}
+    else if(!full){$('cs').textContent='≥ '+sum;
+      if(lvl===2)pill('cp','En az ağır (eksik)','var(--high)');
+      else if(lvl===1)pill('cp','En az orta (eksik)','var(--warn)');
+      else pill('cp','Eksik: '+(10-n)+' madde','var(--muted)');
+      $('cadv').textContent='Tüm maddeler puanlanmadan şiddet sınıflanamaz'+(lvl?'; mevcut puan bile eşiği aşıyor.':'; mevcut kısmi puan “hafif” anlamına gelmez.')}
+    else{$('cs').textContent=sum;
+      if(lvl===2){pill('cp','Ağır yoksunluk','var(--high)');$('cadv').textContent='CIWA-Ar ≥ 19: ağır yoksunluk. Nöbet veya deliryum varsa komplike yoksunluk; yakın monitörlü yatış.'}
+      else if(lvl===1){pill('cp','Orta yoksunluk','var(--warn)');$('cadv').textContent='CIWA-Ar 10–18: orta yoksunluk; semptoma göre benzodiazepin verin.'}
+      else{pill('cp','Hafif yoksunluk','var(--ok)');$('cadv').textContent='CIWA-Ar < 10: hafif veya minimal yoksunluk; ek ilaç genellikle gerekmez (Sullivan 1989 formu). Komplike yoksunluk riskini (PAWSS, önceki nöbet/DT) ayrıca değerlendirin.'}}
+
+    // ---- Benzodiazepin ----
+    $('rxB').innerHTML='';
+    var bz=segVal('bz'),po=segVal('po')==='1',old=yas!==null&&yas>=65;
+    var NM={dz:'Diazepam',lz:'Lorazepam',cd:'Klordiazepoksit'};
+    var dose=null,unit='mg';
+    if(n===0||(!full&&lvl===0)){$('dz').textContent='–';pill('dp','CIWA-Ar tamamlanmadı','var(--muted)');$('rint').textContent='–';
+      li('rxB','Önce CIWA-Ar’yi tamamlayın','Eksik puanlamayla doz kararı verilmez.')}
+    else if(lvl===0){$('dz').textContent='0 mg';pill('dp','Doz gerekmez','var(--ok)');$('rint').textContent='1–4 saatte bir';
+      li('rxB','CIWA-Ar < 10: benzodiazepin vermeyin','İlk 24 saat 1–4 saatte bir CIWA-Ar (ASAM V.1). 24 saat boyunca < 10 kalırsa 4–8 saatte bir. Hafif yoksunluktaki düşük riskli hastayı kötüleşme açısından 36 saate kadar izleyin.')}
+    else{
+      var hi=lvl===2;
+      if(!po){
+        $('dz').textContent=hi?'10 mg IV':'5–10 mg IV';pill('dp','Diazepam IV','var(--high)');$('rint').textContent='5–10 dk (IV titrasyon)';
+        li('rxB','Ağızdan alamıyor: diazepam '+(hi?'10 mg':'5–10 mg')+' yavaş IV','Diazem veya Diazepam-Koçak 10 mg/2 mL ampul; en çok 5 mg/dakika hızla. Hafif uyku hâli (uyandırılabilir) sağlanana dek 5–10 dakikada bir tekrarlanabilir (Mayo-Smith 2004; ikincil kaynak). Solunum, oksijen satürasyonu ve kan basıncını izleyin; yüksek kümülatif dozda yoğun bakım.');
+        li('rxB','Türkiye: parenteral lorazepam yok','Lorazepam yalnız ağızda çözünen tablet (Ativan Expidet) olarak bulunur. IM diazepamın emilimi düzensizdir; mümkünse IV yol.');
+      }else{
+        if(bz==='dz'){dose=hi?20:10;li('rxB','Diazepam '+dose+' mg PO','Diazem 10 mg kapsül × '+(dose/10)+' (2, 5, 10 mg kapsül; Nervium 5 mg tablet).'+(hi?' Ağır yoksunlukta ön yükleme: diazepam 20 mg saatte bir, CIWA-Ar < 10 olana ya da hasta sedatize olana dek (ASAM).':' Doz sonrası 1 saatte CIWA-Ar ≥ 10 ise aynı doz tekrarlanır.'))}
+        else if(bz==='lz'){dose=hi?4:2;li('rxB','Lorazepam '+dose+' mg PO','Ativan Expidet 1 mg × '+dose+'; ağızda hızlı çözünür, susuz yutulabilir. Kısa etkili: dozlar arasında belirtiler yeniden çıkabilir; CIWA-Ar ≥ 10 sürdükçe saatte bir tekrar.')}
+        else{dose=hi?100:50;li('rxB','Klordiazepoksit '+dose+' mg PO','Türkiye’de tek bileşenli klordiazepoksit yok: yalnız 5 mg klordiazepoksit + 2,5 mg klidinyum (Klipaks, Libkol) bulunur; bu dozlar için uygun değildir (antikolinerjik yük). Diazepam veya lorazepam kullanın.')}
+        $('dz').textContent=dose+' mg PO';pill('dp',NM[bz]+(hi?' · üst doz':' · alt doz'),hi?'var(--high)':'var(--warn)');$('rint').textContent='1 saat sonra';
+        li('rxB','1 saat sonra CIWA-Ar’yi tekrarlayın','CIWA-Ar ≥ 10 sürdükçe aynı dozu saatte bir tekrarlayın; < 10 olunca ilk 24 saat 1–4 saatte bir, 24 saat < 10 kalırsa 4–8 saatte bir puanlayın (ASAM 2020). Aşırı sedasyonda dozu atlayın.');
+      }
+      if((old||kc)&&bz!=='lz'&&po)li('rxB',(kc?'Karaciğer yetmezliği':'Yaş ≥ 65')+': lorazepam tercih edin','Diazepam ve klordiazepoksitin uzun etkili aktif metabolitleri birikir. Lorazepam 2–4 mg PO; ağır karaciğer yetmezliği lorazepam KÜB’ünde kontrendikasyondur, dikkatle ve düşük dozla, yakın izlemle. Dekompanse karaciğer hastalığında karaciğer deneyimi olan hekimden görüş (NICE). Hepatik ensefalopatiyi ayırın.');
+      if(hi)li('rxB','Ağır yoksunluk: yatış ve sık izlem','Dirençli yoksunlukta (yüksek benzodiazepin gereksinimi) yoğun bakımda fenobarbital, deksmedetomidin (yalnız ek tedavi) veya propofol seçenekleri; fenobarbital deneyimli ekiplerce, yakın gözetimde (ASAM).');
+    }
+
+    // ---- PAWSS ----
+    $('rxP').innerHTML='';
+    var p0=segVal('p0'),bal=v('bal');
+    var thr=p0==='1'||(bal!==null&&bal>0);
+    var ps=0,unk=0;
+    for(var i=0;i<8;i++){var q=segVal('q'+i);if(q===null)unk++;else ps+=+q}
+    if(bal===null)unk++;else if(bal>=200)ps++;
+    var q9=segVal('q9');if(q9===null)unk++;else ps+=+q9;
+    $('pu').textContent=unk?unk+(bal===null?' (kan alkolü dahil)':''):'yok';
+    if(!thr&&p0===null){$('ps').textContent='–';pill('pp','Eşik sorusu yanıtlanmadı','var(--muted)');lastPawss={st:null};
+      li('rxP','Önce eşik sorusunu yanıtlayın','Son 30 günde alkol alımı ya da gelişte pozitif kan alkolü yoksa PAWSS uygulanmaz.')}
+    else if(!thr){$('ps').textContent='–';pill('pp','PAWSS uygulanmaz','var(--low)');lastPawss={st:'na'};
+      li('rxP','Son 30 günde alkol yok, kan alkolü negatif','Eşik ölçütü karşılanmadı; alkol yoksunluğu beklenmez. Öykü güvenilir değilse yeniden değerlendirin.')}
+    else if(ps>=4){$('ps').textContent=unk?'≥ '+ps:ps;pill('pp','Yüksek risk (≥ 4)','var(--high)');lastPawss={st:'hi'};
+      li('rxP','Komplike yoksunluk riski yüksek','Yatırarak izleyin; CIWA-Ar’yi sık puanlayın, gerekiyorsa erken (profilaktik) uzun etkili benzodiazepin ve ön yükleme. Parenteral tiamin. NICE: nöbet/DT riski yüksek olana hastanede tedavi.')}
+    else if(ps+unk<4){$('ps').textContent=ps;pill('pp','Düşük risk (< 4)','var(--ok)');lastPawss={st:'lo'};
+      li('rxP','Komplike yoksunluk riski düşük','Yine de CIWA-Ar ile izleyin; hafif yoksunlukta 36 saate kadar kötüleşme açısından gözlem (ASAM).')}
+    else{$('ps').textContent='≥ '+ps;pill('pp','Eksik: '+unk+' madde','var(--muted)');lastPawss={st:null};
+      li('rxP','Risk sınıflanamadı','Yanıtlanmayan maddelerle puan 4’e ulaşabilir; “düşük risk” denemez. Eksik maddeleri tamamlayın (kan alkolü ölçülmediyse klinik değerlendirme).')}
+
+    // ---- Tiamin ----
+    $('rxT').innerHTML='';
+    var cn=['w1','w2','w3','w4'].filter(function(x){return $(x).checked}).length;
+    var rf=['r1','r2','r3','r4'].filter(function(x){return $(x).checked}).length+(kc?1:0)+(full&&lvl===2?1:0);
+    $('tc').textContent=cn+' / 4';
+    if(cn>=2){pill('tp','Wernicke tedavisi','var(--high)');
+      li('rxT','Tiamin 500 mg IV günde 3 kez','100 mL %0,9 NaCl veya %5 dekstrozda 30 dakikada; en az 2–3 gün (İngiltere tiamin KÜB: 500–750 mg günde 3 kez en az 2 gün). Yanıt varsa 250 mg/gün IV/IM 5 gün, sonra ağızdan. EFNS 2010: 200 mg günde 3 kez, tercihen IV, karbonhidrattan önce. NICE: WE dışlanmadıkça en az 5 gün parenteral.');
+      li('rxT','Tiamin düzeyi için kan örneği','EFNS: tiamin vermeden hemen önce total tiamin için kan alın; sonucu beklemeden tedavi edin. MRG tanıyı destekler.');
+    }else if(rf){pill('tp','Parenteral profilaksi','var(--warn)');
+      li('rxT','Tiamin 250 mg/gün IV veya IM, 3–5 gün','İngiltere tiamin KÜB ve RCP yaklaşımı; ASAM 2020 en az 100 mg/gün IV/IM 3–5 gün. Sonra ağızdan devam. Ciddi malnütrisyonda veya klinik şüphe doğarsa tedavi dozuna geçin.'+(cn===1?' Bir Caine ölçütü var: WE’yi yakından izleyin, düşük eşikle tedavi dozu.':''));
+    }else{pill('tp','Oral profilaksi','var(--low)');
+      li('rxT','Tiamin 100 mg/gün PO (ASAM, ayaktan)','Zararlı veya bağımlı içicide oral profilaksi (NICE). Türkiye’de ağızdan 250 mg tiamin içeren Benexol B12 tablet bulunur. Parenteral profilaksi gerektiren durum işaretlenmedi; acil başvuruda, yatışta, malnütrisyonda veya dekompanse karaciğer hastalığında parenteral verin.');
+    }
+    var hipo=glu!==null&&glu<70;
+    li('rxT',hipo?'Glukoz < 70 mg/dL: glukozu geciktirmeyin':'Glukoz ve tiamin','EFNS ve tiamin KÜB: tiamini karbonhidrattan önce ya da birlikte verin. ASAM 2020: sıra fark etmez, birlikte verilebilir. Hipoglisemide glukoz tiamin beklenerek ertelenmez; dekstrozlu sıvıların ilk litrelerine tiamin eklenir.');
+
+    // ---- Yatış ----
+    $('rxY').innerHTML='';
+    var fl={};['f1','f2','f3','f4','f5','f6'].forEach(function(x){fl[x]=$(x).checked});
+    var icu=(fl.f2&&(fl.f3||fl.f5))||(fl.f1&&fl.f2);
+    var adm=fl.f1||fl.f2||fl.f3||fl.f4||fl.f5||kc||(full&&lvl===2)||(lastPawss.st==='hi');
+    var ciwaKnown=full,pawKnown=lastPawss.st==='lo'||lastPawss.st==='na';
+    if(icu){pill('ap','Yoğun bakım düşünün','var(--high)');
+      li('rxY','Deliryum tremens / komplike yoksunluk','Deliryum genellikle yoğun bakım gerektirir (ASAM). Sürekli monitör, IV benzodiazepin titrasyonu, solunum desteği hazır; dirençli olguda fenobarbital veya propofol yalnız yoğun bakımda.')}
+    else if(adm){pill('ap','Yatış önerilir','var(--warn)');
+      var ned=[];if(fl.f1)ned.push('nöbet');if(fl.f2)ned.push('deliryum/halüsinasyon');if(fl.f3)ned.push('instabilite');if(fl.f4)ned.push('ciddi eşlik eden hastalık');if(kc&&!fl.f4)ned.push('karaciğer yetmezliği');if(fl.f5)ned.push('dozlara yanıtsızlık');if(full&&lvl===2)ned.push('CIWA-Ar ≥ 19');if(lastPawss.st==='hi')ned.push('PAWSS ≥ 4');
+      li('rxY','Gerekçe: '+ned.join(', '),'NICE: nöbet veya DT geçiren ya da yüksek riskli hastaya hastanede tedavi. Nöbet sonrası 6–24 saat 1–2 saatte bir değerlendirme (ASAM).')}
+    else if(ciwaKnown&&lvl<2&&pawKnown){pill('ap','Ayaktan izlem düşünülebilir','var(--ok)');
+      li('rxY','Kırmızı bayrak yok, CIWA-Ar < 19, PAWSS düşük','Ayaktan yoksunluk için güvenilir bakım veren, günlük kontrol ve kötüleşmede başvuru planı gerekir. Kusma, halüsinasyon, konfüzyon, nöbet, instabilite veya yeniden içmede daha yoğun bakıma aktarın (ASAM IV.5).')}
+    else{pill('ap','Değerlendirme eksik','var(--muted)');
+      li('rxY','Risk tam değerlendirilemedi',(ciwaKnown?'':'CIWA-Ar tamamlanmadı. ')+(pawKnown?'':'PAWSS düşük risk olarak sonuçlanmadı (sekme 2). ')+'Eksik değerlendirmeyle ayaktan izlem önerilmez.')}
+    if(fl.f6)li('rxY','Kırılgan hasta: yatış eşiğini düşürün','NICE: bilişsel bozukluk, çoklu hastalık, sosyal destek yokluğu veya 16–17 yaş.');
+    if(yas!==null&&yas>=65)li('rxY','Yaş ≥ 65','Yoksunluk ve deliryum riski daha yüksek; lorazepam tercih edin, düşme ve aşırı sedasyonu izleyin.');
+    if(k!==null&&k<3.5)li('rxY','Hipokalemi (K '+fm(k)+' mmol/L)','Potasyum ve magnezyumu yerine koyun; aritmi riski. Elektrolit replasmanı aracına bakın.');
+    if(na!==null&&na<135)li('rxY','Hiponatremi (Na '+fm(na)+' mmol/L)','Alkol kullananda osmotik demiyelinizasyon riski yüksek: kronik hiponatremide yavaş düzeltin. Tekrarlanan yüksek doz IV benzodiazepinde hiponatremi izlenir (ASAM).');
+    if(hipo)li('rxY','Hipoglisemi (glukoz '+fm(glu,0)+' mg/dL)','Glukoz verin; tiamin önce veya birlikte.');
+  }
+
+  ['tab','kc','bz','po','p0','q0','q1','q2','q3','q4','q5','q6','q7','q9'].concat(C.map(function(c,i){return 'c'+i})).forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});
+  // "Temizle" / "Yeni hasta": puan ve evet/hayır seçimlerini de boşalt (boş girdide yanlış "düşük risk" çıkmasın)
+  document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.ornek button');if(!b)return;
+    document.querySelectorAll('[data-sk]').forEach(function(x){x.setAttribute('aria-pressed','false')});setTimeout(calc,0)},true);
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

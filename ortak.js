@@ -219,7 +219,7 @@
     'hipertansif-acil':'Hipertansif acil','infuzyon-hizi':'İnfüzyon hızı','ampirik-antibiyotik':'Ampirik antibiyotik','curb-65':'CURB-65','news2':'NEWS2',
     'qsofa':'qSOFA','glasgow-koma':'Glasgow Koma Skalası','anemi':'Anemi yaklaşımı','diyabet-tedavi':'Tip 2 diyabet tedavisi','insulin-dozu':'İnsülin dozu',
     'steroid-esdegeri':'Steroid eşdeğeri','opioid-donusumu':'Opioid dönüşümü','iv-demir':'IV demir dozu','vki':'VKİ ve VYA','tiroid-testi':'Tiroid testi yorumu',
-    'levotiroksin':'Levotiroksin dozu','stop-bang':'STOP-BANG','birim-cevirici':'Birim çevirici','idame-sivi':'İdame sıvı ve refeeding','pesi':'PESI ve sPESI','hit-4t':'4T skoru (HIT)','rcri':'RCRI (ameliyat öncesi)','ust-gis-kanama':'Üst GİS kanaması','sepsis-sivi':'Sepsiste sıvı ve vazopresör','koah-astim':'KOAH ve astım alevlenmesi','tiroid-krizi':'Tiroid krizi ve miksödem','transfuzyon':'Transfüzyon eşikleri','light-kriterleri':'Light kriterleri','delirium-4at':'4AT deliryum taraması'};
+    'levotiroksin':'Levotiroksin dozu','stop-bang':'STOP-BANG','birim-cevirici':'Birim çevirici','idame-sivi':'İdame sıvı ve refeeding','pesi':'PESI ve sPESI','hit-4t':'4T skoru (HIT)','rcri':'RCRI (ameliyat öncesi)','ust-gis-kanama':'Üst GİS kanaması','sepsis-sivi':'Sepsiste sıvı ve vazopresör','koah-astim':'KOAH ve astım alevlenmesi','tiroid-krizi':'Tiroid krizi ve miksödem','transfuzyon':'Transfüzyon eşikleri','light-kriterleri':'Light kriterleri','delirium-4at':'4AT deliryum taraması','alkol-yoksunlugu':'Alkol yoksunluğu','hepatik-ensefalopati':'Hepatik ensefalopati','beslenme':'Beslenme hesabı'};
   var IL = {
     'egfr':['kreatinin-klerensi','bobrek-ilac-dozu','akut-bobrek-hasari','elektrolit-replasmani'],
     'kreatinin-klerensi':['bobrek-ilac-dozu','egfr','antikoagulan-kesme','akut-bobrek-hasari'],
@@ -241,7 +241,7 @@
     'heart-skoru':['wells-pe','af-skor','qtc','prevent'],
     'duke-kriterleri':['ampirik-antibiyotik','qsofa','news2'],
     'ortalama-arter-basinci':['hipertansif-acil','news2','infuzyon-hizi','qsofa'],
-    'siroz-asit':['child-pugh','meld-na','glasgow-blatchford','hiponatremi-tani'],
+    'siroz-asit':['child-pugh','meld-na','hepatik-ensefalopati','ust-gis-kanama'],
     'child-pugh':['meld-na','siroz-asit','fib-4','bobrek-ilac-dozu'],
     'meld-na':['child-pugh','siroz-asit','fib-4'],
     'glasgow-blatchford':['ust-gis-kanama','anemi','transfuzyon','antikoagulan-kesme'],
@@ -267,7 +267,7 @@
     'levotiroksin':['tiroid-testi','vki'],
     'stop-bang':['vki','prevent','rcri'],
     'birim-cevirici':['elektrolit-replasmani','elektrolit','egfr','kan-gazi'],
-    'idame-sivi':['elektrolit-replasmani','sodyum','vki','infuzyon-hizi'],
+    'idame-sivi':['beslenme','elektrolit-replasmani','sodyum','infuzyon-hizi'],
     'pesi':['wells-pe','vte-profilaksisi','antikoagulan-kesme','hit-4t'],
     'hit-4t':['antikoagulan-kesme','vte-profilaksisi','transfuzyon','kreatinin-klerensi'],
     'rcri':['stop-bang','antikoagulan-kesme','egfr','heart-skoru'],
@@ -277,7 +277,10 @@
     'tiroid-krizi':['tiroid-testi','levotiroksin','steroid-esdegeri','acil-tedavi'],
     'transfuzyon':['anemi','iv-demir','ust-gis-kanama','varfarin-inr'],
     'light-kriterleri':['siroz-asit','ampirik-antibiyotik','pesi'],
-    'delirium-4at':['elektrolit','hiponatremi-tani','glasgow-koma','opioid-donusumu']
+    'delirium-4at':['alkol-yoksunlugu','elektrolit','hiponatremi-tani','glasgow-koma'],
+    'alkol-yoksunlugu':['delirium-4at','hepatik-ensefalopati','elektrolit-replasmani','idame-sivi'],
+    'hepatik-ensefalopati':['siroz-asit','child-pugh','meld-na','ust-gis-kanama'],
+    'beslenme':['idame-sivi','vki','insulin-dozu','siroz-asit']
   };
   if (IL[bu]) {
     var css3 = document.createElement('style');
@@ -316,7 +319,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v43', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v44', GB_ADRES = 'blgnonur97@gmail.com';
   var kap = document.querySelector('.wrap');
   if (kap && bu !== 'nobet-listesi') {
     var cssG = document.createElement('style');

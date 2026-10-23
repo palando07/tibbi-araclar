@@ -63,6 +63,9 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Transfüzyon eşikleri (AABB 2023/2025, BSH) | `transfuzyon.html` |
 | Light kriterleri (plevral sıvı) | `light-kriterleri.html` |
 | 4AT deliryum taraması | `delirium-4at.html` |
+| Alkol yoksunluğu (CIWA-Ar, PAWSS, tiamin; ASAM 2020) | `alkol-yoksunlugu.html` |
+| Hepatik ensefalopati (West Haven, laktuloz, rifaksimin; EASL 2022) | `hepatik-ensefalopati.html` |
+| Beslenme hesabı (NRS-2002, enerji/protein, enteral, GİH; ESPEN) | `beslenme.html` |
 
 Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz. Hiçbir hasta verisi kaydedilmez. Ortak kod (Kopyala düğmesi, çevrimdışı çalışma) `ortak.js` dosyasındadır.
 
