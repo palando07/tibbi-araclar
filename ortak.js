@@ -94,7 +94,7 @@
     var h = JSON.parse(sessionStorage.getItem('vizit-hasta')); if (h && v.length) { h.t = Date.now(); sessionStorage.setItem('vizit-hasta', JSON.stringify(h)); } } catch (e) {} }
   // Bu sayfada kullanıcı bir değer girdi ya da seçim yaptı mı? Yapmadıysa sonuç örnek değerlerden gelir.
   var dokunuldu = false;
-  function disButon(t){ return t.closest && t.closest('.cbtns, .gb, .ornek, .sonuca, .ilgili, header, a.back, details > summary'); }
+  function disButon(t){ return t.closest && t.closest('.cbtns, .gb, .ornek, .sonuca, .ilgili, .icindekiler, .hpanel, header, a.back, details > summary'); }
   ['input', 'change'].forEach(function(ev){ document.addEventListener(ev, function(e){ if (e.isTrusted && !disButon(e.target)) dokunuldu = true; }, true); });
   document.addEventListener('click', function(e){ if (e.isTrusted && e.target.closest && e.target.closest('button, label, input') && !disButon(e.target)) dokunuldu = true; }, true);
   function notEkle(card, btn){
@@ -344,7 +344,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v49', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v50', GB_ADRES = 'blgnonur97@gmail.com';
   var kap = document.querySelector('.wrap');
   if (kap && bu !== 'nobet-listesi') {
     var cssG = document.createElement('style');
@@ -442,6 +442,132 @@
     });
     if (location.hash === '#ara') setTimeout(function(){ document.getElementById('q').focus(); }, 50);
   }
+  })();
+
+  // Uzun sayfalarda içindekiler, araç sayfalarında alttan açılan Hasta paneli, Enter ile sonraki alana geçiş
+  if (bu !== 'nobet-listesi' && !document.getElementById('hasta')) (function(){
+    var cssP = document.createElement('style');
+    cssP.textContent =
+      '.icindekiler{position:sticky;top:0;z-index:15;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;background:var(--bg);padding:8px 0;margin:-4px 0 0}' +
+      '.icindekiler::-webkit-scrollbar{display:none}.icindekiler a{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--fg);text-decoration:none;font:600 .82rem var(--font-body);padding:6px 12px;border-radius:999px;white-space:nowrap}' +
+      '.icindekiler a.on{background:var(--accent);border-color:var(--accent);color:#fff}.icindekiler a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}' +
+      'section.card{scroll-margin-top:60px}' +
+      '.hperde{position:fixed;inset:0;z-index:45;background:rgba(0,0,0,.35)}' +
+      '.hpanel{position:fixed;left:0;right:0;bottom:0;z-index:46;max-height:80vh;overflow:auto;background:var(--surface);color:var(--fg);border-radius:18px 18px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 24px rgba(0,0,0,.18)}' +
+      '.hpanel .ust{display:flex;justify-content:space-between;align-items:center;gap:8px}.hpanel h2{margin:0;font-size:1.05rem}' +
+      '.hpanel .kapat{border:0;background:none;color:var(--muted);font-size:1.6rem;line-height:1;padding:4px 8px;cursor:pointer}' +
+      '.hpanel .ozet{color:var(--muted);font-size:.9rem;margin:6px 0 10px}.hpanel .izgara{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}' +
+      '.hpanel label{display:flex;flex-direction:column;gap:3px;font-size:.78rem;color:var(--muted)}' +
+      '.hpanel input{width:100%;box-sizing:border-box;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:500 1rem var(--font-body);padding:0 10px}' +
+      '.hpanel .cins{display:flex;gap:6px;margin-bottom:8px}.hpanel button.c{flex:1;height:38px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:10px;font:600 .9rem var(--font-body);cursor:pointer}' +
+      '.hpanel button.c[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}' +
+      '.hpanel ul{list-style:none;padding:0;margin:6px 0}.hpanel li{display:flex;gap:8px;align-items:flex-start;border-top:1px solid var(--line);padding:6px 0;font-size:.9rem}.hpanel li span{flex:1}' +
+      '.hpanel li button{border:0;background:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:0 6px}' +
+      '.hpanel .alt{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.hpanel .alt button,.hpanel .alt a{border:1px solid var(--accent);background:var(--surface);color:var(--accent);font:600 .88rem var(--font-body);padding:8px 14px;border-radius:999px;cursor:pointer;text-decoration:none}' +
+      '.hpanel .alt .ana{background:var(--accent);color:#fff}.hpanel .bilgi{font-size:.78rem;color:var(--muted);margin:10px 0 0}' +
+      '@media print{.icindekiler,.hpanel,.hperde{display:none}}';
+    document.head.appendChild(cssP);
+
+    // 1) İçindekiler: 5 veya daha fazla bölümü olan sayfalarda üstte bölüm çipleri
+    var basliklar = Array.prototype.filter.call(document.querySelectorAll('section.card > h2'), function(h){ return !h.closest('[hidden]'); });
+    var header = document.querySelector('body > header, main > header, header');
+    if (basliklar.length >= 5 && header && !document.querySelector('.tabs')) {
+      var tc = document.createElement('nav'); tc.className = 'icindekiler'; tc.setAttribute('aria-label', 'Sayfa bölümleri');
+      var ciftler = basliklar.map(function(h, i){
+        var kart = h.parentNode; if (!kart.id) kart.id = 'vizit-bolum-' + (i + 1);
+        var k = h.cloneNode(true); k.querySelectorAll('span, small, button').forEach(function(x){ x.remove(); });
+        var a = document.createElement('a'); a.href = '#' + kart.id; a.textContent = k.textContent.replace(/\s+/g, ' ').trim();
+        a.addEventListener('click', function(e){ e.preventDefault(); kart.scrollIntoView({behavior: 'smooth', block: 'start'}); });
+        tc.appendChild(a); return {a: a, kart: kart};
+      });
+      header.parentNode.insertBefore(tc, header.nextSibling);
+      var etkin = null;
+      function isaretle(){
+        var sec = ciftler[0];
+        ciftler.forEach(function(c){ if (c.kart.getBoundingClientRect().top < 120) sec = c; });
+        if (sec === etkin) return; if (etkin) etkin.a.classList.remove('on');
+        etkin = sec; sec.a.classList.add('on');
+        var x = sec.a.offsetLeft - (tc.clientWidth - sec.a.offsetWidth) / 2; tc.scrollTo({left: Math.max(0, x)});
+      }
+      var bek = false;
+      window.addEventListener('scroll', function(){ if (!bek) { bek = true; requestAnimationFrame(function(){ bek = false; isaretle(); }); } }, {passive: true});
+      isaretle();
+    }
+
+    // 2) Hasta paneli: sayfadan çıkmadan kayıtlı değerler ve vizit notu
+    var BIRIM = {yas:'yıl', kilo:'kg', boy:'cm', kreatinin:'mg/dL', egfr:'mL/dk', na:'mEq/L', k:'mEq/L', glukoz:'mg/dL', ure:'mg/dL', hb:'g/dL', alb:'g/dL',
+      bil:'mg/dL', inr:'', plt:'bin/µL', ca:'mg/dL', sbp:'mmHg', dbp:'mmHg', nabiz:'/dk'};
+    var buSayfadaki = {}; document.querySelectorAll('input[data-hasta]').forEach(function(el){ if (gecerli(el)) buSayfadaki[el.getAttribute('data-hasta')] = true; });
+    function ozet(v){ var p = []; if (v.cins) p.push(v.cins === 'm' ? 'Erkek' : 'Kadın');
+      Object.keys(AD).forEach(function(k){ if (v[k] != null && v[k] !== '') p.push(AD[k] + ' ' + String(v[k]).replace('.', ',') + (BIRIM[k] ? ' ' + BIRIM[k] : '')); }); return p.join(' · '); }
+    var perde, panel, sonOdak;
+    function rozet(){ var r = document.querySelector('.altnav .rozet'), n = notOku().length, l = document.querySelector('.altnav a[href="index.html#hasta"]');
+      if (!l) return; if (!n) { if (r) r.remove(); return; } if (!r) { r = document.createElement('span'); r.className = 'rozet'; l.appendChild(r); } r.textContent = n; }
+    function kapat(){ if (!panel) return; panel.remove(); perde.remove(); panel = perde = null; document.removeEventListener('keydown', esc); if (sonOdak) sonOdak.focus(); }
+    function esc(e){ if (e.key === 'Escape') kapat(); }
+    function ciz(){
+      var v = oku(), n = notOku(), t = ozet(v);
+      panel.querySelector('.ozet').textContent = t || 'Değer girilmedi. Buraya ya da herhangi bir araca yazdığınız değerler diğer araçlarda hazır gelir.';
+      panel.querySelectorAll('button.c').forEach(function(b){ b.setAttribute('aria-pressed', v.cins === b.dataset.c); });
+      panel.querySelectorAll('.izgara input').forEach(function(i){ if (document.activeElement !== i) i.value = v[i.dataset.k] != null ? v[i.dataset.k] : ''; });
+      var ul = panel.querySelector('ul'); ul.textContent = ''; panel.querySelector('.notlar').hidden = !n.length;
+      n.forEach(function(x, i){ var li = document.createElement('li'), sp = document.createElement('span'), b = document.createElement('button');
+        sp.textContent = x.s; b.type = 'button'; b.textContent = '×'; b.setAttribute('aria-label', 'Nottan çıkar: ' + x.s);
+        b.onclick = function(){ var m = notOku(); m.splice(i, 1); notYaz(m); ciz(); rozet(); }; li.appendChild(sp); li.appendChild(b); ul.appendChild(li); });
+    }
+    function sayfayaYaz(k, deger){
+      document.querySelectorAll('input[data-hasta="' + k + '"]').forEach(function(el){ if (gecerli(el) && el.value !== deger) { el.value = deger; tetikle(el); } });
+    }
+    function ac(){
+      sonOdak = document.activeElement;
+      perde = document.createElement('div'); perde.className = 'hperde'; perde.onclick = kapat;
+      panel = document.createElement('div'); panel.className = 'hpanel'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-modal', 'true'); panel.setAttribute('aria-label', 'Hasta');
+      var h = '<div class="ust"><h2>Hasta</h2><button type="button" class="kapat" aria-label="Kapat">×</button></div><p class="ozet"></p>' +
+        '<div class="cins" role="group" aria-label="Cinsiyet"><button type="button" class="c" data-c="m">Erkek</button><button type="button" class="c" data-c="f">Kadın</button></div>';
+      function alan(k){ return '<label>' + AD[k] + (BIRIM[k] ? ' (' + BIRIM[k] + ')' : '') +
+        '<input type="number" inputmode="decimal" step="any" min="0" data-k="' + k + '"></label>'; }
+      var bunlar = Object.keys(AD).filter(function(k){ return buSayfadaki[k]; }), digerleri = Object.keys(AD).filter(function(k){ return !buSayfadaki[k]; });
+      h += '<div class="alt"><button type="button" class="ana" data-i="kop">Kopyala</button><button type="button" data-i="yeni">Yeni hasta</button><a href="index.html#hasta">Menüde aç</a></div>' +
+        '<div class="notlar" hidden><h2 style="margin-top:14px">Vizit notu</h2><ul></ul></div>';
+      if (bunlar.length) h += '<h2 style="margin:14px 0 8px">Bu sayfada kullanılanlar</h2><div class="izgara">' + bunlar.map(alan).join('') + '</div>';
+      h += '<details' + (bunlar.length ? '' : ' open') + ' style="margin-top:12px"><summary style="cursor:pointer;font-weight:600">Diğer değerler</summary><div class="izgara" style="margin-top:8px">' + digerleri.map(alan).join('') + '</div></details>' +
+        '<p class="bilgi">Burada değiştirdiğiniz değer bu sayfadaki kutuya da yazılır. Değerler yalnız bu cihazda, 30 dakika saklanır.</p>';
+      panel.innerHTML = h;
+      panel.querySelector('.kapat').onclick = kapat;
+      panel.addEventListener('input', function(e){
+        var k = e.target.dataset && e.target.dataset.k; if (!k) return;
+        var v = oku(), d = e.target.value;
+        if (d === '') delete v[k]; else v[k] = d; yaz(v); sayfayaYaz(k, d); ciz();
+      });
+      panel.querySelectorAll('button.c').forEach(function(b){ b.onclick = function(){
+        var v = oku(); if (v.cins === b.dataset.c) delete v.cins; else v.cins = b.dataset.c; yaz(v);
+        if (v.cins) document.querySelectorAll('button[data-hasta-cins="' + v.cins + '"]').forEach(function(x){ if (gecerli(x) && x.getAttribute('aria-pressed') !== 'true') x.click(); });
+        ciz(); }; });
+      panel.querySelector('[data-i=kop]').onclick = function(){
+        var b = this, t = [ozet(oku())].concat(notOku().map(function(x){ return x.s; })).filter(Boolean).join('\n');
+        if (!t) return; copy(t, b);
+      };
+      panel.querySelector('[data-i=yeni]').onclick = function(){ yaz({}); notYaz([]); ciz(); rozet(); };
+      document.body.appendChild(perde); document.body.appendChild(panel);
+      document.addEventListener('keydown', esc);
+      ciz(); panel.querySelector('.kapat').focus();
+    }
+    var hl = document.querySelector('.altnav a[href="index.html#hasta"]');
+    if (hl) hl.addEventListener('click', function(e){ e.preventDefault(); ac(); });
+    window.vizitHastaPaneli = ac;
+
+    // 3) Klavyede İleri/Enter: sonraki giriş kutusuna geç, sonuncuda klavyeyi kapat
+    function kutular(){ return Array.prototype.filter.call(document.querySelectorAll('input'), function(i){
+      return /^(number|text)$/.test(i.type) && !i.disabled && !i.readOnly && i.offsetParent !== null && !i.closest('header, .hpanel, .gb'); }); }
+    function ipucu(){ var k = kutular(); k.forEach(function(i, n){ i.setAttribute('enterkeyhint', n === k.length - 1 ? 'done' : 'next'); }); }
+    ipucu(); document.addEventListener('change', function(){ setTimeout(ipucu, 0); }); document.addEventListener('click', function(){ setTimeout(ipucu, 0); });
+    document.addEventListener('keydown', function(e){
+      if (e.key !== 'Enter' || e.isComposing) return;
+      var i = e.target; if (!i.matches || !i.matches('input') || !/^(number|text)$/.test(i.type) || i.closest('header, .hpanel, .gb, form')) return;
+      var k = kutular(), n = k.indexOf(i); if (n < 0) return;
+      e.preventDefault();
+      if (n < k.length - 1) { k[n + 1].focus(); try { k[n + 1].select(); } catch (x) {} } else i.blur();
+    });
   })();
 
   // Geri bağlantısında küçük nabız işareti (logo ile uyumlu)
