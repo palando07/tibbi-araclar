@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Febril Nötropeni</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.item.auto{cursor:default}
+.item.auto .txt::after{content:"Yukarıdaki bilgiden otomatik";display:block;color:var(--accent);font-size:.75rem;font-weight:600}
+.item.auto .mk{width:22px;flex:none;text-align:center;font-weight:700;color:var(--accent)}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.link{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Febril Nötropeni</h1>
+    <p>Tanım ve MNS, MASCC ve CISNE risk skorları, ampirik antibiyotik, vankomisin endikasyonları, ayaktan tedavi ölçütleri ve böbreğe göre doz</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="64"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="ht">Boy <span>cm, isteğe bağlı</span></label><input id="ht" data-hasta="boy" type="number" inputmode="numeric" step="1" value="170"></div>
+      <div class="field"><label for="scr">Kreatinin <span>mg/dL</span></label><input id="scr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.6"></div>
+      <div class="field"><label for="sbp">Sistolik KB <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="numeric" step="1" value="105"></div>
+      <div class="field"><label for="temp">Ateş <span>°C</span></label><input id="temp" type="number" inputmode="decimal" step="any" value="38.6"></div>
+    </div>
+    <div class="field"><span class="lbl">Cinsiyet</span>
+      <div class="seg"><button type="button" data-g="sex" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="sex" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="sus"><span class="txt">Ateş ≥ 38,0 °C, en az 1 saat sürdü<small>tek ölçüm 38,3 °C’nin altındaysa tanı için gerekir</small></span></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Mutlak nötrofil sayısı</h2>
+    <div class="grid">
+      <div class="field"><label for="wbc">Lökosit <span>×10³/µL</span></label><input id="wbc" type="number" inputmode="decimal" step="any" value="0.9"></div>
+      <div class="field"><label for="neu">Nötrofil (segment) <span>%</span></label><input id="neu" type="number" inputmode="decimal" step="any" value="30"></div>
+      <div class="field"><label for="band">Çomak <span>%, yoksa boş</span></label><input id="band" type="number" inputmode="decimal" step="any" value="5"></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="fall"><span class="txt">MNS’nin 48 saat içinde &lt; 500/mm³’e düşmesi bekleniyor<small>kemoterapi sonrası nadir dönemine giriyor</small></span></label>
+      <label class="item"><input type="checkbox" id="prol"><span class="txt">Nötropeninin &gt; 7 gün sürmesi bekleniyor<small>ör. akut lösemi indüksiyonu, kök hücre nakli</small></span></label>
+    </div>
+    <p class="note">Lökosit 900/mm³ ise 0,9 yazın. MNS = lökosit × (nötrofil % + çomak %) ÷ 100.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Tanı</h2>
+    <span class="lbl">Mutlak nötrofil sayısı</span>
+    <div class="res"><span class="num" id="anc">–</span><span class="of">/mm³</span><span class="pill" id="ancp"></span></div>
+    <div class="sub"><span>Ateş ölçütü</span><b id="fevo">–</b></div>
+    <div class="sub"><span>Nötropeni ölçütü</span><b id="neuo">–</b></div>
+    <div class="res"><span class="pill" id="dxp"></span></div>
+    <p class="advice" id="dxa"></p>
+    <p class="note">IDSA 2010: tek oral ölçümde ≥ 38,3 °C veya 1 saat süren ≥ 38,0 °C ateş; MNS &lt; 500/mm³ ya da 48 saatte &lt; 500/mm³’e düşmesi beklenen. ESMO 2016: oral &gt; 38,3 °C veya 2 saat arayla iki kez &gt; 38,0 °C. MNS ≤ 100/mm³ derin nötropenidir.</p>
+  </section>
+
+  <section class="card">
+    <h2>MASCC skoru</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="b5"><span class="txt">Belirti yok veya hafif<small>febril nötropeninin genel durumu nasıl etkilediği</small></span><span class="pts">+5</span></label>
+      <label class="item"><input type="checkbox" id="b3"><span class="txt">Orta düzeyde belirti<small>“hafif” ile birlikte işaretlenemez; ağır belirti veya ölmek üzere: 0</small></span><span class="pts">+3</span></label>
+      <div class="item auto"><span class="mk" id="m-sbp">–</span><span class="txt">Hipotansiyon yok (sistolik &gt; 90 mmHg)</span><span class="pts">+5</span></div>
+      <label class="item"><input type="checkbox" id="m-copd"><span class="txt">KOAH yok<small>aktif kronik bronşit, amfizem, FEV düşüklüğü veya başvuruda oksijen, steroid ya da bronkodilatör gereksinimi yok</small></span><span class="pts">+4</span></label>
+      <label class="item"><input type="checkbox" id="m-tum"><span class="txt">Solid tümör veya daha önce fungal enfeksiyon geçirmemiş hematolojik malignite<small>kanıtlanmış ya da ampirik tedavi edilmiş fungal enfeksiyon öyküsü varsa işaretlemeyin</small></span><span class="pts">+4</span></label>
+      <label class="item"><input type="checkbox" id="m-dhy"><span class="txt">Parenteral sıvı gerektiren dehidratasyon yok</span><span class="pts">+3</span></label>
+      <label class="item"><input type="checkbox" id="m-out"><span class="txt">Ateş ayaktan izlenirken başladı</span><span class="pts">+3</span></label>
+      <div class="item auto"><span class="mk" id="m-age">–</span><span class="txt">Yaş &lt; 60</span><span class="pts">+2</span></div>
+    </div>
+    <p class="note">Yalnız olumlu özellikler puan alır: işaretlenmeyen madde 0 puandır, böylece eksik bilgi skoru yükseltmez.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>MASCC sonucu</h2>
+    <div class="res"><span class="num" id="mas">–</span><span class="of">/ 26</span><span class="pill" id="masp"></span></div>
+    <p class="advice" id="masa"></p>
+    <p class="note">Klastersky 2000: ≥ 21 puan düşük risk (pozitif prediktif değer %91, yani düşük risk sınıfındakilerin ~%9’unda ciddi komplikasyon); &lt; 21 yüksek risk.</p>
+  </section>
+
+  <section class="card">
+    <h2>CISNE skoru</h2>
+    <p class="note">Yalnız solid tümörlü, hafif-orta yoğunlukta kemoterapi alan ve başvuruda stabil görünen (organ yetmezliği, hipotansiyon, ağır enfeksiyon yok) hastada. Hematolojik malignite ve lenfomada kullanılmaz.</p>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="c-ok" checked><span class="txt">Solid tümör ve klinik olarak stabil<small>işaretlenmezse CISNE hesaplanmaz</small></span></label>
+    </div>
+    <div class="grid">
+      <div class="field"><label for="ecog">ECOG performansı <span>0–4</span></label><input id="ecog" type="number" inputmode="numeric" step="1" min="0" max="4" value="1"></div>
+      <div class="field"><label for="glu">Başvuru glukozu <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="140"></div>
+      <div class="field"><label for="mono">Monosit <span>×10³/µL</span></label><input id="mono" type="number" inputmode="decimal" step="any" value="0.15"></div>
+      <div class="field"><label for="muc">Mukozit derecesi <span>NCI 0–4</span></label><input id="muc" type="number" inputmode="numeric" step="1" min="0" max="4" value="0"></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="c-dm"><span class="txt">Diyabet veya steroid kullanımı<small>stres hiperglisemisi eşiği 121 yerine 250 mg/dL olur</small></span></label>
+      <label class="item"><input type="checkbox" id="c-copd"><span class="txt">KOAH (tedavi altında)<small>steroid, oksijen veya bronkodilatör kullanıyor</small></span><span class="pts">+1</span></label>
+      <label class="item"><input type="checkbox" id="c-cvd"><span class="txt">Kronik kardiyovasküler hastalık<small>kalp yetmezliği, kardiyomiyopati, kor pulmonale, hipertansif kalp hastalığı, aritmi, kapak hastalığı; tek komplikasyonsuz AF atağı sayılmaz</small></span><span class="pts">+1</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>CISNE sonucu</h2>
+    <div class="res"><span class="num" id="cis">–</span><span class="of">/ 8</span><span class="pill" id="cisp"></span></div>
+    <div class="sub"><span>ECOG ≥ 2 (+2)</span><b id="c1">–</b></div>
+    <div class="sub"><span>Stres hiperglisemisi (+2)</span><b id="c2">–</b></div>
+    <div class="sub"><span>KOAH (+1) · KV hastalık (+1)</span><b id="c3">–</b></div>
+    <div class="sub"><span>Mukozit ≥ 2 (+1)</span><b id="c4">–</b></div>
+    <div class="sub"><span>Monosit &lt; 200/µL (+1)</span><b id="c5">–</b></div>
+    <p class="advice" id="cisa"></p>
+    <p class="note">Carmona-Bayonas 2015 (FINITE, doğrulama kohortu) ciddi komplikasyon: sınıf I (0 puan) %1,1, sınıf II (1–2) %6,2, sınıf III (≥ 3) %36. Stres hiperglisemisi: başvuru glukozu ≥ 121 mg/dL, diyabet veya steroid kullanımında ≥ 250 mg/dL.</p>
+  </section>
+
+  <section class="card">
+    <h2>Yüksek risk ve tedavi seçimini değiştiren durumlar</h2>
+    <span class="lbl">IDSA yüksek risk bulguları</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="h-hd"><span class="txt">Hemodinamik instabilite veya sepsis bulgusu</span></label>
+      <label class="item"><input type="checkbox" id="h-gi"><span class="txt">Yeni karın ağrısı, bulantı-kusma veya ishal<small>ya da yutmayı engelleyen mukozit</small></span></label>
+      <label class="item"><input type="checkbox" id="h-neu"><span class="txt">Yeni nörolojik veya mental durum değişikliği</span></label>
+      <label class="item"><input type="checkbox" id="h-lung"><span class="txt">Yeni pulmoner infiltrat, hipoksemi veya altta yatan kronik akciğer hastalığı</span></label>
+      <label class="item"><input type="checkbox" id="h-liv"><span class="txt">Karaciğer yetmezliği<small>aminotransferaz &gt; 5 × üst sınır</small></span></label>
+    </div>
+    <span class="lbl">Vankomisin (gram pozitif kapsam) endikasyonları</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="v-pn"><span class="txt">Radyolojik olarak gösterilmiş pnömoni<small>IDSA yüksek risk bulgusu da sayılır</small></span></label>
+      <label class="item"><input type="checkbox" id="v-bc"><span class="txt">Kan kültüründe gram pozitif bakteri<small>tür ve duyarlılık çıkmadan</small></span></label>
+      <label class="item"><input type="checkbox" id="v-cvc"><span class="txt">Ciddi kateter enfeksiyonu şüphesi<small>ör. kateterden infüzyonla titreme, giriş yerinde selülit; IDSA yüksek risk bulgusu da sayılır</small></span></label>
+      <label class="item"><input type="checkbox" id="v-sst"><span class="txt">Deri veya yumuşak doku enfeksiyonu</span></label>
+      <label class="item"><input type="checkbox" id="v-col"><span class="txt">MRSA, VRE veya penisiline dirençli pnömokok kolonizasyonu</span></label>
+      <label class="item"><input type="checkbox" id="v-muc"><span class="txt">Ağır mukozit + kinolon profilaksisi almış, ampirik tedavi seftazidim<small>IDSA 2010 bu maddeyi yalnız seftazidim kullanılıyorsa sayar; sefepim, piperasilin-tazobaktam ve karbapenem viridans streptokokları kapsar</small></span></label>
+    </div>
+    <span class="lbl">Direnç ve alerji</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="r-esbl"><span class="txt">ESBL kolonizasyonu veya önceki ESBL enfeksiyonu<small>ya da merkezde ESBL’li Enterobacterales başvuruda sık görülüyor (yerel antibiyogram)</small></span></label>
+      <label class="item"><input type="checkbox" id="r-cre"><span class="txt">Karbapenem dirençli Enterobacterales (KPC, OXA-48) kolonizasyonu veya öyküsü</span></label>
+      <label class="item"><input type="checkbox" id="r-fq"><span class="txt">Ateşten önce kinolon profilaksisi alıyordu</span></label>
+      <label class="item"><input type="checkbox" id="r-pen"><span class="txt">Ciddi penisilin alerjisi<small>anafilaksi, anjiyoödem veya ağır deri reaksiyonu</small></span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Risk ve ampirik tedavi</h2>
+    <div class="res"><span class="pill" id="rkp"></span></div>
+    <p class="advice" id="rka"></p>
+    <ol class="rec" id="rx"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Böbrek işlevi</h2>
+    <div class="grid">
+      <div class="field"><label for="crclin">CrCl <span>mL/dk, doğrudan</span></label><input id="crclin" type="number" inputmode="decimal" step="any" value="" placeholder="boşsa hesaplanır"></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="hd"><span class="txt">Hemodiyalize giriyor</span></label>
+    </div>
+    <p class="note">CrCl girilmezse yaş, kilo, boy, kreatinin ve cinsiyetten Cockcroft-Gault ile hesaplanır (<a class="link" href="bobrek-ilac-dozu.html">Böbrekte ilaç dozu</a> aracıyla aynı yöntem ve aynı doz basamakları). Akut böbrek hasarında kreatinin sabit olmadığı için hesap güvenilir değildir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Böbreğe göre doz</h2>
+    <span class="lbl">Kreatinin klerensi (Cockcroft-Gault)</span>
+    <div class="res"><span class="num" id="crcl">–</span><span class="of">mL/dk</span><span class="pill" id="crp"></span></div>
+    <p class="note" id="crn"></p>
+    <table class="t">
+      <thead><tr><th>İlaç</th><th>Bu hasta için</th></tr></thead>
+      <tbody id="rd"></tbody>
+    </table>
+    <p class="note">Olağan doz CrCl normalken verilen febril nötropeni dozudur. Sefepim basamakları Türkiye KÜB’ü ve AB SmPC’ye göredir (eşik 50 mL/dk; FDA etiketinde 60). Vankomisin gerçek kiloyla, 250 mg’a yuvarlanarak hesaplanır; AUC hedefli düzey izlemi gerekir. Ayrıntı ve diğer ilaçlar: <a class="link" href="bobrek-ilac-dozu.html">Böbrekte ilaç dozu →</a></p>
+  </section>
+
+  <section class="card">
+    <h2>Ayaktan tedavi ölçütleri</h2>
+    <ul class="chk">
+      <li>Klinik değerlendirmeyle düşük risk: MASCC ≥ 21 (veya Talcott grup 4), stabil solid tümörde CISNE ek araç olarak; nötropeninin ≤ 7 gün sürmesi beklenir, aktif ek hastalık, organ işlev bozukluğu yok (ASCO/IDSA 2018).</li>
+      <li>Hastaneye ≤ 1 saat veya ≤ 48 km uzaklıkta oturuyor; evde 24 saat bakım veren biri var; 24 saat telefon ve ulaşım olanağı var.</li>
+      <li>Onkoloğu ayaktan izleme onay veriyor; tedaviye uyumsuzluk öyküsü yok; ağızdan ilaç alabiliyor.</li>
+      <li>İlk doz klinikte, acilde ya da serviste verilir; taburcu etmeden önce en az 4 saat gözlem.</li>
+      <li>İlk 3 gün her gün telefonla veya yüz yüze izlem. 2–3 günde ateş düşmezse, yeni enfeksiyon bulgusu, ağızdan alamama veya antibiyotik değişikliği gereği olursa yatırın.</li>
+      <li>Kinolon profilaksisi alırken ateşlenen hastada ağızdan kinolonlu rejim kullanılmaz; yatırarak IV tedavi.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>İzlem ve süre</h2>
+    <ul class="chk">
+      <li>Antibiyotikten önce en az 2 set kan kültürü (santral kateter varsa biri kateterden, biri periferden), klinik odağa göre idrar, balgam ve diğer örnekler; tam kan, böbrek ve karaciğer testleri, akciğer grafisi. Kültür için antibiyotiği geciktirmeyin.</li>
+      <li>Vankomisin veya başka gram pozitif ajan başlandıysa, 2. günde gram pozitif enfeksiyon kanıtı yoksa kesin (IDSA 2010).</li>
+      <li>Belgelenmiş enfeksiyonda en az nötropeni süresince (MNS ≥ 500/mm³ olana dek), gerekirse enfeksiyonun kendi süresi kadar.</li>
+      <li>Odak bulunamayan ateşte IDSA 2010 kemik iliği düzelmesine (MNS &gt; 500/mm³) kadar sürdürmeyi önerir; ECIL-4 ise başvurudan beri stabil ve en az 48 saat ateşsiz hastada 72. saatten sonra nötrofil sayısından bağımsız kesmeyi önerir.</li>
+      <li>72–96. saatte klinik seyir ve kültüre göre rejimi gözden geçirin. Geniş spektrumlu antibiyotiğe rağmen 4–7 gün süren ateşte invaziv fungal enfeksiyon araştırın (BT, galaktomannan) ve ampirik antifungal düşünün.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Türkiye’de direnç</h2>
+    <ul class="chk">
+      <li>Ülkemizde Enterobacterales’te ESBL ve kinolon direnci yüksektir; karbapenemaz olarak OXA-48 endemiktir (KPC ve NDM daha seyrek). Hastanenizin antibiyogramına ve enfeksiyon hastalıkları önerilerine göre uyarlayın.</li>
+      <li>Karbapenemle başlama için kılavuzlarda sayısal bir yerel direnç eşiği yoktur. ECIL-4: bilinen ESBL veya dirençli patojen kolonizasyonu ya da enfeksiyonu, komplike başvuru (hemodinamik instabilite, pnömoni vb.) veya merkezde dirençli patojenlerin başvuruda sık görülmesi durumunda geniş başlayıp kültüre göre daraltın (de-eskalasyon); diğer hastalarda karbapenemsiz başlayın (eskalasyon).</li>
+      <li>Karbapenem dirençli Enterobacterales kolonizasyonu veya öyküsünde ampirik tedaviyi enfeksiyon hastalıklarıyla birlikte planlayın; OXA-48’de seftazidim-avibaktam duyarlılığına bakılır. Ağızdan kinolonlu rejimin yerel E. coli kinolon direnci yüksekse başarısız olabileceğini unutmayın; SEOM 2018 bu nedenle kinolon monoterapisini düşük riskte de önermez.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: Freifeld AG ve ark. IDSA 2010 nötropenik kanser hastasında antimikrobiyal kullanım rehberi, Clin Infect Dis 2011;52:e56–93 (ateş ve nötropeni tanımı, yüksek/düşük risk tanımı, MASCC tablosu, antipsödomonal beta-laktam monoterapisi, vankomisin endikasyonları ve 2. günde kesme, ESBL/KPC/MRSA/VRE değişiklikleri, ilk dozun 2 saat içinde verilmesi, süre); Taplitz RA ve ark. ASCO/IDSA 2018 ayaktan yönetim rehberi, J Clin Oncol 2018;36:1443–53 (ilk doz triyajdan sonra 1 saat içinde, ≥ 4 saat gözlem, kinolon + amoksisilin-klavulanat veya alerjide klindamisin, kinolon profilaksisinden sonra kullanılmaz, psikososyal ve lojistik ölçütler, CISNE’nin stabil solid tümörde ek araç olması); Klastersky J ve ark. ESMO 2016 febril nötropeni kılavuzu, Ann Oncol 2016;27(suppl 5):v111–8 (tanım); Klastersky J ve ark. MASCC risk indeksi, J Clin Oncol 2000;18:3038–51; Carmona-Bayonas A ve ark. CISNE doğrulaması, J Clin Oncol 2015;33:465–71; Carmona-Bayonas A ve ark. SEOM 2018 solid tümörde febril nötropeni rehberi, Clin Transl Oncol 2019;21:75–86 (piperasilin-tazobaktam 4,5 g 6 saatte bir, meropenem 1 g 8 saatte bir, sefepim 2 g 8 saatte bir, ilk saat içinde başlama, glikopeptidi 48 saatte kesme, CISNE ≥ 3’te taburculuktan kaçınma); Averbuch D ve ark. ECIL-4, Haematologica 2013;98:1826–35 (eskalasyon/de-eskalasyon, erken kesme); Mert A ve ark. Sci Rep 2024;14:26337 (Türkiye’de OXA-48 endemisitesi); NCCN Prevention and Treatment of Cancer-Related Infections (genel çerçeve). Böbrek dozları <a class="link" href="bobrek-ilac-dozu.html">Böbrekte ilaç dozu</a> aracıyla aynıdır (ürün bilgileri, Türkiye KÜB’leri, ASHP/IDSA 2020 vankomisin konsensüsü). Ağızdan rejim dozları kılavuzlarda verilmez; olağan erişkin dozlardır. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var ck=function(id){return $(id).checked};
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+
+  // Böbrek dozları: bobrek-ilac-dozu.html ile aynı basamaklar. f(c, p) -> doz metni; hd: hemodiyaliz dozu
+  var vm=function(w,k){return w?' ('+Math.round(w*k/250)*250+' mg)':''};
+  var vl=function(w){var x=Math.round(w*25/250)*250;return w?' ('+(x>3000?'3000 mg, üst sınır':x+' mg')+')':''};
+  var R={
+    fep:{n:'Sefepim',f:function(c){return c>50?'2 g 8 saatte bir':c>=30?'2 g 12 saatte bir':c>10?'2 g 24 saatte bir':'1 g 24 saatte bir'},hd:'1. gün 1 g yükleme, sonra 1 g 24 saatte bir (febril nötropeni); diyaliz günü diyalizden sonra'},
+    tzp:{n:'Piperasilin-tazobaktam',f:function(c){return c>40?'4,5 g 6 saatte bir':c>=20?'3,375 g 6 saatte bir':'2,25 g 6 saatte bir'},hd:'2,25 g 8 saatte bir + diyaliz sonrası 0,75 g'},
+    mem:{n:'Meropenem',f:function(c){return c>50?'1 g 8 saatte bir':c>=26?'1 g 12 saatte bir':c>=10?'500 mg 12 saatte bir':'500 mg 24 saatte bir'},hd:'500 mg 24 saatte bir, diyaliz günü diyalizden sonra'},
+    van:{n:'Vankomisin',f:function(c,w){var L='Yükleme 25 mg/kg'+vl(w)+', idame 15 mg/kg'+vm(w,15);return c>=90?L+' 8–12 saatte bir':c>=50?L+' 12 saatte bir':c>=20?L+' 24 saatte bir':'Yükleme 25 mg/kg'+vl(w)+', sonra 15 mg/kg'+vm(w,15)+' 48–72 saatte bir, düzeye göre'},hd:function(w){return 'Yükleme 25 mg/kg'+vl(w)+', sonra her diyalizden sonra 500–1000 mg; diyaliz öncesi düzeye göre'}},
+    cip:{n:'Siprofloksasin (ağızdan)',f:function(c){return c>=50?'500–750 mg 12 saatte bir':c>=30?'250–500 mg 12 saatte bir':'250–500 mg 18 saatte bir'},hd:'250–500 mg 24 saatte bir, diyalizden sonra'},
+    amc:{n:'Amoksisilin-klavulanat (ağızdan)',f:function(c){return c>=30?'875/125 mg 12 saatte bir veya 500/125 mg 8 saatte bir':c>=10?'500/125 mg 12 saatte bir':'500/125 mg 24 saatte bir'},hd:'500/125 mg 24 saatte bir; diyaliz sırasında ve sonrasında ek doz'}
+  };
+  var ORDER=['fep','tzp','mem','van','cip','amc'];
+  // Doz metni: normal böbrekte olağan, yoksa ayarlı
+  function dose(k,ren){var d=R[k];if(!ren)return null;if(ren.hd)return typeof d.hd==='function'?d.hd(ren.w):d.hd;return d.f(ren.c,ren.w)}
+  function usual(k,w){return R[k].f(120,w)}
+
+  // MASCC birbirini dışlayan belirti maddeleri
+  $('b5').addEventListener('change',function(){if(this.checked)$('b3').checked=false});
+  $('b3').addEventListener('change',function(){if(this.checked)$('b5').checked=false});
+
+  function calc(){
+    var age=v('age'),wt=v('wt'),ht=v('ht'),scr=v('scr'),sbp=v('sbp'),T=v('temp'),fem=segVal('sex')==='f';
+
+    // 1) MNS ve tanı (eşik karşılaştırmaları ham değerle)
+    var wbc=v('wbc'),ne=v('neu'),ba=v('band'),anc=null;
+    if(wbc!==null&&ne!==null)anc=wbc*1000*(ne+(ba===null?0:ba))/100;
+    if(anc===null){$('anc').textContent='–';pill('ancp','','')}
+    else{$('anc').textContent=fm(Math.round(anc),0);
+      if(anc<=100)pill('ancp','≤ 100: derin nötropeni','var(--high)');
+      else if(anc<500)pill('ancp','< 500: ağır nötropeni','var(--high)');
+      else if(anc<1000)pill('ancp','500–999','var(--warn)');
+      else pill('ancp','≥ 1000','var(--ok)')}
+    var fev=null;
+    if(T!==null)fev=T>=38.3||(T>=38&&ck('sus'));
+    $('fevo').textContent=T===null?'ateş girilmedi':fev?(T>=38.3?'evet (≥ 38,3 °C)':'evet (≥ 38,0 °C, 1 saat)'):(T>=38?'1 saat sürmeli':'hayır');
+    var neut=null;
+    if(anc!==null)neut=anc<500||ck('fall');else if(ck('fall'))neut=true;
+    $('neuo').textContent=neut===null?'MNS girilmedi':neut?(anc!==null&&anc<500?'evet (MNS < 500)':'evet (48 saatte düşmesi bekleniyor)'):'hayır';
+    var fn=null;
+    if(fev===false||neut===false)fn=false;else if(fev&&neut)fn=true;
+    if(fn===null){pill('dxp','Tanı için eksik veri','var(--muted)');$('dxa').textContent='Ateş ve MNS (veya beklenen düşüş) girilmeden tanı konamaz.'}
+    else if(fn){pill('dxp','Febril nötropeni','var(--high)');$('dxa').textContent='Tıbbi acil: değerlendirme triyajdan sonraki 15 dakika içinde, ilk antibiyotik dozu 1 saat içinde (ASCO/IDSA 2018).'}
+    else{pill('dxp','Febril nötropeni ölçütü karşılanmadı','var(--ok)');$('dxa').textContent='Klinik kuşku sürüyorsa (ör. steroid kullanan, ateşi baskılanmış ama sepsis bulgusu olan hasta) febril nötropeni gibi yönetin; ateşi ve MNS’yi tekrarlayın.'}
+
+    // 2) MASCC: yaş ve sistolik KB zorunlu
+    var mk=function(id,b){$(id).textContent=b===null?'?':b?'✓':'✗'};
+    var sOk=sbp===null?null:sbp>90,aOk=age===null?null:age<60;
+    mk('m-sbp',sOk);mk('m-age',aOk);
+    var ms=(ck('b5')?5:ck('b3')?3:0)+(sOk?5:0)+(ck('m-copd')?4:0)+(ck('m-tum')?4:0)+(ck('m-dhy')?3:0)+(ck('m-out')?3:0)+(aOk?2:0);
+    var masMiss=[];if(sbp===null)masMiss.push('sistolik KB');if(age===null)masMiss.push('yaş');
+    var masLow=null;
+    if(masMiss.length){$('mas').textContent=ms;pill('masp','Eksik: '+masMiss.join(', '),'var(--muted)');$('masa').textContent='Risk sınıfı verilmedi. '+masMiss.join(' ve ')+' girilmeden düşük risk denemez.'}
+    else{$('mas').textContent=ms;masLow=ms>=21;
+      if(masLow){pill('masp','≥ 21: düşük risk','var(--ok)');$('masa').textContent='Düşük komplikasyon riski. Yüksek risk bulgusu yoksa ağızdan tedavi ve uygun hastada ayaktan izlem düşünülebilir.'}
+      else{pill('masp','< 21: yüksek risk','var(--high)');$('masa').textContent='Yatırarak IV ampirik tedavi.'}}
+
+    // 3) CISNE
+    var cis=null,cisMiss=[],c1=null,c2=null,c4=null,c5=null;
+    var ec=v('ecog'),gl=v('glu'),mo=v('mono'),mu=v('muc');
+    if(!ck('c-ok')){$('cis').textContent='–';pill('cisp','Uygulanmaz','var(--muted)');$('cisa').textContent='CISNE yalnız stabil görünen solid tümörlü hastada kullanılır.';['c1','c2','c3','c4','c5'].forEach(function(i){$(i).textContent='–'})}
+    else{
+      if(ec===null)cisMiss.push('ECOG');if(gl===null)cisMiss.push('glukoz');if(mo===null)cisMiss.push('monosit');if(mu===null)cisMiss.push('mukozit');
+      if(ec!==null)c1=ec>=2;if(gl!==null)c2=gl>=(ck('c-dm')?250:121);if(mu!==null)c4=mu>=2;if(mo!==null)c5=mo*1000<200;
+      var yn=function(b){return b===null?'veri yok':b?'evet':'hayır'};
+      $('c1').textContent=yn(c1);$('c2').textContent=yn(c2)+(gl!==null?' ('+fm(gl,0)+' mg/dL, eşik '+(ck('c-dm')?250:121)+')':'');
+      $('c3').textContent=(ck('c-copd')?'evet':'hayır')+' · '+(ck('c-cvd')?'evet':'hayır');$('c4').textContent=yn(c4);
+      $('c5').textContent=yn(c5)+(mo!==null?' ('+fm(Math.round(mo*1000),0)+'/µL)':'');
+      var cp=(c1?2:0)+(c2?2:0)+(ck('c-copd')?1:0)+(ck('c-cvd')?1:0)+(c4?1:0)+(c5?1:0);
+      if(cisMiss.length){$('cis').textContent=cp;pill('cisp','Eksik: '+cisMiss.join(', '),'var(--muted)');$('cisa').textContent='Sınıf verilmedi: eksik maddeler puan ekleyebilir, şu anki puan en az değerdir.'}
+      else{cis=cp;$('cis').textContent=cp;
+        if(cp===0){pill('cisp','Sınıf I: düşük risk','var(--ok)');$('cisa').textContent='Ciddi komplikasyon ~%1. Diğer ölçütler uygunsa ayaktan veya erken taburculuk düşünülebilir.'}
+        else if(cp<=2){pill('cisp','Sınıf II: orta risk','var(--warn)');$('cisa').textContent='Ciddi komplikasyon ~%6. Ek klinik ve mikrobiyolojik risk etkenlerini göz önüne alın; 2 puanda ayaktan tedaviye temkinli yaklaşın (SEOM 2018).'}
+        else{pill('cisp','Sınıf III: yüksek risk','var(--high)');$('cisa').textContent='Ciddi komplikasyon ~%36. MASCC düşük risk gösterse bile yatırarak izleyin; stabilite doğrulanıp kan kültürleri negatif çıkana dek taburcu etmeyin.'}}
+    }
+
+    // 4) Böbrek işlevi (bobrek-ilac-dozu.html ile aynı Cockcroft-Gault ve kilo seçimi)
+    var hd=ck('hd'),cin=v('crclin'),c=null,wl='',src='';
+    if(cin!==null&&cin>=0){c=cin;src='doğrudan girilen değer'}
+    else if(age!==null&&wt!==null&&scr!==null&&scr>0&&age>=18){
+      var use=wt;wl='gerçek kilo';
+      if(ht!==null&&ht>=152.4){var ibw=(fem?45.5:50)+0.91*(ht-152.4),abw=ibw+0.4*(wt-ibw);
+        if(wt<ibw){use=wt;wl='gerçek kilo'}else if(wt>1.2*ibw){use=abw;wl='düzeltilmiş kilo ('+Math.round(abw)+' kg)'}else{use=ibw;wl='ideal kilo ('+Math.round(ibw)+' kg)'}}
+      c=(140-age)*use/(72*scr)*(fem?0.85:1);src='Cockcroft-Gault, '+wl;
+    }
+    var ren=hd?{hd:true,w:wt}:(c===null?null:{c:c,w:wt});
+    if(hd){$('crcl').textContent='HD';pill('crp','Hemodiyaliz','var(--high)');$('crn').textContent='Hemodiyaliz dozları gösteriliyor.'}
+    else if(c===null){$('crcl').textContent='–';pill('crp','','');$('crn').textContent='CrCl girin ya da yaş, kilo ve kreatinin girin. Böbrek işlevi bilinmeden olağan dozlar gösterilir.'}
+    else{$('crcl').textContent=fm(Math.round(c),0);
+      c>=60?pill('crp','≥ 60','var(--ok)'):c>=30?pill('crp','30–59','var(--warn)'):pill('crp','< 30','var(--high)');
+      $('crn').textContent='Kaynak: '+src+'.'}
+    var tb=$('rd');tb.innerHTML='';
+    ORDER.forEach(function(k){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');
+      var u=usual(k,wt),d=dose(k,ren);a.textContent=R[k].n;
+      if(d===null){b.textContent=u;var s0=document.createElement('small');s0.textContent='böbrek işlevi bilinmiyor: olağan doz';b.appendChild(s0)}
+      else{b.textContent=d;if(d!==u){var s=document.createElement('small');s.textContent='Olağan: '+u;b.appendChild(s)}}
+      tr.appendChild(a);tr.appendChild(b);tb.appendChild(tr)});
+    var D=function(k){var d=dose(k,ren);return d===null?usual(k,wt):d};
+    var renTag=ren?(hd?' (hemodiyaliz)':' (CrCl '+fm(Math.round(c),0)+')'):'';
+
+    // 5) Risk ve ampirik tedavi
+    $('rx').innerHTML='';
+    var hi=[];
+    if(ck('h-hd'))hi.push('hemodinamik instabilite');if(ck('h-gi'))hi.push('karın/GİS bulgusu');if(ck('h-neu'))hi.push('nörolojik değişiklik');
+    if(ck('h-lung'))hi.push('akciğer tutulumu');if(ck('h-liv'))hi.push('karaciğer yetmezliği');
+    if(ck('v-pn'))hi.push('radyolojik pnömoni');if(ck('v-cvc'))hi.push('kateter enfeksiyonu');
+    if(hd||(c!==null&&c<30))hi.push('CrCl < 30');
+    if(ck('prol'))hi.push(anc!==null&&anc<=100?'> 7 gün süren derin nötropeni':'> 7 gün sürmesi beklenen nötropeni');
+    // Eksik veri hiçbir zaman düşük risk vermez: MASCC, böbrek işlevi (CrCl < 30 yüksek risk ölçütü) ve uygulanıyorsa CISNE tam olmalı
+    var rMiss=[];if(masMiss.length)rMiss.push('MASCC için '+masMiss.join(' ve '));
+    if(!hd&&c===null)rMiss.push('böbrek işlevi (kreatinin veya CrCl; CrCl < 30 yüksek risk ölçütüdür)');
+    if(ck('c-ok')&&cisMiss.length)rMiss.push('CISNE için '+cisMiss.join(', ')+' (CISNE uygulanmıyorsa kutusunu kaldırın)');
+    var risk;
+    if(hi.length)risk='high';else if(masLow===null)risk='unk';else if(!masLow)risk='high';else if(cis!==null&&cis>=3)risk='cisHigh';else if(rMiss.length)risk='unk';else risk='low';
+    if(risk==='high'){pill('rkp','Yüksek risk: yatırarak IV tedavi','var(--high)');$('rka').textContent=(hi.length?'IDSA yüksek risk bulgusu: '+hi.join(', ')+'.':'MASCC < 21.')}
+    else if(risk==='unk'){pill('rkp','Risk belirlenemedi','var(--warn)');$('rka').textContent='Eksik: '+rMiss.join('; ')+'. Risk belirlenene dek yüksek risk gibi yönetin.'}
+    else if(risk==='cisHigh'){pill('rkp','MASCC düşük, CISNE yüksek','var(--high)');$('rka').textContent='Stabil görünse de ciddi komplikasyon riski yüksek: yatırarak IV tedavi, taburculuğu erteleyin.'}
+    else{pill('rkp','Düşük risk','var(--ok)');$('rka').textContent='MASCC ≥ 21, IDSA yüksek risk bulgusu yok'+(cis!==null?', CISNE sınıf '+(cis===0?'I':'II'):'')+'. Ağızdan tedavi uygun; ayaktan izlem için aşağıdaki ölçütlerin tümü gerekir.'}
+    if(fn===false)li('rx','Not: febril nötropeni ölçütü şu an karşılanmıyor','Aşağıdaki öneriler ölçüt karşılandığında geçerlidir.');
+    li('rx','İlk antibiyotik dozu 1 saat içinde','Kan kültürü (en az 2 set) alıp hemen başlayın; kültür için antibiyotiği geciktirmeyin (ASCO/IDSA 2018, SEOM 2018; IDSA 2010: en geç 2 saat).');
+    var pen=ck('r-pen'),inst=ck('h-hd'),esbl=ck('r-esbl'),cre=ck('r-cre'),fq=ck('r-fq');
+    var vanc=inst||ck('v-pn')||ck('v-bc')||ck('v-cvc')||ck('v-sst')||ck('v-col')||ck('v-muc');
+    var oral=risk==='low'&&!fq;
+    if(oral){
+      if(pen)li('rx','Siprofloksasin + klindamisin (ağızdan)','Siprofloksasin '+D('cip')+renTag+' + klindamisin 300 mg 6 saatte bir (penisilin alerjisi; böbrekte ayar gerekmez).');
+      else li('rx','Siprofloksasin + amoksisilin-klavulanat (ağızdan)','Siprofloksasin '+D('cip')+' + amoksisilin-klavulanat '+D('amc')+renTag+'. Levofloksasin alternatif kinolondur. Kinolon tek başına önerilmez.');
+      li('rx','Ayaktan izlem yalnız ölçütler tamamsa','İlk doz hastanede, en az 4 saat gözlem; ilk 3 gün her gün izlem; 2–3 günde ateş düşmezse yatırın.');
+    }else{
+      if(risk==='low'&&fq)li('rx','Kinolon profilaksisi altında ateş','Düşük riskte bile ağızdan kinolonlu rejim kullanılmaz; yatırarak IV beta-laktam başlayın.');
+      if(pen&&(esbl||inst||cre))li('rx','Meropenem '+D('mem')+renTag,'Ciddi penisilin alerjisinde de karbapenemle çapraz reaksiyon < %1; ESBL riski veya instabilitede aztreonam yetersiz kalır (ESBL’ye etkisiz, gram pozitif kapsamaz). Kültüre göre 72–96. saatte daraltın.');
+      else if(pen)li('rx','Aztreonam 2 g IV 8 saatte bir + vankomisin','Ciddi penisilin alerjisinde (aztreonam gram pozitif kapsamaz). Böbrek yetmezliğinde aztreonam dozunu ayrıca ayarlayın. Alternatif: meropenem '+D('mem')+renTag+' (penisilinle çapraz reaksiyon < %1).');
+      else if(esbl||inst||cre)li('rx','Meropenem '+D('mem')+renTag,(esbl?'ESBL riski: ':'')+(inst?'hemodinamik instabilite: ':'')+'karbapenemle başlayıp kültüre göre 72–96. saatte daraltın (ECIL-4 de-eskalasyon). Uzatılmış infüzyon tercih edilebilir.');
+      else li('rx','Antipsödomonal beta-laktam monoterapisi','Sefepim '+D('fep')+' veya piperasilin-tazobaktam '+D('tzp')+renTag+'. Meropenem ('+D('mem')+') ESBL riski veya komplike tabloda ayrılır.');
+      if(inst){var am=wt?' ('+fm(Math.round(wt*15/10)*10,0)+'–'+fm(Math.round(wt*20/10)*10,0)+' mg)':'';
+        li('rx','+ amikasin 15–20 mg/kg IV 24 saatte bir'+am,'Hemodinamik instabilitede kombinasyon (ECIL-4). '+(ren&&(hd||c<60)?'Böbrek işlevi azalmış: aralığı düzeye göre uzatın, enfeksiyon hastalıkları/klinik farmakoloji ile birlikte dozlayın.':'Çukur düzey izleyin.'))}
+      if(cre)li('rx','Karbapenem dirençli Enterobacterales riski','Enfeksiyon hastalıkları konsültasyonu. Türkiye’de OXA-48 baskın; seftazidim-avibaktam veya kolistin seçimi duyarlılığa göre (IDSA 2010: KPC’de erken polimiksin/tigesiklin düşünün).');
+    }
+    var azt=pen&&!(esbl||inst||cre)&&!oral;
+    if((vanc||azt)&&!oral){
+      var why=[];if(azt)why.push('aztreonam gram pozitif kapsamaz');if(inst)why.push('hemodinamik instabilite');if(ck('v-pn'))why.push('pnömoni');if(ck('v-bc'))why.push('kanda gram pozitif');if(ck('v-cvc'))why.push('kateter enfeksiyonu');if(ck('v-sst'))why.push('deri-yumuşak doku');if(ck('v-col'))why.push('MRSA/VRE/PRSP kolonizasyonu');if(ck('v-muc'))why.push('ağır mukozit + kinolon profilaksisi, seftazidimle');
+      li('rx','+ vankomisin: '+D('van')+renTag,'Neden: '+why.join(', ')+'. AUC/MIC 400–600 hedefli düzey izlemi. 2. günde gram pozitif enfeksiyon kanıtı yoksa kesin. VRE kolonizasyonunda linezolid veya daptomisin düşünün.');
+    }else if(!vanc&&!oral&&!azt)li('rx','Vankomisin rutin olarak eklenmez','Yalnız yukarıdaki endikasyonlardan biri varsa ekleyin.');
+    if(vanc&&oral)li('rx','Vankomisin endikasyonu işaretli','Bu bulgular ayaktan tedaviyle bağdaşmaz; yeniden değerlendirin, yatırarak IV tedavi düşünün.');
+    li('rx','Yerel antibiyograma göre uyarlayın','Türkiye’de ESBL ve kinolon direnci yüksek, karbapenemaz olarak OXA-48 endemik.');
+  }
+  seg('sex',calc);
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

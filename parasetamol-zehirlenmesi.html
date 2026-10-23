@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Parasetamol Zehirlenmesi</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th,table.t td{text-align:left;padding:7px 5px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+.nm{width:100%;height:auto;display:block}
+.nm .gr{stroke:var(--line);stroke-width:1}
+.nm .ax{stroke:var(--muted);stroke-width:1}
+.nm text{fill:var(--muted);font:11px var(--font-body)}
+.nm .l150{stroke:var(--accent);stroke-width:2.5;fill:none}
+.nm .l100{stroke:var(--low);stroke-width:2.5;fill:none}
+.nm .l300{stroke:var(--high);stroke-width:1.8;fill:none;stroke-dasharray:6 4}
+.nm .pt{fill:var(--fg);stroke:var(--surface);stroke-width:2}
+.nm .pt0{fill:none;stroke:var(--muted);stroke-width:2;stroke-dasharray:3 2}
+.lgd{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;color:var(--muted);margin:0}
+.lgd i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Parasetamol Zehirlenmesi</h1>
+    <p>Alınan doz (mg/kg), Rumack-Matthew tedavi çizgisi (ABD 150, İngiltere 100), IV N-asetilsistein (21 saat ve SNAP 12 saat) dozları, tedavi sonu kontrol ve King's College ölçütleri</p>
+  </header>
+
+  <section class="card">
+    <h2>Alım</h2>
+    <div class="grid">
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="dose">Alınan toplam doz <span>mg</span></label><input id="dose" type="number" inputmode="decimal" step="any" value="15000"></div>
+    </div>
+    <p class="note">Örnek: 30 tablet × 500 mg = 15 000 mg. Bilinmiyorsa boş bırakın.</p>
+    <span class="lbl">Alım şekli</span>
+    <div class="seg wrapseg"><button type="button" data-g="al" data-v="tek" aria-pressed="true">Tek seferlik</button><button type="button" data-g="al" data-v="yay" aria-pressed="false">Zamana yayılmış</button><button type="button" data-g="al" data-v="bil" aria-pressed="false">Zaman bilinmiyor</button></div>
+    <p class="note" id="alnote">Tek seferlik: tüm doz 1 saat içinde alınmış. Zamana yayılmış (staggered): toplam doz 1 saatten uzun sürede alınmış; tekrarlayan terapötik üstü alım da buna dahildir. Saatten emin değilseniz “Zaman bilinmiyor” seçin.</p>
+    <div class="grid">
+      <div class="field" id="w-time"><label for="time" id="timelbl">Alımdan bu yana <span>saat</span></label><input id="time" type="number" inputmode="decimal" step="any" value="6"></div>
+      <div class="field"><label for="lvl">Serum parasetamol <span id="lvlu">mg/L</span></label><input id="lvl" type="number" inputmode="decimal" step="any" value="120"></div>
+    </div>
+    <span class="lbl">Düzey birimi</span>
+    <div class="seg"><button type="button" data-g="u" data-v="mg" aria-pressed="true">mg/L = µg/mL</button><button type="button" data-g="u" data-v="um" aria-pressed="false">µmol/L</button></div>
+    <div class="grid">
+      <div class="field"><label for="alt">ALT (başvuru) <span>U/L</span></label><input id="alt" type="number" inputmode="decimal" step="any" value="28"></div>
+      <div class="field"><label for="inr">INR (başvuru)</label><input id="inr" data-hasta="inr" type="number" inputmode="decimal" step="any" value="1.1"></div>
+      <div class="field"><label for="uln">ALT üst sınırı <span>U/L</span></label><input id="uln" type="number" inputmode="decimal" step="any" value="50"></div>
+    </div>
+    <span class="lbl">Tedavi çizgisi</span>
+    <div class="seg wrapseg"><button type="button" data-g="nom" data-v="usr" aria-pressed="true">ABD 150, riskte 100</button><button type="button" data-g="nom" data-v="us" aria-pressed="false">ABD 150</button><button type="button" data-g="nom" data-v="uk" aria-pressed="false">İngiltere 100</button></div>
+    <span class="lbl">Hepatotoksisite risk faktörü</span>
+    <div class="seg"><button type="button" data-g="rf" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="rf" data-v="1" aria-pressed="false">Var</button><button type="button" data-g="rf" data-v="b" aria-pressed="false">Bilinmiyor</button></div>
+    <p class="note">Risk faktörleri (eski İngiltere “yüksek risk” çizgisi): kronik alkol kullanımı, enzim indükleyiciler (karbamazepin, fenitoin, fenobarbital, rifampisin, St John’s wort), glutatyon azalması (malnütrisyon, anoreksiya, kaşeksi, HIV, uzun açlık). Türkiye için ulusal bir çizgi tercihi bulunamadı (TİTCK kısa ürün bilgileri nomogram belirtmez); bu yüzden varsayılan ABD 150 çizgisi, risk faktörü varsa veya bilinmiyorsa 100 çizgisidir. İngiltere (MHRA 2012) risk faktöründen bağımsız olarak herkese 100 çizgisini uygular.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>NAC kararı</h2>
+    <div class="res"><span class="pill" id="vp"></span></div>
+    <div class="sub"><span>Alınan doz</span><b id="o-dose">–</b></div>
+    <div class="sub"><span>Serum düzeyi</span><b id="o-lvl">–</b></div>
+    <div class="sub" id="s-line"><span id="o-linel">Tedavi çizgisi</span><b id="o-line">–</b></div>
+    <div class="sub" id="s-pos"><span>Düzey / çizgi</span><b id="o-pos">–</b></div>
+    <ol class="rec" id="rx"></ol>
+    <p class="note">Çizgiler 4. saatte 150 mg/L (ABD; Rumack-Matthew 200 çizgisinin %25 altı) ve 100 mg/L (İngiltere) noktalarından başlar, 4 saatlik yarılanma ömrüyle log-lineer iner, 24. saatte biter: düzey(t) = başlangıç × 2^(−(t−4)/4). İngiltere çizgisi 15. saatte 15 mg/L’den geçer. Düzey çizginin üzerinde veya tam üzerindeyse tedavi edilir. Dönüşüm: 1 mg/L = 6,615 µmol/L (mol. ağırlık 151,16).</p>
+  </section>
+
+  <section class="card">
+    <h2>Nomogram</h2>
+    <svg class="nm" id="nm" viewBox="0 0 340 230" role="img" aria-label="Rumack-Matthew nomogramı ve hastanın düzeyi"></svg>
+    <p class="lgd"><span><i style="border-color:var(--accent)"></i>ABD 150</span><span><i style="border-color:var(--low)"></i>İngiltere 100</span><span><i style="border-color:var(--high);border-top-style:dashed"></i>ABD yüksek risk 300</span><span>● hasta</span></p>
+    <p class="note">Dikey eksen logaritmik (mg/L). 4. saatten önce veya 24. saatten sonra çizilen nokta kesik daireyle gösterilir; bu düzeyler nomogramla yorumlanmaz.</p>
+  </section>
+
+  <section class="card">
+    <h2>NAC dozu</h2>
+    <span class="lbl">Doz hesabında ağırlık üst sınırı</span>
+    <div class="seg"><button type="button" data-g="cap" data-v="100" aria-pressed="true">100 kg (ABD)</button><button type="button" data-g="cap" data-v="110" aria-pressed="false">110 kg (İngiltere, TİTCK)</button></div>
+    <p class="note">Türkiye’de IV asetilsistein ampulleri 300 mg/3 mL’dir (%10 = 100 mg/mL; ör. Asist %10 3 mL ampul, Türktıpsan Asetilsistein 300 mg/3 mL). Hesap bu konsantrasyona göredir; farklı konsantrasyonda (ör. %20, 200 mg/mL) mL değerleri yarıya iner. Seyreltme: %5 dekstroz veya %0,9 NaCl.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>NAC infüzyonu</h2>
+    <div class="res"><span class="num" id="wc">–</span><span class="of">kg doz ağırlığı</span><span class="pill" id="wcp"></span></div>
+    <h3>21 saatlik rejim (150 / 50 / 100 mg/kg)</h3>
+    <table class="t">
+      <thead><tr><th>Torba</th><th>Doz</th><th>NAC 100 mg/mL</th><th>Hız</th></tr></thead>
+      <tbody>
+        <tr><td>1. torba <small>150 mg/kg · 1 saat</small></td><td id="a1">–</td><td id="a1v">–</td><td id="a1r">–</td></tr>
+        <tr><td>2. torba <small>50 mg/kg · 4 saat</small></td><td id="a2">–</td><td id="a2v">–</td><td id="a2r">–</td></tr>
+        <tr><td>3. torba <small>100 mg/kg · 16 saat</small></td><td id="a3">–</td><td id="a3v">–</td><td id="a3r">–</td></tr>
+      </tbody>
+    </table>
+    <div class="sub"><span>Toplam (21 saat)</span><b id="a-tot">–</b></div>
+    <h3>SNAP 12 saatlik rejim (100 / 200 mg/kg)</h3>
+    <table class="t">
+      <thead><tr><th>Torba</th><th>Doz</th><th>NAC 100 mg/mL</th><th>Hız</th></tr></thead>
+      <tbody>
+        <tr><td>1. torba <small>100 mg/kg · 2 saat</small></td><td id="s1">–</td><td id="s1v">–</td><td id="s1r">–</td></tr>
+        <tr><td>2. torba <small>200 mg/kg · 10 saat</small></td><td id="s2">–</td><td id="s2v">–</td><td id="s2r">–</td></tr>
+      </tbody>
+    </table>
+    <div class="sub"><span>Toplam (12 saat)</span><b id="s-tot">–</b></div>
+    <ol class="rec" id="rxN"></ol>
+    <p class="note">Hız = (çözücü + NAC hacmi) ÷ süre. Çözücü hacimleri ≥ 40 kg erişkin içindir (21 saat: 200 / 500 / 1000 mL; SNAP: 200 / 1000 mL; 250 mL’lik torbadan 50 mL çekilerek 200 mL elde edilir). Ampul sayısı yukarı yuvarlanır; artan kısım atılır. TİTCK kısa ürün bilgisi 21 saatlik rejimi ve 110 kg sınırını verir; SNAP Türkiye’de ruhsat metninde yer almaz, İngiltere’de RCEM ve TOXBASE tarafından önerilir.</p>
+  </section>
+
+  <section class="card">
+    <h2>Tedavi sonu kontrol</h2>
+    <p class="note">Kan örneği: SNAP’ta 2. torbanın bitmesinden yaklaşık 2 saat önce; 21 saatlik rejimde 3. torba biterken. INR, ALT, parasetamol düzeyi, kreatinin, glukoz, venöz kan gazı. Başvuru ALT değeri ilk karttan alınır.</p>
+    <div class="grid">
+      <div class="field"><label for="e-lvl">Son parasetamol <span>mg/L</span></label><input id="e-lvl" type="number" inputmode="decimal" step="any" value="8"></div>
+      <div class="field"><label for="e-alt">Son ALT <span>U/L</span></label><input id="e-alt" type="number" inputmode="decimal" step="any" value="35"></div>
+      <div class="field"><label for="e-inr">Son INR</label><input id="e-inr" type="number" inputmode="decimal" step="any" value="1.2"></div>
+      <div class="field"><label for="e-pk">Zirve ALT <span>U/L, ops.</span></label><input id="e-pk" type="number" inputmode="decimal" step="any" value="" placeholder="başvuru"></div>
+    </div>
+    <span class="lbl">Klinik olarak iyi (ensefalopati, kusma, karın ağrısı yok)</span>
+    <div class="seg"><button type="button" data-g="kl" data-v="1" aria-pressed="true">Evet</button><button type="button" data-g="kl" data-v="0" aria-pressed="false">Hayır</button></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>NAC durdurma</h2>
+    <div class="res"><span class="pill" id="ep"></span></div>
+    <h3>İngiltere SNAP / TOXBASE ölçütleri</h3>
+    <div class="sub"><span>INR ≤ 1,3</span><b id="u1">–</b></div>
+    <div class="sub"><span>ALT &lt; 100 U/L</span><b id="u2">–</b></div>
+    <div class="sub"><span>ALT &lt; 2 × başvuru değeri</span><b id="u3">–</b></div>
+    <div class="sub"><span>Parasetamol &lt; 20 mg/L</span><b id="u4">–</b></div>
+    <h3>ABD 2023 konsensüsü</h3>
+    <div class="sub"><span>Parasetamol &lt; 10 mg/L</span><b id="d1">–</b></div>
+    <div class="sub"><span>INR &lt; 2,0</span><b id="d2">–</b></div>
+    <div class="sub"><span>ALT normal veya zirveden ≥ %25 düşmüş</span><b id="d3">–</b></div>
+    <div class="sub"><span>Klinik olarak iyi</span><b id="d4">–</b></div>
+    <ol class="rec" id="rxE"></ol>
+    <p class="note">ABD 2023 konsensüsü NAC’ın 20–21 saatte rutin olarak kesilmesini hata sayar; durdurma ölçütleri karşılanana kadar sürdürülür (zirveden %25–50 düşüş). İngiltere SNAP: ölçütler karşılanmazsa 2. torba (200 mg/kg / 10 saat) tekrarlanır; sonraki torbalardan sonra INR ≤ 1,3 olana ya da INR iki ardışık ölçümde düşüp &lt; 3,0 olana kadar sürdürülür.</p>
+  </section>
+
+  <section class="card">
+    <h2>King's College ölçütleri</h2>
+    <p class="note">Parasetamole bağlı akut karaciğer yetmezliğinde nakil merkezine sevk/nakil değerlendirmesi için. Boş alanlar değerlendirme dışı kalır.</p>
+    <div class="grid">
+      <div class="field"><label for="ph">Arteriyel pH <span>sıvı sonrası</span></label><input id="ph" type="number" inputmode="decimal" step="any" value="" placeholder="7,35"></div>
+      <div class="field"><label for="k-inr">INR</label><input id="k-inr" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="lk4">Laktat erken <span>mmol/L, ~4 s</span></label><input id="lk4" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="lk12">Laktat sıvı sonrası <span>mmol/L, ~12 s</span></label><input id="lk12" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+    </div>
+    <span class="lbl">Hepatik ensefalopati (West Haven)</span>
+    <div class="seg"><button type="button" data-g="he" data-v="x" aria-pressed="true">Bilinmiyor</button><button type="button" data-g="he" data-v="0" aria-pressed="false">Yok / I–II</button><button type="button" data-g="he" data-v="1" aria-pressed="false">III–IV</button></div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>King's College sonucu</h2>
+    <div class="res"><span class="pill" id="kp"></span></div>
+    <div class="sub"><span>pH &lt; 7,30 (sıvı resüsitasyonu sonrası)</span><b id="k1">–</b></div>
+    <div class="sub"><span>INR &gt; 6,5 + Kr &gt; 3,4 mg/dL + ensefalopati III–IV (üçü birlikte, 24 saat içinde)</span><b id="k2">–</b></div>
+    <div class="sub"><span>Laktat &gt; 3,5 erken veya &gt; 3,0 sıvı sonrası (Bernal)</span><b id="k3">–</b></div>
+    <ol class="rec" id="rxK"></ol>
+    <p class="note">O’Grady 1989: pH &lt; 7,30 veya protrombin zamanı &gt; 100 sn (genellikle INR &gt; 6,5 olarak uygulanır) + kreatinin &gt; 300 µmol/L (3,4 mg/dL) + evre III–IV ensefalopati. Laktat ölçütü (Bernal 2002) duyarlılığı artıran değiştirilmiş ölçüttür.</p>
+  </section>
+
+  <section class="card">
+    <h2>Diğer noktalar</h2>
+    <ul class="chk">
+      <li><b>UZEM 114:</b> Ulusal Zehir Danışma Merkezi 7/24 ücretsiz danışmanlık verir; yüksek riskli, zamana yayılmış, gebelik, çocuk ve karaciğer hasarı olan olgularda arayın.</li>
+      <li>NAC alım sonrası ilk 8 saatte başlanırsa koruyucu etki en yüksektir; 8. saatten sonra etki belirgin azalır, ancak 24. saatten sonra ve karaciğer yetmezliğinde de verilir.</li>
+      <li>Aktif kömür: toksik dozda tek seferlik alımda erken başvuruda düşünün (ABD 2023: erişkinde 50–100 g; yüksek riskli alımda 4 saatten sonra da). Hava yolu korunmuyorsa vermeyin.</li>
+      <li>Anafilaktoid reaksiyon (kızarıklık, kaşıntı, bronkospazm): infüzyonu durdurun, antihistaminik/salbutamol verin, düzelince yeniden başlayın. Önceki reaksiyon kontrendikasyon değildir (MHRA 2012). SNAP’ta bu reaksiyonlar ve kusma belirgin azdır (Bateman 2014).</li>
+      <li>Uzatılmış salınımlı ürün veya opioid/antikolinerjik birlikte alımı: 4–12. saat düzeyi çizginin altında ama &gt; 10 mg/L ise 4–6 saat sonra tekrar ölçün (ABD 2023).</li>
+      <li>Gebelikte gebelik öncesi ağırlık kullanılır (110 kg üst sınır, İngiltere); NAC gebelikte de verilir.</li>
+      <li>Karaciğer merkezine erken danışma (İngiltere uygulaması): sıvıya rağmen pH &lt; 7,3 veya bikarbonat &lt; 18 mmol/L, INR 2. günde &gt; 3,0 veya sonrasında &gt; 4,0, oligüri/AKI, hipoglisemi, ensefalopati.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: MHRA Drug Safety Update, Eylül 2012 “Treating paracetamol overdose with intravenous acetylcysteine: new guidance” (4. saatte 100 mg/L ile 15. saatte 15 mg/L’yi birleştiren tek tedavi çizgisi, risk faktöründen bağımsız tedavi, zamana yayılmış ve zamanı belirsiz alımda nomogram kullanılmadan hemen NAC, ilk dozun 60 dakikada verilmesi, aşırı duyarlılığın kontrendikasyon olmaması); Dart RC ve ark. Management of acetaminophen poisoning in the US and Canada: a consensus statement. JAMA Netw Open 2023;6(8):e2327739 (4. saatte 150 µg/mL tedavi çizgisi, 300 µg/mL yüksek risk çizgisi ve ≥ 30 g yüksek riskli alım, &gt; 200 mg/kg veya &gt; 10 g’da 8. saati geçecekse düzeyi beklemeden NAC, ilk 20–24 saatte en az 300 mg/kg, 100 kg üst sınır, tekrarlayan alımda düzey &gt; 20 µg/mL veya anormal aminotransferaz, uzatılmış salınımda tekrar düzey, durdurma ölçütleri: düzey &lt; 10, INR &lt; 2,0, ALT normal veya zirveden %25–50 düşüş, klinik iyilik; ≥ 900 µg/mL + asidoz/bilinç değişikliğinde hemodiyaliz; aktif kömür 50–100 g); Bateman DN ve ark. Lancet 2014;383:697–704, doi:10.1016/S0140-6736(13)62062-0 (SNAP: 100 mg/kg 2 saat + 200 mg/kg 10 saat; daha az kusma ve anafilaktoid reaksiyon); RCEM, Use of the SNAP regimen for the treatment of paracetamol toxicity in adults and children, Mayıs 2023; NHS Scotland/TOXBASE tabanlı erişkin SNAP protokolleri (NHS Right Decisions “Adult paracetamol overdose and NAC”; NHS GGC SNAP protokolü: &lt; 75 mg/kg’da ciddi toksisite olası değil, zamana yayılmış alım tanımı &gt; 1 saat, 200/1000 mL seyreltme, 2. torba bitmeden 2 saat önce kan, durdurma INR ≤ 1,3, ALT &lt; 100 ve &lt; 2 × başvuru, düzey &lt; 20 mg/L; zamana yayılmış alımda düzey &gt; 10 mg/L, ALT &gt; 50, INR &gt; 1,3 hepatotoksisite riski); UK Defence Clinical Guidelines for Operations, Paracetamol overdose (110 kg üst sınır, 75 mg/kg eşiği, karaciğer merkezine danışma ölçütleri, TOXBASE’den aktarım); TİTCK kısa ürün bilgileri: Asist %10 300 mg/3 mL ampul ve Türktıpsan Asetilsistein 300 mg/3 mL enjeksiyonluk/infüzyonluk çözelti (150 mg/kg 1 saat, 50 mg/kg 4 saat, 100 mg/kg 16 saat; en az 200 mL’de seyreltme; 110 kg üst sınır); Acetadote (ABD) prospektüsü ve MHRA dozlama tabloları (21 saatlik rejimde ≥ 40 kg için 200 / 500 / 1000 mL; bu araçta doğrudan doğrulanmadı, TİTCK metni çözücü hacmi vermez); Rumack BH, Matthew H. Pediatrics 1975;55:871–6 (nomogram); O’Grady JG ve ark. Gastroenterology 1989;97:439–45, doi:10.1016/0016-5085(89)90081-4 (King's College ölçütleri); Bernal W ve ark. Lancet 2002;359:558–63, doi:10.1016/S0140-6736(02)07743-7 (laktat 3,5 / 3,0 mmol/L); T.C. Sağlık Bakanlığı Ulusal Zehir Danışma Merkezi (UZEM, 114). Bu araç klinik karar desteği içindir; tedavi kararı hastanın tüm klinik durumu ve UZEM/toksikoloji danışmanlığıyla verilmelidir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  var UM=1000/151.16; // 1 mg/L = 6,615 µmol/L
+  // Tedavi çizgisi: 4. saatte başlangıç değerinden 4 saatlik yarılanmayla iner (ham değer; yuvarlama yalnız gösterimde)
+  function line(start,t){return start*Math.pow(2,-(t-4)/4)}
+  var yn=function(b){return b===null?'veri yok':b?'evet':'hayır'};
+  var HI='var(--high)',WA='var(--warn)',OK='var(--ok)';
+
+  function calc(){
+    var w=v('wt'),D=v('dose'),t=v('time'),raw=v('lvl'),unit=segVal('u'),mode=segVal('al'),nom=segVal('nom'),rf=segVal('rf');
+    var alt=v('alt'),inr=v('inr'),uln=v('uln'),cap=+segVal('cap');
+    if(!(uln>0))uln=50;
+    $('lvlu').textContent=unit==='mg'?'mg/L':'µmol/L';
+    $('w-time').hidden=mode==='bil';
+    $('timelbl').firstChild.textContent=mode==='yay'?'Son alımdan bu yana ':'Alımdan bu yana ';
+    var C=raw===null||raw<0?null:(unit==='mg'?raw:raw/UM); // negatif düzey geçersiz: eksik sayılır
+    if(alt!==null&&alt<0)alt=null; if(inr!==null&&!(inr>0))inr=null;
+    var wc=w>0?Math.min(w,cap):null;
+    var mgkg=D!==null&&D>=0&&wc?D/wc:null;
+    if(mode==='bil')t=null;
+    var tOk=t!==null&&t>=0;
+
+    // Çizgi seçimi
+    var start,lname;
+    if(nom==='uk'){start=100;lname='İngiltere 100'}
+    else if(nom==='us'){start=150;lname='ABD 150'}
+    else if(rf==='0'){start=150;lname='ABD 150 (risk faktörü yok)'}
+    else{start=100;lname=rf==='1'?'100 çizgisi (risk faktörü var)':'100 çizgisi (risk faktörü bilinmiyor)'}
+    var dThr=nom==='uk'?75:150; // tek seferlik alımda doz eşiği (mg/kg)
+    var overThr=mgkg===null?null:(mgkg>=dThr||D>=10000);
+    var altHi=alt===null?null:alt>uln, inrHi=inr===null?null:inr>1.3;
+    var labAbn=altHi===true||inrHi===true;
+
+    // Gösterim
+    $('o-dose').textContent=D===null?'girilmedi':fm(D,0)+' mg'+(mgkg!==null?' = '+fm(mgkg,0)+' mg/kg'+(w>cap?' ('+cap+' kg ile)':''):' (ağırlık yok)');
+    $('o-lvl').textContent=C===null?'girilmedi':fm(C,1)+' mg/L = '+fm(C*UM,0)+' µmol/L';
+    var inWin=mode==='tek'&&tOk&&t>=4&&t<=24;
+    $('s-line').hidden=$('s-pos').hidden=!inWin;
+    var Lt=inWin?line(start,t):null;
+    if(inWin){
+      $('o-linel').textContent=lname+', '+fm(t,1)+'. saat';
+      $('o-line').textContent=fm(Lt,1)+' mg/L = '+fm(Lt*UM,0)+' µmol/L';
+      $('o-pos').textContent=C===null?'–':'%'+fm(C/Lt*100,0)+(C>=Lt?' (çizgide/üstünde)':' (altında)');
+    }
+
+    $('rx').innerHTML='';
+    var verdict;
+    function labsRule(lvlThr,needT){ // nomogram dışı: düzey, ALT, INR normalse NAC gerekmez; eksikse NAC
+      var lv=C===null?null:C>=lvlThr;
+      if(lv===true||labAbn)return 'nac';
+      if(C!==null&&alt!==null&&inr!==null&&(!needT||(tOk&&t>=4)))return 'no';
+      return 'miss';
+    }
+
+    if(mode==='tek'){
+      if(!tOk){
+        verdict='nac';pill('vp','Alım saati yok: NAC başlayın',HI);
+        li('rx','Alım saati girilmedi','Saat bilinmiyorsa veya güvenilir değilse nomogram kullanılmaz; NAC’ı hemen başlayın (MHRA 2012; ABD 2023: şüphede öykü güvenilmez sayılır). “Zaman bilinmiyor” seçeneğiyle durdurma koşullarını görün.');
+      }else if(t<4){
+        verdict='wait';pill('vp','4. saat düzeyini bekleyin',WA);
+        if(C!==null)li('rx','4. saatten önce alınan düzey yorumlanamaz','Emilim sürdüğü için '+fm(t,1)+'. saatteki düzey nomograma yerleştirilmez. 4. saatte (alımdan sonra) yeni düzey alın.');
+        else li('rx','Alımdan 4 saat sonra düzey alın','ALT, INR, kreatinin, glukoz ve kan gazıyla birlikte.');
+        li('rx','Sonuç 8. saatten önce gelmeyecekse NAC başlayın'+(overThr===false?'':' (doz ≥ '+dThr+' mg/kg veya bilinmiyor)'),overThr===false?'Doz eşik altında ('+fm(mgkg,0)+' mg/kg); yine de 4. saat düzeyine göre karar verin.':'Toksik doz olasılığında düzey beklenirken 8. saati geçirmeyin.');
+        if(t<1)li('rx','Alımdan 1 saat içinde','Toksik dozda aktif kömür düşünün (erişkinde 50 g; ABD 2023: 50–100 g).');
+      }else if(t<=24){
+        if(C===null){
+          if(t>=8){
+            if(overThr===false){verdict='check';pill('vp','Doz eşik altı: düzeyle doğrulayın',WA);
+              li('rx','Doz '+fm(mgkg,0)+' mg/kg (< '+dThr+' mg/kg)','Düzey ve ALT/INR’yi hemen gönderin. Doz bilgisi güvenilir değilse NAC başlayın.');}
+            else{verdict='nac';pill('vp','≥ 8. saat: NAC’ı hemen başlayın',HI);
+              li('rx','Düzeyi beklemeden NAC başlayın',(mgkg===null?'Doz bilinmiyor. ':'Doz '+fm(mgkg,0)+' mg/kg. ')+'8. saati geçen başvuruda düzey ve ALT/INR sonucuna göre devam kararı verin (MHRA 2012: ≥ 150 mg/kg; ABD 2023: > 200 mg/kg veya > 10 g).');}
+          }else{
+            verdict='wait';pill('vp','Düzeyi hemen alın',WA);
+            li('rx','Parasetamol düzeyi, ALT, INR gönderin','Sonuç 8. saatten önce gelmeyecekse ve doz ≥ '+dThr+' mg/kg ise veya bilinmiyorsa NAC’ı beklemeden başlayın.');
+          }
+        }else{
+          var above=C>=Lt;
+          if(above){verdict='nac';pill('vp','Çizgide/üstünde: NAC endike',HI);
+            li('rx','Düzey '+fm(C,1)+' mg/L ≥ '+lname+' ('+fm(Lt,1)+' mg/L)','IV NAC başlayın (doz aşağıda). Tedavi sonunda INR, ALT ve düzeyi kontrol edin.');}
+          else if(labAbn){verdict='nac';pill('vp','Çizgi altında ama ALT/INR yüksek: NAC',HI);
+            li('rx','ALT > '+fm(uln,0)+' U/L veya INR > 1,3','Çizginin altında olsa da karaciğer hasarı bulgusunda NAC başlayın; zamanlamayı yeniden sorgulayın.');}
+          else if(alt===null||inr===null){verdict='check';pill('vp','Çizgi altında: ALT/INR ile doğrulayın',WA);
+            li('rx','Düzey çizginin altında','ALT ve INR girilmedi. Normalse NAC gerekmez; anormalse veya alım saati kesin değilse NAC başlayın.');}
+          else{verdict='no';pill('vp','Çizgi altında: NAC gerekmez',OK);
+            li('rx','Düzey çizginin altında, ALT ve INR normal','Alım saati kesin ve tek seferlikse NAC gerekmez. Saat kesin değilse “Zaman bilinmiyor” yolunu izleyin.');}
+          if(!above){
+            if(start===150&&C>=line(100,t))li('rx','İngiltere 100 çizgisine göre tedavi gerekirdi','Düzey ABD 150 çizgisinin altında ama 100 çizgisinin üzerinde ('+fm(line(100,t),1)+' mg/L). Risk faktörü, öykünün güvenilirliği ve UZEM görüşüne göre karar verin.');
+            if(t<=12&&C>10)li('rx','Uzatılmış salınımlı ürün veya opioid/antikolinerjik birlikteyse','4–6 saat sonra düzeyi tekrarlayın; yükselirse yeniden değerlendirin (ABD 2023).');
+          }
+          if(C>=line(300,t))li('rx','ABD yüksek risk çizgisinin (300) üzerinde','Yüksek riskli alım: NAC dozunun artırılması toksikoloji/UZEM danışmanlığıyla düşünülebilir; kanıt belirli bir doz önermeye yetmez (ABD 2023).');
+        }
+      }else{
+        verdict=labsRule(5,false); // > 24 saat: saptanabilir düzey (> 5 mg/L) tedavi gerektirir (NHS Scotland/TOXBASE)
+        if(verdict==='nac'){pill('vp','> 24 saat: NAC başlayın',HI);li('rx','Nomogram 24. saatten sonra kullanılmaz','Düzey saptanabilir (≥ 5 mg/L), ALT > '+fm(uln,0)+' U/L veya INR > 1,3: NAC başlayın ve durdurma ölçütlerine kadar sürdürün.');}
+        else if(verdict==='no'){pill('vp','> 24 saat: düzey ve testler normal',OK);li('rx','Düzey < 5 mg/L (saptanamaz), ALT ve INR normal','NAC gerekmez; belirti (sarılık, karaciğer hassasiyeti, hipoglisemi, ensefalopati) varsa NAC başlayın.');}
+        else{verdict='nac';pill('vp','> 24 saat: sonuçlara kadar NAC',HI);li('rx','Düzey, ALT veya INR eksik','Sonuçlar gelene kadar NAC başlayın (belirti varsa ABD 2023; belirsizlikte NAC lehine). Düzey < 5 mg/L, ALT ve INR normalse durdurun.');}
+      }
+    }else{
+      var lowDose=mgkg!==null&&mgkg<75;
+      verdict=labsRule(10,mode==='yay');
+      var lbl=mode==='yay'?'Zamana yayılmış alım':'Zaman bilinmiyor';
+      if(verdict==='nac'){pill('vp',lbl+': NAC başlayın',HI);
+        li('rx','Düzey ≥ 10 mg/L veya ALT/INR yüksek','Nomogram kullanılmaz. NAC başlayın, durdurma ölçütlerine kadar sürdürün.');}
+      else if(verdict==='no'){if(mode==='bil')pill('vp','Zaman bilinmiyor: büyük olasılıkla NAC gerekmez, öyküyü doğrulayın',WA);else pill('vp',lbl+': NAC gerekmez',OK);
+        li('rx','Düzey < 10 mg/L, ALT ≤ '+fm(uln,0)+' U/L, INR ≤ 1,3'+(mode==='yay'?' (son alımdan ≥ 4 saat sonra)':''),'Hepatotoksisite riski düşük; NAC gerekmez. ABD 2023 tekrarlayan alımda düzey eşiği olarak > 20 mg/L kullanır; burada daha güvenli olan 10 mg/L uygulandı.'+(mode==='bil'?' Saat bilinmediği için düzeyin olası en erken alımdan ≥ 4 saat sonra alındığından emin olun; emin değilseniz 4 saat sonra tekrarlayın. Öyküden şüphe varsa NAC başlayın (ABD 2023).':''));}
+      else if(lowDose){verdict='check';pill('vp','< 75 mg/kg: testlerle doğrulayın',WA);
+        li('rx','Doz '+fm(mgkg,0)+' mg/kg (< 75 mg/kg/24 saat)','Ciddi toksisite olası değil (TOXBASE). Düzey, ALT, INR’yi gönderin; doz bilgisi güvenilir değilse veya birkaç gün sürdüyse NAC başlayın.');}
+      else{verdict='nac';pill('vp',lbl+': NAC’ı hemen başlayın',HI);
+        li('rx','Nomogram kullanılmaz','MHRA 2012: zamana yayılmış veya saati belirsiz alımda düzeyi beklemeden NAC başlayın. '+(mode==='yay'?'Son alımdan ≥ 4 saat sonra ':'')+'düzey < 10 mg/L, ALT ve INR normalse durdurulabilir.');}
+      if(mode==='yay'&&tOk&&t<4&&C!==null)li('rx','Son alımdan 4 saat geçmeden alınan düzey','Durdurma kararı için son alımdan en az 4 saat sonra tekrarlayın.');
+    }
+    if(D!==null&&D>=30000)li('rx','≥ 30 g alım: yüksek riskli','ABD 2023: artırılmış NAC dozu ve uzatılmış tedavi için UZEM/toksikoloji danışmanlığı.');
+    if(C!==null&&C>=900)li('rx','Düzey ≥ 900 mg/L','Asidoz veya bilinç değişikliği varsa hemodiyaliz önerilir (ABD 2023); NAC diyaliz sırasında artırılır.');
+    if(verdict!=='no')li('rx','UZEM 114’ü arayın','Ulusal Zehir Danışma Merkezi; karar ve doz konusunda 7/24 danışma.');
+
+    drawNom(mode==='tek'&&tOk?t:null,C);
+
+    // NAC dozları
+    $('wc').textContent=wc?fm(wc,1):'–';
+    pill('wcp',w===null?'':w>cap?'Gerçek '+fm(w,0)+' kg: '+cap+' kg ile sınırlandı':w<40?'< 40 kg: çözücü hacmini azaltın':'',w!==null&&w<40?WA:'var(--low)');
+    function row(p,mgk,dil,h){
+      if(!wc){$(p).textContent=$(p+'v').textContent=$(p+'r').textContent='–';return null}
+      var mg=mgk*wc,ml=mg/100,amp=Math.ceil(mg/300-1e-9);
+      $(p).textContent=fm(mg,0)+' mg';
+      var c=$(p+'v');c.textContent=fm(ml,1)+' mL';var s=document.createElement('small');s.textContent=amp+' ampul';c.appendChild(s);
+      var r=$(p+'r');r.textContent=fm((dil+ml)/h,1)+' mL/saat';var s2=document.createElement('small');s2.textContent=dil+' mL + '+fm(ml,1)+' mL, '+h+' saat';r.appendChild(s2);
+      return {mg:mg,amp:amp};
+    }
+    var r1=row('a1',150,200,1),r2=row('a2',50,500,4),r3=row('a3',100,1000,16);
+    var q1=row('s1',100,200,2),q2=row('s2',200,1000,10);
+    $('a-tot').textContent=wc?fm(300*wc,0)+' mg · '+(r1.amp+r2.amp+r3.amp)+' ampul':'–';
+    $('s-tot').textContent=wc?fm(300*wc,0)+' mg · '+(q1.amp+q2.amp)+' ampul':'–';
+    $('rxN').innerHTML='';
+    if(wc){
+      li('rxN','Uzatma gerekirse','21 saatlik rejim: 3. torba hızıyla sürdürün, 100 mg/kg / 16 saat = '+fm(6.25*wc,0)+' mg/saat ('+fm(6.25*wc/100,2)+' mL/saat NAC). SNAP: 2. torbayı tekrarlayın, 200 mg/kg / 10 saat = '+fm(200*wc,0)+' mg.');
+      if(w<40)li('rxN','< 40 kg veya çocuk','Çözücü hacimleri erişkin içindir; sıvı yükü ve hiponatremi riski. Pediatrik seyreltme için TOXBASE/UZEM’e danışın.');
+    }
+
+    // Tedavi sonu
+    var el=v('e-lvl'),ea=v('e-alt'),ei=v('e-inr'),pk=v('e-pk'),kl=segVal('kl')==='1';
+    var u1=ei===null?null:ei<=1.3, u2=ea===null?null:ea<100, u3=ea===null||alt===null?null:ea<2*alt, u4=el===null?null:el<20;
+    var peak=pk!==null?Math.max(pk,alt===null?pk:alt):alt;
+    var d1=el===null?null:el<10, d2=ei===null?null:ei<2, d3=ea===null?null:(ea<=uln||(peak!==null&&peak>uln&&ea<=0.75*peak)), d4=kl;
+    $('u1').textContent=yn(u1);$('u2').textContent=yn(u2);$('u3').textContent=alt===null&&ea!==null?'başvuru ALT yok':yn(u3);$('u4').textContent=yn(u4);
+    $('d1').textContent=yn(d1);$('d2').textContent=yn(d2);$('d3').textContent=yn(d3);$('d4').textContent=yn(d4);
+    var uk=[u1,u2,u3,u4],us=[d1,d2,d3,d4];
+    var all=function(a){return a.every(function(x){return x===true})},anyF=function(a){return a.some(function(x){return x===false})};
+    $('rxE').innerHTML='';
+    if(el===null&&ea===null&&ei===null){pill('ep','Veri yok: değerlendirilemedi',WA);li('rxE','Tedavi sonu değerleri girilmedi','Değerlendirme olmadan NAC’ı durdurmayın.')}
+    else if(all(uk)&&all(us)){pill('ep','Her iki ölçüte göre durdurulabilir',OK);li('rxE','NAC durdurulabilir','Ölçütler karşılandı; klinik izlem ve psikiyatrik değerlendirme.')}
+    else if(anyF(uk)||anyF(us)){
+      var ukF=anyF(uk),usF=anyF(us);
+      pill('ep',ukF&&usF?'NAC’a devam edin':'NAC’a devam edin ('+(ukF?'İngiltere':'ABD')+' ölçütü karşılanmadı)',HI);
+      li('rxE','NAC’ı sürdürün','21 saatlik rejimde 3. torba hızıyla, SNAP’ta 2. torbayı tekrarlayarak; 10–12 saat sonra yeniden kontrol edin.');
+      if(ea!==null&&ea>=1000||ei!==null&&ei>=2)li('rxE','Belirgin karaciğer hasarı','INR, laktat, pH, glukoz, kreatinin ve ensefalopatiyi izleyin; King’s College ölçütlerine bakın ve karaciğer merkezine erken danışın.');
+    }else{pill('ep','Eksik veri: durdurmayın',WA);li('rxE','Bazı ölçütler eksik','Eksik değerler tamamlanmadan NAC’ı durdurmayın.')}
+
+    // King's College
+    var ph=v('ph'),ki=v('k-inr'),cr=v('cr'),l4=v('lk4'),l12=v('lk12'),he=segVal('he');
+    var k1=ph===null?null:ph<7.30;
+    var a=ki===null?null:ki>6.5,b=cr===null?null:cr*88.4>300,c=he==='x'?null:he==='1';
+    var k2=(a===false||b===false||c===false)?false:(a&&b&&c)?true:null;
+    var k3=(l4!==null&&l4>3.5)||(l12!==null&&l12>3.0)?true:(l4===null&&l12===null)?null:false;
+    $('k1').textContent=yn(k1);$('k2').textContent=k2===null&&(a||b||c)?'eksik veri':yn(k2);$('k3').textContent=yn(k3);
+    $('rxK').innerHTML='';
+    var none=ph===null&&ki===null&&cr===null&&l4===null&&l12===null&&he==='x';
+    if(none)pill('kp','Veri girilmedi','var(--low)');
+    else if(k1||k2){pill('kp','King’s College ölçütü karşılandı',HI);li('rxK','Karaciğer nakil merkezine acil sevk','Ölçüt karşılandığında nakilsiz ölüm riski yüksektir; nakil merkezi ve yoğun bakımla hemen görüşün.')}
+    else if(k3){pill('kp','Laktat ölçütü karşılandı',HI);li('rxK','Değiştirilmiş ölçüt (laktat)','Bernal 2002: nakil gereksinimini daha erken gösterir; nakil merkezine acil danışın.')}
+    else if(k1===null||k2===null){pill('kp','Karşılanmadı (eksik veri)',WA);li('rxK','Eksik değerler var','pH, INR, kreatinin ve ensefalopati evresini tamamlayın; günlük yeniden değerlendirin.')}
+    else{pill('kp','Ölçüt karşılanmadı',OK);li('rxK','Şu an ölçüt yok','Klinik kötüleşmede (INR artışı, asidoz, ensefalopati) yeniden değerlendirin.')}
+  }
+
+  function drawNom(t,C){
+    var X0=38,X1=330,Y0=12,Y1=200,ymin=1,ymax=1000;
+    var X=function(h){return X0+(X1-X0)*h/24},Y=function(c){return Y1-(Y1-Y0)*(Math.log10(c)-Math.log10(ymin))/(Math.log10(ymax)-Math.log10(ymin))};
+    var s='';
+    [1,2,5,10,20,50,100,200,500,1000].forEach(function(c){s+='<line class="gr" x1="'+X0+'" x2="'+X1+'" y1="'+Y(c)+'" y2="'+Y(c)+'"/>';if([1,10,100,1000].indexOf(c)>=0||c===50||c===5||c===500)s+='<text x="'+(X0-4)+'" y="'+(Y(c)+4)+'" text-anchor="end">'+c+'</text>'});
+    [0,4,8,12,16,20,24].forEach(function(h){s+='<line class="gr" x1="'+X(h)+'" x2="'+X(h)+'" y1="'+Y0+'" y2="'+Y1+'"/><text x="'+X(h)+'" y="'+(Y1+14)+'" text-anchor="middle">'+h+'</text>'});
+    s+='<line class="ax" x1="'+X0+'" x2="'+X1+'" y1="'+Y1+'" y2="'+Y1+'"/><line class="ax" x1="'+X0+'" x2="'+X0+'" y1="'+Y0+'" y2="'+Y1+'"/>';
+    s+='<text x="'+((X0+X1)/2)+'" y="'+(Y1+28)+'" text-anchor="middle">Alımdan sonra saat</text>';
+    [[300,'l300'],[150,'l150'],[100,'l100']].forEach(function(p){var d='';for(var h=4;h<=24.001;h+=0.5)d+=(h===4?'M':'L')+X(h).toFixed(1)+' '+Y(line(p[0],h)).toFixed(1);s+='<path class="'+p[1]+'" d="'+d+'"/>'});
+    if(t!==null&&C!==null&&C>0){var cx=Math.min(Math.max(t,0),24),cy=Math.min(Math.max(C,ymin),ymax);
+      s+='<circle class="'+(t>=4&&t<=24?'pt':'pt0')+'" cx="'+X(cx).toFixed(1)+'" cy="'+Y(cy).toFixed(1)+'" r="6"/>'}
+    $('nm').innerHTML=s;
+  }
+
+  ['al','u','nom','rf','cap','kl','he'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

@@ -66,6 +66,8 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Alkol yoksunluğu (CIWA-Ar, PAWSS, tiamin; ASAM 2020) | `alkol-yoksunlugu.html` |
 | Hepatik ensefalopati (West Haven, laktuloz, rifaksimin; EASL 2022) | `hepatik-ensefalopati.html` |
 | Beslenme hesabı (NRS-2002, enerji/protein, enteral, GİH; ESPEN) | `beslenme.html` |
+| Febril nötropeni (MASCC, CISNE, ampirik tedavi; IDSA/ASCO) | `febril-notropeni.html` |
+| Parasetamol zehirlenmesi (Rumack-Matthew, NAC 21 saat/SNAP, King's College) | `parasetamol-zehirlenmesi.html` |
 
 Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz. Hiçbir hasta verisi kaydedilmez. Ortak kod (Kopyala düğmesi, çevrimdışı çalışma) `ortak.js` dosyasındadır.
 
