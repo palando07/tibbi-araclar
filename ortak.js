@@ -154,7 +154,7 @@
   if (ilkKart && !document.body.hasAttribute('data-ornek-yok')) {
     var css2 = document.createElement('style');
     css2.textContent = '.ornek{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--surface);border:1px dashed var(--accent);' +
-      'border-radius:12px;padding:10px 14px;font-size:.9rem;color:var(--fg)}.ornek span{flex:1 1 200px;min-width:0}' +
+      'border-radius:12px;padding:6px 6px 6px 14px;font-size:.9rem;color:var(--fg)}.ornek span{flex:1 1 160px;min-width:0}' +
       '.ornek button{border:1px solid var(--accent);background:var(--accent);color:#fff;font:600 .88rem var(--font-body);padding:7px 14px;border-radius:999px;cursor:pointer}' +
       '.ornek button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}';
     document.head.appendChild(css2);
@@ -190,10 +190,10 @@
       yazi.textContent = 'Önceki araçtan alınan değerler: ' + kullanilan.join(' · ') + '. Diğer alanlarda örnek değerler var.';
       dug.textContent = 'Yeni hasta';
     } else {
-      yazi.textContent = 'Örnek değerlerle açıldı. Kendi hastanızın değerlerini girin.';
+      yazi.textContent = 'Örnek değerler gösteriliyor.';
       dug.textContent = 'Temizle';
       if (notOku().length) {
-        yazi.textContent += ' Notta önceki sonuçlar var; başka hastaya geçtiyseniz Yeni hasta deyin.';
+        yazi.textContent += ' Notta önceki hastanın sonuçları olabilir.';
         var dug2 = document.createElement('button'); dug2.type = 'button'; dug2.textContent = 'Yeni hasta';
         dug2.addEventListener('click', function(){ notYaz([]); yaz({}); dug.click(); });
       }
@@ -384,6 +384,7 @@
     '.altnav .rozet{position:absolute;top:0;left:calc(50% + 6px);background:var(--accent);color:#fff;border-radius:999px;font-size:.65rem;min-width:16px;padding:0 4px;line-height:16px}' +
     'body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}.sonuca{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important}@media print{.altnav{display:none}}' +
     '.tema{display:flex;align-items:center;gap:6px}.tema span{font-size:.8rem;color:var(--muted)}.tema button{height:36px;padding:0 10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;font:600 .82rem var(--font-body);cursor:pointer}.tema button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}' +
+    '.yazi{display:flex;align-items:center;gap:6px}.yazi span{font-size:.8rem;color:var(--muted);margin-right:2px}.yazi button{width:40px;height:36px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;font-weight:700;font-family:var(--font-body);cursor:pointer;line-height:1}.yazi button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}.gorunum{display:flex;flex-direction:column;gap:12px}' +
     '.ayar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:-8px}.ayar .yazi{margin:0}' +
     'a.tool .ik{flex:none;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}a.tool .ik svg{width:22px;height:22px}' +
     'a.tool>div:nth-child(2){flex:1;min-width:0}.tost{position:fixed;left:16px;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:40;background:var(--fg);color:var(--bg);padding:12px 14px;border-radius:12px;font-size:.9rem;text-align:center}';
@@ -420,6 +421,22 @@
       function ciz(){ t.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.t === tema); }); }
       t.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) { window.vizitTema(b.dataset.t); ciz(); } });
       ciz();
+    }
+  }
+  // Ayarlar (Hakkında sayfasında): tema ve yazı boyutu
+  if (bu === 'hakkinda') {
+    var hd = document.querySelector('header');
+    if (hd) {
+      var ak = document.createElement('section'); ak.className = 'card'; ak.id = 'ayarlar';
+      ak.innerHTML = '<h2>Görünüm</h2><div class="gorunum"><div class="tema" role="group" aria-label="Tema"><span>Tema</span><button type="button" data-t="oto">Oto</button><button type="button" data-t="acik">Açık</button><button type="button" data-t="koyu">Koyu</button></div>' +
+        '<div class="yazi" role="group" aria-label="Yazı boyutu"><span>Yazı</span><button type="button" data-y="1" style="font-size:.85rem">A</button><button type="button" data-y="1.12" style="font-size:1rem">A</button><button type="button" data-y="1.25" style="font-size:1.2rem">A</button></div></div>';
+      hd.parentNode.insertBefore(ak, hd.nextSibling);
+      var tm = ak.querySelector('.tema'), yv = '1'; try { yv = localStorage.getItem('vizit-yazi') || '1'; } catch (e) {}
+      function cizA(){ tm.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.t === tema); });
+        ak.querySelectorAll('.yazi button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.y === yv); }); }
+      tm.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) { window.vizitTema(b.dataset.t); cizA(); } });
+      ak.querySelectorAll('.yazi button').forEach(function(b){ b.onclick = function(){ yv = b.dataset.y; try { localStorage.setItem('vizit-yazi', yv); } catch (e) {} location.reload(); }; });
+      cizA();
     }
   }
   // 1) Alt gezinme çubuğu
@@ -471,7 +488,7 @@
     // 1) İçindekiler: 5 veya daha fazla bölümü olan sayfalarda üstte bölüm çipleri
     var basliklar = Array.prototype.filter.call(document.querySelectorAll('section.card > h2'), function(h){ return !h.closest('[hidden]'); });
     var header = document.querySelector('body > header, main > header, header');
-    if (basliklar.length >= 5 && header && !document.querySelector('.tabs')) {
+    if (basliklar.length >= 5 && header && !document.querySelector('.tabs') && bu !== 'hakkinda') {
       var tc = document.createElement('nav'); tc.className = 'icindekiler'; tc.setAttribute('aria-label', 'Sayfa bölümleri');
       var ciftler = basliklar.map(function(h, i){
         var kart = h.parentNode; if (!kart.id) kart.id = 'vizit-bolum-' + (i + 1);
@@ -481,6 +498,7 @@
         tc.appendChild(a); return {a: a, kart: kart};
       });
       header.parentNode.insertBefore(tc, header.nextSibling);
+      var sb = document.querySelector('.sonuca'); if (sb) sb.remove();
       var etkin = null;
       function isaretle(){
         var sec = ciftler[0];
@@ -569,6 +587,21 @@
       if (n < k.length - 1) { k[n + 1].focus(); try { k[n + 1].select(); } catch (x) {} } else i.blur();
     });
   })();
+
+  // Uzun kaynak listeleri kapalı başlar, dokununca açılır
+  document.querySelectorAll('p').forEach(function(pa){
+    var m = /^\s*Kaynak(lar)?\s*:?\s*/.exec(pa.textContent);
+    if (!m || pa.textContent.length < 160 || pa.closest('details, .hpanel')) return;
+    var d = document.createElement('details'); d.className = 'kaynaklar';
+    var sm = document.createElement('summary'); sm.textContent = 'Kaynaklar';
+    var u = pa.innerHTML.indexOf('Bu araç klinik karar desteği'), p2 = null;
+    if (u > 0) { p2 = document.createElement('p'); p2.className = pa.className; p2.innerHTML = pa.innerHTML.slice(u); pa.innerHTML = pa.innerHTML.slice(0, u); }
+    pa.parentNode.insertBefore(d, pa); d.appendChild(sm); d.appendChild(pa);
+    if (p2) d.parentNode.insertBefore(p2, d.nextSibling);
+  });
+  if (document.querySelector('details.kaynaklar')) { var cssK = document.createElement('style');
+    cssK.textContent = 'details.kaynaklar>summary{cursor:pointer;color:var(--muted);font:600 .88rem var(--font-body);padding:4px 0}details.kaynaklar>summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}@media print{details.kaynaklar>p{display:block}}';
+    document.head.appendChild(cssK); }
 
   // Geri bağlantısında küçük nabız işareti (logo ile uyumlu)
   document.querySelectorAll('a.back').forEach(function(a){

@@ -60,6 +60,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
 .hseg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
 .hasta .alt{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .hasta .bilgi{font-size:.78rem;color:var(--muted);margin:0}
+.hasta.bos{flex-direction:row;align-items:center;justify-content:space-between;padding:10px 12px 10px 16px}.hasta.bos .bilgi{display:none}.hasta.bos .ust{flex-wrap:nowrap;gap:8px}.hasta.bos .ozet{flex:none}
 .notlar{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
 .notlar strong{font-size:.95rem}
 .notlar ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
@@ -105,7 +106,6 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
 <div class="wrap">
   <h1 class="marka"><svg class="nabiz" viewBox="0 0 44 26" aria-hidden="true"><polyline pathLength="80" points="2,14 11,14 14,9 19,23 25,3 28,14 42,14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="kelime" viewBox="-10 -706 2023 727" aria-hidden="true"><path fill="currentColor" d="M284 3 70 -593Q63 -613 51.5 -624.5Q40 -636 20 -642L-4 -650V-660H284V-650L253 -641Q230 -635 227.5 -620.0Q225 -605 232 -583L380 -144L529 -584Q537 -607 536.5 -622.0Q536 -637 513 -643L487 -650V-660H627V-650L600 -642Q581 -637 573.0 -624.5Q565 -612 558 -592L358 3Z M772 -548Q738 -548 714.5 -569.5Q691 -591 691 -624Q691 -658 714.5 -679.0Q738 -700 772 -700Q806 -700 829.0 -679.0Q852 -658 852 -624Q852 -591 829.0 -569.5Q806 -548 772 -548ZM654 0V-10L668 -14Q688 -20 695.5 -32.0Q703 -44 703 -64V-377Q703 -398 695.5 -408.5Q688 -419 668 -423L654 -426V-436L837 -495L847 -485L844 -343V-63Q844 -43 851.5 -31.0Q859 -19 878 -13L888 -10V0Z M935 0V-16L1208 -461H1057Q1031 -461 1016.0 -447.0Q1001 -433 988 -410L952 -343H942L949 -481H1349V-467L1082 -20H1239Q1271 -20 1286.0 -35.0Q1301 -50 1314 -76L1349 -150H1359L1350 0Z M1517 -548Q1483 -548 1459.5 -569.5Q1436 -591 1436 -624Q1436 -658 1459.5 -679.0Q1483 -700 1517 -700Q1551 -700 1574.0 -679.0Q1597 -658 1597 -624Q1597 -591 1574.0 -569.5Q1551 -548 1517 -548ZM1399 0V-10L1413 -14Q1433 -20 1440.5 -32.0Q1448 -44 1448 -64V-377Q1448 -398 1440.5 -408.5Q1433 -419 1413 -423L1399 -426V-436L1582 -495L1592 -485L1589 -343V-63Q1589 -43 1596.5 -31.0Q1604 -19 1623 -13L1633 -10V0Z M1867 15Q1803 15 1767.5 -17.0Q1732 -49 1732 -119V-461H1663V-471L1687 -475Q1718 -482 1740.5 -495.0Q1763 -508 1785 -530L1867 -621H1877L1874 -481H1986V-461H1873V-101Q1873 -66 1888.5 -48.0Q1904 -30 1928 -30Q1949 -30 1965.0 -40.5Q1981 -51 1997 -69L2007 -59Q1987 -25 1952.0 -5.0Q1917 15 1867 15Z"/></svg><span class="gizli">Vizit</span></h1>
   <p class="sub">Dahiliye pratiği için hesaplayıcılar</p>
-  <div class="yazi" role="group" aria-label="Yazı boyutu"><span>Yazı</span><button type="button" data-y="1" style="font-size:.85rem">A</button><button type="button" data-y="1.12" style="font-size:1rem">A</button><button type="button" data-y="1.25" style="font-size:1.2rem">A</button></div>
   <input class="search" id="q" type="search" placeholder="Ara: sodyum, siroz, pnömoni…" aria-label="Hesaplayıcı ara" autocomplete="off">
   <section class="hasta" id="hasta" aria-label="Hasta özeti">
     <div class="ust"><strong>Hasta</strong><p class="ozet" id="h-ozet">Değer girilmedi. Buraya ya da herhangi bir araca yazdığınız değerler diğer araçlarda hazır gelir.</p></div>
@@ -392,7 +392,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
     </a>
   </section>
   <p class="empty" id="empty" hidden>Aramanızla eşleşen hesaplayıcı yok.</p>
-  <a class="tool" href="hakkinda.html" style="margin-top:8px"><div><strong>Hakkında ve paylaş</strong><span>Meslektaşınıza gönderin; kaynaklar ve veri gizliliği</span></div><div class="go">›</div></a>
+  <a class="tool" href="hakkinda.html" style="margin-top:8px"><div><strong>Ayarlar ve hakkında</strong><span>Tema, yazı boyutu, paylaşım ve veri gizliliği</span></div><div class="go">›</div></a>
   <p class="note">Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz.</p>
 </div>
 <script>
@@ -450,7 +450,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
   function ozetMetni(v){var p=[];if(v.cins)p.push(v.cins==='m'?'Erkek':'Kadın');
     A.forEach(function(a){if(v[a[0]]!=null&&v[a[0]]!=='')p.push(a[1]+' '+String(v[a[0]]).replace('.',',')+(a[2]?' '+a[2]:''))});return p.join(' · ')}
   function ciz(){var v=oku(),t=ozetMetni(v),o=$('h-ozet');
-    o.textContent=t||'Değer girilmedi. Buraya ya da herhangi bir araca yazdığınız değerler diğer araçlarda hazır gelir.';o.classList.toggle('dolu',!!t);
+    var bos=!t&&!notOku().length&&$('h-form').hidden;$('hasta').classList.toggle('bos',bos);o.textContent=t||(bos?'Değer girilmedi':'Değer girilmedi. Buraya ya da herhangi bir araca yazdığınız değerler diğer araçlarda hazır gelir.');o.classList.toggle('dolu',!!t);
     var n=notOku(),ul=$('h-not-l');ul.textContent='';$('h-not').hidden=!n.length;
     n.forEach(function(x,i){var li=document.createElement('li'),sp=document.createElement('span'),b=document.createElement('button');
       sp.textContent=x.s;b.type='button';b.textContent='×';b.setAttribute('aria-label','Nottan çıkar: '+x.s);
@@ -461,18 +461,13 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
     if(!$('h-form').hidden)return;$('h-duz').textContent=t?'Düzenle':'Değer gir'}
   grid.addEventListener('input',function(e){var v=oku(),k=e.target.dataset.k;if(e.target.value==='')delete v[k];else v[k]=e.target.value;yaz(v);ciz()});
   document.querySelectorAll('.hseg button').forEach(function(b){b.onclick=function(){var v=oku();if(v.cins===b.dataset.c)delete v.cins;else v.cins=b.dataset.c;yaz(v);ciz()}});
-  $('h-duz').onclick=function(){var f=$('h-form');f.hidden=!f.hidden;this.textContent=f.hidden?(ozetMetni(oku())?'Düzenle':'Değer gir'):'Kapat';if(!f.hidden)grid.querySelector('input').focus()};
+  $('h-duz').onclick=function(){var f=$('h-form');f.hidden=!f.hidden;this.textContent=f.hidden?(ozetMetni(oku())?'Düzenle':'Değer gir'):'Kapat';ciz();if(!f.hidden)grid.querySelector('input').focus()};
   $('h-yeni').onclick=function(){yaz({});notYaz([]);ciz()};
   $('h-kop').onclick=function(){var b=this,t=[ozetMetni(oku())].concat(notOku().map(function(x){return x.s})).filter(Boolean).join('\n');function ok(){b.textContent='Kopyalandı ✓';setTimeout(function(){b.textContent='Kopyala'},1600)}
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,function(){});};
   ciz();window.addEventListener('pageshow',ciz);
 })();
 (function(){
-  var b=document.querySelectorAll('.yazi button'),v='1';
-  try{v=localStorage.getItem('vizit-yazi')||'1'}catch(e){}
-  function ciz(){b.forEach(function(x){x.setAttribute('aria-pressed',x.dataset.y===v)})}
-  b.forEach(function(x){x.onclick=function(){v=x.dataset.y;try{localStorage.setItem('vizit-yazi',v)}catch(e){}location.reload()}});
-  ciz();
   var q=document.getElementById('q');q.addEventListener('input',function(){document.getElementById('sekme').hidden=!!q.value.trim()});
 })();
 </script>
