@@ -2,6 +2,28 @@
 (function(){
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 
+  var buSayfa = (location.pathname.split('/').pop() || '').replace('.html', '');
+  if (buSayfa !== 'nobet-listesi') {
+  // 1) Tema: 'vizit-tema' = oto | acik | koyu. Sayfadaki @media (prefers-color-scheme: dark) kurallarını açar/kapatır.
+    var tema = 'oto'; try { tema = localStorage.getItem('vizit-tema') || 'oto'; } catch (e) {}
+    function uygula(t){
+      Array.prototype.forEach.call(document.styleSheets, function(ss){
+        var rules; try { rules = ss.cssRules; } catch (e) { return; }
+        Array.prototype.forEach.call(rules, function(r){
+          if (r.type !== 4) return;
+          if (!r._asil) r._asil = r.media.mediaText;
+          if (!/prefers-color-scheme:\s*dark/.test(r._asil)) return;
+          r.media.mediaText = t === 'koyu' ? 'all' : t === 'acik' ? 'not all' : r._asil;
+        });
+      });
+      var m = document.querySelector('meta[name=color-scheme]');
+      document.documentElement.style.colorScheme = t === 'koyu' ? 'dark' : t === 'acik' ? 'light' : '';
+    }
+    uygula(tema);
+    window.vizitTema = function(t){ tema = t; try { localStorage.setItem('vizit-tema', t); } catch (e) {} uygula(t); };
+
+  }
+
 
   // Yazı boyutu: menüdeki ayar (localStorage 'vizit-yazi') her sayfada uygulanır.
   try {
@@ -319,7 +341,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v46', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v47', GB_ADRES = 'blgnonur97@gmail.com';
   var kap = document.querySelector('.wrap');
   if (kap && bu !== 'nobet-listesi') {
     var cssG = document.createElement('style');
@@ -348,6 +370,76 @@
     gb.appendChild(ac); gb.appendChild(kutu);
     kap.appendChild(gb);
   }
+
+  // Alt gezinme çubuğu, menüde bölüm ikonları ve tema seçimi (Nöbet uygulamasında yok)
+  if (bu !== 'nobet-listesi') (function(){
+  var cssA = document.createElement('style');
+  cssA.textContent =
+    '.altnav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -2px 10px rgba(0,0,0,.06)}' +
+    '.altnav a,.altnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted);font:600 .72rem var(--font-body);text-decoration:none;padding:4px 0;cursor:pointer;position:relative}' +
+    '.altnav svg{width:24px;height:24px}.altnav .on{color:var(--accent)}' +
+    '.altnav .rozet{position:absolute;top:0;left:calc(50% + 6px);background:var(--accent);color:#fff;border-radius:999px;font-size:.65rem;min-width:16px;padding:0 4px;line-height:16px}' +
+    'body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}.sonuca{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important}@media print{.altnav{display:none}}' +
+    '.tema{display:flex;align-items:center;gap:6px}.tema span{font-size:.8rem;color:var(--muted)}.tema button{height:36px;padding:0 10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;font:600 .82rem var(--font-body);cursor:pointer}.tema button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}' +
+    '.ayar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:-8px}.ayar .yazi{margin:0}' +
+    'a.tool .ik{flex:none;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}a.tool .ik svg{width:22px;height:22px}' +
+    'a.tool>div:nth-child(2){flex:1;min-width:0}.tost{position:fixed;left:16px;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:40;background:var(--fg);color:var(--bg);padding:12px 14px;border-radius:12px;font-size:.9rem;text-align:center}';
+  document.head.appendChild(cssA);
+
+  var I = {
+    menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+    ara:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+    hasta:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+    yildiz:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+    bobrek:'<path d="M9 4c-3 0-5 3-5 7s2 9 5 9c2 0 3-2 3-4v-1c0-1-1-1-1-2s1-1 1-2V8c0-2-1-4-3-4z"/><path d="M15 4c3 0 5 3 5 7s-2 9-5 9"/>',
+    kalp:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><polyline points="7,12 10,12 11,10 13,14 14,12 17,12"/>',
+    karaciger:'<path d="M3 9c0-3 3-4 7-4 5 0 11 1 11 4 0 4-5 9-9 9-2 0-3-2-5-3S3 12 3 9z"/>',
+    acil:'<path d="M12 3v4M5 6l2.5 2.5M19 6l-2.5 2.5"/><path d="M6 20v-6a6 6 0 0 1 12 0v6"/><path d="M4 20h16"/>',
+    genel:'<path d="M6 3v6a4 4 0 0 0 8 0V3"/><path d="M10 13v3a4 4 0 0 0 8 0v-2"/><circle cx="18" cy="12" r="2"/>'
+  };
+  function svg(k){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + I[k] + '</svg>'; }
+
+  var menude = !!document.getElementById('hasta');
+  // 3) Menüde araç kartlarına bölüm ikonu
+  if (menude) {
+    var B = {'b-bobrek':'bobrek','b-kardiyo':'kalp','b-karaciger':'karaciger','b-acil':'acil','b-genel':'genel'};
+    Object.keys(B).forEach(function(id){
+      var g = document.getElementById(id); if (!g) return;
+      g.querySelectorAll('a.tool').forEach(function(a){ var d = document.createElement('div'); d.className = 'ik'; d.innerHTML = svg(B[id]); a.insertBefore(d, a.firstChild); });
+    });
+    // tema düğmeleri yazı boyutunun yanına
+    var y = document.querySelector('.yazi');
+    if (y) {
+      var ayar = document.createElement('div'); ayar.className = 'ayar';
+      var t = document.createElement('div'); t.className = 'tema'; t.setAttribute('role', 'group'); t.setAttribute('aria-label', 'Tema');
+      t.innerHTML = '<span>Tema</span><button type="button" data-t="oto">Oto</button><button type="button" data-t="acik">Açık</button><button type="button" data-t="koyu">Koyu</button>';
+      y.parentNode.insertBefore(ayar, y); ayar.appendChild(t); ayar.appendChild(y);
+      function ciz(){ t.querySelectorAll('button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.t === tema); }); }
+      t.addEventListener('click', function(e){ var b = e.target.closest('button'); if (b) { window.vizitTema(b.dataset.t); ciz(); } });
+      ciz();
+    }
+  }
+  // 1) Alt gezinme çubuğu
+  var notSay = 0; try { var o = JSON.parse(sessionStorage.getItem('vizit-not')); if (o && Date.now() - o.t < 1800000) notSay = (o.v || []).length; } catch (e) {}
+  var nav = document.createElement('nav'); nav.className = 'altnav'; nav.setAttribute('aria-label', 'Gezinme');
+  nav.innerHTML =
+    '<a href="index.html"' + (menude ? ' class="on" aria-current="page"' : '') + '>' + svg('menu') + 'Menü</a>' +
+    '<a href="index.html#ara">' + svg('ara') + 'Ara</a>' +
+    '<a href="index.html#hasta">' + svg('hasta') + 'Hasta' + (notSay ? '<span class="rozet">' + notSay + '</span>' : '') + '</a>' +
+    '<a href="index.html#fav">' + svg('yildiz') + 'Favoriler</a>';
+  document.body.appendChild(nav);
+  if (menude) {
+    nav.addEventListener('click', function(e){
+      var a = e.target.closest('a'); if (!a) return; var h = a.getAttribute('href').split('#')[1];
+      e.preventDefault();
+      if (!h) { window.scrollTo({top: 0, behavior: 'smooth'}); return; }
+      if (h === 'ara') { var q = document.getElementById('q'); q.scrollIntoView({block: 'center'}); q.focus(); return; }
+      var el = document.getElementById(h); if (el && !el.hidden) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+      else if (h === 'fav') { var t2 = document.createElement('div'); t2.className = 'tost'; t2.textContent = 'Henüz favori yok. Araç kartının yanındaki ★ ile ekleyin.'; document.body.appendChild(t2); setTimeout(function(){ t2.remove(); }, 2600); }
+    });
+    if (location.hash === '#ara') setTimeout(function(){ document.getElementById('q').focus(); }, 50);
+  }
+  })();
 
   // Geri bağlantısında küçük nabız işareti (logo ile uyumlu)
   document.querySelectorAll('a.back').forEach(function(a){
