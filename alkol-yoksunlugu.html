@@ -368,6 +368,8 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       li('rxT','Tiamin düzeyi için kan örneği','EFNS: tiamin vermeden hemen önce total tiamin için kan alın; sonucu beklemeden tedavi edin. MRG tanıyı destekler.');
     }else if(rf){pill('tp','Parenteral profilaksi','var(--warn)');
       li('rxT','Tiamin 250 mg/gün IV veya IM, 3–5 gün','İngiltere tiamin KÜB ve RCP yaklaşımı; ASAM 2020 en az 100 mg/gün IV/IM 3–5 gün. Sonra ağızdan devam. Ciddi malnütrisyonda veya klinik şüphe doğarsa tedavi dozuna geçin.'+(cn===1?' Bir Caine ölçütü var: WE’yi yakından izleyin, düşük eşikle tedavi dozu.':''));
+    }else if(!full){pill('tp','Durum seçilmedi','var(--muted)');
+      li('rxT','Tiamin önerisi için durumu işaretleyin','Wernicke bulgularını (Caine ölçütleri) ve parenteral profilaksi risklerini işaretleyin, CIWA-Ar’yi puanlayın. Alkol kullanım bozukluğu olan her hastaya en az oral tiamin profilaksisi verilir (NICE, ASAM).');
     }else{pill('tp','Oral profilaksi','var(--low)');
       li('rxT','Tiamin 100 mg/gün PO (ASAM, ayaktan)','Zararlı veya bağımlı içicide oral profilaksi (NICE). Türkiye’de ağızdan 250 mg tiamin içeren Benexol B12 tablet bulunur. Parenteral profilaksi gerektiren durum işaretlenmedi; acil başvuruda, yatışta, malnütrisyonda veya dekompanse karaciğer hastalığında parenteral verin.');
     }

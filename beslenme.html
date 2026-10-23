@@ -276,7 +276,7 @@ input[type=number]::placeholder{color:var(--muted);font-weight:400;font-size:1re
     var bmiA=wt&&hm?wt/(hm*hm):null;            // NRS için gerçek kilo VKİ
     var ibw=hm?25*hm*hm:null;                   // ESPEN: VKİ 25'e göre ideal kilo
     var obese=bmi!==null&&bmi>=30&&ibw!==null&&baseW>ibw;
-    var adj=obese?ibw+0.33*(baseW-ibw):null;
+    var adj=obese?ibw+0.25*(baseW-ibw):null;   // ESPEN 2023: ideal kilo + fazla kilonun %20–25'i (üst sınır)
     var cw=obese?adj:baseW;
     state={wt:wt,cw:cw,obese:obese,adj:adj,bmi:bmi,ibw:ibw};
 
@@ -319,7 +319,7 @@ input[type=number]::placeholder{color:var(--muted);font-weight:400;font-size:1re
       $('cw').textContent=fm(cw)+' kg ('+(obese?'düzeltilmiş kilo; VKİ ≥ 30':(dryNote||'gerçek kilo'))+')';
       $('perkg').textContent=fm(kpk)+' kcal/kg · '+fm(ppk,2)+' g/kg'+(tkIn!==null||tpIn!==null?' (girilen)':'');
       li('rxE','Kaynak: '+d.ad,d.kay+'.');
-      if(obese)li('rxE','Obez hasta (VKİ '+fm(bmi,near(bmi,[30]))+'): düzeltilmiş kilo '+fm(adj)+' kg','ESPEN 2019 YBÜ: düzeltilmiş kilo = ideal kilo + 0,33 × (gerçek − ideal); ideal kilo VKİ 25’e göre ('+fm(ibw)+' kg). ESPEN 2023 kısmi güncellemesi ise ideal kiloya fazla kilonun yalnız %20–25’ini eklemeyi önerir (ideal kilo tanımı da farklı); bu yöntemle hedef biraz daha düşük çıkar. Gerçek kiloyla hesap fazla beslemeye yol açar. Mümkünse indirekt kalorimetri kullanın.');
+      if(obese)li('rxE','Obez hasta (VKİ '+fm(bmi,near(bmi,[30]))+'): düzeltilmiş kilo '+fm(adj)+' kg','ESPEN 2023 YBÜ kısmi güncellemesi: düzeltilmiş kilo = ideal kilo + fazla kilonun %20–25’i; burada %25 kullanıldı (%20 ile '+fm(ibw+0.2*(baseW-ibw))+' kg). İdeal kilo VKİ 25’e göre ('+fm(ibw)+' kg); ESPEN 2023’ün boydan ideal kilo formülü daha düşük değer verdiği için kullanılmadı. ESPEN 2019’daki eski yöntem (fazla kilonun 1/3’ü) '+fm(ibw+(baseW-ibw)/3)+' kg verir. Gerçek kiloyla hesap fazla beslemeye yol açar. Mümkünse indirekt kalorimetri kullanın.');
       if(ht===null&&wt)li('rxE','Boy girilmedi: obezite değerlendirilemedi','Gerçek kilo kullanıldı. VKİ ≥ 30 ise düzeltilmiş kilo gerekir.');
       if(bmi!==null&&bmi<18.5)li('rxE','Zayıf hasta (VKİ < 18,5): gerçek kilo kullanılır','İdeal kilo kullanılmaz (fazla besleme ve refeeding riski; ESPEN 2019 YBÜ). ESPEN 2018: ağır zayıfta hedef 30 kcal/kg = '+r0(30*cw)+' kcal/gün, yavaş ve dikkatli artış. Refeeding riskini değerlendirin.');
       if(dur==='ybu'){
