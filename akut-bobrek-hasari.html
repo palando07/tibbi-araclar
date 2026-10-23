@@ -82,6 +82,9 @@ ol.rec li a,.note a{color:var(--accent);font-weight:600}
 .sub b.wr{white-space:normal;text-align:right;min-width:0}
 .seg.many button{flex:1 1 34%;padding:10px 8px;border-top:1px solid var(--line);margin-top:-1px}
 .stg{font:700 .75rem var(--font-num);color:var(--muted);margin-left:4px}
+.sub span small{display:block;color:var(--muted);font-size:.78rem}
+.sub b.cnt{font-family:var(--font-body);font-weight:600}
+ol.rec li b .tag{margin-left:4px}
 </style>
 </head>
 <body>
@@ -184,12 +187,97 @@ ol.rec li a,.note a{color:var(--accent);font-weight:600}
     <p class="note">FENa = (idrar Na × serum Kr) ÷ (serum Na × idrar Kr) × 100; FEÜre aynı formülde Na yerine üre. Eşikler oligürik AKI’de geliştirilmiştir (Miller 1978, Espinel 1976); tek bir indeks her hastada ayırt etmez, klinik seyirle birlikte yorumlayın.</p>
   </section>
 
-  <section class="card">
-    <h2>Postrenal neden</h2>
-    <ul class="chk">
-      <li>Görüntüleme, özellikle böbrek ultrasonu, AKI değerlendirmesinin temel parçasıdır (KDIGO 2012); obstrüksiyonu ultrasonla dışlayın.</li>
-      <li>FENa obstrüksiyonu ayırt etmez: Espinel 1980’de obstrüksiyonda FENa &gt; %1 iken akut obstrüksiyonda FENa &lt; %1 de bildirilmiştir (Steiner 1984; Zarich 1985).</li>
-    </ul>
+  <section class="card" id="etio">
+    <h2>Etiyoloji: klinik bulgular</h2>
+    <p class="note">Hastada olan bulguları işaretleyin; sonuç kartı olası neden gruplarını öne çıkarır. FENa/FEÜre ve sediment “İdrar indeksleri” kartından, ilaçlar “Nefrotoksik ilaçlar” listesinden otomatik eklenir.</p>
+    <span class="lbl">Prerenal (hipoperfüzyon)</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-e="kayip" checked><span class="txt">Volüm kaybı<small>Kusma, ishal, kanama, poliüri veya az sıvı alımı</small></span></label>
+      <label class="item"><input type="checkbox" data-e="hipot"><span class="txt">Hipotansiyon<small>Kısa süreli; volümle düzelen</small></span></label>
+      <label class="item"><input type="checkbox" data-e="kky"><span class="txt">Kalp yetmezliği<small>Kardiyorenal sendrom</small></span></label>
+      <label class="item"><input type="checkbox" data-e="siroz"><span class="txt">Siroz ve asit<small>HRS-AKI olasılığı</small></span></label>
+      <label class="item"><input type="checkbox" data-e="sepsis"><span class="txt">Sepsis</span></label>
+    </div>
+    <span class="lbl">Renal: tübüler (ATN, pigment, miyelom kast)</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-e="uzsok"><span class="txt">Uzamış şok veya kardiyak arrest</span></label>
+      <label class="item"><input type="checkbox" data-e="rabdo"><span class="txt">Rabdomiyoliz şüphesi<small>Ezilme, uzun immobilizasyon, nöbet, aşırı egzersiz, statin, kas ağrısı</small></span></label>
+      <label class="item"><input type="checkbox" data-e="miyelom"><span class="txt">Miyelom bulguları<small>Hiperkalsemi, açıklanamayan anemi, kemik ağrısı</small></span></label>
+      <label class="item"><input type="checkbox" data-e="tls"><span class="txt">Kemoterapi / tümör lizisi</span></label>
+    </div>
+    <span class="lbl">Renal: akut interstisyel nefrit (AİN)</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-e="yeniilac"><span class="txt">Son haftalarda yeni ilaç<small>Antibiyotik, PPİ, NSAİİ, allopurinol vb.</small></span></label>
+      <label class="item"><input type="checkbox" data-e="atdok"><span class="txt">Ateş, döküntü veya eozinofili</span></label>
+    </div>
+    <span class="lbl">Renal: glomerülonefrit / vaskülit</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-e="nefritik"><span class="txt">Nefritik tablo<small>Yeni hipertansiyon, ödem, hematüri</small></span></label>
+      <label class="item"><input type="checkbox" data-e="pulm"><span class="txt">Hemoptizi / alveoler kanama<small>Pulmoner-renal sendrom</small></span></label>
+      <label class="item"><input type="checkbox" data-e="sistemik"><span class="txt">Sistemik bulgu<small>Purpura, artrit, sinüzit, ağız yarası, malar döküntü</small></span></label>
+      <label class="item"><input type="checkbox" data-e="enf"><span class="txt">Yakın enfeksiyon<small>Boğaz/deri enfeksiyonu, endokardit</small></span></label>
+    </div>
+    <span class="lbl">Renal: vasküler</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-e="mah"><span class="txt">Trombositopeni ve anemi<small>Mikroanjiyopatik hemoliz (TMA) şüphesi</small></span></label>
+      <label class="item"><input type="checkbox" data-e="malign"><span class="txt">Malign hipertansiyon veya skleroderma</span></label>
+      <label class="item"><input type="checkbox" data-e="ateroemb"><span class="txt">Ateroemboli şüphesi<small>Son haftalarda arteriyel kateterizasyon veya damar cerrahisi, livedo, mavi parmak</small></span></label>
+      <label class="item"><input type="checkbox" data-e="tromb"><span class="txt">Renal arter / ven trombozu şüphesi<small>Ani yan ağrısı, AF, hiperkoagülabilite</small></span></label>
+    </div>
+    <span class="lbl">Postrenal (obstrüksiyon)</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-e="prostat"><span class="txt">Mesane çıkım obstrüksiyonu riski<small>Prostat büyümesi, alt üriner sistem yakınması, antikolinerjik/opioid, nörojenik mesane</small></span></label>
+      <label class="item"><input type="checkbox" data-e="pelvik"><span class="txt">Üst üriner sistem obstrüksiyonu riski<small>Pelvik/retroperitoneal tümör, taş, tek böbrek</small></span></label>
+      <label class="item"><input type="checkbox" data-e="anuri"><span class="txt">Ani anüri veya değişken idrar akımı</span></label>
+      <label class="item"><input type="checkbox" data-e="kateter"><span class="txt">Üriner kateter tıkanıklığı şüphesi</span></label>
+    </div>
+    <span class="lbl">İdrar dipstick</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-e="dkan"><span class="txt">Kan (+)</span></label>
+      <label class="item"><input type="checkbox" data-e="dprot"><span class="txt">Protein (+)</span></label>
+      <label class="item"><input type="checkbox" data-e="dpig"><span class="txt">Kan (+) ama mikroskopide eritrosit yok<small>Miyoglobin / hemoglobin</small></span></label>
+      <label class="item"><input type="checkbox" data-e="dlok"><span class="txt">Lökosit (+)</span></label>
+      <label class="item"><input type="checkbox" data-e="dnit"><span class="txt">Nitrit (+)</span></label>
+      <label class="item"><input type="checkbox" data-e="dglu"><span class="txt">Glukoz (+), kan şekeri normal<small>Proksimal tübül hasarı</small></span></label>
+    </div>
+    <span class="lbl">Üriner sistem ultrasonu</span>
+    <div class="seg wrapseg many"><button type="button" data-g="usg" data-v="na" aria-pressed="true">Yapılmadı</button><button type="button" data-g="usg" data-v="nl" aria-pressed="false">Hidronefroz yok</button><button type="button" data-g="usg" data-v="hn" aria-pressed="false">Hidronefroz var</button><button type="button" data-g="usg" data-v="kc" aria-pressed="false">Küçük ekojenik böbrek</button></div>
+    <div class="grid">
+      <div class="field"><label for="pvr">Mesane hacmi / PVR <span>mL</span></label><input id="pvr" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+    </div>
+    <p class="note">Mesane taraması (bladder scan) veya işeme sonrası rezidü. AUA (2017) kronik retansiyonu en az iki kez PVR &gt; 300 mL olarak tanımlar; AKI’ye özgü kılavuz eşiği yoktur.</p>
+    <table class="t">
+      <thead><tr><th>İdrar bulgusu</th><th>Düşündürür</th></tr></thead>
+      <tbody>
+        <tr><td>Çamur kahverengi granüler silendir, tübül epitel hücresi / silendiri</td><td>ATN</td></tr>
+        <tr><td>Eritrosit silendiri, dismorfik eritrosit (akantosit)</td><td>GN, vaskülit</td></tr>
+        <tr><td>Lökosit silendiri, steril piyüri</td><td>AİN <small>piyelonefritte de lökosit silendiri olur</small></td></tr>
+        <tr><td>İdrar eozinofili</td><td>AİN için güvenilmez <small>duyarlılık ve özgüllüğü düşük</small></td></tr>
+        <tr><td>Dipstick kan (+), mikroskopide eritrosit yok</td><td>Miyoglobinüri (rabdomiyoliz), hemoglobinüri (hemoliz)</td></tr>
+        <tr><td>Kan + protein, belirgin neden yok</td><td>Akut nefrit <small>İYE ve kateter travması dışlanınca (NICE 1.4.3)</small></td></tr>
+        <tr><td>Belirgin proteinüri, nefrotik düzey</td><td>Glomerüler hastalık</td></tr>
+        <tr><td>Dipstick protein az, ölçülen protein çok</td><td>Hafif zincir (miyelom) <small>dipstick esas olarak albümini ölçer</small></td></tr>
+        <tr><td>Normoglisemide glukozüri</td><td>Proksimal tübül hasarı</td></tr>
+        <tr><td>Kristaller</td><td>İlaç (asiklovir, metotreksat, sülfonamid), ürik asit (tümör lizisi), oksalat (etilen glikol)</td></tr>
+        <tr><td>Silik (bland) sediment</td><td>Prerenal, postrenal; bazı vasküler nedenler</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Görüntüleme, özellikle böbrek ultrasonu, AKI değerlendirmesinin temel parçasıdır (KDIGO 2012). FENa obstrüksiyonu ayırt etmez: Espinel 1980’de obstrüksiyonda FENa &gt; %1 iken akut obstrüksiyonda FENa &lt; %1 de bildirilmiştir (Steiner 1984; Zarich 1985).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Olası neden grupları</h2>
+    <div class="res"><span class="pill" id="etp"></span></div>
+    <div class="sub"><span>Prerenal</span><b class="wr" id="eg-pre">–</b></div>
+    <div class="sub"><span>Tübüler (ATN, pigment, miyelom)</span><b class="wr" id="eg-tub">–</b></div>
+    <div class="sub"><span>Akut interstisyel nefrit</span><b class="wr" id="eg-ain">–</b></div>
+    <div class="sub"><span>Glomerülonefrit / vaskülit</span><b class="wr" id="eg-gn">–</b></div>
+    <div class="sub"><span>Vasküler (TMA, ateroemboli, tromboz)</span><b class="wr" id="eg-vas">–</b></div>
+    <div class="sub"><span>Postrenal</span><b class="wr" id="eg-post">–</b></div>
+    <ol class="rec" id="rxE"></ol>
+    <h3>Önerilen tetkikler</h3>
+    <ol class="rec" id="rxW"></ol>
+    <p class="note">Sayılar destekleyen bulgu sayısıdır, olasılık değildir; gruplar birlikte bulunabilir (ör. sepsiste prerenal ve ATN). Kesin tanı için nefroloji, gerekirse biyopsi.</p>
   </section>
 
   <section class="card" aria-live="polite">
@@ -197,6 +285,64 @@ ol.rec li a,.note a{color:var(--accent);font-weight:600}
     <div class="res"><span class="pill" id="mgp"></span></div>
     <ol class="rec" id="rxM"></ol>
     <p class="note">Evreye göre adımlar KDIGO 2012 Şekil 4’ten (yüksek risk ve tüm evreler; evre 1’den, 2’den ve 3’ten itibaren eklenenler); parantez içindeki numaralar KDIGO önerileridir.</p>
+  </section>
+
+  <section class="card" id="ilac">
+    <h2>Nefrotoksik ilaçlar</h2>
+    <p class="note">Hastanın kullandığı ilaçları işaretleyin. Kreatinin ve kilo yukarıdaki kartlardan alınır.</p>
+    <div class="grid">
+      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="1" value="68"></div>
+      <div class="field"><span class="lbl">Cinsiyet</span><div class="seg"><button type="button" data-g="cins" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="cins" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div></div>
+    </div>
+    <span class="lbl">Hemodinamik</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-d="nsaid" checked><span class="txt">NSAİİ<small>COX-2 seçici dahil; reçetesiz kullanımı sorun</small></span></label>
+      <label class="item"><input type="checkbox" data-d="raas" checked><span class="txt">ACEİ / ARB / ARNI<small>-pril, -sartan, sakubitril-valsartan</small></span></label>
+      <label class="item"><input type="checkbox" data-d="mra"><span class="txt">MRA<small>Spironolakton, eplerenon, finerenon</small></span></label>
+      <label class="item"><input type="checkbox" data-d="diu"><span class="txt">Diüretik<small>Furosemid, torasemid, tiyazid</small></span></label>
+      <label class="item"><input type="checkbox" data-d="cni"><span class="txt">Kalsinörin inhibitörü<small>Takrolimus, siklosporin</small></span></label>
+    </div>
+    <span class="lbl">Metabolik</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-d="met" checked><span class="txt">Metformin</span></label>
+      <label class="item"><input type="checkbox" data-d="sglt"><span class="txt">SGLT2 inhibitörü<small>-flozin</small></span></label>
+      <label class="item"><input type="checkbox" data-d="su"><span class="txt">Sülfonilüre<small>Gliklazid, glimepirid, glibenklamid</small></span></label>
+    </div>
+    <span class="lbl">Doğrudan nefrotoksik</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-d="ag"><span class="txt">Aminoglikozid<small>Gentamisin, amikasin</small></span></label>
+      <label class="item"><input type="checkbox" data-d="vanko"><span class="txt">Vankomisin</span></label>
+      <label class="item"><input type="checkbox" data-d="amfo"><span class="txt">Amfoterisin B</span></label>
+      <label class="item"><input type="checkbox" data-d="kont"><span class="txt">İyotlu kontrast<small>Yakın zamanda verildi veya planlanıyor</small></span></label>
+      <label class="item"><input type="checkbox" data-d="ppi"><span class="txt">Proton pompa inhibitörü<small>AİN</small></span></label>
+      <label class="item"><input type="checkbox" data-d="tmp"><span class="txt">Trimetoprim-sülfametoksazol</span></label>
+      <label class="item"><input type="checkbox" data-d="diger"><span class="txt">Diğer nefrotoksik<small>Sisplatin, metotreksat, kolistin, IV asiklovir, tenofovir DF, IV bisfosfonat</small></span></label>
+    </div>
+    <span class="lbl">Böbrekten atılan, dar aralıklı</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-d="li"><span class="txt">Lityum</span></label>
+      <label class="item"><input type="checkbox" data-d="dig"><span class="txt">Digoksin</span></label>
+      <label class="item"><input type="checkbox" data-d="doak"><span class="txt">DOAK / DMAH<small>Apiksaban, rivaroksaban, edoksaban, dabigatran, enoksaparin</small></span></label>
+      <label class="item"><input type="checkbox" data-d="opi"><span class="txt">Morfin, gabapentin, pregabalin</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>İlaç önerileri</h2>
+    <div class="res"><span class="pill" id="ilp"></span></div>
+    <div class="sub"><span>CrCl, güncel Kr ile <small>Cockcroft-Gault, gerçek kilo</small></span><b id="crg">–</b></div>
+    <div class="sub"><span>CrCl, bazal Kr ile</span><b id="crb">–</b></div>
+    <div class="sub"><span>eGFR, bazal Kr ile <small>CKD-EPI 2021</small></span><b id="egb">–</b></div>
+    <ol class="rec" id="rxC"></ol>
+    <ol class="rec" id="rxD"></ol>
+    <h3>Yeniden başlama (sick day)</h3>
+    <ol class="rec">
+      <li><b>Kesilen her ilaç için yazılı yeniden başlama planı</b><p class="advice">Ne zaman ve hangi koşulda başlanacağı kayda ve epikriz/taburculuk notuna yazılmalı; unutulup başlanmayan ilaç da zarar verir (KDIGO 2024 UN 4.3.2–4.3.3).</p></li>
+      <li><b>Koşullar</b><p class="advice">Hasta en az 24 saattir normal yiyip içiyor ve akut hasta değil (NHS İskoçya sick day rehberi); hemodinamik olarak stabil ve öyemik; Kr bazale dönüyor veya stabil; K normal.</p></li>
+      <li><b>Sıra ve izlem</b><p class="advice">Önce kardiyorenal yararı olanlar (ACEİ/ARB/ARNI, SGLT2i, MRA), birer birer. ACEİ/ARB başlanınca 2–4 hafta içinde kan basıncı, Kr ve K kontrol edin (KDIGO 2024 UN 3.6.2). NSAİİ’yi yeniden başlamayın.</p></li>
+      <li><b>Hastaya sick day eğitimi</b><p class="advice">İki veya daha fazla kusma/ishal ya da ateş-titreme olursa SGLT2i, ACEİ, ARB, diüretik, metformin ve NSAİİ geçici bırakılır, 24–48 saat normal beslendikten sonra yeniden başlanır; 72 saatten uzun süren hastalıkta hekime başvurulur (NHS İskoçya 2026). Kanıt düzeyi düşüktür: KDIGO 2024 sick day kuralları için ayrı bir öneri vermez, yalnız yeniden başlama planını vurgular.</p></li>
+    </ol>
+    <p class="note"><b>Kes</b>: AKI süresince bırakın, mümkünse alternatif. <b>Beklet</b>: geçici bırakın, koşullar sağlanınca yeniden başlayın. <b>Düzeye göre</b>: ilaç düzeyiyle karar verin. <b>Doz ayarı</b>: böbrek işlevine göre doz; dozlar <a href="bobrek-ilac-dozu.html">Böbrekte İlaç Dozu</a> aracında.</p>
   </section>
 
   <section class="card">
@@ -230,7 +376,7 @@ ol.rec li a,.note a{color:var(--accent);font-weight:600}
     <p class="note">KDIGO 2012 (5.1.1–5.1.2) sayısal eşik vermez: yaşamı tehdit eden sıvı, elektrolit veya asit–baz bozukluğunda RRT acil başlanır; karar tek BUN/kreatinin eşiğine değil klinik bağlama ve laboratuvar eğilimine dayanır. Tablodaki eşikler, ağır AKI’li yoğun bakım hastalarında “bekleyen” kolun RRT başlatma ölçütleridir. I (intoksikasyon): diyalizle uzaklaştırılan zehirlenmede ayrıca değerlendirin.</p>
   </section>
 
-  <p class="note">Kaynaklar: KDIGO AKI Çalışma Grubu. KDIGO Clinical Practice Guideline for Acute Kidney Injury, Kidney Int Suppl 2012;2:1–138 (AKI tanımı ve evreleri, en yüksek evre kuralı, Kr ≥ 4,0 koşulu, Şekil 4 evreye göre yönetim, öneriler 2.3, 3.1.1–3.1.2, 3.3.1–3.3.4, 3.4.1–3.4.2, 3.5.1, 3.8.1–3.8.7, 4.2–4.5, 5.1.1–5.1.2); Kellum JA, Lameire N. KDIGO özeti, Crit Care 2013;17:204 ve 205; KDIGO 2026 AKI/AKD kılavuzu henüz taslaktır, bu sayfa 2012 kılavuzuna dayanır. Espinel CH. JAMA 1976;236:579–81 ve Espinel CH, Gregory AW. Clin Nephrol 1980;13:73–7 (FENa &lt; 1 / &gt; 3); Miller TR ve ark. Ann Intern Med 1978;89:47–50 (idrar Na, ozmolalite, U/P kreatinin ve üre); Carvounis CP ve ark. Kidney Int 2002;62:2223–9 (FEÜre ≤ %35, diüretik); Steiner RW. Am J Med 1984;77:699–702 ve Zarich S ve ark. Arch Intern Med 1985;145:108–12 (FENa istisnaları); Feinfeld DA ve ark. Int Urol Nephrol 2002;34:143–5 (BUN/Kr); Perazella MA ve ark. Clin J Am Soc Nephrol 2008;3:1615–9 ve Fadel R ve ark. Kidney360 2023;4:918–23 (sediment); Gaudry S ve ark. AKIKI, N Engl J Med 2016;375:122–33 ve protokol (Crit Care 2015;19 Suppl 1) ile AKIKI 2, Lancet 2021;397:1293–300; STARRT-AKI Investigators, N Engl J Med 2020;383:240–51 ve çalışma sitesi (University of Alberta; standart kol RRT ölçütleri). Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: KDIGO AKI Çalışma Grubu. KDIGO Clinical Practice Guideline for Acute Kidney Injury, Kidney Int Suppl 2012;2:1–138 (AKI tanımı ve evreleri, en yüksek evre kuralı, Kr ≥ 4,0 koşulu, Şekil 4 evreye göre yönetim, öneriler 2.3, 3.1.1–3.1.2, 3.3.1–3.3.4, 3.4.1–3.4.2, 3.5.1, 3.8.1–3.8.7, 4.2–4.5, 5.1.1–5.1.2); Kellum JA, Lameire N. KDIGO özeti, Crit Care 2013;17:204 ve 205; KDIGO 2026 AKI/AKD kılavuzu henüz taslaktır, bu sayfa 2012 kılavuzuna dayanır. Espinel CH. JAMA 1976;236:579–81 ve Espinel CH, Gregory AW. Clin Nephrol 1980;13:73–7 (FENa &lt; 1 / &gt; 3); Miller TR ve ark. Ann Intern Med 1978;89:47–50 (idrar Na, ozmolalite, U/P kreatinin ve üre); Carvounis CP ve ark. Kidney Int 2002;62:2223–9 (FEÜre ≤ %35, diüretik); Steiner RW. Am J Med 1984;77:699–702 ve Zarich S ve ark. Arch Intern Med 1985;145:108–12 (FENa istisnaları); Feinfeld DA ve ark. Int Urol Nephrol 2002;34:143–5 (BUN/Kr); Perazella MA ve ark. Clin J Am Soc Nephrol 2008;3:1615–9 ve Fadel R ve ark. Kidney360 2023;4:918–23 (sediment); Gaudry S ve ark. AKIKI, N Engl J Med 2016;375:122–33 ve protokol (Crit Care 2015;19 Suppl 1) ile AKIKI 2, Lancet 2021;397:1293–300; STARRT-AKI Investigators, N Engl J Med 2020;383:240–51 ve çalışma sitesi (University of Alberta; standart kol RRT ölçütleri). Nefrotoksik ilaçlar ve etiyoloji: NICE NG148 Acute kidney injury: prevention, detection and management (2019; öneriler 1.1.1, 1.1.7, 1.2.8–1.2.9, 1.2.14, 1.4.2–1.4.6, 1.5.1–1.5.4, 1.5.15, 1.6.4); KDIGO 2024 CKD kılavuzu, Kidney Int 2024;105(4S):S117–S314 (uygulama noktaları 3.6.2, 3.6.5, 3.7.2, 3.8.3, 3.8.5, 4.1.2–4.1.3, 4.2.5, 4.3.1–4.3.3, 4.4.1.2; Tablo 31); KDIGO 2022 diyabet ve KBH kılavuzu (metformin eGFR eşikleri); KDIGO 2021 glomerüler hastalıklar kılavuzu (GN serolojisi); Rybak MJ ve ark. ASHP/IDSA/PIDS/SIDP vankomisin konsensüsü, Am J Health Syst Pharm 2020;77:835–64 (AUC 400–600); NHS İskoçya (Healthcare Improvement Scotland) Medicine sick day guidance, Haziran 2026 (tetikleyiciler, 24–48 saat sonra yeniden başlama); Stoffel JT ve ark. AUA nonnörojenik kronik üriner retansiyon raporu, 2017 (PVR &gt; 300 mL); Cockcroft DW, Gault MH. Nephron 1976;16:31–41; Inker LA ve ark. CKD-EPI 2021, N Engl J Med 2021;385:1737–49. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -289,10 +435,14 @@ ol.rec li a,.note a{color:var(--accent);font-weight:600}
     if(sc&&sc===st)trg.push('kreatinin: '+oc.trig);
     if(su&&su===st)trg.push('idrar: '+ou.trig);
     var known=sc!==null||su!==null||rrt;
+    // AKI yok yalnız kreatinin verisi var ve anlamlı değişim yokken yeşil; aksi halde sarı (dışlanamaz)
+    var crChg=oc.d!==undefined&&(Math.abs(oc.d)>=0.3||oc.r>=1.5||oc.r<=1/1.5);
+    var stColor=st?stCol[st]:(sc===null||crChg?C.warn:C.ok);
     if(!known){$('stn').textContent='–';pill('stp','','');$('trg').textContent='–'}
-    else{$('stn').textContent=st?'Evre '+st:'AKI yok';
-      pill('stp',st?'KDIGO AKI':'Ölçüt karşılanmadı',stCol[st]);
+    else{$('stn').textContent=st?'Evre '+st:(sc===null?'Kr yok':'AKI yok');
+      pill('stp',st?'KDIGO AKI':sc===null?'Kreatinin girilmedi: AKI dışlanamaz':crChg?'Ölçüt yok, ancak kreatinin değişmiş':'Ölçüt karşılanmadı',stColor);
       $('trg').textContent=st?trg.join(' · '):'–'}
+    if(!st&&oc.d!==undefined&&oc.d<=-0.3)li('rxK','Kreatinin düşüyor','Yüksek ilk değer düzelmekte olan bir AKI olabilir; bazal kabul edilen değeri gözden geçirin (düşük değer bazal alınırsa AKI ölçütleri karşılanabilir).');
     ['r1','r2','r3'].forEach(function(id,i){$(id).className=st===i+1?'cur':''});
     if(tm==='x'&&sc===0)li('rxK','Artış 7 günden uzun sürede','KDIGO AKI kreatinin ölçütleri 48 saat (≥ 0,3 mg/dL) ve 7 gün (≥ 1,5 kat) ile sınırlıdır; daha yavaş kayıp akut böbrek hastalığı veya KBH açısından değerlendirilmelidir.');
     if(tm==='7'&&oc.d>=0.3&&oc.r<1.5)li('rxK','≥ 0,3 mg/dL artış 48 saat dışında','Mutlak artış ölçütü yalnız 48 saat içinde geçerlidir; 7 günlük ölçüt için ≥ 1,5 kat gerekir.');
@@ -351,14 +501,14 @@ ol.rec li a,.note a{color:var(--accent);font-weight:600}
     if(sed==='atn')li('rxI','Granüler (çamur kahverengi) silendir veya tübül epitel hücresi','ATN’yi güçlü biçimde destekler; Perazella 2008 skorunda ≥ 2 puan ATN için çok güçlü öngörücüdür.');
     else if(sed==='gn')li('rxI','Eritrosit silendiri / dismorfik eritrosit','Glomerülonefriti düşündürür; Fadel 2023’te sedimentle konan GN tahminlerinin tamamı biyopsiyle doğrulandı. Nefrolojiyle değerlendirin.');
     else if(sed==='ain')li('rxI','Lökosit silendiri','Akut interstisyel nefriti düşündürür (Fadel 2023). İlaç öyküsünü gözden geçirin.');
-    else if(sed==='bl')li('rxI','Silik sediment','Prerenal düşünülen hastada silendir/TEH yokluğu ATN’yi büyük ölçüde dışlar (NÖD %91; Perazella 2008), ancak ATN veya GN’yi tamamen dışlamaz (Fadel 2023’te silik sedimentli biyopsilerin %40’ı ATN, %60’ı GN).');
+    else if(sed==='bl')li('rxI','Silik sediment','Prerenal düşünülen hastada silendir/TEH yokluğu ATN’yi büyük ölçüde dışlar (NÖD %91; Perazella 2008), ancak ATN veya GN’yi tamamen dışlamaz (Fadel 2023’te silik sedimentli biyopsilerin %40’ı ATN, %60’ı GN; yalnız 5 hasta).');
     else li('rxI','Sediment mikroskopisi','Otomatik laboratuvar analizi silendirleri sıklıkla kaçırır; mümkünse santrifüje idrarı hekim değerlendirsin (Fadel 2023).');
 
     // --- Yönetim ---
     $('rxM').innerHTML='';
     var w=v('wt');
-    pill('mgp',known?(st?'Evre '+st+' için adımlar':'Yüksek risk / AKI yok'):'',known?stCol[st]:'');
-    li('rxM','Mümkünse tüm nefrotoksik ajanları kesin','NSAİİ, aminoglikozit, iyotlu kontrast vb. Aminoglikozit: daha az nefrotoksik alternatif yoksa (3.8.1); normal böbrek işlevinde günde tek doz (3.8.2); çoklu dozda > 24 saat, tek dozda > 48 saat kullanımda düzey izlemi (3.8.3–3.8.4). Amfoterisin B gerekiyorsa lipid formülasyonu (3.8.6); eşdeğer etkinlikte azol veya ekinokandin tercih edilir (3.8.7).');
+    pill('mgp',known?(st?'Evre '+st+' için adımlar':'Yüksek risk / AKI yok'):'',known?stColor:'');
+    li('rxM','Mümkünse tüm nefrotoksik ajanları kesin','Hastanın ilaçları için aşağıdaki “Nefrotoksik ilaçlar” listesini kullanın. NSAİİ, aminoglikozit, iyotlu kontrast vb. Aminoglikozit: daha az nefrotoksik alternatif yoksa (3.8.1); normal böbrek işlevinde günde tek doz (3.8.2); çoklu dozda > 24 saat, tek dozda > 48 saat kullanımda düzey izlemi (3.8.3–3.8.4). Amfoterisin B gerekiyorsa lipid formülasyonu (3.8.6); eşdeğer etkinlikte azol veya ekinokandin tercih edilir (3.8.7).');
     li('rxM','Volüm durumu ve perfüzyon basıncını sağlayın','Fonksiyonel hemodinamik izlemi düşünün. Hemorajik şok yoksa kolloid yerine izotonik kristalloid (3.1.1); vazomotor şokta sıvıyla birlikte vazopressör (3.1.2). Volüm yükü dışında AKI’yi önlemek veya tedavi etmek için diüretik kullanmayın (3.4.1–3.4.2); düşük doz dopamin yok (3.5.1).');
     li('rxM','Serum kreatinini ve idrar çıkışını izleyin','Evrelemeyi tekrarlayın (2.3.2).');
     li('rxM','Hiperglisemiden kaçının','Kritik hastada insülinle plazma glukoz hedefi 110–149 mg/dL (6,1–8,3 mmol/L) (3.3.1).');
@@ -388,12 +538,132 @@ ol.rec li a,.note a{color:var(--accent);font-weight:600}
     if(hits.length){pill('rrp','RRT başlatma ölçütü var',C.high);hits.forEach(function(h){li('rxR',h)});
       li('rxR','Nefroloji ile acil RRT kararı','Yaşamı tehdit eden sıvı, elektrolit veya asit–baz bozukluğunda RRT acil başlanır (KDIGO 5.1.1).')}
     else if(aE2){pill('rrp','K 5,5–6: tedaviye yanıtı izleyin',C.warn);li('rxR','K > 5,5 mmol/L','AKIKI’de tıbbi tedaviye rağmen > 5,5 mmol/L sürmesi RRT ölçütüydü.')}
+    else if(K===null&&ph===null&&hco===null&&bun===null&&olg===null&&pf===null&&!ovl){pill('rrp','Değer girilmedi',C.warn)}
+    else if(K===null||(ph===null&&hco===null)){pill('rrp','Girilenlerde ölçüt yok; eksik: '+[K===null?'K':'',ph===null&&hco===null?'pH/HCO₃':''].filter(Boolean).join(', '),C.warn)}
     else{pill('rrp','Girilen değerlerde acil ölçüt yok',C.ok)}
     if(aE2&&hits.length)li('rxR','K > 5,5 mmol/L','Tıbbi tedaviye rağmen sürerse AKIKI ölçütüdür.');
     if(!hits.length)li('rxR','Ölçüt yokken erken RRT yarar sağlamadı','AKIKI ve STARRT-AKI’de erken başlama 60–90 gün mortaliteyi azaltmadı; STARRT-AKI’de 90. günde RRT bağımlılığı (%10,4’e karşı %6,0) ve yan etki daha sıktı. AKIKI’de bekleyen kolun %49’u hiç RRT almadı.');
     li('rxR','Ölçüt olmadan uzun erteleme','AKIKI 2: oligüri > 72 saat veya BUN > 112 mg/dL olan hastada RRT’yi BUN 140 mg/dL’ye ya da zorunlu endikasyona kadar daha da ertelemek fayda sağlamadı, 60. gün ölüm riski daha yüksekti (HR 1,65).');
+
+    // --- Nefrotoksik ilaçlar ---
+    var age=v('yas'),fem=segVal('cins')==='f';
+    function cg(cr){if(age===null||w===null||cr===null||age<18||age>120||w<=0||cr<=0)return null;return (140-age)*w/(72*cr)*(fem?0.85:1)}
+    function ckdepi(cr){if(age===null||cr===null||age<18||age>120||cr<=0)return null;var k=fem?0.7:0.9,a=fem?-0.241:-0.302,x=cr/k;return 142*Math.pow(Math.min(x,1),a)*Math.pow(Math.max(x,1),-1.2)*Math.pow(0.9938,age)*(fem?1.012:1)}
+    var cgc=cg(c),cgb=cg(b),egb=ckdepi(b);
+    $('crg').textContent=cgc===null?'yaş, kilo, Kr gerekli':Math.round(cgc)+' mL/dk';
+    $('crb').textContent=cgb===null?'yaş, kilo, bazal Kr gerekli':Math.round(cgb)+' mL/dk';
+    $('egb').textContent=egb===null?'yaş, bazal Kr gerekli':Math.round(egb)+' mL/dk/1,73 m²';
+    $('rxC').innerHTML='';
+    if(age!==null&&age<18)li('rxC','18 yaş altı','Cockcroft-Gault ve CKD-EPI erişkin içindir.');
+    var lnk=' Doz ayarı: <a href="bobrek-ilac-dozu.html">Böbrekte İlaç Dozu</a> (hesaplananı değil klinik tahmini GFR’yi kullanın).';
+    if(st>=1||(c!==null&&b!==null&&c>b)||segVal('rrt')==='1')
+      li('rxC','Kreatinin dengede değilken doz hesabı güvenilmez','AKI’de Kr gerçek GFR değişimini saatler-günler gecikmeyle izler; Cockcroft-Gault ve eGFR kararlı durum varsayar (KDIGO 2024 UN 4.2.5). Kr yükselirken gerçek GFR hesaplanandan düşüktür; oligüri/anüride GFR’yi çok düşük kabul edin. Kr düşerken (iyileşme) hesap gerçek GFR’nin altında kalır, düşük doz yetersiz tedaviye yol açabilir. Dar aralıklı ilaçlarda düzey ölçün, yükleme dozunu azaltmayın, idameyi sık gözden geçirin.'+lnk,true);
+    else li('rxC','Böbrek işlevine göre doz','Kr bazal düzeyde görünüyor; yine de AKI şüphesi sürüyorsa hesap güvenilmez olabilir.'+lnk,true);
+    if(st>=1&&cgc!==null&&cgb!==null)li('rxC','CrCl aralığı','Güncel Kr ile '+Math.round(cgc)+', bazal Kr ile '+Math.round(cgb)+' mL/dk; gerçek değer Kr yükselirken '+Math.round(cgc)+' mL/dk’nın da altında olabilir.');
+
+    var A={kes:['Kes',C.high],bek:['Beklet',C.warn],duz:['Düzeye göre',C.low],doz:['Doz ayarı',C.acc]};
+    var hyperK=K!==null&&K>5.5,Ktxt=hyperK?' Güncel K '+fm(K,1)+' mmol/L (> 5,5): şimdi beklet.':'';
+    var metTxt;
+    if(egb===null)metTxt='AKI düzelip eGFR stabil olunca: eGFR ≥ 45 olağan doz; 30–44 en çok 1000 mg/gün; < 30 kullanılmaz. Bazal eGFR için yaş ve bazal Kr girin.';
+    else{var e0=Math.round(egb);metTxt='Bazal eGFR ≈ '+e0+' mL/dk/1,73 m²: Kr bazale dönerse '+(e0>=45?'olağan doza dönülebilir (eGFR ≥ 45; laktik asidoz riski yüksekse 45–59’da azaltılabilir).':e0>=30?'en çok 1000 mg/gün (eGFR 30–44).':'kullanılmaz (eGFR < 30).')+' Yeniden başlarken güncel, stabil eGFR’ye göre karar verin.'}
+    var D={
+      nsaid:{n:'NSAİİ',a:['kes'],r:'Prostaglandin inhibisyonu afferent arteriyolü daraltır, özellikle hipovolemi, ACEİ/ARB ve diüretikle (“üçlü darbe”) GFR düşer; AİN ve hiperkalemi de yapar.',re:'AKI düzelse de rutin olarak yeniden başlamayın; ağrıda parasetamol. Reçetesiz kullanımı sorun ve hastayı uyarın.',s:'KDIGO 2012 Şekil 4; NICE NG148 1.1.1, 1.6.4; KDIGO 2024 UN 4.3.1',e:{pre:1,ain:1}},
+      raas:{n:'ACEİ / ARB / ARNI',a:['bek'],r:'Efferent arteriyolü genişletir: hipovolemi, hipotansiyon veya sepsiste glomerüler filtrasyon basıncı düşer; hiperkalemi.'+Ktxt,re:'Stabil, öyemik, ≥ 24 saattir normal yiyip içiyor, Kr bazale dönüyor ve K normalken yeniden başlayın; kalp yetmezliği ve proteinürik KBH’de kalıcı bırakmayın.',s:'NICE NG148 1.2.14 (ishal, kusma, sepsis); KDIGO 2024 UN 3.6.5; ARNI için ACEİ/ARB önerisinden uyarlanmıştır',e:{pre:1}},
+      mra:{n:'MRA',a:['bek'],r:'Hiperkalemi ve geri dönüşlü GFR düşüşü.'+Ktxt,re:'K normale dönünce (finerenon KÜB: K ≤ 5,0 mmol/L) ve Kr stabilken düşük dozla yeniden başlayın.',s:'KDIGO 2024 UN 3.8.3, 3.8.5; finerenon ürün bilgisi',e:{}},
+      diu:ovl?{n:'Diüretik',a:['doz'],r:'Volüm yükü işaretli: kesmeyin; ödem/akciğer ödemi için yanıta göre doz verin. AKI’yi önlemek veya tedavi etmek için kullanılmaz.',re:'İdrar çıkışı ve volüm durumuna göre günlük gözden geçirin.',s:'NICE NG148 1.5.3–1.5.4; KDIGO 2012 3.4.1–3.4.2',e:{}}
+          :{n:'Diüretik',a:['bek'],r:'Volüm kaybı prerenal hasarı artırır; AKI’yi önlemek veya tedavi etmek için kullanılmaz. Volüm yükü varsa sürdürülür (“Acil diyaliz değerlendirmesi” kartında volüm yükü seçilirse öneri değişir).',re:'Öyemik olup normal yiyip içince; kalp yetmezliğinde kilo ve ödeme göre erken.',s:'KDIGO 2012 3.4.1–3.4.2; NICE NG148 1.5.3–1.5.4; NHS sick day',e:{pre:1}},
+      cni:{n:'Kalsinörin inhibitörü',a:['duz','doz'],r:'Doza bağlı afferent vazokonstriksiyon ve TMA; düzeyi CYP3A4 etkileşimleri ve ishalle yükselebilir.',re:'Kendiliğinden kesmeyin (rejeksiyon/alevlenme riski): çukur düzey ölçün, dozu nakil veya ilgili uzman ekiple ayarlayın.',s:'KDIGO 2024 UN 4.1.2 (dar aralıklı ilaçlarda düzey izlemi)',e:{pre:1,vas:1}},
+      met:{n:'Metformin',a:['bek'],r:'Böbrekten atılır; AKI, dehidratasyon, hipoksi ve iyotlu kontrastla laktik asidoz riski artar.',re:metTxt,s:'KDIGO 2022 diyabet-KBH (eGFR eşikleri); KDIGO 2024 UN 4.3.2–4.3.3; ürün bilgisi (eGFR < 30 kontrendike)',e:{}},
+      sglt:{n:'SGLT2 inhibitörü',a:['bek'],r:'Akut hastalık, açlık ve volüm kaybında öglisemik ketoasidoz ve ek volüm kaybı riski.',re:'Normal yiyip içmeye döndükten ve klinik stabil olunca yeniden başlayın; kardiyorenal yararı nedeniyle kalıcı bırakmayın.',s:'KDIGO 2024 UN 3.7.2; NHS sick day',e:{}},
+      su:{n:'Sülfonilüre',a:['bek','doz'],r:'Böbrek işlevi düşünce ve yiyememe durumunda hipoglisemi (özellikle böbrekten atılan glibenklamid).',re:'Otomatik kesilmez: kan şekerine ve beslenmeye göre azaltın veya bekletin.',s:'NHS İskoçya sick day rehberi 2026',e:{}},
+      ag:{n:'Aminoglikozid',a:['duz','doz'],r:'Proksimal tübül toksisitesi (ATN), genellikle nonoligürik.',re:'Daha az nefrotoksik alternatif yoksa kullanın (3.8.1); normal böbrek işlevinde günde tek doz (3.8.2); çoklu dozda > 24 saat, tek dozda > 48 saat kullanımda düzey izleyin (3.8.3–3.8.4).',s:'KDIGO 2012 3.8.1–3.8.4',e:{tub:1}},
+      vanko:{n:'Vankomisin',a:['duz','doz'],r:'Maruziyete bağlı ATN, nadiren AİN; piperasilin-tazobaktamla birlikte AKI riski artar.',re:'Ciddi MRSA enfeksiyonunda AUC hedefi 400–600 mg·saat/L (MIC 1 mg/L varsayımıyla); yalnız çukur düzeye göre izlem önerilmez. AKI’de klirens değiştiği için düzeyi sık ölçün; uygun ise linezolid veya daptomisin.',s:'ASHP/IDSA/PIDS/SIDP 2020 vankomisin konsensüsü; KDIGO 2024 Tablo 31',e:{tub:1,ain:1}},
+      amfo:{n:'Amfoterisin B',a:['kes'],r:'Renal vazokonstriksiyon ve distal tübül toksisitesi.',re:'Eşdeğer etkinlikte azol veya ekinokandine geçin (3.8.7); amfoterisin gerekiyorsa lipid formülasyonu (3.8.6).',s:'KDIGO 2012 3.8.6–3.8.7',e:{tub:1}},
+      kont:{n:'İyotlu kontrast',a:['bek'],r:'Kontrastla ilişkili AKI; AKI’li hastada risk yüksektir.',re:'Elektif tetkiki AKI düzelene dek erteleyin veya kontrastsız yöntem seçin; acil tanıda ertelemeyin (NICE 1.1.7). Gerekirse en düşük doz, izo/düşük ozmolar kontrast ve IV izotonik NaCl veya bikarbonatla volüm genişletme (KDIGO 4.3.1–4.4.1; NICE 1.2.8).',s:'KDIGO 2012 4.3–4.5; KDIGO 2024 UN 4.4.1.2; NICE NG148 1.1.7, 1.2.8',e:{tub:1}},
+      ppi:{n:'Proton pompa inhibitörü',a:['kes'],r:'İdiyosenkratik akut interstisyel nefrit; ateş, döküntü, eozinofili çoğu zaman yoktur.',re:'Endikasyonu yoksa kesin (KDIGO 2024 UN 4.3.1); AİN düşünülüyorsa kesin, gerekirse H2 reseptör blokeri.',s:'KDIGO 2024 UN 4.3.1, Tablo 31',e:{ain:1}},
+      tmp:{n:'Trimetoprim-sülfametoksazol',a:['doz'],r:'Trimetoprim tübüler kreatinin sekresyonunu azaltır (GFR değişmeden Kr artışı) ve hiperkalemi yapar; kristalüri ve AİN.',re:'CrCl’ye göre doz, K izlemi; Kr artışını yorumlarken bu etkiyi hesaba katın.',s:'ürün bilgisi',e:{ain:1}},
+      diger:{n:'Diğer nefrotoksik',a:['bek','doz'],r:'ATN, kristal nefropatisi veya tübülopati.',re:'Mümkünse alternatif; zorunluysa ilgili uzmanla doz ve hidrasyon (metotreksatta düzey).',s:'KDIGO 2012 Şekil 4 (tüm nefrotoksikleri mümkünse kesin)',e:{tub:1}},
+      li:{n:'Lityum',a:['bek','duz'],r:'Dar aralıklı, yalnız böbrekle atılır; AKI ve dehidratasyonda düzey hızla yükselir (ACEİ/ARB, NSAİİ ve diüretik etkileşimi).',re:'Serum lityum düzeyi ölçün; AKI veya toksisitede bekletin, yeniden başlama ve doz kararını psikiyatriyle verin. Ağır zehirlenmede diyaliz değerlendirin (RRT kartı, I).',s:'KDIGO 2024 UN 4.1.2; ürün bilgisi',e:{}},
+      dig:{n:'Digoksin',a:['duz','doz'],r:'Böbrekten atılır; AKI ve potasyum bozukluğunda toksisite.',re:'Düzey ve K izleyin, idameyi azaltın.',s:'KDIGO 2024 UN 4.1.2; ürün bilgisi',e:{}},
+      doak:{n:'DOAK / DMAH',a:['doz'],r:'Böbrekten atılır; birikim ve kanama.',re:'CrCl’ye göre doz veya anfraksiyone heparin; Kr değişirken yeniden hesaplayın.',s:'ürün bilgileri',e:{}},
+      opi:{n:'Morfin, gabapentin, pregabalin',a:['doz'],r:'İlaç veya aktif metabolit birikimi: sedasyon, solunum depresyonu.',re:'Doz azaltın veya böbrekten bağımsız alternatif (ör. fentanil).',s:'ürün bilgileri',e:{}}
+    };
+    $('rxD').innerHTML='';
+    var sel=[],cnt={kes:0,bek:0,duz:0,doz:0},ilacE={pre:[],tub:[],ain:[],gn:[],vas:[],post:[]};
+    document.querySelectorAll('[data-d]').forEach(function(x){if(x.checked)sel.push(x.dataset.d)});
+    sel.forEach(function(id){var d=D[id];if(!d)return;
+      d.a.forEach(function(k){cnt[k]++});
+      Object.keys(d.e).forEach(function(g){ilacE[g].push(d.n)});
+      var l=document.createElement('li'),x=document.createElement('b');x.textContent=d.n;
+      x.insertAdjacentHTML('beforeend',d.a.map(function(k){return tag(A[k][0],A[k][1])}).join(''));
+      l.appendChild(x);
+      var p=document.createElement('p');p.className='advice';p.textContent=d.r+' Yeniden başlama / izlem: '+d.re+' ('+d.s+')';l.appendChild(p);
+      if(d.a.indexOf('doz')>=0){var q=document.createElement('p');q.className='advice';q.innerHTML='Doz: <a href="bobrek-ilac-dozu.html">Böbrekte İlaç Dozu</a>';l.appendChild(q)}
+      $('rxD').appendChild(l)});
+    if(!sel.length){pill('ilp','İlaç seçilmedi',C.warn);li('rxD','İlaç listesi gözden geçirilmedi','Hastanın tüm ilaçlarını (reçetesiz ve bitkisel dahil) gözden geçirip yukarıda işaretleyin (KDIGO 2024 UN 4.1.3, 4.3.1).')}
+    else{var parts=[];if(cnt.kes)parts.push(cnt.kes+' kes');if(cnt.bek)parts.push(cnt.bek+' beklet');if(cnt.duz)parts.push(cnt.duz+' düzeye göre');if(cnt.doz)parts.push(cnt.doz+' doz ayarı');
+      pill('ilp',parts.join(' · '),cnt.kes?C.high:cnt.bek?C.warn:C.low)}
+
+    // --- Etiyoloji ---
+    var E={kayip:{pre:1},hipot:{pre:1},kky:{pre:1},siroz:{pre:1},sepsis:{pre:1,tub:1},uzsok:{tub:1},rabdo:{tub:1},miyelom:{tub:1},tls:{tub:1},
+      yeniilac:{ain:1},atdok:{ain:1,vas:1},nefritik:{gn:1},pulm:{gn:1},sistemik:{gn:1},enf:{gn:1},mah:{vas:1},malign:{vas:1},ateroemb:{vas:1},tromb:{vas:1},
+      prostat:{post:1},pelvik:{post:1},anuri:{post:1},kateter:{post:1},dprot:{gn:1},dpig:{tub:1},dglu:{tub:1}};
+    var EN={};document.querySelectorAll('[data-e]').forEach(function(x){EN[x.dataset.e]={on:x.checked,t:x.closest('label').querySelector('.txt').firstChild.nodeValue.trim()}});
+    var on=function(k){return EN[k]&&EN[k].on};
+    var G={pre:[],tub:[],ain:[],gn:[],vas:[],post:[]};
+    Object.keys(E).forEach(function(k){if(on(k))Object.keys(E[k]).forEach(function(g){G[g].push(EN[k].t)})});
+    if(on('dkan')&&!on('dpig')){if(on('dprot'))G.gn.push('Dipstick kan + protein');else G.gn.push('Dipstick kan (+)')}
+    if(on('dlok')&&!on('dnit'))G.ain.push('Steril piyüri (lökosit +, nitrit −)');
+    Object.keys(ilacE).forEach(function(g){if(ilacE[g].length)G[g].push('İlaç: '+ilacE[g].join(', '))});
+    var atnI=atn-(sed==='atn'?1:0);
+    if(pre>atnI&&pre)G.pre.push('İdrar indeksleri prerenal lehine ('+pre+' bulgu)');
+    else if(atnI>pre&&atnI)G.tub.push('İdrar indeksleri ATN lehine ('+atnI+' bulgu)');
+    if(sed==='atn')G.tub.push('Sediment: granüler silendir / TEH');
+    else if(sed==='gn')G.gn.push('Sediment: eritrosit silendiri');
+    else if(sed==='ain')G.ain.push('Sediment: lökosit silendiri');
+    else if(sed==='bl'){G.pre.push('Silik sediment');G.post.push('Silik sediment')}
+    var usg=segVal('usg'),pvr=v('pvr');
+    if(usg==='hn')G.post.push('USG: hidronefroz');
+    if(pvr!==null&&pvr>300)G.post.push('Mesane hacmi '+fm(pvr,0)+' mL (> 300)');
+    var GN={pre:'Prerenal',tub:'Tübüler',ain:'AİN',gn:'GN / vaskülit',vas:'Vasküler',post:'Postrenal'};
+    var keys=Object.keys(G),mx=0;keys.forEach(function(g){mx=Math.max(mx,G[g].length)});
+    keys.forEach(function(g){var n=G[g].length,el=$('eg-'+g);el.className='wr cnt';
+      if(!n){el.textContent='–';return}
+      el.textContent=n+' bulgu';el.insertAdjacentHTML('beforeend',n===mx?tag('öne çıkan',C.acc):'')});
+    $('rxE').innerHTML='';$('rxW').innerHTML='';
+    var top=keys.filter(function(g){return mx&&G[g].length===mx});
+    if(!mx)pill('etp','Bulgu seçilmedi: neden araştırılmadı',C.warn);
+    else pill('etp','Öne çıkan: '+top.map(function(g){return GN[g]}).join(', '),C.acc);
+    keys.slice().sort(function(a,z){return G[z].length-G[a].length}).forEach(function(g){if(G[g].length)li('rxE',GN[g]+' ('+G[g].length+')',G[g].join(' · '))});
+    if(usg==='nl')li('rxE','Hidronefroz yok','Obstrüksiyonu tamamen dışlamaz: çok erken obstrüksiyon, ağır hipovolemi veya retroperitoneal fibroz/tümörde toplayıcı sistem genişlemeyebilir.');
+    if(usg==='kc')li('rxE','Küçük ekojenik böbrekler','Kronik böbrek hastalığını düşündürür (KBH üzerine AKI); bazal kreatinini yeniden gözden geçirin.');
+    if(pvr!==null&&pvr>300)li('rxE','Mesane çıkım obstrüksiyonu olası','Üretral (gerekirse suprapubik) kateter takın; sonrası saatlik idrar ve postobstrüktif diürez açısından sıvı-elektrolit izlemi.');
+    else if(pvr!==null)li('rxE','Mesane hacmi '+fm(pvr,0)+' mL','Belirgin mesane retansiyonu yok; üst üriner sistem obstrüksiyonunu (bilateral üreter, tek böbrek) dışlamaz, ultrason gerekir.');
+    if(on('anuri'))li('rxE','Ani anüri','Önce obstrüksiyon (kateter tıkanıklığı dahil) dışlanmalı; renal arter tıkanması, kortikal nekroz ve hızlı ilerleyen GN de anüri yapar.');
+    var obs=G.post.filter(function(x){return x!=='Silik sediment'}).length;
+    var pyo=on('dlok')&&on('dnit')&&(obs||usg==='hn');
+    if(pyo)li('rxE','Obstrüksiyon + enfeksiyon: pyonefroz şüphesi','Üriner sistem ultrasonu 6 saat içinde (NICE 1.4.5); acil üroloji, nefrostomi/stent 12 saat içinde (1.5.1–1.5.2).');
+    else if(on('dlok')&&on('dnit'))li('rxE','Lökosit + nitrit','İdrar yolu enfeksiyonu/piyelonefrit; idrar kültürü. Obstrüksiyon varsa pyonefroz açısından acil ultrason.');
+    if(on('dkan')&&on('dprot'))li('rxE','Kan + protein','Belirgin neden yoksa akut nefrit düşünün, nefrolojiye sevk edin; önce İYE ve kateter travmasını dışlayın (NICE 1.4.3).');
+    if(fena!==null&&fena<1&&(G.gn.length||G.tub.length))li('rxE','Düşük FENa prerenale özgü değil','GN, pigment nefropatisi, kontrast, sepsis ve akut obstrüksiyonda da < %1 olabilir (Steiner 1984; Zarich 1985).');
+
+    // Tetkikler
+    li('rxW','Tüm AKI’lerde','İdrar dipstick (kan, protein, lökosit, nitrit, glukoz; NICE 1.4.2) ve sediment mikroskopisi, idrar indeksleri, idrar protein/kreatinin oranı, elektrolitler, kan gazı, tam kan sayımı, ilaç öyküsü (reçetesiz/bitkisel dahil).');
+    var usgTxt=pyo?'Pyonefroz şüphesinde 6 saat içinde (NICE 1.4.5).':(obs||!mx)?'Neden belirsizse veya obstrüksiyon riski varsa 24 saat içinde (NICE 1.4.6).':'Neden belliyse rutin değil (NICE 1.4.4); neden belirsizse veya obstrüksiyon riski varsa 24 saat içinde (1.4.6).';
+    li('rxW','Üriner sistem ultrasonu',(usg==='na'?'Yapılmadı. ':'')+usgTxt+' Mesane taraması/PVR mesane çıkım obstrüksiyonunu yatak başında gösterir.');
+    var W={
+      pre:['Prerenal','Volüm ve hemodinami değerlendirmesi; volüm düzeltildikten sonra Kr’nin hızla düzelmesi prerenali destekler. Kalp yetmezliğinde ekokardiyografi, NT-proBNP; sirozda HRS-AKI ölçütleri (albüminle volüm genişletmeye yanıt).'],
+      tub:['Tübüler','CK (rabdomiyoliz), miyoglobin, K, Ca, P, ürik asit, LDH. Miyelom şüphesinde serum protein elektroforezi, immünfiksasyon ve serum serbest hafif zincirler (κ/λ oranı); dipstick hafif zinciri göstermez.'],
+      ain:['AİN','Şüpheli ilacı kesin; sedimentte lökosit silendiri/steril piyüri, kan eozinofili. İdrar eozinofili tanıda güvenilmez. Kesin tanı böbrek biyopsisi; nefroloji ile kortikosteroid kararı.'],
+      gn:['GN / vaskülit','ANA, anti-dsDNA, C3, C4, ANCA (MPO, PR3), anti-GBM, HBsAg, anti-HCV, anti-HIV, kriyoglobulin, ASO (enfeksiyon sonrası GN), endokardit şüphesinde kan kültürü; serum protein elektroforezi ve serbest hafif zincir (monoklonal gammopati); dismorfik eritrosit ve idrar protein/kreatinin. Hızlı ilerleyen GN’de nefroloji 24 saat içinde (NICE 1.5.15), biyopsi.'],
+      vas:['Vasküler','TMA: trombosit, periferik yayma (şistosit), LDH, haptoglobin, indirekt bilirubin, retikülosit, direkt Coombs; plazma değişiminden önce ADAMTS13 aktivitesi için örnek; kanlı ishalde dışkıda Shiga toksin/STEC. Ateroemboli: eozinofili, kompleman, fundus. Tromboz: renal Doppler USG veya BT/MR anjiyografi.'],
+      post:['Postrenal','Mesane taraması/PVR, üriner sistem ultrasonu; mesane çıkım obstrüksiyonunda kateter, üst üriner sistem obstrüksiyonunda üroloji (NICE 1.5.1; nefrostomi/stent 12 saat içinde 1.5.2). PSA obstrüksiyon giderildikten sonra.']
+    };
+    keys.slice().sort(function(a,z){return G[z].length-G[a].length}).forEach(function(g){if(G[g].length)li('rxW',W[g][0],W[g][1])});
+    if(!mx)li('rxW','Gruba özgü tetkikler','Klinik bulgu, dipstick, sediment veya ultrason işaretlenince eklenir. Neden belirsiz kaldıkça NICE 1.5.15’e göre 24 saat içinde nefroloji ile görüşün.');
+    else if(st>=3||G.gn.length||G.ain.length||G.vas.length)li('rxW','Nefroloji ile 24 saat içinde görüşün','Özel tedavi gerektirebilecek tanı (vaskülit, GN, interstisyel nefrit, miyelom), nedeni belirsiz AKI, tedaviye yanıtsızlık, komplikasyon veya evre 3 AKI (NICE 1.5.15).');
   }
-  ['tm','rrt','un','diu','sed','ovl'].forEach(function(g){seg(g,calc)});
+  ['tm','rrt','un','diu','sed','ovl','usg','cins'].forEach(function(g){seg(g,calc)});
   document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
 })();
 </script>

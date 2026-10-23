@@ -9,7 +9,8 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Elektrolit hesaplamaları (düzeltilmiş Ca, anyon açığı, düzeltilmiş Na) | `elektrolit.html` |
 | Elektrolit replasmanı (K, Mg, P, Ca eksikliğinde doz ve hız) | `elektrolit-replasmani.html` |
 | Kan gazı yorumu (asit-baz, kompanzasyon, anyon açığı, delta oranı, A-a) | `kan-gazi.html` |
-| Akut böbrek hasarı (KDIGO evresi, FENa/FEÜre) | `akut-bobrek-hasari.html` |
+| Akut böbrek hasarı (KDIGO evresi, FENa/FEÜre, etiyoloji, nefrotoksik ilaçlar) | `akut-bobrek-hasari.html` |
+| Kontrast ilişkili AKI (Mehran, ESUR/ACR-NKF, hidrasyon) | `kontrast-nefropati.html` |
 | Kreatinin klerensi (Cockcroft-Gault) | `kreatinin-klerensi.html` |
 | Böbrekte ilaç dozu (CrCl'ye göre antibiyotik, NOAK, sık ilaçlar) | `bobrek-ilac-dozu.html` |
 | Siroz ve asit (SAAG, SBP, parasentez, diüretik, HRS-AKI) | `siroz-asit.html` |

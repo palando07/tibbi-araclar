@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kontrast ilişkili AKI</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+table.t td,table.t th{overflow-wrap:break-word}
+#ht td+td,#ht th{white-space:nowrap}
+#ht td:first-child{width:100%}
+.note b{color:var(--fg)}
+.sub span{min-width:0}
+.sub b.w{white-space:normal;text-align:right;max-width:60%}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Kontrast ilişkili AKI</h1>
+    <p>Mehran risk skoru, ESUR 2018 ve ACR-NKF 2020’ye göre eGFR riski, kiloya göre hidrasyon, metformin ve ilaç yönetimi, KDIGO ile kontrast sonrası AKI tanısı</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="78"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="82"></div>
+      <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.6"></div>
+      <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="11.8"></div>
+      <div class="field"><label for="hct">Hematokrit <span>% (isteğe bağlı)</span></label><input id="hct" type="number" inputmode="decimal" step="any" value="" placeholder="Hb’den"></div>
+      <div class="field"><label for="glu">Bazal glukoz <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="160"></div>
+    </div>
+    <span class="lbl" id="sexlbl">Cinsiyet</span>
+    <div class="seg" role="group" aria-labelledby="sexlbl"><button type="button" data-g="sex" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button><button type="button" data-g="sex" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button></div>
+    <span class="lbl" id="emlbl">Böbrek işlevi (eGFR)</span>
+    <div class="seg" role="group" aria-labelledby="emlbl"><button type="button" data-g="em" data-v="c" aria-pressed="true">CKD-EPI 2021 ile hesapla</button><button type="button" data-g="em" data-v="d" aria-pressed="false">Doğrudan gir</button></div>
+    <div class="grid" id="w-egfr" hidden>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" data-hasta="egfr" data-hasta-kosul='[data-g="em"][data-v="d"][aria-pressed="true"]' type="number" inputmode="decimal" step="any" value=""></div>
+    </div>
+    <p class="note" id="egfrn"></p>
+  </section>
+
+  <section class="card">
+    <h2>İşlem ve klinik durum</h2>
+    <span class="lbl" id="rtlbl">Kontrast uygulama yolu</span>
+    <div class="seg wrapseg" role="group" aria-labelledby="rtlbl"><button type="button" data-g="rt" data-v="iv" aria-pressed="false">IV (BT)</button><button type="button" data-g="rt" data-v="ia2" aria-pressed="true">İA, ikinci geçiş</button><button type="button" data-g="rt" data-v="ia1" aria-pressed="false">İA, ilk geçiş</button></div>
+    <p class="note">ESUR: <b>ilk geçiş</b> kontrastın böbreğe seyreltilmeden ulaştığı enjeksiyonlardır (sol kalp, torasik ve suprarenal abdominal aorta, renal arterler). <b>İkinci geçiş</b>: sağ kalp, pulmoner arter, karotis, subklavyen, koroner, mezenterik veya infrarenal arterler.</p>
+    <div class="grid">
+      <div class="field"><label for="cv">Kontrast hacmi <span>mL (planlanan/verilen)</span></label><input id="cv" type="number" inputmode="decimal" step="any" value="180"></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="aki"><span class="txt">Bilinen veya şüpheli AKI<small>kontrasttan önce kreatinin yükseliyor</small></span></label>
+      <label class="item"><input type="checkbox" id="icu"><span class="txt">Yoğun bakım hastası<small>ESUR: eGFR &lt; 45 eşiği uygulanır</small></span></label>
+      <label class="item"><input type="checkbox" id="dial"><span class="txt">Sürekli diyaliz<small>hemodiyaliz veya periton diyalizi</small></span></label>
+    </div>
+    <span class="lbl">Kullandığı ilaçlar</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="met" checked><span class="txt">Metformin</span></label>
+      <label class="item"><input type="checkbox" id="nsaid"><span class="txt">NSAİİ<small>selektif COX-2 inhibitörleri dahil</small></span></label>
+      <label class="item"><input type="checkbox" id="diu" checked><span class="txt">Diüretik</span></label>
+      <label class="item"><input type="checkbox" id="raas"><span class="txt">ACE inhibitörü / ARB</span></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Mehran risk faktörleri</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="hyp"><span class="txt">Hipotansiyon<small>sistolik &lt; 80 mmHg en az 1 saat, işlemden sonraki 24 saatte inotrop veya IABP gerektiren</small></span><span class="pts">+5</span></label>
+      <label class="item"><input type="checkbox" id="iabp"><span class="txt">İntraaortik balon pompası (IABP)</span><span class="pts">+5</span></label>
+      <label class="item"><input type="checkbox" id="chf"><span class="txt">Konjestif kalp yetmezliği<small>NYHA III–IV ve/veya pulmoner ödem öyküsü</small></span><span class="pts">+5</span></label>
+    </div>
+    <span class="lbl" id="dmlbl">Diyabet</span>
+    <div class="seg wrapseg" role="group" aria-labelledby="dmlbl"><button type="button" data-g="dm" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="dm" data-v="1" aria-pressed="false">Var, insülinsiz</button><button type="button" data-g="dm" data-v="2" aria-pressed="true">Var, insülinli</button></div>
+    <span class="lbl" id="mrlbl">Mehran böbrek ölçütü</span>
+    <div class="seg" role="group" aria-labelledby="mrlbl"><button type="button" data-g="mr" data-v="e" aria-pressed="true">eGFR ile</button><button type="button" data-g="mr" data-v="c" aria-pressed="false">Kreatinin &gt; 1,5 ile</button></div>
+    <p class="note">Yaş, anemi, eGFR veya kreatinin ve kontrast hacmi yukarıdaki kartlardan alınır. Anemi: hematokrit erkekte &lt; %39, kadında &lt; %36. Hematokrit girilmezse Hct ≈ 3 × Hb ile tahmin edilir (erkekte Hb &lt; 13, kadında &lt; 12 g/dL).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Mehran risk skoru (2004)</h2>
+    <div class="res"><span class="num" id="ms">–</span><span class="of">puan</span><span class="pill" id="msp"></span></div>
+    <div class="sub"><span>Hipotansiyon · IABP · KKY</span><b id="m-hc">–</b></div>
+    <div class="sub"><span>Yaş &gt; 75</span><b id="m-age">–</b></div>
+    <div class="sub"><span>Anemi</span><b class="w" id="m-an">–</b></div>
+    <div class="sub"><span>Diyabet</span><b id="m-dm">–</b></div>
+    <div class="sub"><span>Kontrast (her 100 mL için 1)</span><b class="w" id="m-cv">–</b></div>
+    <div class="sub"><span id="m-rl">Böbrek</span><b class="w" id="m-rn">–</b></div>
+    <table class="t" id="mt">
+      <thead><tr><th>Puan</th><th>CIN riski</th><th>Diyaliz riski</th></tr></thead>
+      <tbody>
+        <tr><td>≤ 5 <small>düşük</small></td><td>%7,5</td><td>%0,04</td></tr>
+        <tr><td>6–10 <small>orta</small></td><td>%14,0</td><td>%0,12</td></tr>
+        <tr><td>11–15 <small>yüksek</small></td><td>%26,1</td><td>%1,09</td></tr>
+        <tr><td>≥ 16 <small>çok yüksek</small></td><td>%57,3</td><td>%12,6</td></tr>
+      </tbody>
+    </table>
+    <p class="advice" id="msa"></p>
+    <p class="note">Mehran 2004 PKG (perkütan koroner girişim) sonrası için geliştirildi; CIN tanımı 48. saatte kreatininde ≥ %25 ve/veya ≥ 0,5 mg/dL artış. Böbrek için kreatinin &gt; 1,5 mg/dL (4 puan) <b>ya da</b> eGFR 40–60 (2), 20–40 (4), &lt; 20 (6) kullanılır; ikisi birlikte puanlanmaz. Özgün çalışma MDRD eGFR kullandı; burada CKD-EPI 2021 kullanılır. Şok ve akut MI dışlanmıştı; IV kontrastlı BT için doğrulanmamıştır. Kontrast puanı işlem sonrası bilinir; planlanan hacimle hesaplarsanız tahmindir.</p>
+  </section>
+
+  <section class="card">
+    <h2>Mehran-2 için ek bilgiler</h2>
+    <span class="lbl" id="prlbl">Klinik tablo</span>
+    <div class="seg wrapseg" role="group" aria-labelledby="prlbl"><button type="button" data-g="pr" data-v="0" aria-pressed="false">Stabil / asemptomatik</button><button type="button" data-g="pr" data-v="2" aria-pressed="false">Kararsız angina</button><button type="button" data-g="pr" data-v="4" aria-pressed="true">NSTEMI</button><button type="button" data-g="pr" data-v="8" aria-pressed="false">STEMI</button></div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="lvef"><span class="txt">LVEF &lt; %40</span><span class="pts">+2</span></label>
+      <label class="item"><input type="checkbox" id="chf2"><span class="txt">Başvuruda konjestif kalp yetmezliği</span><span class="pts">+1</span></label>
+    </div>
+    <p class="note">Yaş, eGFR, diyabet, hemoglobin ve glukoz yukarıdan alınır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Mehran-2 skoru (2021, Model 1)</h2>
+    <div class="res"><span class="num" id="m2">–</span><span class="of">puan</span><span class="pill" id="m2p"></span></div>
+    <div class="sub"><span>Klinik tablo</span><b id="m2-pr">–</b></div>
+    <div class="sub"><span>eGFR (30–59: 1, &lt; 30: 4)</span><b class="w" id="m2-eg">–</b></div>
+    <div class="sub"><span>LVEF &lt; %40 · başvuruda KKY</span><b id="m2-hf">–</b></div>
+    <div class="sub"><span>Diyabet (insülinsiz 1, insülinli 2)</span><b id="m2-dm">–</b></div>
+    <div class="sub"><span>Hb &lt; 11 · glukoz ≥ 150 · yaş &gt; 75</span><b class="w" id="m2-ot">–</b></div>
+    <table class="t" id="m2t">
+      <thead><tr><th>Puan</th><th>Risk grubu</th><th>CA-AKI (türetme kohortu)</th></tr></thead>
+      <tbody>
+        <tr><td>0–2</td><td>Düşük</td><td>%2,3</td></tr>
+        <tr><td>3–7</td><td>Orta</td><td>doğrulanamadı</td></tr>
+        <tr><td>8–11</td><td>Yüksek</td><td>doğrulanamadı</td></tr>
+        <tr><td>≥ 12</td><td>Çok yüksek</td><td>%34,9</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Mehran-2 (Lancet 2021) yalnızca işlem öncesi değişkenlerle (Model 1) gösterilir; CA-AKI tanımı AKIN (48 saatte ≥ 0,3 mg/dL veya ≥ %50 artış). Özgün makalenin tam metnine erişilemedi: puanlar ve 0–2 / 3–7 / 8–11 / ≥ 12 grupları iki bağımsız doğrulama çalışmasındaki tablolardan alındı; uç grupların sıklıkları (%2,3 ve %34,9) özgün özetten. Ara grupların sıklıkları doğrulanamadığı için verilmedi. İşlem değişkenlerini (kontrast, kanama, no-reflow, kompleks anatomi) içeren Model 2 dahil edilmedi.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Kılavuza göre risk</h2>
+    <div class="res"><span class="num" id="eg">–</span><span class="of">mL/dk/1,73 m²</span><span class="pill" id="egp"></span></div>
+    <div class="sub"><span>eGFR kaynağı</span><b class="w" id="egs">–</b></div>
+    <table class="t" id="gt">
+      <thead><tr><th>Uygulama</th><th>ESUR 2018 risk</th><th>ACR-NKF 2020</th></tr></thead>
+      <tbody>
+        <tr data-r="iv"><td>IV (BT)</td><td>eGFR &lt; 30 veya AKI</td><td>&lt; 30 veya AKI: profilaksi endike; 30–44: bireysel karar</td></tr>
+        <tr data-r="ia2"><td>İA, ikinci geçiş</td><td>eGFR &lt; 30 veya AKI</td><td>kapsam dışı (yalnız IV)</td></tr>
+        <tr data-r="ia1"><td>İA, ilk geçiş <small>veya yoğun bakım</small></td><td>eGFR &lt; 45 veya AKI</td><td>kapsam dışı (yalnız IV)</td></tr>
+      </tbody>
+    </table>
+    <ol class="rec" id="rxG"></ol>
+    <p class="note">ESUR 2018 risk ölçütleri hastaya bağlıdır; işlemle ilgili ek riskler: ilk geçiş İA enjeksiyon, yüksek kontrast dozu, yüksek ozmolar kontrast, 48–72 saat içinde tekrarlayan kontrast. ACR-NKF yalnızca IV kontrast içindir: eGFR ≥ 30 olan stabil hastada, sürekli diyalizde ve kalp yetmezliği riski olan hastada profilaksi önerilmez; diyabet eşiği değiştirmez.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Önleme</h2>
+    <div class="res"><span class="num" id="ns">–</span><span class="of">mL/saat %0,9 NaCl</span><span class="pill" id="nsp"></span></div>
+    <table class="t" id="ht">
+      <thead><tr><th>Şema</th><th>Hız · toplam</th></tr></thead>
+      <tbody>
+        <tr><td>ESUR: işlemden önce <small>%0,9 NaCl 1 mL/kg/saat, 3–4 saat</small></td><td><span id="h1r">–</span><small id="h1t">–</small></td></tr>
+        <tr><td>ESUR: işlemden sonra <small>%0,9 NaCl 1 mL/kg/saat, 4–6 saat</small></td><td><span id="h2r">–</span><small id="h2t">–</small></td></tr>
+        <tr><td>ESUR alternatif: bikarbonat <small>%1,4 NaHCO₃ 3 mL/kg/saat, işlemden önce 1 saat</small></td><td><span id="h3r">–</span><small id="h3t">–</small></td></tr>
+        <tr id="h4" hidden><td>İlk geçişte bikarbonattan sonra <small>%1,4 NaHCO₃ 1 mL/kg/saat, 4–6 saat</small></td><td><span id="h4r">–</span><small id="h4t">–</small></td></tr>
+        <tr><td>ACR-NKF (IV) <small>%0,9 NaCl 1–3 mL/kg/saat, 1 saat önce başla, 3–12 saat sonra sürdür; ya da sabit 500 mL önce + 500 mL sonra</small></td><td><span id="h5r">–</span></td></tr>
+        <tr class="hf"><td>Kalp yetmezliği: azaltılmış hız <small>%0,9 NaCl 0,5 mL/kg/saat, LVEF ≤ %35 veya NYHA &gt; II; ESC şemasında 12 saat önce – 24 saat sonra (ESC 2018, ikincil kaynaktan)</small></td><td><span id="h6r">–</span></td></tr>
+        <tr class="hf"><td>POSEIDON: ön yükleme <small>%0,9 NaCl 3 mL/kg/saat, kateterizasyondan önce 1 saat</small></td><td><span id="h7r">–</span><small id="h7t">–</small></td></tr>
+        <tr class="hf"><td>POSEIDON: LVEDP &lt; 13 mmHg <small>5 mL/kg/saat, işlem boyunca ve 4 saat sonra</small></td><td><span id="h8r">–</span></td></tr>
+        <tr class="hf"><td>POSEIDON: LVEDP 13–18 mmHg <small>3 mL/kg/saat</small></td><td><span id="h9r">–</span></td></tr>
+        <tr class="hf"><td>POSEIDON: LVEDP &gt; 18 mmHg <small>1,5 mL/kg/saat</small></td><td><span id="h10r">–</span></td></tr>
+      </tbody>
+    </table>
+    <div class="sub"><span>Kontrast / eGFR (ESUR, İA ilk geçiş &lt; 3,0)</span><b class="w" id="rv1">–</b></div>
+    <div class="sub"><span>Kontrast / CrCl (Cockcroft-Gault; Laskey ≥ 3,7)</span><b class="w" id="rv2">–</b></div>
+    <ol class="rec" id="rxP"></ol>
+    <p class="note">ESUR: oral hidrasyon tek başına önerilmez; ek olarak serbest berrak sıvı alımı desteklenir. Ağır kalp yetmezliği (NYHA III–IV) ve son dönem böbrek yetmezliğinde (eGFR &lt; 15) tip, hacim ve süre bireyselleştirilir. POSEIDON şeması kateter laboratuvarında LVEDP ölçümü gerektirir. Hızlar gerçek kiloyla hesaplanır; kılavuzlarda üst sınır belirtilmez. %1,4 bikarbonat hazır bulunmayabilir ve eczanede hazırlanmalıdır (ACR-NKF bu nedenle salini tercih eder).</p>
+  </section>
+
+  <section class="card">
+    <h2>Kontrast sonrası kreatinin</h2>
+    <div class="grid">
+      <div class="field"><label for="cr2">Kontrol kreatinin <span>mg/dL</span></label><input id="cr2" type="number" inputmode="decimal" step="any" value="" placeholder="48–72. saat"></div>
+      <div class="field"><label for="hrs">Kontrasttan sonra <span>saat</span></label><input id="hrs" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 48"></div>
+    </div>
+    <p class="note">Bazal değer olarak “Hasta” kartındaki kreatinin kullanılır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Kontrast ilişkili AKI tanısı</h2>
+    <div class="res"><span class="num" id="ak">–</span><span class="pill" id="akp"></span></div>
+    <div class="sub"><span>Kreatinin artışı</span><b id="akd">–</b></div>
+    <div class="sub"><span>Bazale oran</span><b id="akr">–</b></div>
+    <div class="sub"><span>ESUR PC-AKI (48–72 saat)</span><b class="w" id="ake">–</b></div>
+    <div class="sub"><span>Eski CIN tanımı (≥ %25 veya ≥ 0,5 mg/dL)</span><b id="ako">–</b></div>
+    <ol class="rec" id="rxA"></ol>
+    <p class="note">KDIGO 2012: 48 saatte kreatininde ≥ 0,3 mg/dL artış veya 7 gün içinde bazalin ≥ 1,5 katı veya 6 saat &lt; 0,5 mL/kg/saat idrar. Evre 1: 1,5–1,9 kat veya ≥ 0,3 mg/dL; evre 2: 2,0–2,9 kat; evre 3: ≥ 3 kat veya kreatinin ≥ 4,0 mg/dL veya RRT. ESUR PC-AKI: kontrasttan sonraki 48–72 saatte ≥ 0,3 mg/dL veya ≥ 1,5 kat. ACR-NKF: kontrasttan sonraki 48 saatte gelişen her AKI “kontrast ilişkili” (CA-AKI) sayılır; nedenselliği göstermez (CI-AKI).</p>
+  </section>
+
+  <p class="note">Kaynaklar: Mehran R ve ark. A simple risk score for prediction of contrast-induced nephropathy after PCI. J Am Coll Cardiol 2004;44:1393–9 (puanlar, ≤ 5 / 6–10 / 11–15 / ≥ 16 grupları, CIN %7,5–57,3 ve diyaliz %0,04–12,6; değerler doğrulama çalışmalarındaki tablo kopyalarıyla karşılaştırıldı); Mehran R ve ark. A contemporary simple risk score for prediction of contrast-associated AKI after PCI. Lancet 2021;398:1974–83 (Model 1 değişkenleri, %2,3–34,9); Wang ve ark. Clin Appl Thromb Hemost 2022, doi:10.1177/10760296221116353 ve Qiu ve ark. Clin Interv Aging 2023;18:453–65 (Mehran-2 puan tablosu); van der Molen AJ ve ark. ESUR CMSC PC-AKI Part 1 ve Part 2, Eur Radiol 2018;28:2845–55 ve 2856–69 ile ESUR CMSC kılavuzu sürüm 10 (PC-AKI tanımı, eGFR &lt; 30 / &lt; 45 eşikleri, ilk ve ikinci geçiş tanımı, salin 1 mL/kg/saat 3–4 saat önce ve 4–6 saat sonra, bikarbonat %1,4 3 mL/kg/saat 1 saat, metformin, kontrast/eGFR &lt; 3,0, 48. saat eGFR, PC-AKI’de 30 gün izlem, nefrotoksik ilaç ve ACEİ/ARB, NAC, statin); Davenport MS ve ark. ACR-NKF konsensüsü, Radiology 2020;294:660–8 ve Kidney Med 2020;2:85–93 (IV kontrastta &lt; 30 / 30–44 eşikleri, salin 1–3 mL/kg/saat veya 500 + 500 mL, NAC önerilmez, metformin, NSAİİ ve diüretik dahil nefrotoksiklerin 24–48 saat önce – 48 saat sonra kesilmesi, RAAS inhibitörü, CA-AKI/CI-AKI); Weisbord SD ve ark. PRESERVE, N Engl J Med 2018;378:603–14 (bikarbonat ve NAC yararsız); Brar SS ve ark. POSEIDON, Lancet 2014;383:1814–23 (LVEDP’ye göre 5 / 3 / 1,5 mL/kg/saat); Laskey WK ve ark. J Am Coll Cardiol 2007;50:584–90 (kontrast/CrCl ≥ 3,7); Neumann FJ ve ark. 2018 ESC/EACTS miyokardiyal revaskülarizasyon kılavuzu, Eur Heart J 2019;40:87–165 (LVEF ≤ %35 veya NYHA > II’de 0,5 mL/kg/saat; ikincil kaynaktan aktarıldı, birincil metin görülmedi); KDIGO AKI kılavuzu, Kidney Int Suppl 2012;2:1–138 (AKI tanımı ve evreleri); Inker LA ve ark. N Engl J Med 2021;385:1737–49 (CKD-EPI 2021). Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var chk=function(id){return $(id).checked};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var f1=function(x){return x.toLocaleString('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:1})};
+  var f2=function(x){return x.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})};
+  var r6=function(x){return Math.round(x*1e6)/1e6};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()})})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function curRow(tbl,idx){var rs=$(tbl).querySelectorAll('tbody tr');rs.forEach(function(r,i){r.className=i===idx?'cur':''})}
+  var MUTED='var(--muted)';
+
+  // CKD-EPI 2021 (egfr.html ile aynı)
+  function ckdepi(scr,age,female){var k=female?0.7:0.9,a=female?-0.241:-0.302,r=scr/k;
+    return 142*Math.pow(Math.min(r,1),a)*Math.pow(Math.max(r,1),-1.2)*Math.pow(0.9938,age)*(female?1.012:1)}
+
+  function calc(){
+    var age=v('age'),wt=v('wt'),cr=v('cr'),hb=v('hb'),hct=v('hct'),glu=v('glu'),cv=v('cv');
+    var female=segVal('sex')==='f',em=segVal('em'),rt=segVal('rt'),dm=+segVal('dm'),mr=segVal('mr'),pr=+segVal('pr');
+    var aki=chk('aki'),icu=chk('icu'),dial=chk('dial');
+    if(wt!==null&&wt<=0)wt=null; if(cr!==null&&cr<=0)cr=null; if(cv!==null&&cv<0)cv=null;
+
+    // eGFR
+    $('w-egfr').hidden=em!=='d';
+    var eg=null,egsrc='–',egnote='';
+    if(em==='d'){eg=v('egfr');if(eg!==null&&eg<0)eg=null;egsrc='doğrudan girildi';egnote=eg===null?'eGFR değerini girin.':''}
+    else{
+      if(cr===null)egnote='eGFR için kreatinin girin.';
+      else if(age===null)egnote='eGFR için yaş girin.';
+      else if(age<18)egnote='CKD-EPI 2021 erişkinler içindir (yaş ≥ 18).';
+      else{eg=ckdepi(cr,age,female);egsrc='CKD-EPI 2021';egnote='Hesaplanan eGFR (CKD-EPI 2021): '+f1(eg)+' mL/dk/1,73 m². AKI’de kreatinin kararlı olmadığından eGFR gerçek GFR’yi yansıtmaz.'}
+    }
+    $('egfrn').textContent=egnote;
+
+    // Anemi
+    var anemia=null,anSrc='';
+    if(hct!==null){anemia=hct<(female?36:39);anSrc='Hct %'+fm(hct)}
+    else if(hb!==null){anemia=hb*3<(female?36:39);anSrc='Hct ≈ %'+fm(hb*3)+' (Hb’den tahmin)'}
+
+    // 1) Mehran 2004
+    var miss=[],s=0;
+    var hc=(chk('hyp')?5:0)+(chk('iabp')?5:0)+(chk('chf')?5:0);s+=hc;
+    $('m-hc').textContent=hc+' puan';
+    if(age===null){miss.push('yaş');$('m-age').textContent='veri yok'}else{var pa=age>75?4:0;s+=pa;$('m-age').textContent=pa+' puan'}
+    if(anemia===null){miss.push('Hb/Hct');$('m-an').textContent='veri yok'}else{s+=anemia?3:0;$('m-an').textContent=(anemia?3:0)+' puan · '+anSrc}
+    s+=dm?3:0;$('m-dm').textContent=(dm?3:0)+' puan';
+    if(cv===null){miss.push('kontrast hacmi');$('m-cv').textContent='veri yok'}else{var pc=Math.floor(cv/100+1e-9);s+=pc;$('m-cv').textContent=pc+' puan · '+fm(cv,0)+' mL'}
+    if(mr==='e'){$('m-rl').textContent='eGFR (40–60: 2, 20–40: 4, < 20: 6)';
+      if(eg===null){miss.push('eGFR');$('m-rn').textContent='veri yok'}
+      else{var pe=eg<20?6:eg<40?4:eg<60?2:0;s+=pe;$('m-rn').textContent=pe+' puan · eGFR '+f1(eg)}}
+    else{$('m-rl').textContent='Kreatinin > 1,5 mg/dL';
+      if(cr===null){miss.push('kreatinin');$('m-rn').textContent='veri yok'}
+      else{var pk=cr>1.5?4:0;s+=pk;$('m-rn').textContent=pk+' puan · '+fm(cr,2)+' mg/dL'}}
+    var grp=s<=5?0:s<=10?1:s<=15?2:3,GN=['Düşük risk','Orta risk','Yüksek risk','Çok yüksek risk'],GC=['var(--ok)','var(--warn)','var(--high)','var(--high)'];
+    var CIN=['%7,5','%14,0','%26,1','%57,3'],DIA=['%0,04','%0,12','%1,09','%12,6'];
+    if(miss.length&&grp<3){$('ms').textContent='≥ '+s;pill('msp','Eksik veri: '+miss.join(', '),MUTED);curRow('mt',-1);
+      $('msa').textContent='Skor eksik verilerle en az '+s+' puan'+(grp>0?' (en az '+GN[grp].toLocaleLowerCase('tr')+')':'')+'; risk grubu için eksik alanları girin.'}
+    else{$('ms').textContent=(miss.length?'≥ ':'')+s;pill('msp',GN[grp],GC[grp]);curRow('mt',grp);
+      $('msa').textContent='Tahmini CIN riski '+CIN[grp]+', diyaliz gerektiren böbrek yetmezliği riski '+DIA[grp]+' (Mehran 2004 türetme kohortu).'+(miss.length?' Eksik veri var ama skor zaten ≥ 16.':'')}
+
+    // 2) Mehran-2 Model 1
+    var m2=pr,miss2=[];
+    $('m2-pr').textContent=pr+' puan';
+    if(eg===null){miss2.push('eGFR');$('m2-eg').textContent='veri yok'}else{var e2=eg<30?4:eg<60?1:0;m2+=e2;$('m2-eg').textContent=e2+' puan · eGFR '+f1(eg)}
+    var hf2=(chk('lvef')?2:0)+(chk('chf2')?1:0);m2+=hf2;$('m2-hf').textContent=hf2+' puan';
+    m2+=dm;$('m2-dm').textContent=dm+' puan';
+    var ot=0,otx=[];
+    if(hb===null)miss2.push('Hb');else if(hb<11){ot++;otx.push('Hb')}
+    if(glu===null)miss2.push('glukoz');else if(glu>=150){ot++;otx.push('glukoz')}
+    if(age===null)miss2.push('yaş');else if(age>75){ot++;otx.push('yaş')}
+    m2+=ot;$('m2-ot').textContent=ot+' puan'+(otx.length?' · '+otx.join(', '):'');
+    var g2=m2<=2?0:m2<=7?1:m2<=11?2:3,G2=['Düşük risk','Orta risk','Yüksek risk','Çok yüksek risk'];
+    if(miss2.length&&g2<3){$('m2').textContent='≥ '+m2;pill('m2p','Eksik veri: '+miss2.join(', '),MUTED);curRow('m2t',-1)}
+    else{$('m2').textContent=(miss2.length?'≥ ':'')+m2;pill('m2p',G2[g2],GC[g2]);curRow('m2t',g2)}
+
+    // 3) Kılavuz riski
+    $('rxG').innerHTML='';
+    $('eg').textContent=eg===null?'–':f1(eg);$('egs').textContent=eg===null?'veri yok':egsrc;
+    var thr=(rt==='ia1'||icu)?45:30;
+    var rowIdx=(rt==='ia1'||icu)?2:rt==='iv'?0:1;curRow('gt',rowIdx);
+    var lvl; // 'need','high','risk','border','none'
+    if(dial)lvl='dial';
+    else if(aki)lvl='high';
+    else if(eg===null)lvl='need';
+    else if(eg<30)lvl='high';
+    else if(eg<thr)lvl='risk';
+    else if(rt==='iv'&&eg<45)lvl='border';
+    else lvl='none';
+    var esurRisk=lvl==='high'||lvl==='risk';
+    if(lvl==='dial'){pill('egp','Sürekli diyaliz','var(--low)');
+      li('rxG','Diyaliz programı değişmez','ESUR ve ACR-NKF: kontrast nedeniyle ek veya erken diyaliz gerekmez; profilaktik hidrasyon önerilmez. Sıvı ve ozmotik yükten kaçının; hemodiyalizle eşzamanlama isteğe bağlıdır.');
+      li('rxG','Rezidüel böbrek işlevi','Günde yaklaşık 100 mL’den fazla idrarı olan (anürik olmayan) diyaliz hastası ACR-NKF’ye göre eGFR < 30 gibi değerlendirilir (göreceli kontrendikasyon); rezidüel işlev önemliyse yarar–zarar tartışılır.')}
+    else if(lvl==='need'){pill('egp','eGFR gerekli','var(--muted)');li('rxG','Risk sınıflaması için eGFR gerekli','Kreatinin ve yaş girin ya da eGFR’yi doğrudan girin. Acil işlemde eGFR beklenemiyorsa ESUR hastayı risk altında kabul etmeyi önerir.')}
+    else if(lvl==='high'){pill('egp',aki?'AKI: yüksek risk':'eGFR < 30: yüksek risk','var(--high)');
+      li('rxG',aki?'Bilinen/şüpheli AKI':'eGFR < 30 mL/dk/1,73 m²','ESUR: tüm uygulama yollarında PC-AKI risk faktörü. ACR-NKF (IV): IV salin profilaksisi endike. Kontrastsız alternatif görüntülemeyi düşünün; hayatı tehdit eden tanı için kontrast böbrek işlevi nedeniyle esirgenmemeli (göreceli kontrendikasyon).')}
+    else if(lvl==='risk'){pill('egp','eGFR < 45: risk var (ESUR)','var(--warn)');
+      li('rxG',(icu&&rt!=='ia1'?'Yoğun bakım hastası':'İA ilk geçiş')+' ve eGFR < 45','ESUR: PC-AKI risk faktörü; önleyici hidrasyon önerilir.')}
+    else if(lvl==='border'){pill('egp','eGFR 30–44: bireysel karar','var(--warn)');
+      li('rxG','IV kontrast, eGFR 30–44','ESUR risk eşiği (< 30) karşılanmıyor. ACR-NKF: çok sayıda risk faktörü, yakın zamanda AKI veya sınırda eGFR gibi bireysel yüksek risk durumlarında profilaksi istem yapan hekimin kararıyla düşünülebilir.')}
+    else{pill('egp','Kılavuz risk ölçütü yok','var(--ok)');
+      li('rxG','eGFR ≥ '+thr+(rt==='iv'?' (IV)':''),'ESUR ve ACR-NKF’ye göre rutin profilaktik hidrasyon gerekmez.'+(rt==='ia2'&&eg<60?' Koroner girişimde orta–ağır KBH’de kardiyoloji kılavuzları hidrasyonu ayrıca önerebilir; Mehran skoruna bakın.':''))}
+
+    // 4) Önleme
+    $('rxP').innerHTML='';
+    var hf=chk('chf')||chk('lvef')||chk('chf2');
+    document.querySelectorAll('#ht tr.hf').forEach(function(r){r.style.fontWeight=hf?'600':''});
+    $('h4').hidden=rt!=='ia1';
+    var W=function(k){return wt===null?'–':fm(k*wt,0)+' mL/saat'},T=function(a,b){return wt===null?'–':fm(a*wt,0)+(b?'–'+fm(b*wt,0):'')+' mL'};
+    $('h1r').textContent=W(1);$('h1t').textContent=T(3,4);
+    $('h2r').textContent=W(1);$('h2t').textContent=T(4,6);
+    $('h3r').textContent=W(3);$('h3t').textContent=T(3);
+    $('h4r').textContent=W(1);$('h4t').textContent=T(4,6);
+    $('h5r').textContent=wt===null?'–':fm(wt,0)+'–'+fm(3*wt,0)+' mL/saat';
+    $('h6r').textContent=W(0.5);
+    $('h7r').textContent=W(3);$('h7t').textContent=T(3);
+    $('h8r').textContent=W(5);$('h9r').textContent=W(3);$('h10r').textContent=W(1.5);
+    var hyd=lvl==='high'||lvl==='risk'?'yes':lvl==='border'?'maybe':lvl==='none'||lvl==='dial'?'no':'need';
+    $('ns').textContent=wt===null?'–':fm(wt,0);
+    if(hyd==='yes')pill('nsp',hf?'Hidrasyon önerilir: bireyselleştirin':'Hidrasyon önerilir','var(--high)');
+    else if(hyd==='maybe')pill('nsp','Hidrasyon düşünülebilir','var(--warn)');
+    else if(hyd==='no')pill('nsp','Rutin hidrasyon gerekmez','var(--ok)');
+    else pill('nsp','eGFR gerekli','var(--muted)');
+    if(wt===null)li('rxP','Ağırlık girilmedi','mL/saat hesaplamak için kilo girin.');
+
+    if(hyd!=='no'){
+      li('rxP','IV %0,9 NaCl'+(wt!==null?' '+fm(wt,0)+' mL/saat':' 1 mL/kg/saat'),'ESUR: işlemden 3–4 saat önce'+(wt!==null?' ('+fm(3*wt,0)+'–'+fm(4*wt,0)+' mL)':'')+' ve 4–6 saat sonra'+(wt!==null?' ('+fm(4*wt,0)+'–'+fm(6*wt,0)+' mL)':'')+'. '+(rt==='ia1'?'İlk geçişte öncesi + sonrası protokol kullanılmalı.':'IV ve ikinci geçişte kısa bikarbonat şeması da eşdeğer kabul edilir.'));
+      if(hf)li('rxP','Kalp yetmezliği / düşük LVEF: hacmi bireyselleştirin','ESUR: NYHA III–IV’te tip, hacim ve süre bireyselleştirilir; büyük hacim akut kalp yetmezliği ve akciğer ödemi yapabilir. Seçenekler: azaltılmış hız 0,5 mL/kg/saat'+(wt!==null?' = '+fm(0.5*wt,0)+' mL/saat':'')+' (LVEF ≤ %35 veya NYHA > II; ESC 2018, ikincil kaynak) veya kateter laboratuvarında POSEIDON: LVEDP > 18 mmHg ise 1,5 mL/kg/saat'+(wt!==null?' = '+fm(1.5*wt,0)+' mL/saat':'')+'. ACR-NKF: kalp yetmezliği riski olan hastada IV kontrast için profilaksi önerilmez.');
+    }
+    li('rxP','Bikarbonat salinden üstün değil; NAC önerilmez','PRESERVE (2018): IV %1,26 bikarbonat salinden, oral NAC plasebodan üstün değil (90. gün ölüm, diyaliz, kalıcı kreatinin artışı ve CA-AKI). ESUR: hiçbir ilaç (NAC, statin, vitamin C, teofilin vb.) tutarlı koruma göstermedi; profilaktik diyaliz önerilmez.');
+    // Metformin
+    if(chk('met')){
+      var stop=aki||rt==='ia1'||(eg!==null&&eg<30),mt;
+      if(dial)li('rxP','Metformin','eGFR < 30 ve diyalizde metformin kullanılmaz (onaylı değil).');
+      else if(stop)li('rxP','Metformini kontrast anında kesin','ESUR: '+(aki?'AKI varlığında':rt==='ia1'?'İA ilk geçiş kontrastta':'eGFR < 30’da')+' metformini kontrast verildiği anda kesin; 48 saat içinde eGFR ölçün, böbrek işlevi belirgin değişmediyse yeniden başlayın. ACR-NKF (IV): AKI veya eGFR < 30’da kesin.');
+      else if(eg===null)li('rxP','Metformin: eGFR gerekli','eGFR ≥ 30 ve AKI yoksa IV veya ikinci geçiş İA kontrastta metformin sürdürülür.');
+      else li('rxP','Metformini sürdürün','ESUR: eGFR ≥ 30, AKI yok, IV veya ikinci geçiş İA kontrast: normal kullanmaya devam. ACR-NKF: eGFR 30–59’da karar bireyseldir (FDA bu aralıkta ara verilmesini önerir); CI-AKI riski düşüktür.')}
+    // NSAİİ
+    var acrHi=aki||(eg!==null&&eg<30);
+    if(chk('nsaid'))li('rxP',acrHi?'NSAİİ’yi kesin':'NSAİİ’den mümkünse kaçının',acrHi?'ACR-NKF: AKI veya eGFR < 30’da temel olmayan nefrotoksikleri (NSAİİ dahil) mümkünse kontrasttan 24–48 saat önce ve 48 saat sonra kesin; AKI gelişirse düzelene kadar vermeyin.':'ESUR: nefrotoksik ilaçları kesmenin PC-AKI’yi önlemedeki değeri sınırlı ve rutin kesme önerilmez; ancak eşzamanlı NSAİİ BT sonrası PC-AKI için bağımsız risk faktörü bulunmuştur ve en aza indirilmesi önerilir.');
+    else li('rxP','Diğer nefrotoksik ilaçlar','ESUR: rutin kesmenin PC-AKI’yi önlediğine dair kanıt yok; nefrotoksikleri klinik olarak mümkün olduğunca azaltın. ACR-NKF: AKI veya eGFR < 30’da temel olmayan nefrotoksikler (NSAİİ, aminoglikozit, amfoterisin, platin, zoledronat, metotreksat) 24–48 saat önce – 48 saat sonra kesilebilir.');
+    if(chk('diu'))li('rxP','Diüretiğe ara verin','Hipovolemi (dehidratasyon) önemli bir PC-AKI risk faktörüdür (ESUR). ACR-NKF: AKI veya eGFR < 30’da temel olmayan diüretikler kontrasttan 24–48 saat önce ve 48 saat sonra kesilebilir. Konjesyon tedavisinde gerekli diüretiği volüm durumuna göre sürdürün.'+(hf?' Kalp yetmezliğinde diüretiği kesmek yerine dozu volüm durumuna göre ayarlayın.':''));
+    if(chk('raas'))li('rxP','ACE inhibitörü / ARB','ESUR: kesmenin yararına ilişkin kanıt öneri için yetersiz. ACR-NKF: risk altındaki hastada elektif BT’den en az 48 saat önce kesilmesi düşünülebilir; AKI gelişmezse veya böbrek işlevi bazale dönünce yeniden başlanır.');
+    // Kontrast
+    $('rv1').textContent=cv===null||eg===null||eg<=0?'–':f2(cv/eg)+(rt==='ia1'?(cv/eg<3?' (< 3,0)':' (≥ 3,0: yüksek)'):'');
+    var crcl=null;if(age!==null&&wt!==null&&cr!==null&&age<140)crcl=(140-age)*wt/(72*cr)*(female?0.85:1);
+    $('rv2').textContent=cv===null||crcl===null?'–':f2(cv/crcl)+(cv/crcl>=3.7?' (≥ 3,7: yüksek)':' (< 3,7)')+' · CrCl '+fm(crcl,0)+' mL/dk';
+    var cvAdv='Düşük veya izo-ozmolar kontrast, tanı için gereken en düşük doz; 48–72 saat içinde tekrar kontrasttan kaçının. ';
+    if(rt==='ia1')cvAdv+='ESUR (İA ilk geçiş): kontrast hacmi (mL) / eGFR < 3,0 (350 mg I/mL varsayımıyla) veya g iyot / mutlak eGFR (mL/dk) < 1,1.'+(eg!==null&&eg>0?' Bu hasta için < 3,0 sınırı ≈ '+fm(3*eg,0)+' mL.':'');
+    else if(rt==='ia2')cvAdv+='Koroner girişimde Laskey 2007: kontrast hacmi / CrCl ≥ 3,7 erken kreatinin artışını öngördü'+(crcl!==null?'; bu hasta için ≈ '+fm(3.7*crcl,0)+' mL':'')+'.';
+    else cvAdv+='ACR-NKF (IV): IV kontrastta doz–toksisite ilişkisi gösterilmedi; tanısal kaliteyi bozacak gelişigüzel doz azaltmasından kaçının.';
+    li('rxP','Kontrast hacmini düşük tutun',cvAdv);
+
+    // 5) CA-AKI
+    $('rxA').innerHTML='';
+    var c2=v('cr2'),h=v('hrs');if(h!==null&&h<0)h=null;
+    if(cr===null||c2===null||c2<=0){$('ak').textContent='–';pill('akp',cr===null?'Bazal kreatinin gerekli':'Kontrol kreatinini girin',MUTED);
+      $('akd').textContent=$('akr').textContent=$('ake').textContent=$('ako').textContent='–'}
+    else{
+      var d=r6(c2-cr),r=r6(c2/cr),win48=h===null||h<=48,win7=h===null||h<=168,winE=h===null||h<=72;
+      var byD=d>=0.3&&win48,byR=r>=1.5&&win7,kd=byD||byR,st=0;
+      if(kd)st=(r>=3||c2>=4)?3:r>=2?2:1;
+      $('akd').textContent=(d>=0?'+':'')+f2(d)+' mg/dL';$('akr').textContent=f2(r)+' kat';
+      $('ake').textContent=winE?((d>=0.3||r>=1.5)?'evet':'hayır'):'72 saatten sonra';
+      $('ako').textContent=(d>=0.5||r>=1.25)?'evet':'hayır';
+      if(kd){$('ak').textContent='Evre '+st;pill('akp','KDIGO AKI',st>=2?'var(--high)':'var(--warn)')}
+      else if(!win7){$('ak').textContent='–';pill('akp','7 günden sonra: KDIGO penceresi dışında',MUTED)}
+      else if(d>=0.3&&!win48){$('ak').textContent='?';pill('akp','≥ 0,3 artış ama 48 saatten sonra','var(--warn)')}
+      else{$('ak').textContent='AKI yok';pill('akp','KDIGO ölçütü yok','var(--ok)')}
+      if(h===null)li('rxA','Süre girilmedi','Artışın KDIGO zaman penceresinde (≥ 0,3 mg/dL için 48 saat, ≥ 1,5 kat için 7 gün) olduğu varsayıldı.');
+      if(kd){li('rxA','Kontrast ilişkili AKI (CA-AKI)','Başka nedenleri (hipotansiyon, sepsis, ateroemboli, nefrotoksik ilaç, obstrüksiyon) araştırın; CA-AKI nedensellik göstermez. Volüm durumunu değerlendirin, idrar çıkışını izleyin.');
+        li('rxA','İzlem','ESUR: PC-AKI tanısı konan hastayı en az 30 gün klinik olarak ve aralıklı eGFR ile izleyin. ACR-NKF: temel olmayan nefrotoksikleri böbrek işlevi düzelene kadar vermeyin.'+(chk('met')?' Metformini böbrek işlevi düzelene kadar başlamayın.':''))}
+      else if(d>=0.3&&!win48)li('rxA','48 saat sonrasında ≥ 0,3 mg/dL artış','KDIGO’nun mutlak artış ölçütü 48 saatlik bir pencerede uygulanır; ara değerler varsa onlarla karşılaştırın. 7 gün içinde ≥ 1,5 kata ulaşırsa AKI.')}
+    li('rxA','Kontrol kreatinin zamanı','ESUR: risk altındaki hastada eGFR’yi kontrasttan 48 saat sonra ölçün (PC-AKI tanım penceresi 48–72 saat). Metformini kesilen hastada eGFR 48 saat içinde ölçülür.'+(esurRisk?' Bu hasta risk altında: 48. saatte kreatinin isteyin.':''));
+  }
+  ['sex','em','rt','dm','mr','pr'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

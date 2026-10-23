@@ -241,12 +241,12 @@
     'hipertansif-acil':'Hipertansif acil','infuzyon-hizi':'İnfüzyon hızı','ampirik-antibiyotik':'Ampirik antibiyotik','curb-65':'CURB-65','news2':'NEWS2',
     'qsofa':'qSOFA','glasgow-koma':'Glasgow Koma Skalası','anemi':'Anemi yaklaşımı','diyabet-tedavi':'Tip 2 diyabet tedavisi','insulin-dozu':'İnsülin dozu',
     'steroid-esdegeri':'Steroid eşdeğeri','opioid-donusumu':'Opioid dönüşümü','iv-demir':'IV demir dozu','vki':'VKİ ve VYA','tiroid-testi':'Tiroid testi yorumu',
-    'levotiroksin':'Levotiroksin dozu','stop-bang':'STOP-BANG','birim-cevirici':'Birim çevirici','idame-sivi':'İdame sıvı ve refeeding','pesi':'PESI ve sPESI','hit-4t':'4T skoru (HIT)','rcri':'RCRI (ameliyat öncesi)','ust-gis-kanama':'Üst GİS kanaması','sepsis-sivi':'Sepsiste sıvı ve vazopresör','koah-astim':'KOAH ve astım alevlenmesi','tiroid-krizi':'Tiroid krizi ve miksödem','transfuzyon':'Transfüzyon eşikleri','light-kriterleri':'Light kriterleri','delirium-4at':'4AT deliryum taraması','alkol-yoksunlugu':'Alkol yoksunluğu','hepatik-ensefalopati':'Hepatik ensefalopati','beslenme':'Beslenme hesabı','febril-notropeni':'Febril nötropeni','parasetamol-zehirlenmesi':'Parasetamol zehirlenmesi'};
+    'levotiroksin':'Levotiroksin dozu','stop-bang':'STOP-BANG','birim-cevirici':'Birim çevirici','idame-sivi':'İdame sıvı ve refeeding','pesi':'PESI ve sPESI','hit-4t':'4T skoru (HIT)','rcri':'RCRI (ameliyat öncesi)','ust-gis-kanama':'Üst GİS kanaması','sepsis-sivi':'Sepsiste sıvı ve vazopresör','koah-astim':'KOAH ve astım alevlenmesi','tiroid-krizi':'Tiroid krizi ve miksödem','transfuzyon':'Transfüzyon eşikleri','light-kriterleri':'Light kriterleri','delirium-4at':'4AT deliryum taraması','alkol-yoksunlugu':'Alkol yoksunluğu','hepatik-ensefalopati':'Hepatik ensefalopati','beslenme':'Beslenme hesabı','febril-notropeni':'Febril nötropeni','parasetamol-zehirlenmesi':'Parasetamol zehirlenmesi','kontrast-nefropati':'Kontrast ilişkili AKI'};
   var IL = {
     'egfr':['kreatinin-klerensi','bobrek-ilac-dozu','akut-bobrek-hasari','elektrolit-replasmani'],
     'kreatinin-klerensi':['bobrek-ilac-dozu','egfr','antikoagulan-kesme','akut-bobrek-hasari'],
     'bobrek-ilac-dozu':['kreatinin-klerensi','egfr','akut-bobrek-hasari','ampirik-antibiyotik'],
-    'akut-bobrek-hasari':['bobrek-ilac-dozu','elektrolit-replasmani','kan-gazi','acil-tedavi'],
+    'akut-bobrek-hasari':['bobrek-ilac-dozu','kontrast-nefropati','elektrolit-replasmani','kan-gazi'],
     'elektrolit':['kan-gazi','osmolalite','elektrolit-replasmani','hiponatremi-tani'],
     'elektrolit-replasmani':['elektrolit','idame-sivi','acil-tedavi','birim-cevirici'],
     'kan-gazi':['elektrolit','osmolalite','akut-bobrek-hasari','acil-tedavi'],
@@ -304,7 +304,8 @@
     'hepatik-ensefalopati':['siroz-asit','child-pugh','meld-na','ust-gis-kanama'],
     'beslenme':['idame-sivi','vki','insulin-dozu','siroz-asit'],
     'febril-notropeni':['ampirik-antibiyotik','bobrek-ilac-dozu','sepsis-sivi','news2'],
-    'parasetamol-zehirlenmesi':['acil-tedavi','infuzyon-hizi','varfarin-inr','siroz-asit']
+    'parasetamol-zehirlenmesi':['acil-tedavi','infuzyon-hizi','varfarin-inr','siroz-asit'],
+    'kontrast-nefropati':['akut-bobrek-hasari','egfr','bobrek-ilac-dozu','diyabet-tedavi']
   };
   if (IL[bu]) {
     var css3 = document.createElement('style');
@@ -343,7 +344,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v48', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v49', GB_ADRES = 'blgnonur97@gmail.com';
   var kap = document.querySelector('.wrap');
   if (kap && bu !== 'nobet-listesi') {
     var cssG = document.createElement('style');
