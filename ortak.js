@@ -439,6 +439,29 @@
       cizA();
     }
   }
+  // Ana ekrana ekleme ipucu: menüde, uygulama olarak açılmadıysa, en çok 3 açılışta; × ile kalıcı kapanır
+  if (menude) (function(){
+    var bag = window.matchMedia && matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    var n = 0; try { n = parseInt(localStorage.getItem('vizit-ipucu') || '0', 10); } catch (e) { return; }
+    if (bag || n < 0 || n >= 3) return;
+    try { localStorage.setItem('vizit-ipucu', String(n + 1)); } catch (e) {}
+    var ios = /iphone|ipad|ipod/i.test(navigator.userAgent), istek = null;
+    var k = document.createElement('div'); k.className = 'ipucu'; k.setAttribute('role', 'note');
+    k.innerHTML = '<span><b>Ana ekrana ekleyin:</b> tek dokunuşla ve internetsiz açılır. ' +
+      (ios ? 'Safari’de Paylaş <svg viewBox="0 0 24 24" aria-label="Paylaş simgesi" style="width:16px;height:16px;vertical-align:-2px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></svg> → <b>Ana Ekrana Ekle</b>.' : 'Tarayıcı menüsü <b>⋮</b> → <b>Ana ekrana ekle</b>.') + '</span>' +
+      '<button type="button" class="ekle" hidden>Ekle</button><button type="button" class="kapat" aria-label="Kapat">×</button>';
+    var cssI = document.createElement('style');
+    cssI.textContent = '.ipucu{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:8px 6px 8px 12px;font-size:.88rem}' +
+      '.ipucu span{flex:1;min-width:0}.ipucu .ekle{border:0;background:var(--accent);color:#fff;font:600 .85rem var(--font-body);padding:7px 12px;border-radius:999px;cursor:pointer}' +
+      '.ipucu .kapat{border:0;background:none;color:var(--muted);font-size:1.4rem;line-height:1;padding:2px 8px;cursor:pointer}';
+    document.head.appendChild(cssI);
+    var qq = document.getElementById('q'); if (!qq) return; qq.parentNode.insertBefore(k, qq);
+    function kapat(){ k.remove(); try { localStorage.setItem('vizit-ipucu', '-1'); } catch (e) {} }
+    k.querySelector('.kapat').onclick = kapat;
+    window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); istek = e; k.querySelector('.ekle').hidden = false; });
+    k.querySelector('.ekle').onclick = function(){ if (!istek) return; istek.prompt(); istek.userChoice.then(function(r){ if (r.outcome === 'accepted') kapat(); }); };
+    window.addEventListener('appinstalled', kapat);
+  })();
   // 1) Alt gezinme çubuğu
   var notSay = 0; try { var o = JSON.parse(sessionStorage.getItem('vizit-not')); if (o && Date.now() - o.t < 1800000) notSay = (o.v || []).length; } catch (e) {}
   var nav = document.createElement('nav'); nav.className = 'altnav'; nav.setAttribute('aria-label', 'Gezinme');
@@ -587,6 +610,12 @@
       if (n < k.length - 1) { k[n + 1].focus(); try { k[n + 1].select(); } catch (x) {} } else i.blur();
     });
   })();
+
+  // Güven satırı: aracın dayandığı ana kılavuz ve son kontrol tarihi (başlığın altında)
+  var KL = {"acil-tedavi":"UKKA 2026 · TEMD 2026 · ADA 2025","af-skor":"ESC 2024 · Lip 2010 · Pisters 2010","akut-bobrek-hasari":"KDIGO 2012 · NICE NG148","alkol-yoksunlugu":"CIWA-Ar 1989 · ASAM 2020","ampirik-antibiyotik":"ATS/IDSA 2019 · IDSA · SSC 2021","anemi":"WHO 2024 · BSG 2021 · AGA 2020","antikoagulan-kesme":"EHRA 2021 · ACCP 2022 · PAUSE","beslenme":"NRS 2002 · ESPEN 2019/2023","birim-cevirici":"AMA SI tablosu · MSD Manual","bobrek-ilac-dozu":"KÜB/SmPC · Sanford · KDIGO 2022","child-pugh":"Pugh 1973","curb-65":"Lim 2003 · BTS 2009","delirium-4at":"4AT (Bellelli 2014) · NICE CG103","diyabet-tedavi":"ADA 2025 · TEMD 2026 · KDIGO 2022","duke-kriterleri":"Li 2000 · ESC 2023","egfr":"CKD-EPI 2021","elektrolit-replasmani":"Kraft 2005 · Brown 2006","elektrolit":"Payne 1973 · Figge 1998 · Hillier 1999","febril-notropeni":"IDSA 2010 · ASCO/IDSA 2018 · MASCC","fib-4":"Sterling 2006 · EASL-EASD-EASO 2024","glasgow-blatchford":"Blatchford 2000 · ESGE 2021","glasgow-koma":"Teasdale 1974","heart-skoru":"Six 2008 · Backus 2013","hepatik-ensefalopati":"AASLD/EASL 2014 · EASL 2022","hipertansif-acil":"ESC 2019 · ESC 2024 · AHA/ASA","hiponatremi-tani":"ESE/ESICM/ERBP 2014","hit-4t":"Lo 2006 (4T) · ASH 2018","idame-sivi":"NICE CG174 · NICE CG32","infuzyon-hizi":"SSC 2021 · ESC · Raschke 1993","insulin-dozu":"ADA 2026 · Endocrine Society 2012","iv-demir":"Ganzoni 1970 · ESC 2023","kan-gazi":"Berend 2014 · Kraut 2007","koah-astim":"GOLD 2026 · GINA 2026","kontrast-nefropati":"Mehran 2004 · ESUR 2018","kreatinin-klerensi":"Cockcroft-Gault 1976","levotiroksin":"ATA 2014 · ATA 2017","light-kriterleri":"Light 1972 · BTS 2023","meld-na":"Kim 2008 · MELD 3.0 (Kim 2021)","news2":"RCP NEWS2 2017","opioid-donusumu":"CDC 2022 · ESMO 2018","ortalama-arter-basinci":"SSC 2021","osmolalite":"Standart formül","pankreatit":"BISAP 2008 · Atlanta 2013 · ACG 2024","parasetamol-zehirlenmesi":"MHRA 2012 · Dart 2023 · SNAP","pesi":"Aujesky 2005 · Jiménez 2010 · ESC 2019","prevent":"Khan 2024 (PREVENT) · AHA/ACC 2025","qsofa":"Seymour 2016","qtc":"Bazett · Fridericia · AHA 2009","r-faktor":"EASL DILI 2019","rcri":"Lee 1999 · CCS 2017 · ESC 2022","sepsis-sivi":"SSC 2021 · SSC 2026","siroz-asit":"AASLD 2021 · EASL 2018","sodyum":"Adrogué 2000 · ESE 2014","steroid-esdegeri":"Liu 2013 · ESE/ES 2024","stop-bang":"Chung 2016","tiroid-krizi":"TEMD 2025 · Burch-Wartofsky 1993","tiroid-testi":"TEMD 2025","transfuzyon":"AABB 2023 · AABB/ICTMG 2025 · BSH","ust-gis-kanama":"ESGE 2021 · ACG 2021 · Baveno VII","varfarin-inr":"ACCP 2012 · ASH 2018","vki":"DSÖ sınıflaması · Mosteller · DuBois","vte-profilaksisi":"Padua 2010 · IMPROVE 2011 · ASH 2018","wells-pe":"Wells 2000 · ESC 2019"}, SON_KONTROL = 'Ekim 2026';
+  if (KL[bu]) { var bh = document.querySelector('header'), bp = bh && bh.querySelector('p');
+    if (bp) { var dy = document.createElement('p'); dy.className = 'dayanak'; dy.textContent = 'Dayanak: ' + KL[bu] + ' · son kontrol ' + SON_KONTROL;
+      dy.style.cssText = 'margin:6px 0 0;font-size:.78rem;color:var(--muted)'; bp.parentNode.insertBefore(dy, bp.nextSibling); } }
 
   // Uzun kaynak listeleri kapalı başlar, dokununca açılır
   document.querySelectorAll('p').forEach(function(pa){
