@@ -97,7 +97,7 @@ table.t td,table.t th{overflow-wrap:break-word}
   <section class="card">
     <h2>Hasta</h2>
     <div class="grid">
-      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="78"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" min="18" max="120" value="78"></div>
       <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="82"></div>
       <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.6"></div>
       <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="11.8"></div>
@@ -287,6 +287,7 @@ table.t td,table.t th{overflow-wrap:break-word}
 
   function calc(){
     var age=v('age'),wt=v('wt'),cr=v('cr'),hb=v('hb'),hct=v('hct'),glu=v('glu'),cv=v('cv');
+    var ageBad=age!==null&&(age<18||age>120);if(ageBad)age=null;if(wt!==null&&wt<=0)wt=null;if(hb!==null&&hb<=0)hb=null;if(hct!==null&&hct<=0)hct=null;
     var female=segVal('sex')==='f',em=segVal('em'),rt=segVal('rt'),dm=+segVal('dm'),mr=segVal('mr'),pr=+segVal('pr');
     var aki=chk('aki'),icu=chk('icu'),dial=chk('dial');
     if(wt!==null&&wt<=0)wt=null; if(cr!==null&&cr<=0)cr=null; if(cv!==null&&cv<0)cv=null;
@@ -297,7 +298,7 @@ table.t td,table.t th{overflow-wrap:break-word}
     if(em==='d'){eg=v('egfr');if(eg!==null&&eg<0)eg=null;egsrc='doğrudan girildi';egnote=eg===null?'eGFR değerini girin.':''}
     else{
       if(cr===null)egnote='eGFR için kreatinin girin.';
-      else if(age===null)egnote='eGFR için yaş girin.';
+      else if(age===null)egnote=ageBad?'Yaş 18 ile 120 arasında olmalı (CKD-EPI 2021 erişkinler içindir).':'eGFR için yaş girin.';
       else if(age<18)egnote='CKD-EPI 2021 erişkinler içindir (yaş ≥ 18).';
       else{eg=ckdepi(cr,age,female);egsrc='CKD-EPI 2021';egnote='Hesaplanan eGFR (CKD-EPI 2021): '+f1(eg)+' mL/dk/1,73 m². AKI’de kreatinin kararlı olmadığından eGFR gerçek GFR’yi yansıtmaz.'}
     }
