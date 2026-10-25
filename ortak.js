@@ -139,6 +139,25 @@
   // Hasta değerleri: [data-hasta] alanlarına elle girilen değerler araçlar arasında taşınır.
   // Yalnız bu oturumda (sessionStorage) ve 30 dakika hareketsizlikte silinir; kimlik bilgisi tutulmaz.
   var HK = 'vizit-hasta', SURE = 30 * 60 * 1000;
+  // Kopyala çıktısı: HBYS'ye yapıştırılabilen epikriz/konsültasyon biçimi
+  window.vizitEpikriz = function(v, notlar){
+    var f = function(k){ return v[k] != null && v[k] !== '' ? String(v[k]).replace('.', ',') : null; };
+    var bas = function(liste){ return liste.filter(Boolean).join(', '); };
+    var b = function(k, ad, birim){ var x = f(k); return x ? ad + ' ' + x + (birim ? ' ' + birim : '') : null; };
+    var d = new Date(), iki = function(n){ return (n < 10 ? '0' : '') + n; }, s = [];
+    var hasta = bas([v.cins ? (v.cins === 'm' ? 'Erkek' : 'Kadın') : null, f('yas') ? f('yas') + ' yaş' : null, f('kilo') ? f('kilo') + ' kg' : null, f('boy') ? f('boy') + ' cm' : null]);
+    var ta = f('sbp') && f('dbp') ? 'TA ' + f('sbp') + '/' + f('dbp') + ' mmHg' : (b('sbp', 'Sistolik TA', 'mmHg') || b('dbp', 'Diyastolik TA', 'mmHg'));
+    var vital = bas([ta, (f('nabiz') ? 'Nabız ' + f('nabiz') + '/dk' : null)]);
+    var lab = bas([b('kreatinin', 'Kreatinin', 'mg/dL'), b('egfr', 'eGFR', 'mL/dk/1,73 m²'), b('ure', 'Üre', 'mg/dL'), b('na', 'Na', 'mEq/L'), b('k', 'K', 'mEq/L'), b('ca', 'Ca', 'mg/dL'),
+      b('glukoz', 'Glukoz', 'mg/dL'), b('alb', 'Albümin', 'g/dL'), b('bil', 'Bilirubin', 'mg/dL'), b('hb', 'Hb', 'g/dL'), b('plt', 'Trombosit', 'bin/µL'), b('inr', 'INR')]);
+    if (!hasta && !vital && !lab && !(notlar || []).length) return '';
+    s.push('Tarih: ' + iki(d.getDate()) + '.' + iki(d.getMonth() + 1) + '.' + d.getFullYear());
+    if (hasta) s.push('Hasta: ' + hasta);
+    if (vital) s.push('Vital: ' + vital);
+    if (lab) s.push('Laboratuvar: ' + lab);
+    if ((notlar || []).length) { s.push('Değerlendirme:'); notlar.forEach(function(n){ s.push('- ' + n); }); }
+    return s.join('\n');
+  };
   var AD = {yas:'Yaş', kilo:'Kilo', boy:'Boy', kreatinin:'Kreatinin', egfr:'eGFR', na:'Na', k:'K', glukoz:'Glukoz', ure:'Üre',
     hb:'Hb', alb:'Albümin', bil:'Bilirubin', inr:'INR', plt:'Trombosit', ca:'Ca', sbp:'Sistolik', dbp:'Diyastolik', nabiz:'Nabız'};
   function oku(){ try { var o = JSON.parse(sessionStorage.getItem(HK)); if (o && Date.now() - o.t < SURE) return o.v || {}; sessionStorage.removeItem(HK); } catch (e) {} return {}; }
@@ -344,7 +363,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v55', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v56', GB_ADRES = 'blgnonur97@gmail.com';
   var kap = document.querySelector('.wrap');
   if (kap && bu !== 'nobet-listesi') {
     var cssG = document.createElement('style');
@@ -585,7 +604,7 @@
         if (v.cins) document.querySelectorAll('button[data-hasta-cins="' + v.cins + '"]').forEach(function(x){ if (gecerli(x) && x.getAttribute('aria-pressed') !== 'true') x.click(); });
         ciz(); }; });
       panel.querySelector('[data-i=kop]').onclick = function(){
-        var b = this, t = [ozet(oku())].concat(notOku().map(function(x){ return x.s; })).filter(Boolean).join('\n');
+        var b = this, t = window.vizitEpikriz(oku(), notOku().map(function(x){ return x.s; }));
         if (!t) return; copy(t, b);
       };
       panel.querySelector('[data-i=yeni]').onclick = function(){ yaz({}); notYaz([]); ciz(); rozet(); };

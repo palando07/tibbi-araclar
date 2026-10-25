@@ -466,7 +466,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
   document.querySelectorAll('.hseg button').forEach(function(b){b.onclick=function(){var v=oku();if(v.cins===b.dataset.c)delete v.cins;else v.cins=b.dataset.c;yaz(v);ciz()}});
   $('h-duz').onclick=function(){var f=$('h-form');f.hidden=!f.hidden;this.textContent=f.hidden?(ozetMetni(oku())?'Düzenle':'Değer gir'):'Kapat';ciz();if(!f.hidden)grid.querySelector('input').focus()};
   $('h-yeni').onclick=function(){yaz({});notYaz([]);ciz()};
-  $('h-kop').onclick=function(){var b=this,t=[ozetMetni(oku())].concat(notOku().map(function(x){return x.s})).filter(Boolean).join('\n');function ok(){b.textContent='Kopyalandı ✓';setTimeout(function(){b.textContent='Kopyala'},1600)}
+  $('h-kop').onclick=function(){var b=this,n=notOku().map(function(x){return x.s}),t=window.vizitEpikriz?window.vizitEpikriz(oku(),n):[ozetMetni(oku())].concat(n).filter(Boolean).join('\n');function ok(){b.textContent='Kopyalandı ✓';setTimeout(function(){b.textContent='Kopyala'},1600)}
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,function(){});};
   ciz();window.addEventListener('pageshow',ciz);
 })();
