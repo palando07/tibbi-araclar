@@ -35,7 +35,10 @@ a.tool .go{color:var(--accent);font-size:1.4rem;font-weight:700}
 .search:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:12px 0 0}
 .group{display:flex;flex-direction:column;gap:10px}
-.empty{color:var(--muted);margin:0}
+.empty{color:var(--muted);margin:0}.empty a{display:inline-block;margin-top:6px;color:var(--accent);font-weight:600}
+.hetiket{display:flex;flex-direction:column;gap:3px;font-size:.78rem;color:var(--muted);margin-bottom:10px}
+.hetiket input{font:600 1rem var(--font-body);padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0;box-sizing:border-box}
+.hetiket .u{color:var(--high,#d24b32);font-weight:600}
 .quick{display:flex;flex-direction:column;gap:10px}
 .trow{display:flex;gap:8px;align-items:stretch}
 .trow>a.tool{flex:1;min-width:0}
@@ -77,7 +80,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
 .yazi span{font-size:.8rem;color:var(--muted);margin-right:2px}
 .yazi button{width:40px;height:36px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;font-weight:700;font-family:var(--font-body);cursor:pointer;line-height:1}
 .yazi button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
-/* Açılış animasyonu: yalnız uygulama açılınca bir kez (sessionStorage 'vizit-acilis') */
+/* Açılış animasyonu: yalnız ilk açılışta bir kez (localStorage 'vizit-acilis') */
 .acilis{position:fixed;inset:0;z-index:100;background:#8c1c2c;display:flex;align-items:center;justify-content:center;gap:14px;transition:opacity .35s ease}
 .acilis.bitti{opacity:0;pointer-events:none}
 .acilis .n{width:72px;height:43px;color:#fff}
@@ -95,7 +98,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
 <body data-ornek-yok>
 <script>(function(){
   // Açılış: bordo ekranda nabız çizgisi ve Vizit yazısı, sonra başlık animasyonu. Dokununca geçilir.
-  try{if(sessionStorage.getItem('vizit-acilis'))return;sessionStorage.setItem('vizit-acilis','1')}catch(e){return}
+  try{if(localStorage.getItem('vizit-acilis')||sessionStorage.getItem('vizit-acilis'))return;localStorage.setItem('vizit-acilis','1')}catch(e){return}
   if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   var d=document.createElement('div');d.className='acilis';d.setAttribute('aria-hidden','true');
   d.innerHTML='<svg class="n" viewBox="0 0 44 26"><polyline pathLength="80" points="2,14 11,14 14,9 19,23 25,3 28,14 42,14" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'+'<svg class="k" viewBox="-10 -706 2023 727" aria-hidden="true"><path fill="currentColor" d="M284 3 70 -593Q63 -613 51.5 -624.5Q40 -636 20 -642L-4 -650V-660H284V-650L253 -641Q230 -635 227.5 -620.0Q225 -605 232 -583L380 -144L529 -584Q537 -607 536.5 -622.0Q536 -637 513 -643L487 -650V-660H627V-650L600 -642Q581 -637 573.0 -624.5Q565 -612 558 -592L358 3Z M772 -548Q738 -548 714.5 -569.5Q691 -591 691 -624Q691 -658 714.5 -679.0Q738 -700 772 -700Q806 -700 829.0 -679.0Q852 -658 852 -624Q852 -591 829.0 -569.5Q806 -548 772 -548ZM654 0V-10L668 -14Q688 -20 695.5 -32.0Q703 -44 703 -64V-377Q703 -398 695.5 -408.5Q688 -419 668 -423L654 -426V-436L837 -495L847 -485L844 -343V-63Q844 -43 851.5 -31.0Q859 -19 878 -13L888 -10V0Z M935 0V-16L1208 -461H1057Q1031 -461 1016.0 -447.0Q1001 -433 988 -410L952 -343H942L949 -481H1349V-467L1082 -20H1239Q1271 -20 1286.0 -35.0Q1301 -50 1314 -76L1349 -150H1359L1350 0Z M1517 -548Q1483 -548 1459.5 -569.5Q1436 -591 1436 -624Q1436 -658 1459.5 -679.0Q1483 -700 1517 -700Q1551 -700 1574.0 -679.0Q1597 -658 1597 -624Q1597 -591 1574.0 -569.5Q1551 -548 1517 -548ZM1399 0V-10L1413 -14Q1433 -20 1440.5 -32.0Q1448 -44 1448 -64V-377Q1448 -398 1440.5 -408.5Q1433 -419 1413 -423L1399 -426V-436L1582 -495L1592 -485L1589 -343V-63Q1589 -43 1596.5 -31.0Q1604 -19 1623 -13L1633 -10V0Z M1867 15Q1803 15 1767.5 -17.0Q1732 -49 1732 -119V-461H1663V-471L1687 -475Q1718 -482 1740.5 -495.0Q1763 -508 1785 -530L1867 -621H1877L1874 -481H1986V-461H1873V-101Q1873 -66 1888.5 -48.0Q1904 -30 1928 -30Q1949 -30 1965.0 -40.5Q1981 -51 1997 -69L2007 -59Q1987 -25 1952.0 -5.0Q1917 15 1867 15Z"/></svg>';
@@ -108,8 +111,9 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
   <p class="sub">Dahiliye pratiği için hesaplayıcılar</p>
   <input class="search" id="q" type="search" placeholder="Ara: araç, bulgu ya da ilaç adı" aria-label="Hesaplayıcı ara" autocomplete="off">
   <section class="hasta" id="hasta" aria-label="Hasta özeti">
-    <div class="ust"><strong>Hasta</strong><p class="ozet" id="h-ozet">Değer girilmedi. Buraya ya da herhangi bir araca yazdığınız değerler diğer araçlarda hazır gelir.</p></div>
+    <div class="ust"><strong id="h-bas">Hasta</strong><p class="ozet" id="h-ozet">Değer girilmedi. Buraya ya da herhangi bir araca yazdığınız değerler diğer araçlarda hazır gelir.</p></div>
     <div id="h-form" hidden>
+      <label class="hetiket">Yatak / etiket (isim yazmayın)<input id="h-etiket" type="text" maxlength="10" placeholder="ör. Y12" autocomplete="off" autocapitalize="characters"><span class="u" id="h-etiket-u" hidden>Yalnız yatak ya da oda no (ör. Y12, 12A, Oda 3). İsim veya TC no yazmayın.</span></label>
       <div class="hseg" role="group" aria-label="Cinsiyet"><button type="button" data-c="f" aria-pressed="false">Kadın</button><button type="button" data-c="m" aria-pressed="false">Erkek</button></div>
       <div class="hgrid" id="h-grid" style="margin-top:10px"></div>
     </div>
@@ -130,11 +134,11 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div><strong>eGFR</strong><span>CKD-EPI 2021 ve KDIGO G evresi</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="akut-bobrek-hasari.html" data-k="akut böbrek hasarı aki abh kdigo evre kreatinin idrar çıkışı oligüri fena feüre fe ürea prerenal atn diyaliz endikasyon nefrotoksik ilaç kes beklet sick day nsaii metformin sglt2 etiyoloji sediment silendir hidronefroz usg glomerülonefrit ain yüksekliği artışı azlığı anüri üremi yetmezliği yükseldi yüksek ürikoliz allogut urikoliz ambisome fungizone abelcet eliquis apaclot paxiban zovirax asimplex klovireks aklovir pradaxa cubicin dupcin daptomax xapto digoxin lixiana clexane oksapar enox axeparin inspra epleday kerendia neurontin gabaset gabateva neruda genta genthaver gentreks gliben dianorm diyaben glucovance amaryl glimax diameprid glirid colimycin lixicol colitim kolistipol lithuril kilonum litomaks glifor glucophage glukofen matofin metoject emthexate trexan lyrica alyse neurica regapen xarelto rivoksar venomia rovaran oneptus ovefran neprilex sandimmun sandimmun-neoral drosporin prograf advagraf adoport panolimus viread vemlidy truvada talotren teokap bronkolin teosel sutril torventa bactrim kemoprim trimoks metoprim edicin vancotek vancorin vamycin">
+    <a class="tool" href="akut-bobrek-hasari.html" data-k="akut böbrek hasarı aki abh kdigo evre kreatinin idrar çıkışı oligüri fena feüre fe ürea prerenal atn diyaliz endikasyon nefrotoksik ilaç kes beklet sick day nsaii metformin sglt2 etiyoloji sediment silendir hidronefroz usg glomerülonefrit ain yüksekliği artışı azlığı anüri üremi yetmezliği yükseldi yüksek ürikoliz allogut urikoliz ambisome fungizone abelcet eliquis apaclot paxiban zovirax asimplex klovireks aklovir pradaxa cubicin dupcin daptomax xapto digoxin lixiana clexane klexane oksapar enox axeparin inspra epleday kerendia neurontin gabaset gabateva neruda genta genthaver gentreks gliben dianorm diyaben glucovance amaryl glimax diameprid glirid colimycin lixicol colitim kolistipol lithuril kilonum litomaks glifor glucophage glukofen matofin metoject emthexate trexan lyrica alyse neurica regapen xarelto rivoksar venomia rovaran oneptus ovefran neprilex sandimmun sandimmun-neoral drosporin prograf advagraf adoport panolimus viread vemlidy truvada talotren teokap bronkolin teosel sutril torventa bactrim kemoprim trimoks metoprim edicin vancotek vancorin vamycin allopurinol amfoterisin amikasin amikacin apiksaban apixaban asiklovir acyclovir aciclovir dabigatran daptomisin daptomycin digoksin dopamin dopamine edoksaban edoxaban enoksaparin enoxaparin eplerenon eplerenone fentanil fentanyl finerenon finerenone furosemid furosemide gabapentin gentamisin gentamicin glibenklamid glibenclamide glyburide gliklazid gliclazide glimepirid glimepiride heparin kolistin colistin linezolid lityum lithium metotreksat morfin morphine morfia m-eslon parasetamol acetaminophen piperasilin tazobaktam piperacillin pregabalin rivaroksaban rivaroxaban sakubitril valsartan siklosporin cyclosporine ciclosporin spironolakton spironolactone takrolimus tacrolimus tenofovir teofilin theophylline torasemid trimetoprim sülfametoksazol vankomisin vancomycin">
       <div><strong>Akut böbrek hasarı</strong><span>KDIGO evresi, FENa/FEÜre, etiyoloji ve nefrotoksik ilaçlar</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="kontrast-nefropati.html" data-k="kontrast nefropati cin ci-aki ca-aki pc-aki kontrast aki mehran esur acr nkf hidrasyon serum fizyolojik bikarbonat nac asetilsistein metformin poseidon lvedp anjiyografi koroner bt kontrast hacmi çekimi tomografi kontrastlı glifor glucophage glukofen matofin">
+    <a class="tool" href="kontrast-nefropati.html" data-k="kontrast nefropati cin ci-aki ca-aki pc-aki aki mehran esur acr nkf hidrasyon serum fizyolojik bikarbonat nac asetilsistein metformin poseidon lvedp anjiyografi koroner bt hacmi çekimi tomografi kontrastlı glifor glucophage glukofen matofin amfoterisin metotreksat teofilin theophylline zoledronik asit zoledronic">
       <div><strong>Kontrast ilişkili AKI</strong><span>Mehran skoru, eGFR riski, hidrasyon ve metformin</span></div>
       <div class="go">›</div>
     </a>
@@ -142,7 +146,7 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div><strong>Kreatinin klerensi</strong><span>Cockcroft-Gault, ilaç dozu ayarı için</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="bobrek-ilac-dozu.html" data-k="böbrek ilaç doz ayarı renal crcl antibiyotik meropenem sefepim piperasilin vankomisin noak apiksaban rivaroksaban enoksaparin gabapentin metformin diyaliz yetmezliği hemodiyaliz kbh voltaren cataflam dikloron diclomec invanz ekiperta famodin nevofam gastrosidin famoser triflucan flucan fluzole candimax nurofen brufen dolven pedifen kolsin colchicum dispert keppra epixx levemax epitam trajenta linatin snoxx apranax naprosyn aleve synax piyeloseptyl uriseptin furantine januvia janumet xelevia velmetia galvus galvus met vidaptin vildega">
+    <a class="tool" href="bobrek-ilac-dozu.html" data-k="böbrek ilaç doz ayarı renal crcl antibiyotik meropenem sefepim piperasilin vankomisin noak apiksaban rivaroksaban enoksaparin gabapentin metformin diyaliz yetmezliği hemodiyaliz kbh voltaren cataflam dikloron diclomec invanz ekiperta famodin nevofam gastrosidin famoser triflucan flucan fluzole candimax nurofen brufen dolven pedifen kolsin colchicum dispert keppra epixx levemax epitam trajenta linatin snoxx apranax naprosyn aleve synax piyeloseptyl uriseptin furantine januvia janumet xelevia velmetia galvus met vidaptin vildega allopurinol amoksisilin amoxicillin ampisilin apixaban eliquis apaclot paxiban asiklovir acyclovir aciclovir zovirax asimplex klovireks aklovir dabigatran digoksin digoxin diklofenak diclofenac edoksaban edoxaban enoxaparin clexane klexane oksapar enox axeparin eritromisin ertapenem famotidin famotidine fentanil fentanyl durogesic talinat actiq abstral flukonazol fluconazole gliklazid gliclazide heparin nevparin koparin vasparin poliparin ibuprofen klaritromisin clarithromycin klacid macrol klamer klax kolşisin colchicine levetirasetam levetiracetam levofloksasin levofloxacin linagliptin meronem maxipen merosid mopem glifor glucophage glukofen matofin morfin morphine morfia m-eslon naproksen naproxen nitrofurantoin oseltamivir tazobaktam piperacillin pregabalin rivaroxaban sefazolin cefazolin cefepime maxipime ekipim unisef roxipime seftazidim ceftazidime seftriakson ceftriaxone siklosporin cyclosporine ciclosporin sandimmun sandimmun-neoral drosporin siprofloksasin ciprofloxacin sitagliptin spironolakton spironolactone tramadol trimetoprim sülfametoksazol vancomycin edicin vancotek vancorin vamycin verapamil vildagliptin pradaxa lixiana xarelto rivoksar venomia rovaran">
       <div><strong>Böbrekte ilaç dozu</strong><span>Antibiyotik, NOAK ve sık ilaçlarda doz ayarı</span></div>
       <div class="go">›</div>
     </a>
@@ -150,19 +154,19 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div><strong>Elektrolit hesaplamaları</strong><span>Düzeltilmiş Ca, anyon açığı, düzeltilmiş Na</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="elektrolit-replasmani.html" data-k="elektrolit replasman potasyum hipokalemi kcl magnezyum hipomagnezemi fosfor hipofosfatemi kalsiyum hipokalsemi glukonat düşüklüğü düşüklüğü düşüklüğü düşüklüğü">
+    <a class="tool" href="elektrolit-replasmani.html" data-k="elektrolit replasman potasyum k hipokalemi kcl magnezyum hipomagnezemi fosfor hipofosfatemi kalsiyum hipokalsemi glukonat düşüklüğü digoksin digoxin">
       <div><strong>Elektrolit replasmanı</strong><span>K, Mg, P ve Ca eksikliğinde doz ve hız</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="kan-gazi.html" data-k="kan gazı abg arter venöz asidoz alkaloz ph pco2 hco3 anyon açığı delta kompanzasyon winter metabolik solunumsal laktat diazomid">
+    <a class="tool" href="kan-gazi.html" data-k="kan gazı abg arter venöz asidoz alkaloz ph pco2 hco3 anyon açığı delta kompanzasyon winter metabolik solunumsal laktat diazomid asetazolamid metformin parasetamol acetaminophen">
       <div><strong>Kan gazı yorumu</strong><span>Asit-baz bozukluğu, kompanzasyon, anyon açığı</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="hiponatremi-tani.html" data-k="hiponatremi tanı siadh uygunsuz adh osmolalite idrar sodyum furst sıvı kısıtlama üre tolvaptan düzeltme hızı ods düşüklüğü moduretic kalurid minirin octostim steron hydrocort hidrozon holoxan fludex flupamid indurin tegretol karbalex karazepin teril lamictal pinral latrigal synpitan postuitrin oksitosel trileptal apilep oxcarpin endoxan alkyloxan samsca jinarc depakin convulex depalex">
+    <a class="tool" href="hiponatremi-tani.html" data-k="hiponatremi tanı siadh uygunsuz adh osmolalite idrar sodyum furst sıvı kısıtlama üre tolvaptan düzeltme hızı ods düşüklüğü moduretic kalurid minirin octostim steron hydrocort hidrozon holoxan fludex flupamid indurin tegretol karbalex karazepin teril lamictal pinral latrigal synpitan postuitrin oksitosel trileptal apilep oxcarpin endoxan alkyloxan samsca jinarc depakin convulex depalex amilorid desmopressin empagliflozin jardiance synjardy glyxambi furosemid furosemide hidrokortizon hydrocortisone ifosfamid indapamid karbamazepin carbamazepine lamotrijin lityum lithium lithuril kilonum litomaks metotreksat oksitosin okskarbazepin siklofosfamid valproat valproate">
       <div><strong>Hiponatremi tanısı</strong><span>Neden ayrımı, SIADH, sıvı kısıtlama, düzeltme sınırı</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="sodyum.html" data-k="hiponatremi hipernatremi sodyum açığı sıvı su açığı infüzyon %3 yüksekliği düşüklüğü dehidratasyon">
+    <a class="tool" href="sodyum.html" data-k="hiponatremi hipernatremi sodyum açığı sıvı su infüzyon %3 yüksekliği düşüklüğü dehidratasyon">
       <div><strong>Sodyum ve sıvı açığı</strong><span>Hipo/hipernatremide sodyum açığı, serbest su açığı</span></div>
       <div class="go">›</div>
     </a>
@@ -170,50 +174,50 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div><strong>Serum osmolalitesi</strong><span>Hesaplanan osmolalite ve osmolar açık</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="idame-sivi.html" data-k="idame sıvı mayi iv sıvı maintenance ml/kg holliday segar dekstroz serum fizyolojik kcl refeeding yeniden beslenme sendromu tiamin hipofosfatemi malnütrisyon kaşeksi ihtiyacı yiyemeyen ağızdan alamayan benexol bemiks vi-plex">
+    <a class="tool" href="idame-sivi.html" data-k="idame sıvı mayi iv maintenance ml/kg holliday segar dekstroz serum fizyolojik kcl refeeding yeniden beslenme sendromu tiamin hipofosfatemi malnütrisyon kaşeksi ihtiyacı yiyemeyen ağızdan alamayan benexol bemiks vi-plex thiamine">
       <div><strong>İdame sıvı ve refeeding</strong><span>Günlük IV sıvı, Na/K ve refeeding riski</span></div>
       <div class="go">›</div>
     </a>
   </section>
   <section class="group" id="b-kardiyo">
     <h2>Kardiyoloji ve tromboz</h2>
-    <a class="tool" href="af-skor.html" data-k="atriyal fibrilasyon inme kanama antikoagülan chads hasbled af antikoagülasyon">
+    <a class="tool" href="af-skor.html" data-k="atriyal fibrilasyon inme kanama antikoagülan chads hasbled af antikoagülasyon apiksaban apixaban eliquis apaclot paxiban dabigatran pradaxa edoksaban edoxaban lixiana rivaroksaban rivaroxaban xarelto rivoksar venomia rovaran varfarin warfarin coumadin orfarin">
       <div><strong>AF risk skorları</strong><span>CHA₂DS₂-VASc / CHA₂DS₂-VA ve HAS-BLED</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="qtc.html" data-k="qt qtc ekg bazett fridericia aritmi uzaması">
+    <a class="tool" href="qtc.html" data-k="qt qtc ekg bazett fridericia aritmi uzaması digoksin digoxin">
       <div><strong>Düzeltilmiş QT (QTc)</strong><span>Bazett, Fridericia, Framingham, Hodges</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="wells-pe.html" data-k="pulmoner emboli pe wells d-dimer nefes darlığı dispne göğüs ağrısı takipne">
+    <a class="tool" href="wells-pe.html" data-k="pulmoner emboli pe wells d-dimer nefes darlığı dispne göğüs ağrısı takipne apiksaban apixaban eliquis apaclot paxiban dabigatran pradaxa edoksaban edoxaban lixiana rivaroksaban rivaroxaban xarelto rivoksar venomia rovaran varfarin warfarin coumadin orfarin">
       <div><strong>Wells skoru (PE)</strong><span>Pulmoner emboli klinik olasılığı</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="pesi.html" data-k="pesi spesi pulmoner emboli pe prognoz mortalite risk sınıflaması esc rv disfonksiyonu troponin tromboliz ayaktan tedavi">
+    <a class="tool" href="pesi.html" data-k="pesi spesi pulmoner emboli pe prognoz mortalite risk sınıflaması esc rv disfonksiyonu troponin tromboliz ayaktan tedavi apiksaban apixaban eliquis apaclot paxiban dabigatran pradaxa dobutamin dobutamine edoksaban edoxaban lixiana heparin norepinefrin norepinephrine noradrenaline rivaroksaban rivaroxaban xarelto rivoksar venomia rovaran varfarin warfarin coumadin orfarin">
       <div><strong>PESI ve sPESI</strong><span>Pulmoner embolide mortalite ve ESC risk sınıfı</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="vte-profilaksisi.html" data-k="vte profilaksi tromboz padua improve kanama enoksaparin clexane heparin dvt emboli yatan hasta pıhtı fragmin nolvadex tadex tamoplex innohep">
+    <a class="tool" href="vte-profilaksisi.html" data-k="vte profilaksi tromboz padua improve kanama enoksaparin clexane klexane heparin dvt emboli yatan hasta pıhtı fragmin nolvadex tadex tamoplex innohep dalteparin enoxaparin oksapar enox axeparin fondaparinuks fondaparinux arixtra nevparin koparin vasparin poliparin tamoksifen tinzaparin">
       <div><strong>VTE profilaksisi</strong><span>Padua ve IMPROVE ile yatan hastada profilaksi</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="hit-4t.html" data-k="hit heparin trombositopeni 4t warkentin pf4 anti-pf4 trombosit düşüşü argatroban fondaparinuks bivalirudin dmah enoksaparin düşüklüğü düştü argazem bivacard obivadin arixtra nevparin koparin vasparin poliparin">
+    <a class="tool" href="hit-4t.html" data-k="hit heparin trombositopeni 4t warkentin pf4 anti-pf4 trombosit düşüşü argatroban fondaparinuks bivalirudin dmah enoksaparin düşüklüğü düştü argazem bivacard obivadin arixtra nevparin koparin vasparin poliparin apiksaban apixaban eliquis apaclot paxiban fondaparinux rivaroksaban rivaroxaban xarelto rivoksar venomia rovaran varfarin warfarin coumadin orfarin">
       <div><strong>4T skoru (HIT)</strong><span>Heparin ilişkili trombositopeni olasılığı</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="antikoagulan-kesme.html" data-k="antikoagülan kesme ameliyat girişim operasyon doak apiksaban rivaroksaban edoksaban dabigatran varfarin köprüleme bridging enoksaparin öncesi işlem öncesi biyopsi endoskopi">
+    <a class="tool" href="antikoagulan-kesme.html" data-k="antikoagülan kesme ameliyat girişim operasyon doak apiksaban rivaroksaban edoksaban dabigatran varfarin köprüleme bridging enoksaparin öncesi işlem biyopsi endoskopi apixaban eliquis apaclot paxiban pradaxa edoxaban lixiana enoxaparin clexane klexane oksapar enox axeparin heparin rivaroxaban xarelto rivoksar venomia rovaran traneksamik asit tranexamic warfarin coumadin orfarin">
       <div><strong>Antikoagülan kesme</strong><span>Girişim öncesi kesme ve başlama zamanı, köprüleme</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="varfarin-inr.html" data-k="varfarin coumadin inr yüksek düşük k vitamini pcc kanama doz ayarı haftalık tablet yüksekliği plavix karum opirel pingel orfarin">
+    <a class="tool" href="varfarin-inr.html" data-k="varfarin coumadin inr yüksek düşük k vitamini pcc kanama doz ayarı haftalık tablet yüksekliği plavix karum opirel pingel orfarin allopurinol amiodaron amiodarone aspirin fenitoin phenytoin fenobarbital flukonazol fluconazole karbamazepin carbamazepine klopidogrel clopidogrel metronidazol metronidazole parasetamol acetaminophen rifampisin traneksamik asit tranexamic warfarin">
       <div><strong>Varfarin ve INR</strong><span>Yüksek INR, kanamada geri döndürme, haftalık doz</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="prevent.html" data-k="prevent aha kardiyovasküler risk statin ascvd kalp yetmezliği">
+    <a class="tool" href="prevent.html" data-k="prevent aha kardiyovasküler risk statin ascvd kalp yetmezliği ezetimib ezetimibe ezetrol ezetec kolez">
       <div><strong>PREVENT</strong><span>10 yıllık KVH, ASKVH ve kalp yetmezliği riski</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="heart-skoru.html" data-k="heart göğüs ağrısı troponin mace akut koroner angina">
+    <a class="tool" href="heart-skoru.html" data-k="heart göğüs ağrısı troponin mace akut koroner angina digoksin digoxin">
       <div><strong>HEART skoru</strong><span>Göğüs ağrısında kardiyak olay riski</span></div>
       <div class="go">›</div>
     </a>
@@ -232,11 +236,11 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
   </section>
   <section class="group" id="b-karaciger">
     <h2>Karaciğer ve GİS</h2>
-    <a class="tool" href="siroz-asit.html" data-k="siroz asit parasentez saag sbp spontan bakteriyel peritonit albümin diüretik spironolakton hrs hepatorenal aki terlipressin karın şişliği lasix desal furomid urever noroxin claforan sefotak sefagen betaksim aldactone aldactazide spylacton glypressin gasopres">
+    <a class="tool" href="siroz-asit.html" data-k="siroz asit parasentez saag sbp spontan bakteriyel peritonit albümin diüretik spironolakton hrs hepatorenal aki terlipressin karın şişliği lasix desal furomid urever noroxin claforan sefotak sefagen betaksim aldactone aldactazide spylacton glypressin gasopres furosemid furosemide meropenem norepinefrin norepinephrine noradrenaline stenor nefrinor cardenor steradine norfloksasin piperasilin tazobaktam piperacillin tazocin tazoper tazeracin tazoject sefotaksim cefotaxime seftriakson ceftriaxone rocephin unacefin desefin novosef siprofloksasin ciprofloxacin spironolactone">
       <div><strong>Siroz ve asit</strong><span>Asit sıvısı, SBP, parasentez albümini, diüretik, HRS-AKI</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="hepatik-ensefalopati.html" data-k="hepatik ensefalopati he west haven ishen covert overt minimal asteriksis laktuloz rifaksimin peg amonyak siroz bilinç bozukluğu gks beslenme protein bcaa tips lavman konfüzyon bulanıklığı anexate fluxate mazenil hepa-merz duphalac osmolak laevolac lactulac colidur hepazec normix refidex">
+    <a class="tool" href="hepatik-ensefalopati.html" data-k="hepatik ensefalopati he west haven ishen covert overt minimal asteriksis laktuloz rifaksimin peg amonyak siroz bilinç bozukluğu gks beslenme protein bcaa tips lavman konfüzyon bulanıklığı anexate fluxate mazenil hepa-merz duphalac osmolak laevolac lactulac colidur hepazec normix refidex flumazenil gabapentin ornitin aspartat lactulose metronidazol metronidazole rifaximin seftriakson ceftriaxone tiamin thiamine valproat valproate">
       <div><strong>Hepatik ensefalopati</strong><span>West Haven, tetikleyiciler, laktuloz/rifaksimin</span></div>
       <div class="go">›</div>
     </a>
@@ -252,11 +256,11 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div><strong>Glasgow-Blatchford</strong><span>Üst GİS kanamasında risk</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="ust-gis-kanama.html" data-k="üst gis kanama ugib hematemez melena peptik ülser forrest endoskopi ppi pantoprazol eritromisin transfüzyon varis terlipressin somatostatin oktreotid seftriakson ebl tips baveno antikoagülan kahve telvesi hb düşüşü düştü coraspin ecopirin babyprin dispril erythrocin eritro nexium esopral nexstep esoblok praxbind sandostatin somatosan somatex glypressin gasopres transamine tranexel herajit candur">
+    <a class="tool" href="ust-gis-kanama.html" data-k="üst gis kanama ugib hematemez melena peptik ülser forrest endoskopi ppi pantoprazol eritromisin transfüzyon varis terlipressin somatostatin oktreotid seftriakson ebl tips baveno antikoagülan kahve telvesi hb düşüşü düştü coraspin ecopirin babyprin dispril erythrocin eritro nexium esopral nexstep esoblok praxbind sandostatin somatosan somatex glypressin gasopres transamine tranexel herajit candur aspirin dabigatran esomeprazol esomeprazole idarusizumab laktuloz lactulose duphalac osmolak laevolac lactulac octreotide pantoprazole ceftriaxone rocephin unacefin desefin novosef traneksamik asit tranexamic varfarin warfarin coumadin orfarin pradaxa">
       <div><strong>Üst GİS kanaması</strong><span>Peptik ve varis kanamasında yönetim</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="pankreatit.html" data-k="pankreatit bisap ranson atlanta amilaz lipaz karın ağrısı yüksekliği">
+    <a class="tool" href="pankreatit.html" data-k="pankreatit bisap ranson atlanta amilaz lipaz karın ağrısı yüksekliği metronidazol metronidazole">
       <div><strong>Pankreatit skorları</strong><span>BISAP, Ranson ve Revize Atlanta</span></div>
       <div class="go">›</div>
     </a>
@@ -271,19 +275,19 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
   </section>
   <section class="group" id="b-acil">
     <h2>Enfeksiyon ve acil</h2>
-    <a class="tool" href="acil-tedavi.html" data-k="acil tedavi hiperkalemi potasyum dka ketoasidoz hipoglisemi hiponatremi hipertonik salin hiperkalsemi adrenal kriz hidrokortizon yüksekliği kan şekeri düşüklüğü kalsiyum yüksekliği xgeva prolia steron hydrocort hidrozon aredia pamidria anti-potasium exipot redupot nopot simkelma zometa aclasta zoltonar">
+    <a class="tool" href="acil-tedavi.html" data-k="acil tedavi hiperkalemi potasyum k dka ketoasidoz hipoglisemi hiponatremi hipertonik salin hiperkalsemi adrenal kriz hidrokortizon yüksekliği kan şekeri düşüklüğü kalsiyum xgeva prolia steron hydrocort hidrozon aredia pamidria anti-potasium exipot redupot nopot simkelma zometa aclasta zoltonar denosumab desmopressin digoksin digoxin fludrokortizon furosemid furosemide lasix desal furomid urever glibenklamid glibenclamide glyburide gliklazid gliclazide glukagon glucagen heparin hydrocortisone lityum lithium metilprednizolon methylprednisolone oktreotid octreotide pamidronat polistiren sülfonat salbutamol albuterol sodyum zirkonyum siklosilikat spironolakton spironolactone tiamin thiamine trimetoprim sülfametoksazol zoledronik asit zoledronic">
       <div><strong>Acil tedavi rehberi</strong><span>Hiperkalemi, DKA, hipoglisemi, hiponatremi, hiperkalsemi, adrenal kriz</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="hipertansif-acil.html" data-k="hipertansif acil kriz ivedi tansiyon yüksek nikardipin esmolol urapidil nitrogliserin nitroprussid labetalol diseksiyon preeklampsi eklampsi inme hipertansiyon yüksekliği kapril kaptoril nobepril beloc lopresor saneloc problok adalat nidilat kardilat ninax nicarflex nipruss viagra revatio degra cialis lifta ebrantil ebrasel upadil levitra">
+    <a class="tool" href="hipertansif-acil.html" data-k="hipertansif acil kriz ivedi tansiyon yüksek nikardipin esmolol urapidil nitrogliserin nitroprussid labetalol diseksiyon preeklampsi eklampsi inme hipertansiyon yüksekliği kapril kaptoril nobepril beloc lopresor saneloc problok adalat nidilat kardilat ninax nicarflex nipruss viagra revatio degra cialis lifta ebrantil ebrasel upadil levitra aspirin brevibloc esmobloc kardoes kaptopril captopril metoprolol nifedipin nifedipine nicardipine nitroglycerin perlinganit nitroderm deponit nitrolingual sildenafil tadalafil vardenafil">
       <div><strong>Hipertansif acil</strong><span>Duruma göre hedef tansiyon ve IV ilaç</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="infuzyon-hizi.html" data-k="infüzyon hızı perfüzör pompa ml saat noradrenalin adrenalin dopamin dobutamin nitrogliserin amiodaron esmolol heparin insülin furosemid pantoprazol oktreotid midazolam propofol vazopresör inotrop damla dopmin giludop dopadren dopasel nevparin koparin vasparin poliparin actrapid humulin r dormicum demizolam zolamid midaject perlinganit nitroderm deponit nitrolingual pantpas panto progas pulcet lipuro pofol recofol dormofol">
+    <a class="tool" href="infuzyon-hizi.html" data-k="infüzyon hızı perfüzör pompa ml saat noradrenalin adrenalin dopamin dobutamin nitrogliserin amiodaron esmolol heparin insülin furosemid pantoprazol oktreotid midazolam propofol vazopresör inotrop damla dopmin giludop dopadren dopasel nevparin koparin vasparin poliparin actrapid humulin r dormicum demizolam zolamid midaject perlinganit nitroderm deponit nitrolingual pantpas panto progas pulcet lipuro pofol recofol dormofol amiodarone digoksin digoxin dobutamine dopamine flumazenil furosemide hidrokortizon hydrocortisone nitroglycerin octreotide pantoprazole seftriakson ceftriaxone varfarin warfarin">
       <div><strong>İnfüzyon hızı</strong><span>Doz ile mL/saat arasında hesap, heparin aPTT ayarı</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="ampirik-antibiyotik.html" data-k="antibiyotik ampirik enfeksiyon pnömoni zatürre idrar yolu sistit piyelonefrit selülit sepsis nötropeni menenjit clostridium difficile intraabdominal ateş amikozit amikaver mikasin kacin augmentin klamoks amoklavin largopen duocid sulcid ampisid alfasid zitromax azitro azro azomax azactam dekort onadron deksamet kordexa tetradox monodoks doksin dificlir monurol uromisin fosfone klacid macrol klamer klax cleocin klindan klindaver klinoksin tavanic cravit floxilevo levonat zyvoxid zizolid linedor linoxid meronem maxipen merosid mopem flagyl nidazol metrajil polgyl avelox moxitec moxday avoxa tamiflu oseflu enfluvir seltavir tazocin tazoper tazeracin tazoject maksipor ielexin bilfasin sefazol cefamezin cezol iespor rocephin unacefin desefin novosef edicin vancotek vancorin vamycin">
+    <a class="tool" href="ampirik-antibiyotik.html" data-k="antibiyotik ampirik enfeksiyon pnömoni zatürre idrar yolu sistit piyelonefrit selülit sepsis nötropeni menenjit clostridium difficile intraabdominal ateş amikozit amikaver mikasin kacin augmentin klamoks amoklavin largopen duocid sulcid ampisid alfasid zitromax azitro azro azomax azactam dekort onadron deksamet kordexa tetradox monodoks doksin dificlir monurol uromisin fosfone klacid macrol klamer klax cleocin klindan klindaver klinoksin tavanic cravit floxilevo levonat zyvoxid zizolid linedor linoxid meronem maxipen merosid mopem flagyl nidazol metrajil polgyl avelox moxitec moxday avoxa tamiflu oseflu enfluvir seltavir tazocin tazoper tazeracin tazoject maksipor ielexin bilfasin sefazol cefamezin cezol iespor rocephin unacefin desefin novosef edicin vancotek vancorin vamycin amikasin amikacin amoksisilin amoxicillin ampisilin azitromisin azithromycin aztreonam deksametazon dexamethasone doksisiklin doxycycline ertapenem invanz ekiperta fidaksomisin fosfomisin fosfomycin gentamisin gentamicin genta genthaver gentreks hidrokortizon hydrocortisone steron hydrocort hidrozon klaritromisin clarithromycin klindamisin clindamycin levofloksasin levofloxacin linezolid meropenem metronidazol metronidazole moksifloksasin moxifloxacin nitrofurantoin piyeloseptyl uriseptin furantine oseltamivir piperasilin tazobaktam piperacillin sefaleksin cephalexin sefazolin cefazolin sefepim cefepime maxipime ekipim unisef roxipime seftriakson ceftriaxone siprofloksasin ciprofloxacin cipro siprosan ciproktan ciproxin vankomisin vancomycin">
       <div><strong>Ampirik antibiyotik</strong><span>Sık enfeksiyonlarda kılavuza göre başlangıç tedavisi</span></div>
       <div class="go">›</div>
     </a>
@@ -303,58 +307,58 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div><strong>Glasgow Koma Skalası</strong><span>Bilinç düzeyi değerlendirmesi</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="sepsis-sivi.html" data-k="sepsis septik şok sıvı resüsitasyon kristaloid norepinefrin noradrenalin vazopressin epinefrin adrenalin dobutamin vazopresör inotrop mcg/kg/dk ml/saat laktat map hidrokortizon ssc hipotansiyon dobcard dobutrop dobuthaver dobutasel astonin steron hydrocort hidrozon stenor nefrinor cardenor steradine">
+    <a class="tool" href="sepsis-sivi.html" data-k="sepsis septik şok sıvı resüsitasyon kristaloid norepinefrin noradrenalin vazopressin epinefrin adrenalin dobutamin vazopresör inotrop mcg/kg/dk ml/saat laktat map hidrokortizon ssc hipotansiyon dobcard dobutrop dobuthaver dobutasel astonin steron hydrocort hidrozon stenor nefrinor cardenor steradine dobutamine fludrokortizon hydrocortisone norepinephrine noradrenaline terlipressin">
       <div><strong>Sepsiste sıvı ve vazopresör</strong><span>30 mL/kg, OAB, norepinefrin mL/saat</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="koah-astim.html" data-k="koah copd astım asthma alevlenme atak exacerbation gold gina roma anthonisen niv bronkodilatör salbutamol ventolin ipratropium prednizolon magnezyum pef hiperkapni nefes darlığı dispne hırıltı wheezing carena aminocardol tecar filinsel pulmicort symbicort rolastym resdox foradil foster atrovent combivent ipravent ipratom deltacortril romezon salbutol ventide cipro siprosan ciproktan ciproxin">
+    <a class="tool" href="koah-astim.html" data-k="koah copd astım asthma alevlenme atak exacerbation gold gina roma anthonisen niv bronkodilatör salbutamol ventolin ipratropium prednizolon magnezyum pef hiperkapni nefes darlığı dispne hırıltı wheezing carena aminocardol tecar filinsel pulmicort symbicort rolastym resdox foradil foster atrovent combivent ipravent ipratom deltacortril romezon salbutol ventide cipro siprosan ciproktan ciproxin aminofilin amoksisilin amoxicillin azitromisin azithromycin budesonid doksapram doksisiklin doxycycline formoterol klaritromisin clarithromycin levofloksasin levofloxacin metilprednizolon methylprednisolone prednol depo-medrol urbason precort piperasilin tazobaktam piperacillin prednisolone prednizon albuterol sefepim cefepime siprofloksasin ciprofloxacin teofilin theophylline">
       <div><strong>KOAH ve astım alevlenmesi</strong><span>Ciddiyet, NIV, steroid, antibiyotik, magnezyum</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="tiroid-krizi.html" data-k="tiroid krizi fırtınası storm burch wartofsky jta tirotoksikoz ptu propiltiourasil metimazol lugol iyot propranolol esmolol hidrokortizon miksödem koması popoveniuc hipotiroidi levotiroksin iv t4 t3 hipotermi ateş taşikardi tensinor nortan brevibloc esmobloc kardoes steron hydrocort hidrozon kolestrantoz euthyrox levotiron tefor tiromel lithuril kilonum litomaks keytruda dideral">
+    <a class="tool" href="tiroid-krizi.html" data-k="tiroid krizi fırtınası storm burch wartofsky jta tirotoksikoz ptu propiltiourasil metimazol lugol iyot propranolol esmolol hidrokortizon miksödem koması popoveniuc hipotiroidi levotiroksin iv t4 t3 hipotermi ateş taşikardi tensinor nortan brevibloc esmobloc kardoes steron hydrocort hidrozon kolestrantoz euthyrox levotiron tefor tiromel lithuril kilonum litomaks keytruda dideral amiodaron amiodarone cordarone cordalin amidovin atenolol fenitoin phenytoin hydrocortisone kolestiramin levothyroxine liotironin lityum lithium methimazole thyromazol metoprolol parasetamol acetaminophen parol minoset perfalgan calpol pembrolizumab">
       <div><strong>Tiroid krizi ve miksödem</strong><span>Burch-Wartofsky, miksödem skoru ve dozlar</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="alkol-yoksunlugu.html" data-k="alkol yoksunluğu yoksunluk ciwa ciwa-ar pawss deliryum tremens dt nöbet benzodiazepin diazepam lorazepam klordiazepoksit tiamin wernicke korsakoff caine detoks tremor titreme ajitasyon precedex dekstomid diazem nervium diapam epanutin epdantoin hidantin librax klipaks libkol ativan benexol bemiks vi-plex">
+    <a class="tool" href="alkol-yoksunlugu.html" data-k="alkol yoksunluğu yoksunluk ciwa ciwa-ar pawss deliryum tremens dt nöbet benzodiazepin diazepam lorazepam klordiazepoksit tiamin wernicke korsakoff caine detoks tremor titreme ajitasyon precedex dekstomid diazem nervium diapam epanutin epdantoin hidantin librax klipaks libkol ativan benexol bemiks vi-plex deksmedetomidin fenitoin phenytoin fenobarbital luminal luminaletten haloperidol propofol lipuro pofol recofol dormofol thiamine">
       <div><strong>Alkol yoksunluğu</strong><span>CIWA-Ar, benzodiazepin dozu ve tiamin</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="febril-notropeni.html" data-k="febril nötropeni nötropenik ateş mns anc mutlak nötrofil mascc cisne sefepim piperasilin tazobaktam meropenem vankomisin siprofloksasin amoksisilin klavulanat kemoterapi onkoloji esbl oxa-48 tazocin tazoper tazeracin tazoject maxipime ekipim unisef roxipime fortum zidim iesetum zavicefta tygacil tigecid tigelys edicin vancotek vancorin vamycin">
+    <a class="tool" href="febril-notropeni.html" data-k="febril nötropeni nötropenik ateş mns anc mutlak nötrofil mascc cisne sefepim piperasilin tazobaktam meropenem vankomisin siprofloksasin amoksisilin klavulanat kemoterapi onkoloji esbl oxa-48 tazocin tazoper tazeracin tazoject maxipime ekipim unisef roxipime fortum zidim iesetum zavicefta tygacil tigecid tigelys edicin vancotek vancorin vamycin amikasin amikacin amoxicillin augmentin klamoks amoklavin largopen aztreonam azactam daptomisin daptomycin klindamisin clindamycin cleocin klindan klindaver klinoksin kolistin colistin levofloksasin levofloxacin linezolid meronem maxipen merosid mopem piperacillin cefepime seftazidim ceftazidime avibaktam ciprofloxacin cipro siprosan ciproktan ciproxin tigesiklin vancomycin">
       <div><strong>Febril nötropeni</strong><span>MNS, MASCC/CISNE ve ampirik antibiyotik</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="parasetamol-zehirlenmesi.html" data-k="parasetamol asetaminofen zehirlenme overdoz intoksikasyon rumack matthew nomogram nac n-asetilsistein asetilsistein asist snap tedavi çizgisi king's college karaciğer yetmezliği uzem 114 ilaç zehirlenmesi intihar özkıyım mentopin mucolator luminal luminaletten parol minoset perfalgan calpol rifam rafamin rifcap">
+    <a class="tool" href="parasetamol-zehirlenmesi.html" data-k="parasetamol asetaminofen zehirlenme overdoz intoksikasyon rumack matthew nomogram nac n-asetilsistein asetilsistein asist snap tedavi çizgisi king's college karaciğer yetmezliği uzem 114 ilaç zehirlenmesi intihar özkıyım mentopin mucolator luminal luminaletten parol minoset perfalgan calpol rifam rafamin rifcap acetylcysteine fenitoin phenytoin fenobarbital karbamazepin carbamazepine acetaminophen rifampisin salbutamol albuterol">
       <div><strong>Parasetamol zehirlenmesi</strong><span>Nomogram, NAC dozu ve King's College</span></div>
       <div class="go">›</div>
     </a>
   </section>
   <section class="group" id="b-genel">
     <h2>Genel ve endokrin</h2>
-    <a class="tool" href="anemi.html" data-k="anemi kansızlık hemoglobin mcv ferritin demir eksikliği tsat b12 folat retikülosit hemoliz talasemi mentzer hb düşüklüğü halsizlik düştü düşük monofer tardyferon ferro sanol folbiol hydrea">
+    <a class="tool" href="anemi.html" data-k="anemi kansızlık hemoglobin mcv ferritin demir eksikliği tsat b12 folat retikülosit hemoliz talasemi mentzer hb düşüklüğü halsizlik düştü düşük monofer tardyferon ferro sanol folbiol hydrea derizomaltoz ferrik karboksimaltoz ferröz sülfat folik asit hidroksiüre metformin metotreksat">
       <div><strong>Anemi yaklaşımı</strong><span>Anemi tipi, demir/B12/folat durumu, sonraki test</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="transfuzyon.html" data-k="transfüzyon kan eritrosit esk eritrosit süspansiyonu trombosit aferez havuz tdp taze donmuş plazma kriyo kriyopresipitat fibrinojen cci refrakter hemoglobin eşik mint aabb hb düşüklüğü verme düştü düşük coumadin orfarin">
+    <a class="tool" href="transfuzyon.html" data-k="transfüzyon kan eritrosit esk süspansiyonu trombosit aferez havuz tdp taze donmuş plazma kriyo kriyopresipitat fibrinojen cci refrakter hemoglobin eşik mint aabb hb düşüklüğü verme düştü düşük coumadin orfarin heparin vankomisin vancomycin varfarin warfarin">
       <div><strong>Transfüzyon eşikleri</strong><span>ESK, trombosit, TDP, kriyo: eşik ve doz</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="diyabet-tedavi.html" data-k="diyabet dm tip 2 hba1c antidiyabetik metformin sglt2 glp-1 insülin tedavi şeker hastalığı forziga xigduo calira dapadap trulicity jardiance synjardy glyxambi ezetrol ezetec kolez diamicron efikas betanorm oramikron glucagen vokanamet victoza saxenda xultophy glifor glucophage glukofen matofin actos glifix dropia onglyza qtern ozempic rybelsus wegovy mounjaro">
+    <a class="tool" href="diyabet-tedavi.html" data-k="diyabet dm tip 2 hba1c antidiyabetik metformin sglt2 glp-1 insülin tedavi şeker hastalığı forziga xigduo calira dapadap trulicity jardiance synjardy glyxambi ezetrol ezetec kolez diamicron efikas betanorm oramikron glucagen vokanamet victoza saxenda xultophy glifor glucophage glukofen matofin actos glifix dropia onglyza qtern ozempic rybelsus wegovy mounjaro aspirin dapagliflozin degludek tresiba ryzodeg dulaglutid dulaglutide empagliflozin ezetimib ezetimibe finerenon finerenone glibenklamid glibenclamide glyburide gliben dianorm diyaben glucovance gliklazid gliclazide glukagon aspart novorapid novomix fiasp glarjin lantus toujeo basaglar glarin kanagliflozin linagliptin liraglutid liraglutide pioglitazon pioglitazone saksagliptin semaglutid semaglutide tirzepatid tirzepatide">
       <div><strong>Tip 2 diyabet tedavisi</strong><span>HbA1c hedefi, ilaç seçimi ve dikkat edilecekler</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="insulin-dozu.html" data-k="insülin insulin doz bazal bolus glarjin düzeltme skala sliding scale kan şekeri hiperglisemi steroid nph titrasyon servis yüksekliği şeker tresiba ryzodeg xultophy levemir novorapid novomix fiasp lantus toujeo basaglar glarin apidra humalog humulin n prednol depo-medrol urbason precort deltacortril">
+    <a class="tool" href="insulin-dozu.html" data-k="insülin insulin doz bazal bolus glarjin düzeltme skala sliding scale kan şekeri hiperglisemi steroid nph titrasyon servis yüksekliği şeker tresiba ryzodeg xultophy levemir novorapid novomix fiasp lantus toujeo basaglar glarin apidra humalog humulin n prednol depo-medrol urbason precort deltacortril degludek deksametazon dexamethasone detemir glukagon aspart glulisin lispro metformin metilprednizolon methylprednisolone pioglitazon pioglitazone actos glifix dropia prednizolon prednisolone">
       <div><strong>İnsülin dozu</strong><span>Bazal-bolus başlangıç, düzeltme skalası, titrasyon</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="steroid-esdegeri.html" data-k="steroid kortikosteroid eşdeğer prednizolon metilprednizolon prednol deksametazon dekort hidrokortizon deflazakort prednizon diprospan celestone flantadin deltacortril romezon kenacort-a sinakort-a">
+    <a class="tool" href="steroid-esdegeri.html" data-k="steroid kortikosteroid eşdeğer prednizolon metilprednizolon prednol deksametazon dekort hidrokortizon deflazakort prednizon diprospan celestone flantadin deltacortril romezon kenacort-a sinakort-a betametazon dexamethasone onadron deksamet kordexa hydrocortisone steron hydrocort hidrozon insülin nph methylprednisolone depo-medrol urbason precort prednisolone triamsinolon">
       <div><strong>Steroid eşdeğeri</strong><span>Steroidler arası doz çevirici ve uzun kullanım önlemleri</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="opioid-donusumu.html" data-k="opioid morfin eşdeğeri mme tramadol oksikodon fentanil bant tapentadol kodein petidin ağrı palyatif kesici temgesic transtec suboxone durogesic talinat actiq abstral jurnista morfia m-eslon oxopane oxicut aldolan petholan aldine contramal tramosel tradolex ultramex">
+    <a class="tool" href="opioid-donusumu.html" data-k="opioid morfin eşdeğeri mme tramadol oksikodon fentanil bant tapentadol kodein petidin ağrı palyatif kesici temgesic transtec suboxone durogesic talinat actiq abstral jurnista morfia m-eslon oxopane oxicut aldolan petholan aldine contramal tramosel tradolex ultramex buprenorfin fentanyl hidromorfon morphine">
       <div><strong>Opioid dönüşümü</strong><span>Morfin eşdeğeri ve opioidler arası geçiş</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="iv-demir.html" data-k="iv demir ganzoni ferinject ferrik karboksimaltoz venofer demir sükroz anemi ferritin eksikliği sucroxa inferject">
+    <a class="tool" href="iv-demir.html" data-k="iv demir ganzoni ferinject ferrik karboksimaltoz venofer sükroz anemi ferritin eksikliği sucroxa inferject">
       <div><strong>IV demir dozu</strong><span>Ganzoni ile demir açığı ve flakon sayısı</span></div>
       <div class="go">›</div>
     </a>
@@ -362,11 +366,11 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div><strong>VKİ ve vücut yüzey alanı</strong><span>VKİ, VYA, ideal ve düzeltilmiş kilo</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="tiroid-testi.html" data-k="tiroid testi tsh st4 st3 serbest t4 hipotiroidi hipertiroidi subklinik gebelik tirotoksikoz yüksekliği düşüklüğü cordarone cordalin amidovin parlodel diltizem altizem tiacard kardil euthyrox levotiron tefor thyromazol propycil isoptin veroptin">
+    <a class="tool" href="tiroid-testi.html" data-k="tiroid testi tsh st4 st3 serbest t4 hipotiroidi hipertiroidi subklinik gebelik tirotoksikoz yüksekliği düşüklüğü cordarone cordalin amidovin parlodel diltizem altizem tiacard kardil euthyrox levotiron tefor thyromazol propycil isoptin veroptin amiodaron amiodarone bromokriptin diltiazem dobutamin dobutamine dobcard dobutrop dobuthaver dobutasel dopamin dopamine dopmin giludop dopadren dopasel enoksaparin enoxaparin clexane klexane oksapar enox axeparin fenitoin phenytoin epanutin epdantoin hidantin heparin nevparin koparin vasparin poliparin karbamazepin carbamazepine tegretol karbalex karazepin teril levotiroksin levothyroxine lityum lithium lithuril kilonum litomaks metimazol methimazole metoprolol oktreotid octreotide prednizolon prednisolone propiltiourasil propylthiouracil propranolol dideral somatostatin verapamil">
       <div><strong>Tiroid testi yorumu</strong><span>TSH, sT4, sT3 örüntüsü ve sonraki adım</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="levotiroksin.html" data-k="levotiroksin hipotiroidi tiroid euthyrox levotiron tsh">
+    <a class="tool" href="levotiroksin.html" data-k="levotiroksin hipotiroidi tiroid euthyrox levotiron tsh levothyroxine">
       <div><strong>Levotiroksin dozu</strong><span>Hipotiroidide başlangıç ve tam doz</span></div>
       <div class="go">›</div>
     </a>
@@ -374,24 +378,24 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       <div><strong>STOP-BANG</strong><span>Obstrüktif uyku apnesi riski</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="birim-cevirici.html" data-k="birim çevirici dönüşüm si konvansiyonel mg/dl mmol/l µmol/l kreatinin üre bun glukoz hba1c ifcc kolesterol ldl trigliserid kalsiyum magnezyum fosfor ürik asit bilirubin albümin hemoglobin ferritin b12 folat tsh st4 laktat amonyak meq mg kcl nacl bikarbonat">
+    <a class="tool" href="birim-cevirici.html" data-k="birim çevirici dönüşüm si konvansiyonel mg/dl mmol/l µmol/l kreatinin üre bun glukoz hba1c ifcc kolesterol ldl trigliserid kalsiyum magnezyum fosfor ürik asit bilirubin albümin hemoglobin ferritin b12 folat tsh st4 laktat amonyak meq mg kcl nacl bikarbonat folik">
       <div><strong>Birim çevirici</strong><span>mg/dL ↔ mmol/L, üre ↔ BUN, mEq ↔ mg</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="light-kriterleri.html" data-k="light kriterleri plevral efüzyon plevral sıvı eksüda transüda torasentez ldh protein albümin gradyanı kolesterol hepatik hidrotoraks">
+    <a class="tool" href="light-kriterleri.html" data-k="light kriterleri plevral efüzyon sıvı eksüda transüda torasentez ldh protein albümin gradyanı kolesterol hepatik hidrotoraks">
       <div><strong>Light kriterleri</strong><span>Plevral sıvı: eksüda mı transüda mı</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="delirium-4at.html" data-k="4at deliryum delirium konfüzyon bilinç bulanıklığı ajitasyon amt4 bilişsel bozukluk demans yaşlı geriatri norodol sedaperidol leptol">
+    <a class="tool" href="delirium-4at.html" data-k="4at deliryum delirium konfüzyon bilinç bulanıklığı ajitasyon amt4 bilişsel bozukluk demans yaşlı geriatri norodol sedaperidol leptol haloperidol">
       <div><strong>4AT deliryum taraması</strong><span>Deliryum ve bilişsel bozukluk taraması</span></div>
       <div class="go">›</div>
     </a>
-    <a class="tool" href="beslenme.html" data-k="beslenme nutrisyon malnütrisyon nrs-2002 tarama enerji kalori kcal protein enteral sonda mama ng peg parenteral tpn glukoz infüzyon hızı dekstroz düzeltilmiş kilo obez yoğun bakım hipokalorik diyaliz siroz espen aspen kaybı iştahsızlık yiyemeyen">
+    <a class="tool" href="beslenme.html" data-k="beslenme nutrisyon malnütrisyon nrs-2002 tarama enerji kalori kcal protein enteral sonda mama ng peg parenteral tpn glukoz infüzyon hızı dekstroz düzeltilmiş kilo obez yoğun bakım hipokalorik diyaliz siroz espen aspen kaybı iştahsızlık yiyemeyen fenitoin phenytoin levotiroksin levothyroxine propofol tiamin thiamine">
       <div><strong>Beslenme hesabı</strong><span>NRS-2002, kalori/protein, enteral mL/saat</span></div>
       <div class="go">›</div>
     </a>
   </section>
-  <p class="empty" id="empty" hidden>Aramanızla eşleşen hesaplayıcı yok.</p>
+  <p class="empty" id="empty" hidden>Aramanızla eşleşen hesaplayıcı yok.<br><a id="empty-gb" href="#">Bu konuda araç yok, bize yazın</a></p>
   <a class="tool" href="hakkinda.html" style="margin-top:8px"><div><strong>Ayarlar ve hakkında</strong><span>Tema, yazı boyutu, paylaşım ve veri gizliliği</span></div><div class="go">›</div></a>
   <p class="note">Araçlar klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz.</p>
 </div>
@@ -425,7 +429,8 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
   var q=document.getElementById('q');
   var norm=function(s){return s.toLocaleLowerCase('tr').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ı/g,'i')};
   // Türkçe ekleri tolere et: önce tam eşleşme; hiç sonuç yoksa sondan en çok 4 harf kırp (en az 5 harf kalsın), 'hiperkalemide' -> 'hiperkalemi'
-  var bul=function(t,x,ek){if(t.indexOf(x)>=0)return true;if(!ek)return false;for(var i=1;i<=4&&x.length-i>=5;i++)if(t.indexOf(x.slice(0,-i))>=0)return true;return false};
+  // Kısa kelimeler: 2 harfli yalnız kelime başında ('pe' → PESI, Wells PE), tek harf yalnız tam kelime olarak ('K yüksek') eşleşir
+  var bul=function(t,x,ek){if(x.length<=2)return new RegExp('(^|[^a-z0-9])'+x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+(x.length<2?'($|[^a-z0-9])':'')).test(t);if(t.indexOf(x)>=0)return true;if(!ek)return false;for(var i=1;i<=4&&x.length-i>=5;i++)if(t.indexOf(x.slice(0,-i))>=0)return true;return false};
   q.addEventListener('input',function(){
     var w=norm(q.value.trim()), any=false;
     document.querySelectorAll('.quick').forEach(function(g){g.style.display=w?'none':''});
@@ -434,12 +439,15 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
       g.hidden=!vis;if(vis)hep=true});return hep};
     any=suz(false)||suz(true);
     document.getElementById('empty').hidden=any;
+    // Bulunamayan arama: geri bildirim e-postası aranan kelimelerle hazır açılır
+    if(!any)document.getElementById('empty-gb').href='mailto:'+(window.vizitGbAdres||'blgnonur97@gmail.com')+'?subject='+encodeURIComponent('Vizit: araç önerisi')+
+      '&body='+encodeURIComponent('Aradığım: '+q.value.trim()+'\nSürüm: '+(window.vizitSurum||'')+'\n\nBu konuda bir araç olsa iyi olurdu. (Hasta adı veya kimlik bilgisi yazmayın.)\n');
   });
 })();
 (function(){
   // Hasta özeti: ortak.js ile aynı kayıt (sessionStorage 'vizit-hasta', 30 dk)
   var HK='vizit-hasta',SURE=30*60*1000;
-  var A=[['yas','Yaş','yıl'],['kilo','Kilo','kg'],['boy','Boy','cm'],['kreatinin','Kreatinin','mg/dL'],['egfr','eGFR','mL/dk'],['na','Na','mEq/L'],
+  var A=[['yas','Yaş','yıl'],['kilo','Kilo','kg'],['boy','Boy','cm'],['kreatinin','Kreatinin','mg/dL'],['egfr','eGFR','mL/dk'],['crcl','CrCl','mL/dk'],['na','Na','mEq/L'],
     ['k','K','mEq/L'],['glukoz','Glukoz','mg/dL'],['ure','Üre','mg/dL'],['hb','Hb','g/dL'],['alb','Albümin','g/dL'],['bil','Bilirubin','mg/dL'],
     ['inr','INR',''],['plt','Trombosit','bin/µL'],['ca','Ca','mg/dL'],['sbp','Sistolik','mmHg'],['dbp','Diyastolik','mmHg'],['nabiz','Nabız','/dk']];
   function oku(){try{var o=JSON.parse(sessionStorage.getItem(HK));if(o&&Date.now()-o.t<SURE)return o.v||{};sessionStorage.removeItem(HK)}catch(e){}return{}}
@@ -452,19 +460,22 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
     var i=document.createElement('input');i.type='number';i.inputMode='decimal';i.step='any';i.min='0';i.dataset.k=a[0];l.appendChild(i);grid.appendChild(l)});
   function ozetMetni(v){var p=[];if(v.cins)p.push(v.cins==='m'?'Erkek':'Kadın');
     A.forEach(function(a){if(v[a[0]]!=null&&v[a[0]]!=='')p.push(a[1]+' '+String(v[a[0]]).replace('.',',')+(a[2]?' '+a[2]:''))});return p.join(' · ')}
-  function ciz(){var v=oku(),t=ozetMetni(v),o=$('h-ozet');
+  function ciz(){var v=oku(),t=ozetMetni(v),o=$('h-ozet');$('h-bas').textContent=v.etiket?'Hasta · '+v.etiket:'Hasta';
+    if(document.activeElement!==$('h-etiket')){$('h-etiket').value=v.etiket||'';$('h-etiket-u').hidden=true}if(window.vizitNavGuncelle)window.vizitNavGuncelle();
     var bos=!t&&!notOku().length&&$('h-form').hidden;$('hasta').classList.toggle('bos',bos);o.textContent=t||(bos?'Değer girilmedi':'Değer girilmedi. Buraya ya da herhangi bir araca yazdığınız değerler diğer araçlarda hazır gelir.');o.classList.toggle('dolu',!!t);
     var n=notOku(),ul=$('h-not-l');ul.textContent='';$('h-not').hidden=!n.length;
     n.forEach(function(x,i){var li=document.createElement('li'),sp=document.createElement('span'),b=document.createElement('button');
       sp.textContent=x.s;b.type='button';b.textContent='×';b.setAttribute('aria-label','Nottan çıkar: '+x.s);
       b.onclick=function(){var m=notOku();m.splice(i,1);notYaz(m);ciz()};li.appendChild(sp);li.appendChild(b);ul.appendChild(li)});
-    $('h-kop').hidden=$('h-yeni').hidden=!(t||n.length);
+    $('h-kop').hidden=!(t||n.length);$('h-yeni').hidden=!(t||n.length||v.etiket);
     grid.querySelectorAll('input').forEach(function(i){if(document.activeElement!==i)i.value=v[i.dataset.k]!=null?v[i.dataset.k]:''});
     document.querySelectorAll('.hseg button').forEach(function(b){b.setAttribute('aria-pressed',v.cins===b.dataset.c)});
     if(!$('h-form').hidden)return;$('h-duz').textContent=t?'Düzenle':'Değer gir'}
+  $('h-etiket').addEventListener('input',function(){var e2=window.vizitEtiket?window.vizitEtiket(this.value):null,v=oku();$('h-etiket-u').hidden=e2!==null;
+    if(e2===null)return;if(e2)v.etiket=e2;else delete v.etiket;yaz(v);ciz()});
   grid.addEventListener('input',function(e){var v=oku(),k=e.target.dataset.k,d=e.target.value;if(d===''||(window.vizitOlasi&&!window.vizitOlasi(k,d)))delete v[k];else v[k]=d;yaz(v);ciz()});
   document.querySelectorAll('.hseg button').forEach(function(b){b.onclick=function(){var v=oku();if(v.cins===b.dataset.c)delete v.cins;else v.cins=b.dataset.c;yaz(v);ciz()}});
-  $('h-duz').onclick=function(){var f=$('h-form');f.hidden=!f.hidden;this.textContent=f.hidden?(ozetMetni(oku())?'Düzenle':'Değer gir'):'Kapat';ciz();if(!f.hidden)grid.querySelector('input').focus()};
+  $('h-duz').onclick=function(){var f=$('h-form');f.hidden=!f.hidden;this.textContent=f.hidden?(ozetMetni(oku())?'Düzenle':'Değer gir'):'Kapat';ciz();if(!f.hidden)$('h-etiket').focus()};
   $('h-yeni').onclick=function(){yaz({});notYaz([]);ciz()};
   $('h-kop').onclick=function(){if(window.vizitOlasiVar&&window.vizitOlasiVar(grid)){var c=this;c.textContent='Değeri kontrol edin';setTimeout(function(){c.textContent='Kopyala'},2500);return}var b=this,n=notOku().map(function(x){return x.s}),t=window.vizitEpikriz?window.vizitEpikriz(oku(),n):[ozetMetni(oku())].concat(n).filter(Boolean).join('\n');function ok(){b.textContent='Kopyalandı ✓';setTimeout(function(){b.textContent='Kopyala'},1600)}
     if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,function(){});};

@@ -168,6 +168,9 @@ details p{margin:8px 0 0}
       ha.textContent='Düzeltilebilir risk faktörlerini (tansiyon, ilaçlar, alkol, labil INR) ele alın ve hastayı daha sık izleyin. Yüksek skor tek başına antikoagülanı kesme nedeni değildir.'}
     else{hp.textContent='Düşük-orta risk';hp.style.background='var(--ok)';
       ha.textContent='Düzeltilebilir risk faktörlerini yine de gözden geçirin.'}
+    // Nota ekle: iki kart tek satır olarak eklenir
+    var nt='CHA₂DS₂-VA '+va+' ('+p.textContent.toLocaleLowerCase('tr')+'), HAS-BLED '+hb+' ('+hp.textContent.toLocaleLowerCase('tr')+')';
+    document.querySelectorAll('section.card[aria-live]').forEach(function(c){c.setAttribute('data-not',nt)});
   }
 
   function setSex(s){sex=s;$('s-f').setAttribute('aria-pressed',s==='f');$('s-m').setAttribute('aria-pressed',s==='m');calc()}

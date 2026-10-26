@@ -71,6 +71,9 @@ td:first-child{font-family:var(--font-num);font-weight:700;white-space:nowrap}
 .btn{border:0;background:var(--accent);color:#fff;font:600 .95rem var(--font-body);padding:11px 16px;border-radius:10px;cursor:pointer}
 .btn.ghost{background:var(--bg);color:var(--accent);border:1px solid var(--line)}
 .btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.surum{margin:4px 0 0;font:600 .9rem var(--font-body);color:var(--fg)}
+.degisiklik summary{cursor:pointer;font:600 1.05rem var(--font-body)}.degisiklik summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.degisiklik ul{margin-top:10px!important}.degisiklik li{font-size:.92rem}.degisiklik .doz{color:var(--high,#d24b32)}
 .url{font-size:.85rem;color:var(--muted);word-break:break-all;text-align:center}
 </style>
 </head>
@@ -79,8 +82,26 @@ td:first-child{font-family:var(--font-num);font-weight:700;white-space:nowrap}
   <header>
     <a class="back" href="./">← Vizit</a>
     <h1>Ayarlar ve hakkında</h1>
-    <p>Dahiliye pratiği için hesaplayıcılar · 64 araç · son güncelleme 23 Ekim 2026</p>
+    <p>Dahiliye pratiği için hesaplayıcılar · 64 araç</p>
+    <p class="surum" id="surum">Sürüm v58 · 26 Ekim 2026</p>
   </header>
+
+  <section class="card degisiklik">
+    <details>
+      <summary>Değişiklikler</summary>
+      <ul>
+        <li><b>v58 · 26 Ekim:</b> Hasta paneline yatak/etiket (ör. Y12); eGFR ve kreatinin klerensi hesaplanınca panele yazılır; menüde ilacın etken maddesi, İngilizce adı ya da piyasa adıyla arama; açılış animasyonu yalnız ilk açılışta.</li>
+        <li><b>v57 · 26 Ekim:</b> Örnek değer ve seçim temizleme: panelden değer gelince sayfadaki örnek değerler ve seçimler silinir. Değer aralığı denetimi: olası olmayan değerde uyarı çıkar, değer kaydedilmez, sonuç kopyalanamaz. Sayı kutularına virgülle giriş.</li>
+        <li><b>v56 · 25 Ekim:</b> Kopyala, hasta notunu epikriz biçiminde verir (tarih, hasta, vital, laboratuvar, değerlendirme).</li>
+        <li><b>v55 · 24 Ekim:</b> İlgili araçlarda SGK ödeme koşulları (SUT) kutusu.</li>
+        <li><b>v54 · 24 Ekim:</b> Her araçta dayanak kılavuz ve son kontrol tarihi; ilaç piyasa adlarıyla arama.</li>
+        <li><b>v53 · 24 Ekim:</b> Kontrast ilişkili AKI: 18–120 dışı yaş ve olanaksız değerler hesaba katılmaz.</li>
+        <li><b>23 Ekim:</b> <span class="doz">Doz/eşik düzeltmesi:</span> Beslenme hesabında obez hastada düzeltilmiş kilo ESPEN 2023’e göre (%25).</li>
+        <li><b>22 Ekim:</b> <span class="doz">Doz/eşik düzeltmesi:</span> 12 araçta sınır ve yuvarlama düzeltmeleri; argatroban düşük doz seçeneği.</li>
+        <li><b>20 Ekim:</b> <span class="doz">Doz/eşik düzeltmesi:</span> 38 aracın doz ve eşikleri güncel kılavuzlarla karşılaştırılıp düzeltildi; böbrekte ilaç dozunda 8 ilaç Türkiye KÜB’üne göre düzeltildi.</li>
+      </ul>
+    </details>
+  </section>
 
   <section class="card">
     <h2>Paylaş</h2>

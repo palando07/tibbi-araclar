@@ -69,7 +69,7 @@
   // Hasta kaydına (ve başka araçlara) yalnız olası değerler gider
   function olasi(k, d){ var r = ARALIK[k], x = parseFloat(d); return !r || d === '' || d == null || (isFinite(x) && x >= r[0] && x <= r[1]); }
   window.vizitOlasi = olasi;
-  function temizKayit(v){ Object.keys(v).forEach(function(k){ if (k !== 'cins' && !olasi(k, v[k])) delete v[k]; }); return v; }
+  function temizKayit(v){ Object.keys(v).forEach(function(k){ if (k === 'etiket' ? window.vizitEtiket && !window.vizitEtiket(v[k]) : k !== 'cins' && !olasi(k, v[k])) delete v[k]; }); return v; }
 
 
   // Kartta görünen sonucu tek satırlık düz metne çevirir.
@@ -123,6 +123,9 @@
     var h = JSON.parse(sessionStorage.getItem('vizit-hasta')); if (h && v.length) { h.t = Date.now(); sessionStorage.setItem('vizit-hasta', JSON.stringify(h)); } } catch (e) {} }
   // Bu sayfada kullanıcı bir değer girdi ya da seçim yaptı mı? Yapmadıysa sonuç örnek değerlerden gelir.
   var dokunuldu = false;
+  // Değeri hasta kaydından ya da kullanıcının kendi yazdığı kutular (geri yazma yalnız bunlardan hesaplanan sonuç için yapılır)
+  var kaynak = [], geriYaz = null;
+  document.addEventListener('input', function(e){ var t = e.target; if (e.isTrusted && t.matches && t.matches('input') && kaynak.indexOf(t) < 0) kaynak.push(t); }, true);
   // "Değerler örnek olarak doldurulmuştur" cümlesi, örnekler silinince ya da kullanıcı ilk değeri girince kalkar (paragrafın kalanı durur).
   // tum: örnek seçimler de silindiyse (hasta yüklendi, Temizle) "Örnek seçimler işaretlenmiştir" cümlesi de kalkar; tek dokunuşta kalmaz
   function ornekGizle(tum){
@@ -150,13 +153,15 @@
       return;
     }
     btn.removeAttribute('data-uyari');
-    var sl = summary(card).split('\n'), satir = sl[0], ad = AN[bu], kartNo = Array.prototype.indexOf.call(document.querySelectorAll('section.card[aria-live]'), card);
-    if (satir.indexOf(': ') < 0) {
+    // Sayfa, kartın data-not özniteliğiyle not satırını kendisi tanımlayabilir (ör. "CHA₂DS₂-VA 3, HAS-BLED 2"); aynı satırı taşıyan kartlar tek not olur.
+    var ozel = (card.getAttribute('data-not') || '').trim();
+    var sl = summary(card).split('\n'), satir = ozel || sl[0], ad = AN[bu], kartNo = ozel ? 'not' : Array.prototype.indexOf.call(document.querySelectorAll('section.card[aria-live]'), card);
+    if (!ozel && satir.indexOf(': ') < 0) {
       var ek = sl.slice(1).filter(function(x){ return /\d/.test(x); }).slice(0, 3);
       if (!ek.length) { btn.textContent = 'Sonuç yok'; setTimeout(function(){ btn.textContent = 'Nota ekle'; }, 1800); return; }
       satir += ': ' + ek.join(' · ');
     }
-    if (ad && satir.toLocaleLowerCase('tr').indexOf(ad.split(' ')[0].toLocaleLowerCase('tr')) < 0) {
+    if (!ozel && ad && satir.toLocaleLowerCase('tr').indexOf(ad.split(' ')[0].toLocaleLowerCase('tr')) < 0) {
       var ik = satir.indexOf(': ');
       satir = ik > 0 && /^(Yorum|Sınıflama|Sonuç|Yapılacaklar|Tahmini GFR)$/.test(satir.slice(0, ik)) ? ad + satir.slice(ik) : ad + ' · ' + satir;
     }
@@ -194,20 +199,24 @@
     var hasta = bas([v.cins ? (v.cins === 'm' ? 'Erkek' : 'Kadın') : null, f('yas') ? f('yas') + ' yaş' : null, f('kilo') ? f('kilo') + ' kg' : null, f('boy') ? f('boy') + ' cm' : null]);
     var ta = f('sbp') && f('dbp') ? 'TA ' + f('sbp') + '/' + f('dbp') + ' mmHg' : (b('sbp', 'Sistolik TA', 'mmHg') || b('dbp', 'Diyastolik TA', 'mmHg'));
     var vital = bas([ta, (f('nabiz') ? 'Nabız ' + f('nabiz') + '/dk' : null)]);
-    var lab = bas([b('kreatinin', 'Kreatinin', 'mg/dL'), b('egfr', 'eGFR', 'mL/dk/1,73 m²'), b('ure', 'Üre', 'mg/dL'), b('na', 'Na', 'mEq/L'), b('k', 'K', 'mEq/L'), b('ca', 'Ca', 'mg/dL'),
+    var lab = bas([b('kreatinin', 'Kreatinin', 'mg/dL'), b('egfr', 'eGFR', 'mL/dk/1,73 m²'), b('crcl', 'CrCl', 'mL/dk'), b('ure', 'Üre', 'mg/dL'), b('na', 'Na', 'mEq/L'), b('k', 'K', 'mEq/L'), b('ca', 'Ca', 'mg/dL'),
       b('glukoz', 'Glukoz', 'mg/dL'), b('alb', 'Albümin', 'g/dL'), b('bil', 'Bilirubin', 'mg/dL'), b('hb', 'Hb', 'g/dL'), b('plt', 'Trombosit', 'bin/µL'), b('inr', 'INR')]);
     if (!hasta && !vital && !lab && !(notlar || []).length) return '';
-    s.push('Tarih: ' + iki(d.getDate()) + '.' + iki(d.getMonth() + 1) + '.' + d.getFullYear());
+    s.push('Tarih: ' + iki(d.getDate()) + '.' + iki(d.getMonth() + 1) + '.' + d.getFullYear() + (v.etiket ? ' · Yatak: ' + v.etiket : ''));
     if (hasta) s.push('Hasta: ' + hasta);
     if (vital) s.push('Vital: ' + vital);
     if (lab) s.push('Laboratuvar: ' + lab);
     if ((notlar || []).length) { s.push('Değerlendirme:'); notlar.forEach(function(n){ s.push('- ' + n); }); }
     return s.join('\n');
   };
-  var AD = {yas:'Yaş', kilo:'Kilo', boy:'Boy', kreatinin:'Kreatinin', egfr:'eGFR', na:'Na', k:'K', glukoz:'Glukoz', ure:'Üre',
+  // Yatak / etiket: isim ya da TC no tutulmaz. En çok 10 karakter, en az bir rakam, 6 ve daha uzun rakam dizisi yok (ör. Y12, 12A, Oda 3).
+  // Boşsa '', uygun değilse null döner.
+  window.vizitEtiket = function(s){ s = String(s || '').replace(/\s+/g, ' ').trim(); if (!s) return '';
+    return s.length <= 10 && /^[0-9A-Za-zÇĞİÖŞÜçğıöşü .\/-]+$/.test(s) && /\d/.test(s) && !/\d{6,}/.test(s) ? s : null; };
+  var AD = {yas:'Yaş', kilo:'Kilo', boy:'Boy', kreatinin:'Kreatinin', egfr:'eGFR', crcl:'CrCl', na:'Na', k:'K', glukoz:'Glukoz', ure:'Üre',
     hb:'Hb', alb:'Albümin', bil:'Bilirubin', inr:'INR', plt:'Trombosit', ca:'Ca', sbp:'Sistolik', dbp:'Diyastolik', nabiz:'Nabız'};
   function oku(){ try { var o = JSON.parse(sessionStorage.getItem(HK)); if (o && Date.now() - o.t < SURE) return temizKayit(o.v || {}); sessionStorage.removeItem(HK); } catch (e) {} return {}; }
-  function yaz(v){ temizKayit(v); try { if (Object.keys(v).length) sessionStorage.setItem(HK, JSON.stringify({t: Date.now(), v: v})); else sessionStorage.removeItem(HK); } catch (e) {} var n = notOku(); if (n.length) notYaz(n); }
+  function yaz(v){ temizKayit(v); try { if (Object.keys(v).length) sessionStorage.setItem(HK, JSON.stringify({t: Date.now(), v: v})); else sessionStorage.removeItem(HK); } catch (e) {} var n = notOku(); if (n.length) notYaz(n); if (window.vizitNavGuncelle) window.vizitNavGuncelle(); }
   function gecerli(el){ var k = el.getAttribute('data-hasta-kosul'); return !k || !!document.querySelector(k); }
   function tetikle(el){ el.dispatchEvent(new Event('input', {bubbles: true})); el.dispatchEvent(new Event('change', {bubbles: true})); }
   // data-sabit: laboratuvar üst sınırı, ilaç konsantrasyonu, güvenli varsayılan seçim gibi hastaya ait olmayan değerler örnek silinirken kalır
@@ -240,7 +249,7 @@
       '.ornek button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}';
     document.head.appendChild(css2);
 
-    var kayit = oku(), kullanilan = [], hastaEl = [];
+    var kayit = oku(), kullanilan = [], hastaEl = kaynak;
     document.querySelectorAll('input[data-hasta]').forEach(function(el){
       var a = el.getAttribute('data-hasta');
       if (kayit[a] != null && gecerli(el)) { el.value = kayit[a]; hastaEl.push(el); if (kullanilan.indexOf(AD[a] + ' ' + String(kayit[a]).replace('.', ',')) < 0) kullanilan.push(AD[a] + ' ' + String(kayit[a]).replace('.', ',')); }
@@ -278,7 +287,7 @@
     var bant = document.createElement('div'); bant.className = 'ornek'; bant.setAttribute('role', 'status');
     var yazi = document.createElement('span'), dug = document.createElement('button'); dug.type = 'button';
     if (kullanilan.length) {
-      yazi.textContent = 'Önceki araçtan alınan değerler: ' + kullanilan.join(' · ') + '. Diğer alanları bu hasta için doldurun.' + (cinsOrnek ? ' Cinsiyet seçimi örnektir; hastaya göre seçin.' : '');
+      yazi.textContent = (kayit.etiket ? kayit.etiket + ' değerleri kullanılıyor: ' : 'Önceki araçtan alınan değerler: ') + kullanilan.join(' · ') + '. Diğer alanları bu hasta için doldurun.' + (cinsOrnek ? ' Cinsiyet seçimi örnektir; hastaya göre seçin.' : '');
       dug.textContent = 'Yeni hasta';
     } else {
       yazi.textContent = 'Örnek değerler gösteriliyor.';
@@ -290,8 +299,8 @@
       }
     }
     dug.addEventListener('click', function(){
-      if (dug.textContent === 'Yeni hasta') notYaz([]);
-      yaz({});
+      if (dug.textContent === 'Yeni hasta') { notYaz([]); yaz({}); }
+      else { var et = oku().etiket; yaz(et ? {etiket: et} : {}); }
       ornekleriSil([], girdiler); if (girdiler[0]) tetikle(girdiler[0]);
       bant.remove(); ornekGizle(true);
       if (girdiler[0]) girdiler[0].focus();
@@ -300,6 +309,20 @@
     ilkKart.parentNode.insertBefore(bant, ilkKart);
 
     function cinsKaydet(deger){ var v = oku(); v.cins = deger; yaz(v); }
+    // Hesaplanan sonucu hasta kaydına yazar (data-hasta-yaz="egfr" | "crcl"): yalnız tüm dolu kutular hastadan ya da kullanıcıdan geldiyse,
+    // cinsiyet seçilmişse, olası olmayan değer uyarısı yoksa ve sonuç pozitif bir sayıysa. Sonuç sonra geçersizleşirse yazılan değer geri alınır.
+    var yazilan = {};
+    geriYaz = function(){
+      document.querySelectorAll('[data-hasta-yaz]').forEach(function(n){
+        var k = n.getAttribute('data-hasta-yaz'), card = n.closest('section.card'), x = parseFloat(txt(n).replace(',', '.'));
+        var tamam = isFinite(x) && x > 0 && !n.closest('[hidden]') && !(card && card._olasiS && card._olasiS.parentNode) &&
+          girdiler.every(function(el){ return el.value === '' || el.hasAttribute('data-sabit') || el.offsetParent === null || kaynak.indexOf(el) >= 0; }) &&
+          (!document.querySelector('[data-hasta-cins]') || !!oku().cins);
+        var v = oku();
+        if (tamam) { var d = String(Math.round(x)); if (v[k] !== d) { v[k] = d; yaz(v); yazilan[k] = d; } }
+        else if (yazilan[k] && v[k] === yazilan[k]) { delete v[k]; yaz(v); delete yazilan[k]; }
+      });
+    };
     document.addEventListener('click', function(e){
       if (!e.isTrusted) return;
       var b = e.target.closest && e.target.closest('button[data-hasta-cins]');
@@ -414,6 +437,7 @@
         if (s.textContent !== y) s.textContent = y; if (!s.parentNode) card.insertBefore(s, card.firstChild); }
       else if (s && s.parentNode) s.remove();
     });
+    if (geriYaz) geriYaz();
   }
   function denetleSonra(){ if (!denBek) denBek = setTimeout(function(){ denBek = null; denetle(); }, 0); }
   if (bu !== 'nobet-listesi') {
@@ -551,7 +575,9 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v57', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v58', SURUM_TARIH = '26 Ekim 2026', GB_ADRES = 'blgnonur97@gmail.com';
+  window.vizitSurum = SURUM; window.vizitGbAdres = GB_ADRES;
+  var sEl = document.getElementById('surum'); if (sEl) sEl.textContent = 'Sürüm ' + SURUM + ' · ' + SURUM_TARIH;
   var kap = document.querySelector('.wrap');
   if (kap && bu !== 'nobet-listesi') {
     var cssG = document.createElement('style');
@@ -587,7 +613,7 @@
   cssA.textContent =
     '.altnav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -2px 10px rgba(0,0,0,.06)}' +
     '.altnav a,.altnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--muted);font:600 .72rem var(--font-body);text-decoration:none;padding:4px 0;cursor:pointer;position:relative}' +
-    '.altnav svg{width:24px;height:24px}.altnav .on{color:var(--accent)}' +
+    '.altnav svg{width:24px;height:24px}.altnav .on{color:var(--accent)}.altnav .hy{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
     '.altnav .rozet{position:absolute;top:0;left:calc(50% + 6px);background:var(--accent);color:#fff;border-radius:999px;font-size:.65rem;min-width:16px;padding:0 4px;line-height:16px}' +
     'body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px))}.sonuca{bottom:calc(80px + env(safe-area-inset-bottom,0px))!important}@media print{.altnav{display:none}}' +
     '.tema{display:flex;align-items:center;gap:6px}.tema span{font-size:.8rem;color:var(--muted)}.tema button{height:36px;padding:0 10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;font:600 .82rem var(--font-body);cursor:pointer}.tema button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}' +
@@ -675,9 +701,16 @@
   nav.innerHTML =
     '<a href="index.html"' + (menude ? ' class="on" aria-current="page"' : '') + '>' + svg('menu') + 'Menü</a>' +
     '<a href="index.html#ara">' + svg('ara') + 'Ara</a>' +
-    '<a href="index.html#hasta">' + svg('hasta') + 'Hasta' + (notSay ? '<span class="rozet">' + notSay + '</span>' : '') + '</a>' +
+    '<a href="index.html#hasta">' + svg('hasta') + '<span class="hy">Hasta</span>' + (notSay ? '<span class="rozet">' + notSay + '</span>' : '') + '</a>' +
     '<a href="index.html#fav">' + svg('yildiz') + 'Favoriler</a>';
   document.body.appendChild(nav);
+  // Hasta düğmesinde yatak/etiket (ör. Y12) ve not sayısı
+  window.vizitNavGuncelle = function(){
+    var l = nav.querySelector('a[href="index.html#hasta"]'), hy = l.querySelector('.hy'), r = l.querySelector('.rozet'), et = oku().etiket, n = notOku().length;
+    hy.textContent = et || 'Hasta'; l.setAttribute('aria-label', et ? 'Hasta ' + et : 'Hasta');
+    if (!n) { if (r) r.remove(); } else { if (!r) { r = document.createElement('span'); r.className = 'rozet'; l.appendChild(r); } r.textContent = n; }
+  };
+  window.vizitNavGuncelle();
   if (menude) {
     nav.addEventListener('click', function(e){
       var a = e.target.closest('a'); if (!a) return; var h = a.getAttribute('href').split('#')[1];
@@ -706,6 +739,7 @@
       '.hpanel .ozet{color:var(--muted);font-size:.9rem;margin:6px 0 10px}.hpanel .izgara{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}' +
       '.hpanel label{display:flex;flex-direction:column;gap:3px;font-size:.78rem;color:var(--muted)}' +
       '.hpanel input{width:100%;box-sizing:border-box;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:500 1rem var(--font-body);padding:0 10px}' +
+      '.hpanel label.etiket{margin-bottom:10px}.hpanel label.etiket input{font-weight:600}.hpanel .etiket .u{color:var(--high,#d24b32);font-weight:600}' +
       '.hpanel .cins{display:flex;gap:6px;margin-bottom:8px}.hpanel button.c{flex:1;height:38px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:10px;font:600 .9rem var(--font-body);cursor:pointer}' +
       '.hpanel button.c[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}' +
       '.hpanel ul{list-style:none;padding:0;margin:6px 0}.hpanel li{display:flex;gap:8px;align-items:flex-start;border-top:1px solid var(--line);padding:6px 0;font-size:.9rem}.hpanel li span{flex:1}' +
@@ -743,18 +777,19 @@
     }
 
     // 2) Hasta paneli: sayfadan çıkmadan kayıtlı değerler ve vizit notu
-    var BIRIM = {yas:'yıl', kilo:'kg', boy:'cm', kreatinin:'mg/dL', egfr:'mL/dk', na:'mEq/L', k:'mEq/L', glukoz:'mg/dL', ure:'mg/dL', hb:'g/dL', alb:'g/dL',
+    var BIRIM = {yas:'yıl', kilo:'kg', boy:'cm', kreatinin:'mg/dL', egfr:'mL/dk', crcl:'mL/dk', na:'mEq/L', k:'mEq/L', glukoz:'mg/dL', ure:'mg/dL', hb:'g/dL', alb:'g/dL',
       bil:'mg/dL', inr:'', plt:'bin/µL', ca:'mg/dL', sbp:'mmHg', dbp:'mmHg', nabiz:'/dk'};
     var buSayfadaki = {}; document.querySelectorAll('input[data-hasta]').forEach(function(el){ if (gecerli(el)) buSayfadaki[el.getAttribute('data-hasta')] = true; });
     function ozet(v){ var p = []; if (v.cins) p.push(v.cins === 'm' ? 'Erkek' : 'Kadın');
       Object.keys(AD).forEach(function(k){ if (v[k] != null && v[k] !== '') p.push(AD[k] + ' ' + String(v[k]).replace('.', ',') + (BIRIM[k] ? ' ' + BIRIM[k] : '')); }); return p.join(' · '); }
     var perde, panel, sonOdak;
-    function rozet(){ var r = document.querySelector('.altnav .rozet'), n = notOku().length, l = document.querySelector('.altnav a[href="index.html#hasta"]');
-      if (!l) return; if (!n) { if (r) r.remove(); return; } if (!r) { r = document.createElement('span'); r.className = 'rozet'; l.appendChild(r); } r.textContent = n; }
+    function rozet(){ if (window.vizitNavGuncelle) window.vizitNavGuncelle(); }
     function kapat(){ if (!panel) return; panel.remove(); perde.remove(); panel = perde = null; document.removeEventListener('keydown', esc); if (sonOdak) sonOdak.focus(); }
     function esc(e){ if (e.key === 'Escape') kapat(); }
     function ciz(){
-      var v = oku(), n = notOku(), t = ozet(v);
+      var v = oku(), n = notOku(), t = ozet(v), ei = panel.querySelector('.etiket input');
+      panel.querySelector('.ust h2').textContent = v.etiket ? 'Hasta · ' + v.etiket : 'Hasta';
+      if (document.activeElement !== ei) { ei.value = v.etiket || ''; panel.querySelector('.etiket .u').hidden = true; }
       panel.querySelector('.ozet').textContent = t || 'Değer girilmedi. Buraya ya da herhangi bir araca yazdığınız değerler diğer araçlarda hazır gelir.';
       panel.querySelectorAll('button.c').forEach(function(b){ b.setAttribute('aria-pressed', v.cins === b.dataset.c); });
       panel.querySelectorAll('.izgara input').forEach(function(i){ if (document.activeElement !== i) i.value = v[i.dataset.k] != null ? v[i.dataset.k] : ''; });
@@ -764,13 +799,14 @@
         b.onclick = function(){ var m = notOku(); m.splice(i, 1); notYaz(m); ciz(); rozet(); }; li.appendChild(sp); li.appendChild(b); ul.appendChild(li); });
     }
     function sayfayaYaz(k, deger){
-      document.querySelectorAll('input[data-hasta="' + k + '"]').forEach(function(el){ if (gecerli(el) && el.value !== deger) { el.value = deger; tetikle(el); } });
+      document.querySelectorAll('input[data-hasta="' + k + '"]').forEach(function(el){ if (gecerli(el) && el.value !== deger) { el.value = deger; if (kaynak.indexOf(el) < 0) kaynak.push(el); tetikle(el); } });
     }
     function ac(){
       sonOdak = document.activeElement;
       perde = document.createElement('div'); perde.className = 'hperde'; perde.onclick = kapat;
       panel = document.createElement('div'); panel.className = 'hpanel'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-modal', 'true'); panel.setAttribute('aria-label', 'Hasta');
       var h = '<div class="ust"><h2>Hasta</h2><button type="button" class="kapat" aria-label="Kapat">×</button></div><p class="ozet"></p>' +
+        '<label class="etiket">Yatak / etiket (isim yazmayın)<input type="text" maxlength="10" placeholder="ör. Y12" autocomplete="off" autocapitalize="characters"><span class="u" hidden>Yalnız yatak ya da oda no (ör. Y12, 12A, Oda 3). İsim veya TC no yazmayın.</span></label>' +
         '<div class="cins" role="group" aria-label="Cinsiyet"><button type="button" class="c" data-c="m">Erkek</button><button type="button" class="c" data-c="f">Kadın</button></div>';
       function alan(k){ return '<label>' + AD[k] + (BIRIM[k] ? ' (' + BIRIM[k] + ')' : '') +
         '<input type="number" inputmode="decimal" step="any" min="0" data-k="' + k + '"></label>'; }
@@ -782,6 +818,10 @@
         '<p class="bilgi">Burada değiştirdiğiniz değer bu sayfadaki kutuya da yazılır. Değerler yalnız bu cihazda, 30 dakika saklanır.</p>';
       panel.innerHTML = h;
       panel.querySelector('.kapat').onclick = kapat;
+      panel.querySelector('.etiket input').addEventListener('input', function(){
+        var e2 = window.vizitEtiket(this.value), v = oku(); panel.querySelector('.etiket .u').hidden = e2 !== null;
+        if (e2 === null) return; if (e2) v.etiket = e2; else delete v.etiket; yaz(v); ciz(); rozet();
+      });
       panel.addEventListener('input', function(e){
         var k = e.target.dataset && e.target.dataset.k; if (!k) return;
         var v = oku(), d = e.target.value;
