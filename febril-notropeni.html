@@ -159,7 +159,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <h2>CISNE skoru</h2>
     <p class="note">Yalnız solid tümörlü, hafif-orta yoğunlukta kemoterapi alan ve başvuruda stabil görünen (organ yetmezliği, hipotansiyon, ağır enfeksiyon yok) hastada. Hematolojik malignite ve lenfomada kullanılmaz.</p>
     <div class="items">
-      <label class="item"><input type="checkbox" id="c-ok" data-sabit checked><span class="txt">Solid tümör ve klinik olarak stabil<small>işaretlenmezse CISNE hesaplanmaz</small></span></label>
+      <label class="item"><input type="checkbox" id="c-ok" checked><span class="txt">Solid tümör ve klinik olarak stabil<small>işaretlenmezse CISNE hesaplanmaz</small></span></label>
     </div>
     <div class="grid">
       <div class="field"><label for="ecog">ECOG performansı <span>0–4</span></label><input id="ecog" type="number" inputmode="numeric" step="1" min="0" max="4" value="1"></div>
@@ -348,7 +348,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     // 3) CISNE
     var cis=null,cisMiss=[],c1=null,c2=null,c4=null,c5=null;
     var ec=v('ecog'),gl=v('glu'),mo=v('mono'),mu=v('muc');
-    if(!ck('c-ok')){$('cis').textContent='–';pill('cisp','Uygulanmaz','var(--muted)');$('cisa').textContent='CISNE yalnız stabil görünen solid tümörlü hastada kullanılır.';['c1','c2','c3','c4','c5'].forEach(function(i){$(i).textContent='–'})}
+    if(!ck('c-ok')){$('cis').textContent='–';pill('cisp','Hesaplanmadı','var(--muted)');$('cisa').textContent='CISNE yalnız stabil görünen solid tümörlü hastada kullanılır; hastanız böyleyse yukarıdaki kutuyu işaretleyin.';['c1','c2','c3','c4','c5'].forEach(function(i){$(i).textContent='–'})}
     else{
       if(ec===null)cisMiss.push('ECOG');if(gl===null)cisMiss.push('glukoz');if(mo===null)cisMiss.push('monosit');if(mu===null)cisMiss.push('mukozit');
       if(ec!==null)c1=ec>=2;if(gl!==null)c2=gl>=(ck('c-dm')?250:121);if(mu!==null)c4=mu>=2;if(mo!==null)c5=mo*1000<200;

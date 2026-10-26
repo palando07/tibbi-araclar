@@ -233,10 +233,10 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
       if(x[1]){var a=document.createElement('p');a.className='advice';a.textContent=x[1];li.appendChild(a)}ol.appendChild(li)});
     r.n.forEach(function(x){var li=document.createElement('li');li.textContent=x;ul.appendChild(li)});
     ul.closest('section').hidden=!r.n.length;
-    // Nota ekle: tablo, anahtar değer ve doz içeren ilk üç adım (parantez içi açıklamalar atılır)
+    // Nota ekle: tablo, anahtar değer ve doz içeren ilk üç adım (parantez içindeki koşullar korunur)
     var KD={k:'K',glu:'Glukoz',ph:'pH',na:'Na',ca:'Ca'},ad=[];
     d.f.forEach(function(f){if(KD[f]&&p[f]!==null&&!(f==='glu'&&$('dz').value!=='dka'&&$('dz').value!=='hipo'))ad.push(KD[f]+' '+String(p[f]).replace('.',','))});
-    var dz=r.s.map(function(x){return x[0].replace(/\s*\([^)]*\)/g,'')}).filter(function(x){return /\d\s*(mg|µg|g|mL|ünite|IU|mEq)\b/.test(x)}).slice(0,3);
+    var dz=r.s.map(function(x){return x[0]}).filter(function(x){return /\d\s*(mg|µg|g|mL|ünite|IU|mEq)\b/.test(x)}).slice(0,3);
     if(!dz.length&&r.s[0])dz=[r.s[0][0]];
     ol.closest('section').setAttribute('data-not',d.t+(ad.length?' ('+ad.join(', ')+')':'')+': '+dz.join('; '))}
   $('dz').addEventListener('change',build);

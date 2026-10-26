@@ -143,7 +143,7 @@ details p{margin:8px 0 0}
   var chk=function(id){return $(id).checked?1:0};
 
   function calc(){
-    var age=parseFloat($('age').value)||0, stroke=$('stroke').checked;
+    var age=parseFloat($('age').value), yasYok=!isFinite(age), stroke=$('stroke').checked; if(yasYok)age=0;
     var agePts=age>=75?2:age>=65?1:0;
     $('c-age').checked=agePts>0;
     $('c-age-txt').textContent=age>=75?'Yaş ≥ 75':age>=65?'Yaş 65–74':'Yaş < 65';
@@ -168,9 +168,14 @@ details p{margin:8px 0 0}
       ha.textContent='Düzeltilebilir risk faktörlerini (tansiyon, ilaçlar, alkol, labil INR) ele alın ve hastayı daha sık izleyin. Yüksek skor tek başına antikoagülanı kesme nedeni değildir.'}
     else{hp.textContent='Düşük-orta risk';hp.style.background='var(--ok)';
       ha.textContent='Düzeltilebilir risk faktörlerini yine de gözden geçirin.'}
+    var kartlar=document.querySelectorAll('section.card[aria-live]');
+    // Yaş iki skorun da maddesi: boşken skor gösterilmez, "65 altı" sayılmaz; Kopyala ve Nota ekle çalışmaz
+    if(yasYok){$('c-age-txt').textContent='Yaş girilmedi';$('c-age-pts').textContent='–';['cva','cvasc','hb'].forEach(function(i){$(i).textContent='–'});
+      [p,hp].forEach(function(x){x.textContent='Yaş girilmedi';x.style.background='var(--muted)'});adv.textContent='';ha.textContent='';
+      kartlar.forEach(function(c){c.removeAttribute('data-not');c.setAttribute('data-eksik','Yaş girilmedi')});return}
     // Nota ekle: iki kart tek satır olarak eklenir
     var nt='CHA₂DS₂-VA '+va+' ('+p.textContent.toLocaleLowerCase('tr')+'), HAS-BLED '+hb+' ('+hp.textContent.toLocaleLowerCase('tr')+')';
-    document.querySelectorAll('section.card[aria-live]').forEach(function(c){c.setAttribute('data-not',nt)});
+    kartlar.forEach(function(c){c.setAttribute('data-not',nt);c.removeAttribute('data-eksik')});
   }
 
   function setSex(s){sex=s;$('s-f').setAttribute('aria-pressed',s==='f');$('s-m').setAttribute('aria-pressed',s==='m');calc()}
