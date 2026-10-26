@@ -116,7 +116,7 @@ a.lnk{color:var(--accent);font-weight:600}
       <div class="field"><label for="mcv">MCV <span>fL</span></label><input id="mcv" type="number" inputmode="decimal" step="any" value="72"></div>
       <div class="field"><label for="rbc">Eritrosit <span>10⁶/µL</span></label><input id="rbc" type="number" inputmode="decimal" step="any" value="4.1"></div>
       <div class="field"><label for="rdw">RDW <span>%</span></label><input id="rdw" type="number" inputmode="decimal" step="any" value="17.2"></div>
-      <div class="field"><label for="rdwu">RDW üst sınırı <span>% (lab.)</span></label><input id="rdwu" type="number" inputmode="decimal" step="any" value="14.5"></div>
+      <div class="field"><label for="rdwu">RDW üst sınırı <span>% (lab.)</span></label><input id="rdwu" data-sabit type="number" inputmode="decimal" step="any" value="14.5"></div>
       <div class="field"><label for="ret">Retikülosit <span>%</span></label><input id="ret" type="number" inputmode="decimal" step="any" value="1.2"></div>
     </div>
     <p class="note">Eritrosit sayısı yalnız Mentzer indeksi için; 10⁶/µL = 10¹²/L. RDW üst sınırını kendi laboratuvarınıza göre değiştirin.</p>
@@ -138,9 +138,9 @@ a.lnk{color:var(--accent);font-weight:600}
     <h2>Hemoliz (isteğe bağlı)</h2>
     <div class="grid">
       <div class="field"><label for="ldh">LDH <span>U/L</span></label><input id="ldh" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
-      <div class="field"><label for="ldhu">LDH üst sınırı <span>U/L</span></label><input id="ldhu" type="number" inputmode="decimal" step="any" value="250"></div>
+      <div class="field"><label for="ldhu">LDH üst sınırı <span>U/L</span></label><input id="ldhu" data-sabit type="number" inputmode="decimal" step="any" value="250"></div>
       <div class="field"><label for="ib">İndirekt bilirubin <span>mg/dL</span></label><input id="ib" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
-      <div class="field"><label for="ibu">İnd. bilirubin üst sınırı <span>mg/dL</span></label><input id="ibu" type="number" inputmode="decimal" step="any" value="0.9"></div>
+      <div class="field"><label for="ibu">İnd. bilirubin üst sınırı <span>mg/dL</span></label><input id="ibu" data-sabit type="number" inputmode="decimal" step="any" value="0.9"></div>
       <div class="field"><label for="hp">Haptoglobin <span>mg/dL</span></label><input id="hp" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
     </div>
     <p class="note">Üst sınırları kendi laboratuvarınıza göre girin.</p>

@@ -195,8 +195,8 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
     var segc=x.c.map(function(c,i){return '<button type="button" data-g="'+x.p+'c" data-v="'+i+'" aria-pressed="'+(i===x.ci)+'">'+fm(c[0])+' '+x.au+'/'+c[1]+' mL</button>'}).join('')+'<button type="button" data-g="'+x.p+'c" data-v="x" aria-pressed="false">Diğer</button>';
     h+='<section class="card"><h2>'+x.n+'</h2><p class="note">'+x.sub+'</p>'+
       '<span class="lbl">Hazırlanan çözelti</span><div class="seg wrapseg">'+segc+'</div>'+
-      '<div class="grid" id="'+x.p+'-cx" hidden><div class="field"><label for="'+x.p+'-a">Miktar <span>'+(x.au==='U'?'ünite':'mg')+'</span></label><input id="'+x.p+'-a" type="number" inputmode="decimal" step="any" value="'+x.c[0][0]+'"></div>'+
-      '<div class="field"><label for="'+x.p+'-v">Toplam hacim <span>mL</span></label><input id="'+x.p+'-v" type="number" inputmode="decimal" step="any" value="'+x.c[0][1]+'"></div></div>'+
+      '<div class="grid" id="'+x.p+'-cx" hidden><div class="field"><label for="'+x.p+'-a">Miktar <span>'+(x.au==='U'?'ünite':'mg')+'</span></label><input id="'+x.p+'-a" data-sabit type="number" inputmode="decimal" step="any" value="'+x.c[0][0]+'"></div>'+
+      '<div class="field"><label for="'+x.p+'-v">Toplam hacim <span>mL</span></label><input id="'+x.p+'-v" data-sabit type="number" inputmode="decimal" step="any" value="'+x.c[0][1]+'"></div></div>'+
       '<div class="seg"><button type="button" data-g="'+x.p+'y" data-v="d" aria-pressed="true">Dozdan hıza</button><button type="button" data-g="'+x.p+'y" data-v="r" aria-pressed="false">Hızdan doza</button></div>'+
       '<div class="grid"><div class="field" id="'+x.p+'-wd"><label for="'+x.p+'-d">Doz <span>'+x.u+'</span></label><input id="'+x.p+'-d" type="number" inputmode="decimal" step="any" value="'+x.d+'"></div>'+
       '<div class="field" id="'+x.p+'-wr" hidden><label for="'+x.p+'-r">Hız <span>mL/saat</span></label><input id="'+x.p+'-r" type="number" inputmode="decimal" step="any" value="'+x.r+'"></div></div></section>'+
