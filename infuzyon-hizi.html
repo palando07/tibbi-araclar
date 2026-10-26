@@ -94,8 +94,8 @@ table.t tr.cur td{font-weight:700;color:var(--accent)}
     <h2>İlaç ve hazırlık</h2>
     <div class="field"><label for="dr">İlaç</label><select id="dr"></select></div>
     <div class="grid">
-      <div class="field" id="w-amt"><label for="amt" id="l-amt">Toplam ilaç <span id="u-amt">mg</span></label><input id="amt" data-sabit type="number" inputmode="decimal" step="any" value="4"></div>
-      <div class="field" id="w-vol"><label for="vol" id="l-vol">Toplam hacim <span id="u-vol">mL</span></label><input id="vol" data-sabit type="number" inputmode="decimal" step="any" value="50"></div>
+      <div class="field" id="w-amt"><label for="amt" id="l-amt">Toplam ilaç <span id="u-amt">mg</span></label><input data-aralik="0.001-100000" id="amt" data-sabit type="number" inputmode="decimal" step="any" value="4"></div>
+      <div class="field" id="w-vol"><label for="vol" id="l-vol">Toplam hacim <span id="u-vol">mL</span></label><input data-aralik="1-5000 mL" id="vol" data-sabit type="number" inputmode="decimal" step="any" value="50"></div>
     </div>
     <p class="prep" id="prep"></p>
     <div class="grid">
@@ -104,7 +104,7 @@ table.t tr.cur td{font-weight:700;color:var(--accent)}
     <div class="seg wrapseg"><button type="button" data-g="yon" data-v="1" aria-pressed="true">Dozdan hıza</button><button type="button" data-g="yon" data-v="2" aria-pressed="false">Hızdan doza</button></div>
     <div class="grid">
       <div class="field" id="w-dose"><label for="dose" id="l-dose">Doz <span id="u-dose">mcg/kg/dk</span></label><input id="dose" type="number" inputmode="decimal" step="any" value="0.1"></div>
-      <div class="field" id="w-rate"><label for="rate" id="l-rate">Pompa hızı <span id="u-rate">mL/saat</span></label><input id="rate" type="number" inputmode="decimal" step="any" value="5"></div>
+      <div class="field" id="w-rate"><label for="rate" id="l-rate">Pompa hızı <span id="u-rate">mL/saat</span></label><input data-aralik="0-2000 mL/saat" id="rate" type="number" inputmode="decimal" step="any" value="5"></div>
     </div>
   </section>
 

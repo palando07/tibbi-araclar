@@ -80,7 +80,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
 .lgd i{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}
 </style>
 </head>
-<body>
+<body data-ornek-secim="al kl">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -91,23 +91,23 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   <section class="card">
     <h2>Alım</h2>
     <div class="grid">
-      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
-      <div class="field"><label for="dose">Alınan toplam doz <span>mg</span></label><input id="dose" type="number" inputmode="decimal" step="any" value="15000"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" data-aralik="1-350 kg" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="dose">Alınan toplam doz <span>mg</span></label><input data-aralik="0-200000 mg" id="dose" type="number" inputmode="decimal" step="any" value="15000"></div>
     </div>
     <p class="note">Örnek: 30 tablet × 500 mg = 15 000 mg. Bilinmiyorsa boş bırakın.</p>
     <span class="lbl">Alım şekli</span>
     <div class="seg wrapseg"><button type="button" data-g="al" data-v="tek" aria-pressed="true">Tek seferlik</button><button type="button" data-g="al" data-v="yay" aria-pressed="false">Zamana yayılmış</button><button type="button" data-g="al" data-v="bil" aria-pressed="false">Zaman bilinmiyor</button></div>
     <p class="note" id="alnote">Tek seferlik: tüm doz 1 saat içinde alınmış. Zamana yayılmış (staggered): toplam doz 1 saatten uzun sürede alınmış; tekrarlayan terapötik üstü alım da buna dahildir. Saatten emin değilseniz “Zaman bilinmiyor” seçin.</p>
     <div class="grid">
-      <div class="field" id="w-time"><label for="time" id="timelbl">Alımdan bu yana <span>saat</span></label><input id="time" type="number" inputmode="decimal" step="any" value="6"></div>
-      <div class="field"><label for="lvl">Serum parasetamol <span id="lvlu">mg/L</span></label><input id="lvl" type="number" inputmode="decimal" step="any" value="120"></div>
+      <div class="field" id="w-time"><label for="time" id="timelbl">Alımdan bu yana <span>saat</span></label><input data-aralik="0-240 saat" id="time" type="number" inputmode="decimal" step="any" value="6"></div>
+      <div class="field"><label for="lvl">Serum parasetamol <span id="lvlu">mg/L</span></label><input data-aralik="0-1500 mg/L|[data-g=u][data-v=um][aria-pressed=true]:0-10000 µmol/L" id="lvl" type="number" inputmode="decimal" step="any" value="120"></div>
     </div>
     <span class="lbl">Düzey birimi</span>
     <div class="seg"><button type="button" data-g="u" data-v="mg" aria-pressed="true">mg/L = µg/mL</button><button type="button" data-g="u" data-v="um" aria-pressed="false">µmol/L</button></div>
     <div class="grid">
-      <div class="field"><label for="alt">ALT (başvuru) <span>U/L</span></label><input id="alt" type="number" inputmode="decimal" step="any" value="28"></div>
+      <div class="field"><label for="alt">ALT (başvuru) <span>U/L</span></label><input data-aralik="1-20000 U/L" id="alt" type="number" inputmode="decimal" step="any" value="28"></div>
       <div class="field"><label for="inr">INR (başvuru)</label><input id="inr" data-hasta="inr" type="number" inputmode="decimal" step="any" value="1.1"></div>
-      <div class="field"><label for="uln">ALT üst sınırı <span>U/L</span></label><input id="uln" data-sabit type="number" inputmode="decimal" step="any" value="50"></div>
+      <div class="field"><label for="uln">ALT üst sınırı <span>U/L</span></label><input data-aralik="10-200 U/L" id="uln" data-sabit type="number" inputmode="decimal" step="any" value="50"></div>
     </div>
     <span class="lbl">Tedavi çizgisi</span>
     <div class="seg wrapseg"><button type="button" data-g="nom" data-v="usr" aria-pressed="true">ABD 150, riskte 100</button><button type="button" data-g="nom" data-v="us" aria-pressed="false">ABD 150</button><button type="button" data-g="nom" data-v="uk" aria-pressed="false">İngiltere 100</button></div>
@@ -171,10 +171,10 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <h2>Tedavi sonu kontrol</h2>
     <p class="note">Kan örneği: SNAP’ta 2. torbanın bitmesinden yaklaşık 2 saat önce; 21 saatlik rejimde 3. torba biterken. INR, ALT, parasetamol düzeyi, kreatinin, glukoz, venöz kan gazı. Başvuru ALT değeri ilk karttan alınır.</p>
     <div class="grid">
-      <div class="field"><label for="e-lvl">Son parasetamol <span>mg/L</span></label><input id="e-lvl" type="number" inputmode="decimal" step="any" value="8"></div>
-      <div class="field"><label for="e-alt">Son ALT <span>U/L</span></label><input id="e-alt" type="number" inputmode="decimal" step="any" value="35"></div>
-      <div class="field"><label for="e-inr">Son INR</label><input id="e-inr" type="number" inputmode="decimal" step="any" value="1.2"></div>
-      <div class="field"><label for="e-pk">Zirve ALT <span>U/L, ops.</span></label><input id="e-pk" type="number" inputmode="decimal" step="any" value="" placeholder="başvuru"></div>
+      <div class="field"><label for="e-lvl">Son parasetamol <span>mg/L</span></label><input data-aralik="0-1500 mg/L" id="e-lvl" type="number" inputmode="decimal" step="any" value="8"></div>
+      <div class="field"><label for="e-alt">Son ALT <span>U/L</span></label><input data-aralik="1-20000 U/L" id="e-alt" type="number" inputmode="decimal" step="any" value="35"></div>
+      <div class="field"><label for="e-inr">Son INR</label><input data-aralik="0.5-20" id="e-inr" type="number" inputmode="decimal" step="any" value="1.2"></div>
+      <div class="field"><label for="e-pk">Zirve ALT <span>U/L, ops.</span></label><input data-aralik="1-30000 U/L" id="e-pk" type="number" inputmode="decimal" step="any" value="" placeholder="başvuru"></div>
     </div>
     <span class="lbl">Klinik olarak iyi (ensefalopati, kusma, karın ağrısı yok)</span>
     <div class="seg"><button type="button" data-g="kl" data-v="1" aria-pressed="true">Evet</button><button type="button" data-g="kl" data-v="0" aria-pressed="false">Hayır</button></div>
@@ -202,10 +202,10 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <p class="note">Parasetamole bağlı akut karaciğer yetmezliğinde nakil merkezine sevk/nakil değerlendirmesi için. Boş alanlar değerlendirme dışı kalır.</p>
     <div class="grid">
       <div class="field"><label for="ph">Arteriyel pH <span>sıvı sonrası</span></label><input id="ph" type="number" inputmode="decimal" step="any" value="" placeholder="7,35"></div>
-      <div class="field"><label for="k-inr">INR</label><input id="k-inr" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="k-inr">INR</label><input data-aralik="0.5-20" id="k-inr" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
       <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
-      <div class="field"><label for="lk4">Laktat erken <span>mmol/L, ~4 s</span></label><input id="lk4" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
-      <div class="field"><label for="lk12">Laktat sıvı sonrası <span>mmol/L, ~12 s</span></label><input id="lk12" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="lk4">Laktat erken <span>mmol/L, ~4 s</span></label><input data-aralik="0.1-30 mmol/L" id="lk4" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="lk12">Laktat sıvı sonrası <span>mmol/L, ~12 s</span></label><input data-aralik="0.1-30 mmol/L" id="lk12" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
     </div>
     <span class="lbl">Hepatik ensefalopati (West Haven)</span>
     <div class="seg"><button type="button" data-g="he" data-v="x" aria-pressed="true">Bilinmiyor</button><button type="button" data-g="he" data-v="0" aria-pressed="false">Yok / I–II</button><button type="button" data-g="he" data-v="1" aria-pressed="false">III–IV</button></div>
@@ -286,7 +286,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       $('o-linel').textContent=lname+', '+fm(t,1)+'. saat';
       $('o-line').textContent=fm(Lt,1)+' mg/L = '+fm(Lt*UM,0)+' µmol/L';
       $('o-pos').textContent=C===null?'–':'%'+fm(C/Lt*100,0)+(C>=Lt?' (çizgide/üstünde)':' (altında)');
-    }
+    }else{$('o-linel').textContent='Tedavi çizgisi';$('o-line').textContent='–';$('o-pos').textContent='–'}
 
     $('rx').innerHTML='';
     var verdict;
@@ -297,7 +297,8 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       return 'miss';
     }
 
-    if(mode==='tek'){
+    if(!mode){verdict='sec';pill('vp','Alım şeklini seçin',WA);li('rx','Alım şekli seçilmedi','Tek seferlik, zamana yayılmış ya da zamanı bilinmeyen alımı seçin; karar buna göre değişir. Şüphede NAC’ı geciktirmeyin.')}
+    else if(mode==='tek'){
       if(!tOk){
         verdict='nac';pill('vp','Alım saati yok: NAC başlayın',HI);
         li('rx','Alım saati girilmedi','Saat bilinmiyorsa veya güvenilir değilse nomogram kullanılmaz; NAC’ı hemen başlayın (MHRA 2012; ABD 2023: şüphede öykü güvenilmez sayılır). “Zaman bilinmiyor” seçeneğiyle durdurma koşullarını görün.');
@@ -382,7 +383,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     }
 
     // Tedavi sonu
-    var el=v('e-lvl'),ea=v('e-alt'),ei=v('e-inr'),pk=v('e-pk'),kl=segVal('kl')==='1';
+    var el=v('e-lvl'),ea=v('e-alt'),ei=v('e-inr'),pk=v('e-pk'),kl=segVal('kl')===null?null:segVal('kl')==='1';
     var u1=ei===null?null:ei<=1.3, u2=ea===null?null:ea<100, u3=ea===null||alt===null?null:ea<2*alt, u4=el===null?null:el<20;
     var peak=pk!==null?Math.max(pk,alt===null?pk:alt):alt;
     var d1=el===null?null:el<10, d2=ei===null?null:ei<2, d3=ea===null?null:(ea<=uln||(peak!==null&&peak>uln&&ea<=0.75*peak)), d4=kl;

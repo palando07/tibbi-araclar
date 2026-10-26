@@ -86,7 +86,7 @@ table.t td,table.t th{overflow-wrap:break-word}
 </style>
 
 </head>
-<body>
+<body data-ornek-secim="rt dm pr">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -101,7 +101,7 @@ table.t td,table.t th{overflow-wrap:break-word}
       <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="82"></div>
       <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.6"></div>
       <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="11.8"></div>
-      <div class="field"><label for="hct">Hematokrit <span>% (isteğe bağlı)</span></label><input id="hct" type="number" inputmode="decimal" step="any" value="" placeholder="Hb’den"></div>
+      <div class="field"><label for="hct">Hematokrit <span>% (isteğe bağlı)</span></label><input data-aralik="10-70 %" id="hct" type="number" inputmode="decimal" step="any" value="" placeholder="Hb’den"></div>
       <div class="field"><label for="glu">Bazal glukoz <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="160"></div>
     </div>
     <span class="lbl" id="sexlbl">Cinsiyet</span>
@@ -109,7 +109,7 @@ table.t td,table.t th{overflow-wrap:break-word}
     <span class="lbl" id="emlbl">Böbrek işlevi (eGFR)</span>
     <div class="seg" role="group" aria-labelledby="emlbl"><button type="button" data-g="em" data-v="c" aria-pressed="true">CKD-EPI 2021 ile hesapla</button><button type="button" data-g="em" data-v="d" aria-pressed="false">Doğrudan gir</button></div>
     <div class="grid" id="w-egfr" hidden>
-      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" data-hasta="egfr" data-hasta-kosul='[data-g="em"][data-v="d"][aria-pressed="true"]' type="number" inputmode="decimal" step="any" value=""></div>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input data-aralik="1-200 mL/dk/1,73 m²" id="egfr" data-hasta="egfr" data-hasta-kosul='[data-g="em"][data-v="d"][aria-pressed="true"]' type="number" inputmode="decimal" step="any" value=""></div>
     </div>
     <p class="note" id="egfrn"></p>
   </section>
@@ -120,7 +120,7 @@ table.t td,table.t th{overflow-wrap:break-word}
     <div class="seg wrapseg" role="group" aria-labelledby="rtlbl"><button type="button" data-g="rt" data-v="iv" aria-pressed="false">IV (BT)</button><button type="button" data-g="rt" data-v="ia2" aria-pressed="true">İA, ikinci geçiş</button><button type="button" data-g="rt" data-v="ia1" aria-pressed="false">İA, ilk geçiş</button></div>
     <p class="note">ESUR: <b>ilk geçiş</b> kontrastın böbreğe seyreltilmeden ulaştığı enjeksiyonlardır (sol kalp, torasik ve suprarenal abdominal aorta, renal arterler). <b>İkinci geçiş</b>: sağ kalp, pulmoner arter, karotis, subklavyen, koroner, mezenterik veya infrarenal arterler.</p>
     <div class="grid">
-      <div class="field"><label for="cv">Kontrast hacmi <span>mL (planlanan/verilen)</span></label><input id="cv" type="number" inputmode="decimal" step="any" value="180"></div>
+      <div class="field"><label for="cv">Kontrast hacmi <span>mL (planlanan/verilen)</span></label><input data-aralik="1-1000 mL" id="cv" type="number" inputmode="decimal" step="any" value="180"></div>
     </div>
     <div class="items">
       <label class="item"><input type="checkbox" id="aki"><span class="txt">Bilinen veya şüpheli AKI<small>kontrasttan önce kreatinin yükseliyor</small></span></label>
@@ -246,8 +246,8 @@ table.t td,table.t th{overflow-wrap:break-word}
   <section class="card">
     <h2>Kontrast sonrası kreatinin</h2>
     <div class="grid">
-      <div class="field"><label for="cr2">Kontrol kreatinin <span>mg/dL</span></label><input id="cr2" type="number" inputmode="decimal" step="any" value="" placeholder="48–72. saat"></div>
-      <div class="field"><label for="hrs">Kontrasttan sonra <span>saat</span></label><input id="hrs" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 48"></div>
+      <div class="field"><label for="cr2">Kontrol kreatinin <span>mg/dL</span></label><input data-aralik="0.1-25 mg/dL" id="cr2" type="number" inputmode="decimal" step="any" value="" placeholder="48–72. saat"></div>
+      <div class="field"><label for="hrs">Kontrasttan sonra <span>saat</span></label><input data-aralik="0-168 saat" id="hrs" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 48"></div>
     </div>
     <p class="note">Bazal değer olarak “Hasta” kartındaki kreatinin kullanılır.</p>
   </section>
@@ -288,7 +288,7 @@ table.t td,table.t th{overflow-wrap:break-word}
   function calc(){
     var age=v('age'),wt=v('wt'),cr=v('cr'),hb=v('hb'),hct=v('hct'),glu=v('glu'),cv=v('cv');
     var ageBad=age!==null&&(age<18||age>120);if(ageBad)age=null;if(wt!==null&&wt<=0)wt=null;if(hb!==null&&hb<=0)hb=null;if(hct!==null&&hct<=0)hct=null;
-    var female=segVal('sex')==='f',em=segVal('em'),rt=segVal('rt'),dm=+segVal('dm'),mr=segVal('mr'),pr=+segVal('pr');
+    var female=segVal('sex')==='f',em=segVal('em'),rt=segVal('rt'),dmS=segVal('dm'),prS=segVal('pr'),dm=+dmS,mr=segVal('mr'),pr=+prS;
     var aki=chk('aki'),icu=chk('icu'),dial=chk('dial');
     if(wt!==null&&wt<=0)wt=null; if(cr!==null&&cr<=0)cr=null; if(cv!==null&&cv<0)cv=null;
 
@@ -315,7 +315,8 @@ table.t td,table.t th{overflow-wrap:break-word}
     $('m-hc').textContent=hc+' puan';
     if(age===null){miss.push('yaş');$('m-age').textContent='veri yok'}else{var pa=age>75?4:0;s+=pa;$('m-age').textContent=pa+' puan'}
     if(anemia===null){miss.push('Hb/Hct');$('m-an').textContent='veri yok'}else{s+=anemia?3:0;$('m-an').textContent=(anemia?3:0)+' puan · '+anSrc}
-    s+=dm?3:0;$('m-dm').textContent=(dm?3:0)+' puan';
+    // Seçilmemiş diyabet/başvuru tipi 0 puan sayılmaz: eksik veri olarak gösterilir
+    if(dmS===null){miss.push('diyabet');$('m-dm').textContent='seçilmedi'}else{s+=dm?3:0;$('m-dm').textContent=(dm?3:0)+' puan'}
     if(cv===null){miss.push('kontrast hacmi');$('m-cv').textContent='veri yok'}else{var pc=Math.floor(cv/100+1e-9);s+=pc;$('m-cv').textContent=pc+' puan · '+fm(cv,0)+' mL'}
     if(mr==='e'){$('m-rl').textContent='eGFR (40–60: 2, 20–40: 4, < 20: 6)';
       if(eg===null){miss.push('eGFR');$('m-rn').textContent='veri yok'}
@@ -332,10 +333,10 @@ table.t td,table.t th{overflow-wrap:break-word}
 
     // 2) Mehran-2 Model 1
     var m2=pr,miss2=[];
-    $('m2-pr').textContent=pr+' puan';
+    if(prS===null){m2=0;miss2.push('klinik tablo');$('m2-pr').textContent='seçilmedi'}else $('m2-pr').textContent=pr+' puan';
     if(eg===null){miss2.push('eGFR');$('m2-eg').textContent='veri yok'}else{var e2=eg<30?4:eg<60?1:0;m2+=e2;$('m2-eg').textContent=e2+' puan · eGFR '+f1(eg)}
     var hf2=(chk('lvef')?2:0)+(chk('chf2')?1:0);m2+=hf2;$('m2-hf').textContent=hf2+' puan';
-    m2+=dm;$('m2-dm').textContent=dm+' puan';
+    if(dmS===null){miss2.push('diyabet');$('m2-dm').textContent='seçilmedi'}else{m2+=dm;$('m2-dm').textContent=dm+' puan'}
     var ot=0,otx=[];
     if(hb===null)miss2.push('Hb');else if(hb<11){ot++;otx.push('Hb')}
     if(glu===null)miss2.push('glukoz');else if(glu>=150){ot++;otx.push('glukoz')}
@@ -356,6 +357,7 @@ table.t td,table.t th{overflow-wrap:break-word}
     else if(eg===null)lvl='need';
     else if(eg<30)lvl='high';
     else if(eg<thr)lvl='risk';
+    else if(!rt)lvl='yol';
     else if(rt==='iv'&&eg<45)lvl='border';
     else lvl='none';
     var esurRisk=lvl==='high'||lvl==='risk';
@@ -367,6 +369,7 @@ table.t td,table.t th{overflow-wrap:break-word}
       li('rxG',aki?'Bilinen/şüpheli AKI':'eGFR < 30 mL/dk/1,73 m²','ESUR: tüm uygulama yollarında PC-AKI risk faktörü. ACR-NKF (IV): IV salin profilaksisi endike. Kontrastsız alternatif görüntülemeyi düşünün; hayatı tehdit eden tanı için kontrast böbrek işlevi nedeniyle esirgenmemeli (göreceli kontrendikasyon).')}
     else if(lvl==='risk'){pill('egp','eGFR < 45: risk var (ESUR)','var(--warn)');
       li('rxG',(icu&&rt!=='ia1'?'Yoğun bakım hastası':'İA ilk geçiş')+' ve eGFR < 45','ESUR: PC-AKI risk faktörü; önleyici hidrasyon önerilir.')}
+    else if(lvl==='yol'){pill('egp','Uygulama yolu seçilmedi','var(--muted)');li('rxG','Kontrast uygulama yolunu seçin','Risk eşiği IV ve intraarteriyel (ilk/ikinci geçiş) uygulamada farklıdır.')}
     else if(lvl==='border'){pill('egp','eGFR 30–44: bireysel karar','var(--warn)');
       li('rxG','IV kontrast, eGFR 30–44','ESUR risk eşiği (< 30) karşılanmıyor. ACR-NKF: çok sayıda risk faktörü, yakın zamanda AKI veya sınırda eGFR gibi bireysel yüksek risk durumlarında profilaksi istem yapan hekimin kararıyla düşünülebilir.')}
     else{pill('egp','Kılavuz risk ölçütü yok','var(--ok)');

@@ -99,9 +99,9 @@ a.in{color:var(--accent);font-weight:600}
   <section class="card">
     <h2>Sonuçlar</h2>
     <div class="grid">
-      <div class="field"><label for="tsh">TSH <span>mIU/L</span></label><input id="tsh" type="number" inputmode="decimal" step="any" value="7.8"></div>
-      <div class="field"><label for="ft4">sT4 <span>ng/dL</span></label><input id="ft4" type="number" inputmode="decimal" step="any" value="1.1"></div>
-      <div class="field"><label for="ft3">sT3 <span>pg/mL (isteğe bağlı)</span></label><input id="ft3" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="tsh">TSH <span>mIU/L</span></label><input data-aralik="0.001-500 mIU/L" id="tsh" type="number" inputmode="decimal" step="any" value="7.8"></div>
+      <div class="field"><label for="ft4">sT4 <span>ng/dL</span></label><input data-aralik="0.05-15 ng/dL" id="ft4" type="number" inputmode="decimal" step="any" value="1.1"></div>
+      <div class="field"><label for="ft3">sT3 <span>pg/mL (isteğe bağlı)</span></label><input data-aralik="0.5-50 pg/mL" id="ft3" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
       <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="58"></div>
     </div>
     <details>

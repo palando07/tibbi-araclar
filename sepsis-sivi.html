@@ -98,7 +98,7 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
       <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="58"></div>
       <div class="field"><label for="sbp">Sistolik <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="numeric" step="1" value="84"></div>
       <div class="field"><label for="dbp">Diyastolik <span>mmHg</span></label><input id="dbp" data-hasta="dbp" type="number" inputmode="numeric" step="1" value="48"></div>
-      <div class="field"><label for="lac">Laktat <span id="u-lac">mmol/L</span></label><input id="lac" type="number" inputmode="decimal" step="any" value="3.4"></div>
+      <div class="field"><label for="lac">Laktat <span id="u-lac">mmol/L</span></label><input data-aralik="0.1-30 mmol/L|[data-g=lu][data-v=mg][aria-pressed=true]:1-270 mg/dL" id="lac" type="number" inputmode="decimal" step="any" value="3.4"></div>
     </div>
     <span class="lbl">Laktat birimi</span>
     <div class="seg"><button type="button" data-g="lu" data-v="mmol" aria-pressed="true">mmol/L</button><button type="button" data-g="lu" data-v="mg" aria-pressed="false">mg/dL</button></div>
@@ -181,13 +181,13 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
 
   // İlaç tanımları. c: hazır çözeltiler [miktar, hacim mL]; miktar mg (mcg/mL = mg×1000/mL) veya ünite.
   var D=[
-    {p:'ne',n:'Norepinefrin',sub:'İlk seçenek vazopresör. Miktar baz olarak (Türkiye ampulü 4 mg/4 mL = 4 mg baz).',au:'mg',kg:true,u:'mcg/kg/dk',
+    {p:'ne',ar:['0.1-100 mg','0-5 mcg/kg/dk'],n:'Norepinefrin',sub:'İlk seçenek vazopresör. Miktar baz olarak (Türkiye ampulü 4 mg/4 mL = 4 mg baz).',au:'mg',kg:true,u:'mcg/kg/dk',
      c:[[4,250],[8,250],[16,250],[4,50],[8,50]],ci:0,d:0.1,r:26,tab:[0.05,0.1,0.15,0.2,0.25,0.3,0.4,0.5,0.75,1]},
-    {p:'vp',n:'Vazopressin',sub:'NE’ye ek, sabit doz 0,03 U/dk (titre edilmez).',au:'U',kg:false,u:'U/dk',
+    {p:'vp',ar:['1-200 ünite','0-0.1 U/dk'],n:'Vazopressin',sub:'NE’ye ek, sabit doz 0,03 U/dk (titre edilmez).',au:'U',kg:false,u:'U/dk',
      c:[[20,100],[40,100],[20,50]],ci:0,d:0.03,r:9,tab:[0.01,0.02,0.03]},
-    {p:'ep',n:'Epinefrin',sub:'NE + vazopressine rağmen yetersiz OAB’de eklenir; kardiyak disfonksiyonda tek başına da seçenek.',au:'mg',kg:true,u:'mcg/kg/dk',
+    {p:'ep',ar:['0.1-100 mg','0-5 mcg/kg/dk'],n:'Epinefrin',sub:'NE + vazopressine rağmen yetersiz OAB’de eklenir; kardiyak disfonksiyonda tek başına da seçenek.',au:'mg',kg:true,u:'mcg/kg/dk',
      c:[[4,250],[1,100],[4,50]],ci:0,d:0.05,r:13,tab:[0.01,0.02,0.05,0.1,0.15,0.2,0.3,0.5]},
-    {p:'db',n:'Dobutamin',sub:'Kardiyak disfonksiyon + yeterli sıvı ve OAB’ye rağmen süren hipoperfüzyonda NE’ye eklenir.',au:'mg',kg:true,u:'mcg/kg/dk',
+    {p:'db',ar:['1-2000 mg','0-40 mcg/kg/dk'],n:'Dobutamin',sub:'Kardiyak disfonksiyon + yeterli sıvı ve OAB’ye rağmen süren hipoperfüzyonda NE’ye eklenir.',au:'mg',kg:true,u:'mcg/kg/dk',
      c:[[250,250],[500,250],[250,50]],ci:0,d:2.5,r:10.5,tab:[2.5,5,7.5,10,15,20]}
   ];
   var h='';
@@ -195,11 +195,11 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
     var segc=x.c.map(function(c,i){return '<button type="button" data-g="'+x.p+'c" data-v="'+i+'" aria-pressed="'+(i===x.ci)+'">'+fm(c[0])+' '+x.au+'/'+c[1]+' mL</button>'}).join('')+'<button type="button" data-g="'+x.p+'c" data-v="x" aria-pressed="false">Diğer</button>';
     h+='<section class="card"><h2>'+x.n+'</h2><p class="note">'+x.sub+'</p>'+
       '<span class="lbl">Hazırlanan çözelti</span><div class="seg wrapseg">'+segc+'</div>'+
-      '<div class="grid" id="'+x.p+'-cx" hidden><div class="field"><label for="'+x.p+'-a">Miktar <span>'+(x.au==='U'?'ünite':'mg')+'</span></label><input id="'+x.p+'-a" data-sabit type="number" inputmode="decimal" step="any" value="'+x.c[0][0]+'"></div>'+
-      '<div class="field"><label for="'+x.p+'-v">Toplam hacim <span>mL</span></label><input id="'+x.p+'-v" data-sabit type="number" inputmode="decimal" step="any" value="'+x.c[0][1]+'"></div></div>'+
+      '<div class="grid" id="'+x.p+'-cx" hidden><div class="field"><label for="'+x.p+'-a">Miktar <span>'+(x.au==='U'?'ünite':'mg')+'</span></label><input id="'+x.p+'-a" data-sabit data-aralik="'+x.ar[0]+'" type="number" inputmode="decimal" step="any" value="'+x.c[0][0]+'"></div>'+
+      '<div class="field"><label for="'+x.p+'-v">Toplam hacim <span>mL</span></label><input id="'+x.p+'-v" data-sabit data-aralik="1-1000 mL" type="number" inputmode="decimal" step="any" value="'+x.c[0][1]+'"></div></div>'+
       '<div class="seg"><button type="button" data-g="'+x.p+'y" data-v="d" aria-pressed="true">Dozdan hıza</button><button type="button" data-g="'+x.p+'y" data-v="r" aria-pressed="false">Hızdan doza</button></div>'+
-      '<div class="grid"><div class="field" id="'+x.p+'-wd"><label for="'+x.p+'-d">Doz <span>'+x.u+'</span></label><input id="'+x.p+'-d" type="number" inputmode="decimal" step="any" value="'+x.d+'"></div>'+
-      '<div class="field" id="'+x.p+'-wr" hidden><label for="'+x.p+'-r">Hız <span>mL/saat</span></label><input id="'+x.p+'-r" type="number" inputmode="decimal" step="any" value="'+x.r+'"></div></div></section>'+
+      '<div class="grid"><div class="field" id="'+x.p+'-wd"><label for="'+x.p+'-d">Doz <span>'+x.u+'</span></label><input id="'+x.p+'-d" data-aralik="'+x.ar[1]+'" type="number" inputmode="decimal" step="any" value="'+x.d+'"></div>'+
+      '<div class="field" id="'+x.p+'-wr" hidden><label for="'+x.p+'-r">Hız <span>mL/saat</span></label><input id="'+x.p+'-r" data-aralik="0-1000 mL/saat" type="number" inputmode="decimal" step="any" value="'+x.r+'"></div></div></section>'+
       '<section class="card" aria-live="polite"><h2>'+x.n+' hızı</h2>'+
       '<div class="res"><span class="num" id="'+x.p+'-o">–</span><span class="of" id="'+x.p+'-ou"></span><span class="pill" id="'+x.p+'-p"></span></div>'+
       '<div class="sub"><span>Konsantrasyon</span><b class="w" id="'+x.p+'-k">–</b></div>'+

@@ -111,9 +111,9 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   <section class="card">
     <h2>Mutlak nötrofil sayısı</h2>
     <div class="grid">
-      <div class="field"><label for="wbc">Lökosit <span>×10³/µL</span></label><input id="wbc" type="number" inputmode="decimal" step="any" value="0.9"></div>
-      <div class="field"><label for="neu">Nötrofil (segment) <span>%</span></label><input id="neu" type="number" inputmode="decimal" step="any" value="30"></div>
-      <div class="field"><label for="band">Çomak <span>%, yoksa boş</span></label><input id="band" type="number" inputmode="decimal" step="any" value="5"></div>
+      <div class="field"><label for="wbc">Lökosit <span>×10³/µL</span></label><input data-aralik="0-500 ×10³/µL" id="wbc" type="number" inputmode="decimal" step="any" value="0.9"></div>
+      <div class="field"><label for="neu">Nötrofil (segment) <span>%</span></label><input data-aralik="0-100 %" id="neu" type="number" inputmode="decimal" step="any" value="30"></div>
+      <div class="field"><label for="band">Çomak <span>%, yoksa boş</span></label><input data-aralik="0-100 %" id="band" type="number" inputmode="decimal" step="any" value="5"></div>
     </div>
     <div class="items">
       <label class="item"><input type="checkbox" id="fall"><span class="txt">MNS’nin 48 saat içinde &lt; 500/mm³’e düşmesi bekleniyor<small>kemoterapi sonrası nadir dönemine giriyor</small></span></label>
@@ -159,12 +159,12 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <h2>CISNE skoru</h2>
     <p class="note">Yalnız solid tümörlü, hafif-orta yoğunlukta kemoterapi alan ve başvuruda stabil görünen (organ yetmezliği, hipotansiyon, ağır enfeksiyon yok) hastada. Hematolojik malignite ve lenfomada kullanılmaz.</p>
     <div class="items">
-      <label class="item"><input type="checkbox" id="c-ok" checked><span class="txt">Solid tümör ve klinik olarak stabil<small>işaretlenmezse CISNE hesaplanmaz</small></span></label>
+      <label class="item"><input type="checkbox" id="c-ok" data-sabit checked><span class="txt">Solid tümör ve klinik olarak stabil<small>işaretlenmezse CISNE hesaplanmaz</small></span></label>
     </div>
     <div class="grid">
       <div class="field"><label for="ecog">ECOG performansı <span>0–4</span></label><input id="ecog" type="number" inputmode="numeric" step="1" min="0" max="4" value="1"></div>
       <div class="field"><label for="glu">Başvuru glukozu <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="140"></div>
-      <div class="field"><label for="mono">Monosit <span>×10³/µL</span></label><input id="mono" type="number" inputmode="decimal" step="any" value="0.15"></div>
+      <div class="field"><label for="mono">Monosit <span>×10³/µL</span></label><input data-aralik="0-500 ×10³/µL" id="mono" type="number" inputmode="decimal" step="any" value="0.15"></div>
       <div class="field"><label for="muc">Mukozit derecesi <span>NCI 0–4</span></label><input id="muc" type="number" inputmode="numeric" step="1" min="0" max="4" value="0"></div>
     </div>
     <div class="items">
@@ -224,7 +224,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   <section class="card">
     <h2>Böbrek işlevi</h2>
     <div class="grid">
-      <div class="field"><label for="crclin">CrCl <span>mL/dk, doğrudan</span></label><input id="crclin" type="number" inputmode="decimal" step="any" value="" placeholder="boşsa hesaplanır"></div>
+      <div class="field"><label for="crclin">CrCl <span>mL/dk, doğrudan</span></label><input data-aralik="1-300 mL/dk" id="crclin" type="number" inputmode="decimal" step="any" value="" placeholder="boşsa hesaplanır"></div>
     </div>
     <div class="items">
       <label class="item"><input type="checkbox" id="hd"><span class="txt">Hemodiyalize giriyor</span></label>

@@ -116,10 +116,12 @@ details p{margin:8px 0 0}
 
   function r12(x){return Math.round(x/12.5)*12.5}
   function fmt(x){return String(x).replace('.',',')}
-  function val(n){return document.querySelector('input[name='+n+']:checked').value}
+  function val(n){var r=document.querySelector('input[name='+n+']:checked');return r?r.value:null}
   function calc(){
     var wt=v('wt'),age=v('age'),ind=val('ind'),cad=$('cad').checked,preg=$('preg').checked;
     if(wt===null||age===null){$('dose').textContent='–';pill('pl','');$('adv').textContent='Kilo ve yaşı girin.';$('calcd').textContent='–';return}
+    // Endikasyon seçilmeden doz önerilmez (aşikar hipotiroidi varsayılmaz)
+    if(!ind){$('dose').textContent='–';pill('pl','');$('lbl').textContent='Önerilen günlük doz';$('adv').textContent='Endikasyonu seçin.';$('calcd').textContent=fmt(Math.round(1.6*wt))+' µg (1,6 µg/kg)';return}
     var full=1.6*wt, txt='', d, lbl='Önerilen günlük doz';
     $('calcd').textContent=fmt(Math.round(full))+' µg (1,6 µg/kg)';
     if(ind==='dtc'){d=r12(2*wt);$('calcd').textContent=fmt(Math.round(2*wt))+' µg (2 µg/kg)';pill('pl','Baskılama dozu','var(--warn)');

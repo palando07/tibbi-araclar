@@ -79,7 +79,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
 .card h3{margin:4px 0 0;font-size:1rem}
 </style>
 </head>
-<body>
+<body data-ornek-secim="sy acq">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -93,10 +93,10 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
       <div class="field"><label for="salb">Serum albümin <span>g/dL</span></label><input id="salb" data-hasta="alb" type="number" inputmode="decimal" step="any" value="2.8"></div>
       <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.3"></div>
-      <div class="field"><label for="bun">BUN <span>mg/dL</span></label><input id="bun" type="number" inputmode="decimal" step="any" value="32"></div>
+      <div class="field"><label for="bun">BUN <span>mg/dL</span></label><input data-aralik="1-300 mg/dL" id="bun" type="number" inputmode="decimal" step="any" value="32"></div>
       <div class="field"><label for="bil">Total bilirubin <span>mg/dL</span></label><input id="bil" data-hasta="bil" type="number" inputmode="decimal" step="any" value="3.4"></div>
       <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="131"></div>
-      <div class="field"><label for="ctp">Child-Pugh puanı <span>5–15</span></label><input id="ctp" type="number" inputmode="decimal" step="1" value="10"></div>
+      <div class="field"><label for="ctp">Child-Pugh puanı <span>5–15</span></label><input data-aralik="5-15" id="ctp" type="number" inputmode="decimal" step="1" value="10"></div>
     </div>
     <p class="note">BUN yerine üre biliniyorsa: BUN = üre ÷ 2,14.</p>
   </section>
@@ -104,15 +104,15 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   <section class="card">
     <h2>Asit sıvısı</h2>
     <div class="grid">
-      <div class="field"><label for="aalb">Asit albümin <span>g/dL</span></label><input id="aalb" type="number" inputmode="decimal" step="any" value="0.9"></div>
-      <div class="field"><label for="atp">Asit total protein <span>g/dL</span></label><input id="atp" type="number" inputmode="decimal" step="any" value="1.2"></div>
+      <div class="field"><label for="aalb">Asit albümin <span>g/dL</span></label><input data-aralik="0-6 g/dL" id="aalb" type="number" inputmode="decimal" step="any" value="0.9"></div>
+      <div class="field"><label for="atp">Asit total protein <span>g/dL</span></label><input data-aralik="0-10 g/dL" id="atp" type="number" inputmode="decimal" step="any" value="1.2"></div>
     </div>
     <span class="lbl">Nötrofil (PMN) sayısı</span>
     <div class="seg"><button type="button" data-g="pm" data-v="pmn" aria-pressed="true">PMN girilecek</button><button type="button" data-g="pm" data-v="wbc" aria-pressed="false">Lökosit + % nötrofil</button></div>
     <div class="grid">
-      <div class="field" id="w-pmn"><label for="pmn">PMN <span>/mm³</span></label><input id="pmn" type="number" inputmode="decimal" step="any" value="420"></div>
-      <div class="field" id="w-wbc" hidden><label for="wbc">Lökosit <span>/mm³</span></label><input id="wbc" type="number" inputmode="decimal" step="any" value="900"></div>
-      <div class="field" id="w-pct" hidden><label for="pct">Nötrofil <span>%</span></label><input id="pct" type="number" inputmode="decimal" step="any" value="45"></div>
+      <div class="field" id="w-pmn"><label for="pmn">PMN <span>/mm³</span></label><input data-aralik="0-200000 /mm³" id="pmn" type="number" inputmode="decimal" step="any" value="420"></div>
+      <div class="field" id="w-wbc" hidden><label for="wbc">Lökosit <span>/mm³</span></label><input data-aralik="0-500000 /mm³" id="wbc" type="number" inputmode="decimal" step="any" value="900"></div>
+      <div class="field" id="w-pct" hidden><label for="pct">Nötrofil <span>%</span></label><input data-aralik="0-100 %" id="pct" type="number" inputmode="decimal" step="any" value="45"></div>
     </div>
     <span class="lbl">Asit kültürü</span>
     <div class="seg wrapseg"><button type="button" data-g="cx" data-v="u" aria-pressed="true">Bekleniyor</button><button type="button" data-g="cx" data-v="n" aria-pressed="false">Negatif</button><button type="button" data-g="cx" data-v="m" aria-pressed="false">Tek etken</button><button type="button" data-g="cx" data-v="p" aria-pressed="false">Polimikrobiyal</button></div>
@@ -121,9 +121,9 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <h3>İkincil peritonit için (isteğe bağlı)</h3>
     <div class="grid">
       <div class="field"><label for="glu">Asit glukoz <span>mg/dL</span></label><input id="glu" data-aralik="0-2000 mg/dL" type="number" inputmode="decimal" step="any" value="96"></div>
-      <div class="field"><label for="ldh">Asit LDH <span>U/L</span></label><input id="ldh" type="number" inputmode="decimal" step="any" value="140"></div>
-      <div class="field"><label for="uln">Serum LDH üst sınırı <span>U/L</span></label><input id="uln" data-sabit type="number" inputmode="decimal" step="any" value="250"></div>
-      <div class="field"><label for="pmn48">48. saat PMN <span>/mm³</span></label><input id="pmn48" type="number" inputmode="decimal" step="any" value="" placeholder="tekrar parasentez"></div>
+      <div class="field"><label for="ldh">Asit LDH <span>U/L</span></label><input data-aralik="1-100000 U/L" id="ldh" type="number" inputmode="decimal" step="any" value="140"></div>
+      <div class="field"><label for="uln">Serum LDH üst sınırı <span>U/L</span></label><input data-aralik="100-1000 U/L" id="uln" data-sabit type="number" inputmode="decimal" step="any" value="250"></div>
+      <div class="field"><label for="pmn48">48. saat PMN <span>/mm³</span></label><input data-aralik="0-200000 /mm³" id="pmn48" type="number" inputmode="decimal" step="any" value="" placeholder="tekrar parasentez"></div>
     </div>
   </section>
 
@@ -181,7 +181,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   <section class="card">
     <h2>Büyük hacimli parasentez</h2>
     <div class="grid">
-      <div class="field"><label for="lit">Boşaltılan asit <span>L</span></label><input id="lit" type="number" inputmode="decimal" step="any" value="8"></div>
+      <div class="field"><label for="lit">Boşaltılan asit <span>L</span></label><input data-aralik="0-30 L" id="lit" type="number" inputmode="decimal" step="any" value="8"></div>
     </div>
   </section>
 

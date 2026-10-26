@@ -83,7 +83,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
 table.t.dz td:first-child{width:34%}
 </style>
 </head>
-<body>
+<body data-ornek-secim="af pre mp ft=0">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -249,7 +249,7 @@ table.t.dz td:first-child{width:34%}
   function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
   function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
   function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
-  function rad(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?+e.value:0}
+  function rad(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?+e.value:null}
   var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
   function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
   function row(tb,a,b,c){var tr=document.createElement('tr');[a,b,c].forEach(function(t,i){var td=document.createElement('td');
@@ -272,19 +272,22 @@ table.t.dz td:first-child{width:34%}
     var s1=bwTemp(t),s4=bwHR(hr),s2=rad('cns'),s3=rad('gi'),s5=rad('chf'),s6=+segVal('af'),s7=+segVal('pre');
     $('bt').textContent=s1===null?'sıcaklık girilmedi':fm(t)+' °C → '+pt(s1);
     $('bh').textContent=s4===null?'nabız girilmedi':fm(hr,0)+'/dk → '+pt(s4);
-    var bw=(s1||0)+s2+s3+(s4||0)+s5+s6+s7;
-    $('bw').textContent=bw;
+    var eksA=s2===null||s3===null||s5===null||segVal('af')===null||segVal('pre')===null;
+    var bw=(s1||0)+(s2||0)+(s3||0)+(s4||0)+(s5||0)+s6+s7;
+    $('bw').textContent=eksA?'–':bw;
     [s1,s2,s3,s4,s5,s6,s7].forEach(function(x,i){$('c'+(i+1)).textContent=x===null?'–':pt(x)});
-    var lvl=bw>=45?2:bw>=25?1:0;
-    pill('bwp',lvl===2?'≥ 45: tiroid krizi':lvl===1?'25–44: yaklaşan kriz':'< 25: kriz olası değil',lvl===2?'var(--high)':lvl===1?'var(--warn)':'var(--ok)');
+    var lvl=eksA?-1:bw>=45?2:bw>=25?1:0;
+    pill('bwp',lvl===-1?'Eksik: bütün maddeleri seçin':lvl===2?'≥ 45: tiroid krizi':lvl===1?'25–44: yaklaşan kriz':'< 25: kriz olası değil',lvl===-1?'var(--muted)':lvl===2?'var(--high)':lvl===1?'var(--warn)':'var(--ok)');
     // JTA 2012
     var ft=segVal('ft')==='1',cns=s2>=10,fev=t!==null&&t>=38,tac=hr!==null&&hr>=130,hf=s5>=15,gih=s3>=10;
     var n=(fev?1:0)+(tac?1:0)+(hf?1:0)+(gih?1:0);
     var pat1=(cns&&n>=1)||(!cns&&n>=3),jt;
     if(ft&&pat1)jt='TS1 (kesin)';else if(ft&&n===2)jt='TS2 (şüpheli)';else if(!ft&&pat1)jt='TS2 (sT3/sT4 yok)';else jt='karşılanmadı';
+    if(eksA)jt='eksik (madde seçilmedi)';
     $('jta').textContent=jt;
     $('rxB').innerHTML='';
-    if(lvl===2)li('rxB','Tiroid krizi: yoğun bakımda acil tedavi','TEMD: kriz şüphesinde tedaviye ivedilikle, mümkünse yoğun bakımda başlanır. Laboratuvar sonucunu beklemeyin.');
+    if(lvl===-1)li('rxB','BWPS eksik','Puanlanmamış madde var; skor yorumlanmaz.');
+    else if(lvl===2)li('rxB','Tiroid krizi: yoğun bakımda acil tedavi','TEMD: kriz şüphesinde tedaviye ivedilikle, mümkünse yoğun bakımda başlanır. Laboratuvar sonucunu beklemeyin.');
     else if(lvl===1)li('rxB','Yaklaşan kriz (kriz tehdidi)','TEMD: kriz tehdidi taşıyan hastada da destek tedavisi (sıvı, kortikosteroid, sedatif) ve altta yatan hastalığın tedavisi. ATA 2016: 25–44 puanda agresif tedavi kararı klinik yargıya dayanır.');
     else li('rxB','BWPS < 25','Tiroid krizi olası değil; tirotoksikozu ve diğer ateş/taşikardi nedenlerini değerlendirin.');
     li('rxB','JTA: '+jt,'Ön koşul tirotoksikoz (sT3/sT4 yüksek). TS1: SSS bulgusu + ≥ 1 diğer bulgu veya SSS’siz ≥ 3 bulgu. TS2: 2 bulgu ya da TS1 görünümü ama sT3/sT4 sonucu yok. Bulgular: ateş ≥ 38 °C, nabız ≥ 130/dk, KKY (akciğer ödemi, akciğer alanlarının yarısından fazlasında ral, kardiyojenik şok, NYHA IV veya Killip ≥ III), GİS-hepatik (bulantı, kusma, ishal veya bilirubin > 3 mg/dL). Burada SSS = BWPS SSS ≥ hafif, KKY = akciğer ödemi seçimi olarak yaklaşık eşlendi.');
@@ -293,7 +296,7 @@ table.t.dz td:first-child{width:34%}
     // ---------- A) Tedavi ----------
     $('tA').innerHTML='';$('rxA').innerHTML='';
     var ati=segVal('ati'),iy=segVal('iy'),bb=segVal('bb');
-    pill('txp',lvl===2?'Tüm basamaklar, yoğun bakım':lvl===1?'Klinik karara göre yoğun tedavi':'Skor düşük: doz bilgi amaçlı',lvl===2?'var(--high)':lvl===1?'var(--warn)':'var(--ok)');
+    pill('txp',lvl===-1?'Skor eksik: doz bilgi amaçlı':lvl===2?'Tüm basamaklar, yoğun bakım':lvl===1?'Klinik karara göre yoğun tedavi':'Skor düşük: doz bilgi amaçlı',lvl===2?'var(--high)':lvl===1?'var(--warn)':'var(--ok)');
     if(ati==='ptu')row('tA','1. PTU|ilk seçenek (T4→T3 dönüşümünü de bloke eder)','200–400 mg PO 6–8 saatte bir (600–1600 mg/gün; 50 mg tablet: 4–8 tablet/doz)','500–1000 mg yükleme, sonra 250 mg 4 saatte bir (1500 mg/gün)');
     else row('tA','1. Metimazol|PTU kullanılamıyorsa','20–25 mg PO 6 saatte bir (80–100 mg/gün)','60–80 mg/gün (bölünmüş dozlarda)');
     if(iy==='lug')row('tA','2. Lugol|ATİ’den ≥ 1 saat sonra','4–8 damla PO 6–8 saatte bir (1 damla 6,25 mg iyot: 25–50 mg iyot/doz)','SSKİ 5 damla (0,25 mL, 250 mg) 6 saatte bir');
@@ -321,12 +324,13 @@ table.t.dz td:first-child{width:34%}
     $('mh').textContent=mh===null?'nabız girilmedi':fm(hr,0)+'/dk → '+pt(mh);
     $('mna').textContent=na===null?'Na girilmedi':(hna?'evet → 10 puan':'hayır → 0');
     $('mgl').textContent=glu===null?'glukoz girilmedi':(hgl?'evet → 10 puan':'hayır → 0');
-    var cv=(mh||0)+kc,mx=(m1||0)+m2+m3+m4+cv+mc;
-    $('mx').textContent=mx;
-    $('d1').textContent=m1===null?'–':pt(m1);$('d2').textContent=pt(m2);$('d3').textContent=pt(m3);$('d4').textContent=pt(m4);$('d5').textContent=pt(cv);$('d6').textContent=pt(mc);
-    var ml=mx>=60?3:mx>=45?2:mx>=25?1:0;
-    pill('mxp',ml===3?'≥ 60: yüksek olasılık':ml===2?'45–59: risk':ml===1?'25–44: risk (yalnız orijinal skor)':'< 25: olası değil',ml===3?'var(--high)':ml>=1?'var(--warn)':'var(--ok)');
-    $('mxa').textContent=ml===3?'Miksödem koması için tanısal düzeyde. Tiroid testlerini beklemeden tedaviye başlayın.':ml===2?'Miksödem koması riski (hem TEMD hem orijinal). Klinik şüphe varsa tedaviyi geciktirmeyin.':ml===1?'Orijinal Popoveniuc skorunda risk aralığı (25–59); TEMD metni bu aralığı 45’ten başlatır. Klinik tabloyla birlikte değerlendirin.':'Miksödem koması olası değil; diğer koma nedenlerini araştırın.';
+    var eksB=m2===null||m3===null||segVal('mp')===null;
+    var cv=(mh||0)+kc,mx=(m1||0)+(m2||0)+(m3||0)+m4+cv+mc;
+    $('mx').textContent=eksB?'–':mx;
+    $('d1').textContent=m1===null?'–':pt(m1);$('d2').textContent=m2===null?'–':pt(m2);$('d3').textContent=m3===null?'–':pt(m3);$('d4').textContent=pt(m4);$('d5').textContent=pt(cv);$('d6').textContent=pt(mc);
+    var ml=eksB?-1:mx>=60?3:mx>=45?2:mx>=25?1:0;
+    pill('mxp',ml===-1?'Eksik: bütün maddeleri seçin':ml===3?'≥ 60: yüksek olasılık':ml===2?'45–59: risk':ml===1?'25–44: risk (yalnız orijinal skor)':'< 25: olası değil',ml===-1?'var(--muted)':ml===3?'var(--high)':ml>=1?'var(--warn)':'var(--ok)');
+    $('mxa').textContent=ml===-1?'Puanlanmamış madde var; skor yorumlanmaz.':ml===3?'Miksödem koması için tanısal düzeyde. Tiroid testlerini beklemeden tedaviye başlayın.':ml===2?'Miksödem koması riski (hem TEMD hem orijinal). Klinik şüphe varsa tedaviyi geciktirmeyin.':ml===1?'Orijinal Popoveniuc skorunda risk aralığı (25–59); TEMD metni bu aralığı 45’ten başlatır. Klinik tabloyla birlikte değerlendirin.':'Miksödem koması olası değil; diğer koma nedenlerini araştırın.';
 
     // ---------- B) Tedavi ----------
     $('tB').innerHTML='';$('rxM').innerHTML='';

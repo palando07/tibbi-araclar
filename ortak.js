@@ -39,12 +39,38 @@
     '.copy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}.cbtns{display:flex;flex-wrap:wrap;gap:8px}' +
     '.field label.item{font:inherit;letter-spacing:normal;color:inherit;text-transform:none}' +
     'input.olasi-g{border-color:var(--high,#d24b32)!important;box-shadow:0 0 0 2px var(--high,#d24b32)}' +
-    '.olasi-m{margin:4px 0 0;font-size:.8rem;line-height:1.35;font-weight:600;color:color-mix(in srgb,var(--high,#d24b32) 70%,var(--fg))}' +
+    '.olasi-m{position:absolute;left:0;right:0;top:100%;z-index:6;margin:3px 0 0;padding:4px 8px;border:1px solid var(--high,#d24b32);border-radius:8px;background:var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.15);pointer-events:none;font-size:.78rem;line-height:1.3;font-weight:600;color:color-mix(in srgb,var(--high,#d24b32) 70%,var(--fg))}' +
     '.olasi-s{margin:0 0 4px;padding:8px 12px;border-radius:10px;border-left:4px solid var(--high,#d24b32);background:color-mix(in srgb,var(--high,#d24b32) 12%,var(--surface));color:var(--fg);font-size:.88rem;font-weight:600;line-height:1.4}';
   document.head.appendChild(css);
 
   function txt(el){ return el ? el.textContent.replace(/\s+/g, ' ').trim() : ''; }
   function shown(el){ return !el.closest('[hidden]') && txt(el) !== ''; }
+
+  // Olası değer denetimi: aralık dışı ya da eksi bir değer girilince kutu kırmızı çizilir, altında kısa uyarı çıkar ve sonuç kartlarının üstünde
+  // "bu sonucu kullanmayın" şeridi çıkar. Aralık sırası: kutunun data-aralik'i (sayfaya özel; "|seçici:aralık" ile birime göre değişir,
+  // "yok" denetimi kapatır) → kutunun hem min hem max'ı → hasta anahtarı (data-hasta ya da paneldeki data-k) → kutu adı (id). Aralıklar bilerek
+  // geniştir: yalnız yazım hatasını (400480, 1,65 m, µmol/L girilmiş kreatinin) yakalamak içindir, klinik eşik değildir.
+  var ARALIK = {yas:[0, 120, 'yıl', 'Yaş'], kilo:[20, 350, 'kg', 'Kilo'], boy:[100, 230, 'cm', 'Boy'], kreatinin:[0.1, 25, 'mg/dL', 'Kreatinin'],
+    egfr:[1, 200, 'mL/dk/1,73 m²', 'eGFR'], crcl:[1, 300, 'mL/dk', 'CrCl'], na:[90, 200, 'mEq/L', 'Na'], k:[1, 12, 'mEq/L', 'K'], glukoz:[10, 3000, 'mg/dL', 'Glukoz'],
+    ure:[2, 1000, 'mg/dL', 'Üre'], hb:[2, 25, 'g/dL', 'Hb'], alb:[0.5, 7, 'g/dL', 'Albümin'], bil:[0.1, 60, 'mg/dL', 'Bilirubin'], inr:[0.5, 20, '', 'INR'],
+    plt:[0.1, 2000, '×10³/µL', 'Trombosit'], ca:[2, 25, 'mg/dL', 'Ca'], sbp:[40, 300, 'mmHg', 'Sistolik'], dbp:[20, 200, 'mmHg', 'Diyastolik'],
+    nabiz:[20, 300, '/dk', 'Nabız'], ph:[6.5, 8, '', 'pH'], pco2:[5, 200, 'mmHg', 'pCO₂'], po2:[10, 700, 'mmHg', 'pO₂'], hco3:[1, 60, 'mEq/L', 'HCO₃'],
+    qt:[150, 900, 'ms', 'QT'], ates:[25, 45, '°C', 'Ateş'], spo2:[30, 100, '%', 'SpO₂'], ss:[4, 80, '/dk', 'Solunum sayısı'],
+    cl:[50, 160, 'mEq/L', 'Cl'], mg:[0.2, 12, 'mg/dL', 'Mg'], p:[0.2, 20, 'mg/dL', 'Fosfor'], osm:[180, 450, 'mOsm/kg', 'Osmolalite'],
+    uosm:[30, 1500, 'mOsm/kg', 'İdrar osmolalitesi'], una:[0, 300, 'mmol/L', 'İdrar Na'], uk:[0, 300, 'mmol/L', 'İdrar K'], fio2:[21, 100, '%', 'FiO₂'], a1c:[3, 20, '%', 'HbA1c']};
+  var KUTU = {wt:'kilo', kilo:'kilo', kg:'kilo', age:'yas', yas:'yas', ht:'boy', boy:'boy', scr:'kreatinin', cr:'kreatinin', bcr:'kreatinin', ccr:'kreatinin',
+    egfr:'egfr', crcl:'crcl', na:'na', sna:'na', k:'k', glu:'glukoz', bg:'glukoz', fbg:'glukoz', hb:'hb', alb:'alb', salb:'alb', bil:'bil', inr:'inr', plt:'plt', ca:'ca',
+    sbp:'sbp', dbp:'dbp', ph:'ph', pco2:'pco2', po2:'po2', hco3:'hco3', hco:'hco3', qt:'qt', temp:'ates', tmp:'ates', spo2:'spo2', bspo2:'spo2', spo2b:'spo2', rr:'ss',
+    cl:'cl', mg:'mg', p:'p', osm:'osm', mos:'osm', uosm:'uosm', uos2:'uosm', una:'una', uk:'uk', fio2:'fio2', a1c:'a1c'};
+  // Ana sonucu eksi çıkamayacak araçlar (baz açığı, sodyum değişimi, açıklar gibi eksi olabilen sonuçlar bu listede yok)
+  var EKSI_OLMAZ = ['kreatinin-klerensi', 'egfr', 'bobrek-ilac-dozu', 'febril-notropeni', 'vki', 'qtc', 'ortalama-arter-basinci', 'iv-demir', 'beslenme',
+    'idame-sivi', 'infuzyon-hizi', 'insulin-dozu', 'meld-na', 'fib-4', 'kontrast-nefropati', 'levotiroksin', 'prevent', 'child-pugh', 'vte-profilaksisi',
+    'antikoagulan-kesme', 'steroid-esdegeri', 'opioid-donusumu', 'r-faktor'];
+  // Hasta kaydına (ve başka araçlara) yalnız olası değerler gider
+  function olasi(k, d){ var r = ARALIK[k], x = parseFloat(d); return !r || d === '' || d == null || (isFinite(x) && x >= r[0] && x <= r[1]); }
+  window.vizitOlasi = olasi;
+  function temizKayit(v){ Object.keys(v).forEach(function(k){ if (k !== 'cins' && !olasi(k, v[k])) delete v[k]; }); return v; }
+
 
   // Kartta görünen sonucu tek satırlık düz metne çevirir.
   function summary(card){
@@ -98,10 +124,12 @@
   // Bu sayfada kullanıcı bir değer girdi ya da seçim yaptı mı? Yapmadıysa sonuç örnek değerlerden gelir.
   var dokunuldu = false;
   // "Değerler örnek olarak doldurulmuştur" cümlesi, örnekler silinince ya da kullanıcı ilk değeri girince kalkar (paragrafın kalanı durur).
-  function ornekGizle(){
+  // tum: örnek seçimler de silindiyse (hasta yüklendi, Temizle) "Örnek seçimler işaretlenmiştir" cümlesi de kalkar; tek dokunuşta kalmaz
+  function ornekGizle(tum){
     document.querySelectorAll('p.note, p, small').forEach(function(p){
-      var t = p.firstChild; if (!t || t.nodeType !== 3 || !/^\s*Değerler örnek olarak/.test(t.nodeValue)) return;
-      t.nodeValue = t.nodeValue.replace(/^\s*Değerler örnek olarak[^.]*\.\s*/, '');
+      var t = p.firstChild, re = tum ? /^\s*(Değerler örnek olarak|Örnek seçimler işaretlenmiştir|Örnek değerler doldurulmuştur)[^.]*\.\s*/ : /^\s*Değerler örnek olarak[^.]*\.\s*/;
+      if (!t || t.nodeType !== 3 || !re.test(t.nodeValue)) return;
+      t.nodeValue = t.nodeValue.replace(re, '');
       if (!p.textContent.trim()) p.hidden = true;
     });
   }
@@ -112,7 +140,7 @@
   // Olası olmayan değer ya da geçersiz sonuç varken Kopyala ve Nota ekle çalışmaz.
   function engel(card, btn, asil){
     denetle(); if (!card._olasiS || !card._olasiS.parentNode) return false;
-    btn.textContent = 'Değeri kontrol edin'; setTimeout(function(){ btn.textContent = asil; }, 2500); return true;
+    btn.textContent = /^Seçilmemiş/.test(card._olasiS.textContent) ? 'Önce seçimleri yapın' : 'Değeri kontrol edin'; setTimeout(function(){ btn.textContent = asil; }, 2500); return true;
   }
   function notEkle(card, btn){
     if (engel(card, btn, 'Nota ekle')) return;
@@ -178,10 +206,26 @@
   };
   var AD = {yas:'Yaş', kilo:'Kilo', boy:'Boy', kreatinin:'Kreatinin', egfr:'eGFR', na:'Na', k:'K', glukoz:'Glukoz', ure:'Üre',
     hb:'Hb', alb:'Albümin', bil:'Bilirubin', inr:'INR', plt:'Trombosit', ca:'Ca', sbp:'Sistolik', dbp:'Diyastolik', nabiz:'Nabız'};
-  function oku(){ try { var o = JSON.parse(sessionStorage.getItem(HK)); if (o && Date.now() - o.t < SURE) return o.v || {}; sessionStorage.removeItem(HK); } catch (e) {} return {}; }
-  function yaz(v){ try { if (Object.keys(v).length) sessionStorage.setItem(HK, JSON.stringify({t: Date.now(), v: v})); else sessionStorage.removeItem(HK); } catch (e) {} var n = notOku(); if (n.length) notYaz(n); }
+  function oku(){ try { var o = JSON.parse(sessionStorage.getItem(HK)); if (o && Date.now() - o.t < SURE) return temizKayit(o.v || {}); sessionStorage.removeItem(HK); } catch (e) {} return {}; }
+  function yaz(v){ temizKayit(v); try { if (Object.keys(v).length) sessionStorage.setItem(HK, JSON.stringify({t: Date.now(), v: v})); else sessionStorage.removeItem(HK); } catch (e) {} var n = notOku(); if (n.length) notYaz(n); }
   function gecerli(el){ var k = el.getAttribute('data-hasta-kosul'); return !k || !!document.querySelector(k); }
   function tetikle(el){ el.dispatchEvent(new Event('input', {bubbles: true})); el.dispatchEvent(new Event('change', {bubbles: true})); }
+  // data-sabit: laboratuvar üst sınırı, ilaç konsantrasyonu, güvenli varsayılan seçim gibi hastaya ait olmayan değerler örnek silinirken kalır
+  function korunur(el){ return el.hasAttribute('data-sabit') || !!el.closest('[data-sabit], header, .hpanel, .gb'); }
+  // Örnek seçimleri: body[data-ornek-secim] = "g g=v #id" → data-g grubu seçimsiz kalır (g) ya da nötr değere döner (g=v); #id ile seçim kutusu boşalır
+  var SECIM = (document.body.getAttribute('data-ornek-secim') || '').split(/\s+/).filter(Boolean);
+  function ornekleriSil(koru, girdiler){
+    girdiler.forEach(function(el){ if (el.value !== '' && koru.indexOf(el) < 0 && !korunur(el)) { el.value = ''; tetikle(el); } });
+    document.querySelectorAll('input[type=checkbox]').forEach(function(el){ if (el.checked && !el.disabled && koru.indexOf(el) < 0 && !korunur(el)) { el.checked = false; tetikle(el); } });
+    document.querySelectorAll('input[type=radio]').forEach(function(el){ if (el.checked && !korunur(el)) { el.checked = false; tetikle(el); } });
+    SECIM.forEach(function(t){
+      if (t.charAt(0) === '#') { var se = document.querySelector(t); if (!se || se.tagName !== 'SELECT') return;
+        if (!se.querySelector('option[value=""]')) { var o = document.createElement('option'); o.value = ''; o.textContent = '— Seçin —'; se.insertBefore(o, se.firstChild); }
+        if (se.value !== '') { se.value = ''; tetikle(se); } return; }
+      var p = t.split('=');
+      document.querySelectorAll('button[data-g="' + p[0] + '"]').forEach(function(b){ b.setAttribute('aria-pressed', p[1] != null && b.getAttribute('data-v') === p[1] ? 'true' : 'false'); });
+    });
+  }
 
   var girdiler = Array.prototype.filter.call(document.querySelectorAll('input'), function(i){
     return /^(number|text)$/.test(i.type) && !i.closest('header') && i.type !== 'search';
@@ -199,10 +243,10 @@
     var kayit = oku(), kullanilan = [], hastaEl = [];
     document.querySelectorAll('input[data-hasta]').forEach(function(el){
       var a = el.getAttribute('data-hasta');
-      if (kayit[a] != null && gecerli(el)) { el.value = kayit[a]; hastaEl.push(el); if (kullanilan.indexOf(AD[a] + ' ' + String(kayit[a]).replace('.', ',')) < 0) kullanilan.push(AD[a] + ' ' + String(kayit[a]).replace('.', ',')); tetikle(el); }
+      if (kayit[a] != null && gecerli(el)) { el.value = kayit[a]; hastaEl.push(el); if (kullanilan.indexOf(AD[a] + ' ' + String(kayit[a]).replace('.', ',')) < 0) kullanilan.push(AD[a] + ' ' + String(kayit[a]).replace('.', ',')); }
     });
+    var cinsEl = Array.prototype.filter.call(document.querySelectorAll('[data-hasta-cins]'), gecerli), uyg = false, koru = hastaEl.slice();
     if (kayit.cins) {
-      var cinsEl = Array.prototype.filter.call(document.querySelectorAll('[data-hasta-cins]'), gecerli), uyg = false;
       var gruplar = [];
       cinsEl.forEach(function(b){
         if (b.tagName !== 'BUTTON') return;
@@ -216,25 +260,25 @@
         var hedef = bs.filter(function(b){ return b.getAttribute('data-hasta-cins') === kayit.cins; })[0];
         if (hedef) { hedef.click(); uyg = true; }
       });
-      cinsEl.forEach(function(c){ if (c.type === 'checkbox') { var on = kayit.cins === c.getAttribute('data-hasta-cins'); if (c.checked !== on) { c.checked = on; tetikle(c); } uyg = true; } });
+      cinsEl.forEach(function(c){ if (c.type === 'checkbox') { var on = kayit.cins === c.getAttribute('data-hasta-cins'); if (c.checked !== on) { c.checked = on; tetikle(c); } uyg = true; koru.push(c); } });
       if (uyg) kullanilan.unshift(kayit.cins === 'm' ? 'Erkek' : 'Kadın');
     }
     if (kullanilan.length) yaz(kayit);
     // Hastanın değeri geldiyse kalan örnek değerler silinir (kutular boşalır, işaretler kalkar); örnek ile hastanın değeri karışmaz.
     // data-sabit: laboratuvar üst sınırı, ilaç konsantrasyonu gibi hastaya ait olmayan varsayılanlar kalır.
+    // Radyo ve body[data-ornek-secim] seçimleri de sıfırlanır. Cinsiyet kayıtta yoksa sayfanın örnek cinsiyeti kalır: o zaman örnek uyarısı sürer.
+    var cinsOrnek = false;
     if (kullanilan.length) {
-      girdiler.forEach(function(el){ if (el.value !== '' && hastaEl.indexOf(el) < 0 && !el.hasAttribute('data-sabit')) { el.value = ''; tetikle(el); } });
-      document.querySelectorAll('input[type=checkbox]').forEach(function(el){
-        if (el.checked && !el.disabled && !el.closest('header, .hpanel, .gb') && !(kayit.cins && el.hasAttribute('data-hasta-cins') && gecerli(el))) { el.checked = false; tetikle(el); }
-      });
-      hastaEl.forEach(tetikle);
-      dokunuldu = true; ornekGizle();
-    }
+      ornekleriSil(koru, girdiler);
+      (hastaEl.length ? hastaEl : girdiler.slice(0, 1)).forEach(tetikle);
+      cinsOrnek = !uyg && cinsEl.some(function(b){ return b.tagName === 'BUTTON' && b.getAttribute('aria-pressed') === 'true'; });
+      if (!cinsOrnek) { dokunuldu = true; ornekGizle(true); }
+    } else hastaEl.forEach(tetikle);
 
     var bant = document.createElement('div'); bant.className = 'ornek'; bant.setAttribute('role', 'status');
     var yazi = document.createElement('span'), dug = document.createElement('button'); dug.type = 'button';
     if (kullanilan.length) {
-      yazi.textContent = 'Önceki araçtan alınan değerler: ' + kullanilan.join(' · ') + '. Diğer alanları bu hasta için doldurun.';
+      yazi.textContent = 'Önceki araçtan alınan değerler: ' + kullanilan.join(' · ') + '. Diğer alanları bu hasta için doldurun.' + (cinsOrnek ? ' Cinsiyet seçimi örnektir; hastaya göre seçin.' : '');
       dug.textContent = 'Yeni hasta';
     } else {
       yazi.textContent = 'Örnek değerler gösteriliyor.';
@@ -248,9 +292,8 @@
     dug.addEventListener('click', function(){
       if (dug.textContent === 'Yeni hasta') notYaz([]);
       yaz({});
-      girdiler.forEach(function(el){ if (el.value !== '') { el.value = ''; tetikle(el); } });
-      document.querySelectorAll('input[type=checkbox]').forEach(function(el){ if (el.checked && !el.closest('header')) { el.checked = false; tetikle(el); } });
-      bant.remove(); ornekGizle();
+      ornekleriSil([], girdiler); if (girdiler[0]) tetikle(girdiler[0]);
+      bant.remove(); ornekGizle(true);
       if (girdiler[0]) girdiler[0].focus();
     });
     bant.appendChild(yazi); bant.appendChild(dug); if (dug2) bant.appendChild(dug2);
@@ -271,34 +314,17 @@
       var el = e.target;
       if (el.matches && el.matches('input[data-hasta]') && gecerli(el)) {
         var v = oku(), a = el.getAttribute('data-hasta');
-        if (el.value === '') delete v[a]; else v[a] = el.value;
+        if (el.value === '' || disinda(el)) delete v[a]; else v[a] = el.value;
         yaz(v);
       }
       if (!kullanilan.length && bant.parentNode) bant.remove();
     });
   }
 
-  // Olası değer denetimi: aralık dışı ya da eksi bir değer girilince kutu kırmızı çizilir, altına uyarı yazılır ve sonuç kartlarının üstünde
-  // "bu sonucu kullanmayın" şeridi çıkar. Aralık sırası: kutunun data-aralik'i (sayfaya özel; "|seçici:aralık" ile birime göre değişir,
-  // "yok" denetimi kapatır) → kutunun hem min hem max'ı → hasta anahtarı (data-hasta) → kutu adı (id). Aralıklar bilerek geniştir:
-  // yalnız yazım hatasını (400480, 1,65 m, µmol/L girilmiş kreatinin) yakalamak içindir, klinik eşik değildir.
-  var ARALIK = {yas:[0, 120, 'yıl', 'Yaş'], kilo:[20, 350, 'kg', 'Kilo'], boy:[100, 230, 'cm', 'Boy'], kreatinin:[0.1, 20, 'mg/dL', 'Kreatinin'],
-    egfr:[1, 200, 'mL/dk/1,73 m²', 'eGFR'], crcl:[1, 300, 'mL/dk', 'CrCl'], na:[90, 200, 'mEq/L', 'Na'], k:[1, 12, 'mEq/L', 'K'], glukoz:[10, 2000, 'mg/dL', 'Glukoz'],
-    ure:[2, 1000, 'mg/dL', 'Üre'], hb:[2, 25, 'g/dL', 'Hb'], alb:[0.5, 7, 'g/dL', 'Albümin'], bil:[0.1, 60, 'mg/dL', 'Bilirubin'], inr:[0.5, 20, '', 'INR'],
-    plt:[1, 2000, '×10³/µL', 'Trombosit'], ca:[2, 25, 'mg/dL', 'Ca'], sbp:[40, 300, 'mmHg', 'Sistolik'], dbp:[20, 200, 'mmHg', 'Diyastolik'],
-    nabiz:[20, 300, '/dk', 'Nabız'], ph:[6.5, 8, '', 'pH'], pco2:[5, 200, 'mmHg', 'pCO₂'], po2:[10, 700, 'mmHg', 'pO₂'], hco3:[1, 60, 'mEq/L', 'HCO₃'],
-    qt:[150, 900, 'ms', 'QT'], ates:[25, 45, '°C', 'Ateş'], spo2:[30, 100, '%', 'SpO₂'], ss:[4, 80, '/dk', 'Solunum sayısı']};
-  var KUTU = {wt:'kilo', kilo:'kilo', kg:'kilo', age:'yas', yas:'yas', ht:'boy', boy:'boy', scr:'kreatinin', cr:'kreatinin', bcr:'kreatinin', ccr:'kreatinin',
-    egfr:'egfr', crcl:'crcl', na:'na', sna:'na', k:'k', glu:'glukoz', hb:'hb', alb:'alb', salb:'alb', bil:'bil', inr:'inr', plt:'plt', ca:'ca', sbp:'sbp', dbp:'dbp',
-    ph:'ph', pco2:'pco2', po2:'po2', hco3:'hco3', hco:'hco3', qt:'qt', temp:'ates', tmp:'ates', spo2:'spo2', bspo2:'spo2', spo2b:'spo2', rr:'ss'};
-  // Ana sonucu eksi çıkamayacak araçlar (baz açığı, sodyum değişimi, açıklar gibi eksi olabilen sonuçlar bu listede yok)
-  var EKSI_OLMAZ = ['kreatinin-klerensi', 'egfr', 'bobrek-ilac-dozu', 'febril-notropeni', 'vki', 'qtc', 'ortalama-arter-basinci', 'iv-demir', 'beslenme',
-    'idame-sivi', 'infuzyon-hizi', 'insulin-dozu', 'meld-na', 'fib-4', 'kontrast-nefropati', 'levotiroksin', 'prevent', 'child-pugh', 'vte-profilaksisi',
-    'antikoagulan-kesme', 'steroid-esdegeri', 'opioid-donusumu', 'r-faktor'];
   function etiket(el){ return el.labels && el.labels[0] || (el.id ? document.querySelector('label[for="' + el.id + '"]') : null); }
   function etiketBirim(el){ var l = etiket(el), sp = l && l.querySelector('span'); return sp ? txt(sp).split(',')[0] : ''; }
   function etiketAd(el){ var l = etiket(el); if (!l) return el.getAttribute('aria-label') || 'Değer';
-    var k = l.cloneNode(true); k.querySelectorAll('span, small').forEach(function(x){ x.remove(); }); return txt(k) || 'Değer'; }
+    var k = l.cloneNode(true); k.querySelectorAll('span, small, input').forEach(function(x){ x.remove(); }); return txt(k) || 'Değer'; }
   function aralikBul(el){
     var s = el.getAttribute('data-aralik');
     if (s) {
@@ -310,55 +336,107 @@
     }
     var mn = el.getAttribute('min'), mx = el.getAttribute('max');
     if (mn && mx) return {a: +mn, b: +mx, birim: etiketBirim(el), ad: etiketAd(el)};
-    var a = ARALIK[el.getAttribute('data-hasta')] || ARALIK[KUTU[el.id]];
+    var a = ARALIK[el.getAttribute('data-hasta') || el.getAttribute('data-k')] || ARALIK[KUTU[el.id]];
     return a ? {a: a[0], b: a[1], birim: a[2], ad: a[3]} : null;
   }
+  function disinda(el){ var r = el.value !== '' ? aralikBul(el) : null, x = parseFloat(el.value); return r && isFinite(x) && (x < r.a || x > r.b || x < 0) ? r : null; }
+  // Bir bölümde (panel, menüdeki Hasta kartı) olası olmayan değer var mı? Varsa oradaki Kopyala çalışmaz.
+  window.vizitOlasiVar = function(kok){ return Array.prototype.some.call(kok.querySelectorAll('input[type=number]'), function(el){ return !!disinda(el); }); };
   function sayiTr(x){ return String(x).replace('.', ','); }
-  // Sonuç kartında NaN/sonsuz ya da (EKSI_OLMAZ araçlarında) eksi bir ana sayı varsa onu döndürür
+  // Sonuç kartında NaN/sonsuz, (EKSI_OLMAZ araçlarında) eksi bir ana sayı ya da data-gecerli="alt:üst" dışına çıkan bir sonuç varsa onu döndürür
   function sonucGecersiz(card){
     if (card.closest('[hidden]')) return '';
     var bul = '';
-    card.querySelectorAll('.res, .big, .num, .sub b, .pill').forEach(function(n){
-      if (bul || n.closest('[hidden]')) return; var t = txt(n);
+    card.querySelectorAll('.res, .big, .num, .sub b, .pill, [data-gecerli]').forEach(function(n){
+      if (bul || n.closest('[hidden]')) return; var t = txt(n), g = n.getAttribute('data-gecerli');
       if (/NaN|Infinity|∞|undefined/.test(t)) bul = t.slice(0, 40);
       else if (n.classList.contains('num') && EKSI_OLMAZ.indexOf(bu) >= 0 && /^[−-]\s*\d/.test(t)) bul = t;
+      else if (g) { var x = parseFloat(t.replace('−', '-').replace(',', '.')), ab = g.split(':');
+        if (isFinite(x) && (x < +ab[0] || x > +ab[1])) bul = t; }
     });
     return bul;
   }
+  // Seçilmemiş puanlama maddeleri: işaretsiz radyo grupları ve body[data-ornek-secim]'de adı geçen (nötr değeri olmayan) segment grupları ile seçim kutuları
+  function grupAd(el){
+    if (el.tagName === 'SELECT') return etiketAd(el).slice(0, 40);
+    var k = el.closest('.items, .seg, fieldset, [role=radiogroup], [role=group]') || el.parentNode, l = k.getAttribute('aria-label');
+    if (!l && k.getAttribute('aria-labelledby')) { var x = document.getElementById(k.getAttribute('aria-labelledby')); l = x && txt(x); }
+    if (!l) { var o = k.previousElementSibling; if (o && !o.matches('input, button, .seg, .items') && txt(o) && txt(o).length < 80) l = txt(o); }
+    if (!l && el.tagName === 'SELECT') l = etiketAd(el);
+    return (l || 'seçim').replace(/\s*[\(:].*$/, '').slice(0, 40);
+  }
+  function eksikler(){
+    var out = [], rg = {};
+    document.querySelectorAll('input[type=radio]').forEach(function(r){
+      if (!r.name || korunur(r)) return; var g = rg[r.name] || (rg[r.name] = {el: r, sec: false, gor: false});
+      if (r.checked) g.sec = true; if (r.offsetParent !== null) g.gor = true;
+    });
+    Object.keys(rg).forEach(function(n){ if (!rg[n].sec && rg[n].gor) out.push(rg[n].el); });
+    SECIM.forEach(function(t){
+      if (t.charAt(0) === '#') { var se = document.querySelector(t); if (se && se.value === '' && se.offsetParent !== null) out.push(se); return; }
+      if (t.indexOf('=') >= 0) return;
+      var bs = document.querySelectorAll('button[data-g="' + t + '"]');
+      if (bs.length && bs[0].offsetParent !== null && !document.querySelector('button[data-g="' + t + '"][aria-pressed="true"]')) out.push(bs[0]);
+    });
+    return out;
+  }
+  function kartBul(el, kartlar){
+    var c = el.closest('section.card[aria-live]'); if (c) return c;
+    for (var i = 0; i < kartlar.length; i++) if (el.compareDocumentPosition(kartlar[i]) & 4) return kartlar[i];
+    return null;
+  }
+  var denBek = null, gecBek = null;
   function denetle(){
-    var hatalar = [];
+    var hatalar = [], simdi = Date.now(), bekle = false;
     document.querySelectorAll('input[type=number]').forEach(function(el){
-      if (el.closest('header, .hpanel, .gb')) return;
-      var r = el.value !== '' && el.offsetParent !== null ? aralikBul(el) : null, x = parseFloat(el.value), m = el._olasiM;
-      if (r && isFinite(x) && (x < r.a || x > r.b || x < 0)) {
+      if (el.closest('header, .gb')) return;
+      var r = el.offsetParent !== null ? disinda(el) : null, m = el._olasiM, panel = !!el.closest('.hpanel, #h-grid'), kalan;
+      if (r) {
+        if (!panel) hatalar.push(r.ad + ' ' + sayiTr(el.value));
+        // Yazarken her tuşta çıkıp kaybolmasın: uyarı yazmaya ara verince (600 ms) ya da kutudan çıkınca görünür; düzelince hemen kalkar
+        if (document.activeElement === el && (kalan = 600 - (simdi - (el._yT || 0))) > 0) { bekle = bekle ? Math.min(bekle, kalan) : kalan; return; }
         if (!m) { m = el._olasiM = document.createElement('p'); m.className = 'olasi-m'; m.id = 'olasi-' + Math.random().toString(36).slice(2, 8); }
         var y = 'Bu değer olası görünmüyor (beklenen ' + sayiTr(r.a) + '–' + sayiTr(r.b) + (r.birim ? ' ' + r.birim : '') + '). Kontrol edin.';
         if (m.textContent !== y) m.textContent = y;
-        if (!m.parentNode) { el.insertAdjacentElement('afterend', m); el.classList.add('olasi-g'); el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', m.id); }
-        hatalar.push(r.ad + ' ' + sayiTr(el.value));
+        if (!m.parentNode) { var ust = el.parentNode; if (getComputedStyle(ust).position === 'static') ust.style.position = 'relative';
+          ust.appendChild(m); el.classList.add('olasi-g'); el.setAttribute('aria-invalid', 'true'); el.setAttribute('aria-describedby', m.id); }
       } else if (m && m.parentNode) { m.remove(); el.classList.remove('olasi-g'); el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); }
     });
-    document.querySelectorAll('section.card[aria-live]').forEach(function(card){
-      var g, y = hatalar.length ? (hatalar.length > 1 ? 'Girilen bazı değerler olası değil (' : 'Girilen bir değer olası değil (') + hatalar.join(', ') + '). Bu sonucu kullanmayın.'
-        : (g = sonucGecersiz(card)) ? 'Hesaplanan sonuç geçersiz (' + g + '). Girilen değerleri kontrol edin; bu sonucu kullanmayın.' : '';
+    if (bekle) { clearTimeout(gecBek); gecBek = setTimeout(function(){ gecBek = null; denetle(); }, bekle + 20); }
+    var kartlar = Array.prototype.slice.call(document.querySelectorAll('section.card[aria-live]')), eks = {};
+    eksikler().forEach(function(el){ var c = kartBul(el, kartlar); if (!c) return; var i = kartlar.indexOf(c), a = grupAd(el); eks[i] = eks[i] || []; if (eks[i].indexOf(a) < 0) eks[i].push(a); });
+    kartlar.forEach(function(card, i){
+      var g, e = eks[i], y = hatalar.length ? (hatalar.length > 1 ? 'Girilen bazı değerler olası değil (' : 'Girilen bir değer olası değil (') + hatalar.join(', ') + '). Bu sonucu kullanmayın.'
+        : (g = sonucGecersiz(card)) ? 'Hesaplanan sonuç geçersiz (' + g + '). Girilen değerleri kontrol edin; bu sonucu kullanmayın.'
+        : e ? 'Seçilmemiş madde var: ' + e.slice(0, 3).join(', ') + (e.length > 3 ? ' ve ' + (e.length - 3) + ' madde daha' : '') + '. Sonuç eksik; seçimleri hastaya göre yapın.' : '';
       var s = card._olasiS;
       if (y) { if (!s) { s = card._olasiS = document.createElement('div'); s.className = 'olasi-s'; s.setAttribute('role', 'alert'); }
         if (s.textContent !== y) s.textContent = y; if (!s.parentNode) card.insertBefore(s, card.firstChild); }
       else if (s && s.parentNode) s.remove();
     });
   }
-  var denBek = null;
   function denetleSonra(){ if (!denBek) denBek = setTimeout(function(){ denBek = null; denetle(); }, 0); }
-  if (bu !== 'nobet-listesi') { ['input', 'change', 'click'].forEach(function(ev){ document.addEventListener(ev, denetleSonra); }); denetle(); }
-  // Dolu sayı kutusuna dokununca içerik seçilir: yazılan sayı eskisinin sonuna eklenmez, yerine geçer (iOS Safari için kısa gecikmeyle).
-  var secilen = null;
-  document.addEventListener('focusin', function(e){
-    var el = e.target; if (bu === 'nobet-listesi' || !el.matches || !el.matches('input[type=number]') || el.value === '') return;
-    var v0 = el.value; secilen = el; try { el.select(); } catch (x) {}
-    setTimeout(function(){ if (document.activeElement === el && el.value === v0) try { el.select(); } catch (x) {} }, 10);
-    setTimeout(function(){ if (secilen === el) secilen = null; }, 700);
-  });
-  document.addEventListener('mouseup', function(e){ if (secilen && e.target === secilen) { e.preventDefault(); secilen = null; } }, true);
+  if (bu !== 'nobet-listesi') {
+    document.addEventListener('input', function(e){ if (e.isTrusted && e.target.type === 'number') e.target._yT = Date.now(); }, true);
+    ['input', 'change', 'click', 'focusout'].forEach(function(ev){ document.addEventListener(ev, denetleSonra); }); denetle();
+    // Ondalık virgül: sayı kutusunda "2,1" yazılınca 21 olmasın, 2.1 olsun
+    document.addEventListener('beforeinput', function(e){
+      var el = e.target; if (!el.matches || !el.matches('input[type=number]') || !e.data || e.data.indexOf(',') < 0) return;
+      e.preventDefault(); try { document.execCommand('insertText', false, e.data.replace(/,/g, '.')); } catch (x) {}
+    });
+  }
+  // Dolu sayı kutusuna dokununca (kutu zaten odaktaysa da) içerik seçilir: yazılan sayı eskisinin sonuna eklenmez, yerine geçer.
+  var secilen = null, secT = 0;
+  function sec(el){ try { el.select(); } catch (x) {} }
+  function secHazirla(el){
+    if (bu === 'nobet-listesi' || !el.matches || !el.matches('input[type=number]') || el.value === '') return;
+    var v0 = el.value; secilen = el; secT = Date.now(); sec(el);
+    setTimeout(function(){ if (document.activeElement === el && el.value === v0) sec(el); }, 10);
+  }
+  document.addEventListener('focusin', function(e){ secHazirla(e.target); });
+  document.addEventListener('pointerdown', function(e){ if (e.target === document.activeElement) secHazirla(e.target); }, true);
+  document.addEventListener('mouseup', function(e){ if (secilen && e.target === secilen && Date.now() - secT < 700) e.preventDefault(); }, true);
+  document.addEventListener('click', function(e){ if (secilen && e.target === secilen && Date.now() - secT < 700) { sec(secilen); secilen = null; } }, true);
 
   // İlgili araçlar: sayfanın altına klinik olarak bağlantılı araçlara kısayol ekler.
   var AN = {'egfr':'eGFR','akut-bobrek-hasari':'Akut böbrek hasarı','kreatinin-klerensi':'Kreatinin klerensi','bobrek-ilac-dozu':'Böbrekte ilaç dozu',
@@ -714,7 +792,8 @@
         if (v.cins) document.querySelectorAll('button[data-hasta-cins="' + v.cins + '"]').forEach(function(x){ if (gecerli(x) && x.getAttribute('aria-pressed') !== 'true') x.click(); });
         ciz(); }; });
       panel.querySelector('[data-i=kop]').onclick = function(){
-        var b = this, t = window.vizitEpikriz(oku(), notOku().map(function(x){ return x.s; }));
+        var b = this; if (window.vizitOlasiVar(panel)) { b.textContent = 'Değeri kontrol edin'; setTimeout(function(){ b.textContent = 'Kopyala'; }, 2500); return; }
+        var t = window.vizitEpikriz(oku(), notOku().map(function(x){ return x.s; }));
         if (!t) return; copy(t, b);
       };
       panel.querySelector('[data-i=yeni]').onclick = function(){ yaz({}); notYaz([]); ciz(); rozet(); };

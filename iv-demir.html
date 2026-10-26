@@ -97,9 +97,9 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
     <div class="grid">
       <div class="field" id="w-wt"><label for="wt" id="l-wt">Ağırlık <span id="u-wt">kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="62" placeholder=""></div>
       <div class="field" id="w-hb"><label for="hb" id="l-hb">Hemoglobin <span id="u-hb">g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="8.4" placeholder=""></div>
-      <div class="field" id="w-thb"><label for="thb" id="l-thb">Hedef Hb <span id="u-thb">g/dL</span></label><input id="thb" type="number" inputmode="decimal" step="any" value="15" placeholder=""></div>
-      <div class="field" id="w-fer"><label for="fer" id="l-fer">Ferritin <span id="u-fer">ng/mL</span></label><input id="fer" type="number" inputmode="decimal" step="any" value="9" placeholder=""></div>
-      <div class="field" id="w-ts"><label for="ts" id="l-ts">Transferrin satürasyonu <span id="u-ts">%</span></label><input id="ts" type="number" inputmode="decimal" step="any" value="6" placeholder=""></div>
+      <div class="field" id="w-thb"><label for="thb" id="l-thb">Hedef Hb <span id="u-thb">g/dL</span></label><input id="thb" data-sabit data-aralik="8-16 g/dL" type="number" inputmode="decimal" step="any" value="15" placeholder=""></div>
+      <div class="field" id="w-fer"><label for="fer" id="l-fer">Ferritin <span id="u-fer">ng/mL</span></label><input id="fer" data-aralik="1-50000 ng/mL" type="number" inputmode="decimal" step="any" value="9" placeholder=""></div>
+      <div class="field" id="w-ts"><label for="ts" id="l-ts">Transferrin satürasyonu <span id="u-ts">%</span></label><input id="ts" data-aralik="1-100 %" type="number" inputmode="decimal" step="any" value="6" placeholder=""></div>
     </div>
     <div class="items">
       <label class="item" id="w-ckd"><input type="checkbox" id="ckd"><span class="txt">Kronik böbrek hastalığı, kalp yetmezliği veya inflamasyon<small>ferritin eşiği yükselir</small></span></label>
@@ -149,7 +149,7 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
     if(fe!==null){defi=ck?(fe<100||fe<300&&ts!==null&&ts<20):fe<30||fe<100&&ts!==null&&ts<20}
     pill('pl',defi===null?'':defi?'Demir eksikliği':'Demir eksikliği değil',defi===null?'':defi?'var(--warn)':'var(--ok)');
     $('adv').textContent=defi===false?'Ferritin ve TSAT demir eksikliğini desteklemiyor; aneminin başka nedenlerini araştırın.':ck?'KBH, kalp yetmezliği veya inflamasyonda eşik: ferritin < 100 veya 100–299 ng/mL ve TSAT < %20.':'Eşik: ferritin < 30 ng/mL (inflamasyonda < 100 ve TSAT < %20).';
-    if(!w||hb===null||t===null){$('gz').textContent='–';return}
+    if(!w||hb===null||t===null){['gz','g1','g2','fcm'].forEach(function(i){$(i).textContent='–'});return}
     var tg=w<35?Math.min(t,13):t,store=w>=35?500:15*w,a=Math.max(0,w*(tg-hb)*2.4),tot=a+store;
     $('gz').textContent=fm(Math.round(tot/50)*50);$('g1').textContent=fm(a)+' mg';$('g2').textContent=fm(store)+' mg';
     var f=hb<10?(w<70?1500:2000):hb<14?(w<70?1000:1500):500;if(w<35)f=hb<10?30*w:15*w;

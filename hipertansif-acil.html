@@ -65,7 +65,7 @@ table.t th{color:var(--muted);font-weight:600;font-size:.78rem}
 table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
 </style>
 </head>
-<body>
+<body data-ornek-secim="#dz">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -94,7 +94,7 @@ table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
       <div class="field"><label for="sbp">Sistolik <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="numeric" step="1" value="200"></div>
       <div class="field"><label for="dbp">Diyastolik <span>mmHg</span></label><input id="dbp" data-hasta="dbp" type="number" inputmode="numeric" step="1" value="115"></div>
       <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
-      <div class="field" id="w-hr"><label for="hr">Nabız <span>/dk</span></label><input id="hr" data-hasta="nabiz" type="number" inputmode="numeric" step="1" value="100"></div>
+      <div class="field" id="w-hr"><label for="hr">Nabız <span>/dk</span></label><input data-aralik="20-300 /dk" id="hr" data-hasta="nabiz" type="number" inputmode="numeric" step="1" value="100"></div>
     </div>
   </section>
 
@@ -115,7 +115,7 @@ table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
     <ul class="chk" id="nt"></ul>
   </section>
 
-  <p class="note">Tablo değiştirildiğinde alanlara örnek değerler gelir; kendi hastanızın değerlerini girin. OAB = DKB + (SKB − DKB) / 3. <span class="tr-no">Türkiye'de bulunmayabilir</span> işaretli ilaçlar için ilacabak.com ve TİTCK KÜB/KT kayıtlarında Türkiye'de satışta ürün bulunamadı; kılavuzda geçtikleri için bilgi amaçlı gösterilir. Sodyum nitroprussid (Nipruss) ilaç listesinde görünmekle birlikte temini hastaneye göre değişebilir.</p>
+  <p class="note">Kendi hastanızın değerlerini girin. OAB = DKB + (SKB − DKB) / 3. <span class="tr-no">Türkiye'de bulunmayabilir</span> işaretli ilaçlar için ilacabak.com ve TİTCK KÜB/KT kayıtlarında Türkiye'de satışta ürün bulunamadı; kılavuzda geçtikleri için bilgi amaçlı gösterilir. Sodyum nitroprussid (Nipruss) ilaç listesinde görünmekle birlikte temini hastaneye göre değişebilir.</p>
   <p class="note">Kaynaklar: van den Born BH ve ark. ESC Council on Hypertension position document on the management of hypertensive emergencies, Eur Heart J Cardiovasc Pharmacother 2019 (hedefler, zamanlama, ilaç seçimi ve IV doz tablosu; tablo 4 için yayımlanmış düzeltme vardır); 2024 ESC Yüksek Kan Basıncı ve Hipertansiyon Kılavuzu (≥ 180/110 mmHg'de hipertansif acil değerlendirmesi); AHA/ASA akut iskemik inme kılavuzu 2018/2019 (220/120 eşiği ve tablo 5 dozları) ve 2026 güncellemesi (185/110 ve 180/105 eşikleri, trombolitik ve trombektomi sonrası yoğun düşürmeme); ESO 2025 intraserebral kanama kılavuzu; AHA/ASA 2022 spontan intraserebral kanama kılavuzu; INTERACT3 (Lancet 2023); ACOG Committee Opinion 767 ve Practice Bulletin 222 (gebelikte ağır hipertansiyon, labetalol/hidralazin/nifedipin algoritması ve en yüksek dozlar, magnezyum sülfat); magnezyum sülfat %15 KÜB; AHA/ACC 2014 NSTE-AKS (nitrat ve PDE-5 inhibitörü); KÜB/SmPC: Brevibloc (esmolol), Ebrasel/Ebrantil (urapidil), nikardipin 1 mg/mL, fentolamin (FDA etiketi); Türkiye piyasa bilgisi ilacabak.com ve TİTCK KÜB/KT kayıtları (Ekim 2026). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
@@ -231,10 +231,9 @@ table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
       ['Sodyum nitroprussid (Nipruss; temini değişken): 0,3–10 µg/kg/dk'+(p.wt?' = '+nf(0.3*p.wt,0)+'–'+nf(10*p.wt,0)+' µg/dk':''),'Feokromositomada perioperatif kullanılmıştır.']];
     return{pl:['Organ hasarı varsa acil',HIGH],rows:rows,s:s,n:['Beta blokerler (labetalol dahil) kokaine bağlı koroner vazokonstriksiyonda göreli kontrendike.','Feokromositomada labetalol bazı olgularda hipertansiyonu ağırlaştırmıştır; alfa blokaj olmadan beta bloker vermeyin (esmolol tedavi edilmemiş feokromositomada kontrendike).','Fentolamin koroner arter hastalığında kontrendike.']}}}
   };
-  var EX={iv:{sbp:200,dbp:115},mal:{sbp:230,dbp:135},ens:{sbp:240,dbp:140},ais:{sbp:230,dbp:125},ait:{sbp:195,dbp:112},ich:{sbp:190,dbp:100},aks:{sbp:190,dbp:110},apo:{sbp:210,dbp:120},dis:{sbp:180,dbp:100,hr:100},pre:{sbp:170,dbp:112,wt:75},sym:{sbp:220,dbp:120}};
 
-  function build(){var k=$('dz').value,ex=EX[k];
-    $('sbp').value=ex.sbp;$('dbp').value=ex.dbp;$('wt').value=ex.wt||70;if(ex.hr)$('hr').value=ex.hr;
+  // Klinik tablo değişince girilen değerler korunur (eskiden tablonun örnek değerleri yazılıyordu; hastanın değerine karışıyordu)
+  function build(){var k=$('dz').value;
     $('w-hr').hidden=k!=='dis';calc()}
   function li(ol,x){var l=document.createElement('li'),b=document.createElement('b');
     var parts=x[0].split(NO);b.appendChild(document.createTextNode(parts[0]));
@@ -242,8 +241,11 @@ table.t td{font-family:var(--font-num);font-variant-numeric:tabular-nums}
     l.appendChild(b);if(x[1]){var a=document.createElement('p');a.className='advice';a.textContent=x[1];l.appendChild(a)}ol.appendChild(l)}
   function calc(){var k=$('dz').value,d=D[k],p={sbp:v('sbp'),dbp:v('dbp'),wt:v('wt'),hr:k==='dis'?v('hr'):null};
     if(p.wt!==null&&p.wt<=0)p.wt=null;
-    var ol=$('st'),ul=$('nt'),rows=$('rows');ol.innerHTML='';ul.innerHTML='';rows.innerHTML='';$('t').textContent=d.t;$('tw').hidden=true;
-    if(p.sbp===null||p.dbp===null||p.sbp<=p.dbp||p.dbp<=0){$('map').textContent='–';pill('pl','');$('fx').hidden=true;
+    var ol=$('st'),ul=$('nt'),rows=$('rows');ol.innerHTML='';ul.innerHTML='';rows.innerHTML='';$('tw').hidden=true;
+    if(!d){$('t').textContent='Klinik tablo seçilmedi';$('map').textContent='–';pill('pl','');$('fx').hidden=true;$('fx').textContent='';
+      li(ol,['Klinik tabloyu seçin','Hedef ve ilaç önerisi klinik tabloya göre değişir.']);ul.closest('section').hidden=true;return}
+    $('t').textContent=d.t;
+    if(p.sbp===null||p.dbp===null||p.sbp<=p.dbp||p.dbp<=0){$('map').textContent='–';pill('pl','');$('fx').hidden=true;$('fx').textContent='';
       li(ol,['Sistolik ve diyastolik basıncı girin','Sistolik, diyastolikten büyük olmalı.']);ul.closest('section').hidden=true;return}
     p.map=p.dbp+(p.sbp-p.dbp)/3;
     var r=d.run(p);

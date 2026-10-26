@@ -87,7 +87,7 @@ ol.rec li a,.note a{color:var(--accent);font-weight:600}
 ol.rec li b .tag{margin-left:4px}
 </style>
 </head>
-<body>
+<body data-ornek-secim="tm">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -112,8 +112,8 @@ ol.rec li b .tag{margin-left:4px}
     <h2>İdrar çıkışı <span class="stg">isteğe bağlı</span></h2>
     <div class="grid">
       <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
-      <div class="field"><label for="uo">İdrar miktarı <span>mL</span></label><input id="uo" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
-      <div class="field"><label for="hr">Süre <span>saat</span></label><input id="hr" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+      <div class="field"><label for="uo">İdrar miktarı <span>mL</span></label><input data-aralik="0-20000 mL" id="uo" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+      <div class="field"><label for="hr">Süre <span>saat</span></label><input data-aralik="1-168 saat" id="hr" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
     </div>
     <p class="note">Boş bırakılırsa yalnız kreatinine göre evrelenir. Hesap tüm süre için ortalamadır; KDIGO ölçütü sürenin tamamında düşük akım arar.</p>
   </section>
@@ -144,14 +144,14 @@ ol.rec li b .tag{margin-left:4px}
     <div class="grid">
       <div class="field"><label for="sna">Serum Na <span>mmol/L</span></label><input id="sna" type="number" inputmode="decimal" step="any" value="138"></div>
       <div class="field"><label for="una">İdrar Na <span>mmol/L</span></label><input id="una" type="number" inputmode="decimal" step="any" value="15"></div>
-      <div class="field"><label for="ucr">İdrar kreatinin <span>mg/dL</span></label><input id="ucr" type="number" inputmode="decimal" step="any" value="120"></div>
+      <div class="field"><label for="ucr">İdrar kreatinin <span>mg/dL</span></label><input data-aralik="1-1000 mg/dL" id="ucr" type="number" inputmode="decimal" step="any" value="120"></div>
       <div class="field"><label for="uos2">İdrar ozmolalitesi <span>mOsm/kg</span></label><input id="uos2" type="number" inputmode="decimal" step="any" value="620"></div>
     </div>
     <span class="lbl">Üre birimi</span>
     <div class="seg"><button type="button" data-g="un" data-v="ure" aria-pressed="true">Üre (mg/dL)</button><button type="button" data-g="un" data-v="bun" aria-pressed="false">BUN (mg/dL)</button></div>
     <div class="grid">
-      <div class="field"><label for="sur" id="lsur">Serum üre <span>mg/dL</span></label><input id="sur" type="number" inputmode="decimal" step="any" value="90"></div>
-      <div class="field"><label for="uur" id="luur">İdrar üre <span>mg/dL</span></label><input id="uur" type="number" inputmode="decimal" step="any" value="1200"></div>
+      <div class="field"><label for="sur" id="lsur">Serum üre <span>mg/dL</span></label><input data-aralik="2-1000 mg/dL|[data-g=un][data-v=bun][aria-pressed=true]:1-470 mg/dL" id="sur" type="number" inputmode="decimal" step="any" value="90"></div>
+      <div class="field"><label for="uur" id="luur">İdrar üre <span>mg/dL</span></label><input data-aralik="10-3000 mg/dL|[data-g=un][data-v=bun][aria-pressed=true]:5-1400 mg/dL" id="uur" type="number" inputmode="decimal" step="any" value="1200"></div>
     </div>
     <span class="lbl">Son 24 saatte diüretik</span>
     <div class="seg"><button type="button" data-g="diu" data-v="0" aria-pressed="true">Almadı</button><button type="button" data-g="diu" data-v="1" aria-pressed="false">Aldı</button></div>
@@ -243,7 +243,7 @@ ol.rec li b .tag{margin-left:4px}
     <span class="lbl">Üriner sistem ultrasonu</span>
     <div class="seg wrapseg many"><button type="button" data-g="usg" data-v="na" aria-pressed="true">Yapılmadı</button><button type="button" data-g="usg" data-v="nl" aria-pressed="false">Hidronefroz yok</button><button type="button" data-g="usg" data-v="hn" aria-pressed="false">Hidronefroz var</button><button type="button" data-g="usg" data-v="kc" aria-pressed="false">Küçük ekojenik böbrek</button></div>
     <div class="grid">
-      <div class="field"><label for="pvr">Mesane hacmi / PVR <span>mL</span></label><input id="pvr" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+      <div class="field"><label for="pvr">Mesane hacmi / PVR <span>mL</span></label><input data-aralik="0-5000 mL" id="pvr" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
     </div>
     <p class="note">Mesane taraması (bladder scan) veya işeme sonrası rezidü. AUA (2017) kronik retansiyonu en az iki kez PVR &gt; 300 mL olarak tanımlar; AKI’ye özgü kılavuz eşiği yoktur.</p>
     <table class="t">
@@ -351,8 +351,8 @@ ol.rec li b .tag{margin-left:4px}
       <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="5.4"></div>
       <div class="field"><label for="ph">Arteriyel pH</label><input id="ph" type="number" inputmode="decimal" step="any" value="7.31"></div>
       <div class="field"><label for="hco">Bikarbonat <span>mmol/L</span></label><input id="hco" type="number" inputmode="decimal" step="any" value="18"></div>
-      <div class="field"><label for="pf">PaO₂/FiO₂</label><input id="pf" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
-      <div class="field"><label for="olg">Oligüri / anüri süresi <span>saat</span></label><input id="olg" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+      <div class="field"><label for="pf">PaO₂/FiO₂</label><input data-aralik="20-700" id="pf" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+      <div class="field"><label for="olg">Oligüri / anüri süresi <span>saat</span></label><input data-aralik="0-720 saat" id="olg" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
     </div>
     <span class="lbl">Diüretiğe dirençli akciğer ödemi / volüm yükü</span>
     <div class="seg"><button type="button" data-g="ovl" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="ovl" data-v="1" aria-pressed="false">Var</button></div>

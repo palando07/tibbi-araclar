@@ -112,12 +112,12 @@ a.lnk{color:var(--accent);font-weight:600}
     <h2>Tam kan sayımı</h2>
     <div class="grid">
       <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="9.8"></div>
-      <div class="field"><label for="hct">Hematokrit <span>%</span></label><input id="hct" type="number" inputmode="decimal" step="any" value="31"></div>
-      <div class="field"><label for="mcv">MCV <span>fL</span></label><input id="mcv" type="number" inputmode="decimal" step="any" value="72"></div>
-      <div class="field"><label for="rbc">Eritrosit <span>10⁶/µL</span></label><input id="rbc" type="number" inputmode="decimal" step="any" value="4.1"></div>
-      <div class="field"><label for="rdw">RDW <span>%</span></label><input id="rdw" type="number" inputmode="decimal" step="any" value="17.2"></div>
-      <div class="field"><label for="rdwu">RDW üst sınırı <span>% (lab.)</span></label><input id="rdwu" data-sabit type="number" inputmode="decimal" step="any" value="14.5"></div>
-      <div class="field"><label for="ret">Retikülosit <span>%</span></label><input id="ret" type="number" inputmode="decimal" step="any" value="1.2"></div>
+      <div class="field"><label for="hct">Hematokrit <span>%</span></label><input data-aralik="5-75 %" id="hct" type="number" inputmode="decimal" step="any" value="31"></div>
+      <div class="field"><label for="mcv">MCV <span>fL</span></label><input data-aralik="40-150 fL" id="mcv" type="number" inputmode="decimal" step="any" value="72"></div>
+      <div class="field"><label for="rbc">Eritrosit <span>10⁶/µL</span></label><input data-aralik="0.5-10 10⁶/µL" id="rbc" type="number" inputmode="decimal" step="any" value="4.1"></div>
+      <div class="field"><label for="rdw">RDW <span>%</span></label><input data-aralik="8-40 %" id="rdw" type="number" inputmode="decimal" step="any" value="17.2"></div>
+      <div class="field"><label for="rdwu">RDW üst sınırı <span>% (lab.)</span></label><input data-aralik="10-25 %" id="rdwu" data-sabit type="number" inputmode="decimal" step="any" value="14.5"></div>
+      <div class="field"><label for="ret">Retikülosit <span>%</span></label><input data-aralik="0-40 %" id="ret" type="number" inputmode="decimal" step="any" value="1.2"></div>
     </div>
     <p class="note">Eritrosit sayısı yalnız Mentzer indeksi için; 10⁶/µL = 10¹²/L. RDW üst sınırını kendi laboratuvarınıza göre değiştirin.</p>
   </section>
@@ -125,11 +125,11 @@ a.lnk{color:var(--accent);font-weight:600}
   <section class="card">
     <h2>Demir, B12, folat</h2>
     <div class="grid">
-      <div class="field"><label for="fer">Ferritin <span>ng/mL</span></label><input id="fer" type="number" inputmode="decimal" step="any" value="8"></div>
-      <div class="field"><label for="ts">TSAT <span>%</span></label><input id="ts" type="number" inputmode="decimal" step="any" value="6"></div>
-      <div class="field"><label for="crp">CRP <span>mg/L</span></label><input id="crp" type="number" inputmode="decimal" step="any" value="3"></div>
-      <div class="field"><label for="b12">B12 <span>pg/mL</span></label><input id="b12" type="number" inputmode="decimal" step="any" value="410"></div>
-      <div class="field"><label for="fol">Folat <span>ng/mL</span></label><input id="fol" type="number" inputmode="decimal" step="any" value="8.5"></div>
+      <div class="field"><label for="fer">Ferritin <span>ng/mL</span></label><input data-aralik="1-50000 ng/mL" id="fer" type="number" inputmode="decimal" step="any" value="8"></div>
+      <div class="field"><label for="ts">TSAT <span>%</span></label><input data-aralik="1-100 %" id="ts" type="number" inputmode="decimal" step="any" value="6"></div>
+      <div class="field"><label for="crp">CRP <span>mg/L</span></label><input data-aralik="0-600 mg/L" id="crp" type="number" inputmode="decimal" step="any" value="3"></div>
+      <div class="field"><label for="b12">B12 <span>pg/mL</span></label><input data-aralik="20-5000 pg/mL" id="b12" type="number" inputmode="decimal" step="any" value="410"></div>
+      <div class="field"><label for="fol">Folat <span>ng/mL</span></label><input data-aralik="0.5-50 ng/mL" id="fol" type="number" inputmode="decimal" step="any" value="8.5"></div>
     </div>
     <p class="note">ng/mL = µg/L. B12: pg/mL = ng/L (pmol/L ÷ 0,738). Folat: ng/mL × 2,266 = nmol/L. CRP mg/dL ise × 10.</p>
   </section>
@@ -137,11 +137,11 @@ a.lnk{color:var(--accent);font-weight:600}
   <section class="card">
     <h2>Hemoliz (isteğe bağlı)</h2>
     <div class="grid">
-      <div class="field"><label for="ldh">LDH <span>U/L</span></label><input id="ldh" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
-      <div class="field"><label for="ldhu">LDH üst sınırı <span>U/L</span></label><input id="ldhu" data-sabit type="number" inputmode="decimal" step="any" value="250"></div>
-      <div class="field"><label for="ib">İndirekt bilirubin <span>mg/dL</span></label><input id="ib" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
-      <div class="field"><label for="ibu">İnd. bilirubin üst sınırı <span>mg/dL</span></label><input id="ibu" data-sabit type="number" inputmode="decimal" step="any" value="0.9"></div>
-      <div class="field"><label for="hp">Haptoglobin <span>mg/dL</span></label><input id="hp" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="ldh">LDH <span>U/L</span></label><input data-aralik="50-20000 U/L" id="ldh" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="ldhu">LDH üst sınırı <span>U/L</span></label><input data-aralik="100-1000 U/L" id="ldhu" data-sabit type="number" inputmode="decimal" step="any" value="250"></div>
+      <div class="field"><label for="ib">İndirekt bilirubin <span>mg/dL</span></label><input data-aralik="0-40 mg/dL" id="ib" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
+      <div class="field"><label for="ibu">İnd. bilirubin üst sınırı <span>mg/dL</span></label><input data-aralik="0.1-3 mg/dL" id="ibu" data-sabit type="number" inputmode="decimal" step="any" value="0.9"></div>
+      <div class="field"><label for="hp">Haptoglobin <span>mg/dL</span></label><input data-aralik="0-500 mg/dL" id="hp" type="number" inputmode="decimal" step="any" value="" placeholder="–"></div>
     </div>
     <p class="note">Üst sınırları kendi laboratuvarınıza göre girin.</p>
   </section>

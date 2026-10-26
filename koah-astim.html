@@ -76,7 +76,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
 .card h3{margin:4px 0 0;font-size:1rem}
 </style>
 </head>
-<body>
+<body data-ornek-secim="sp">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -103,8 +103,8 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <section class="card">
       <h2>KOAH alevlenmesi: bulgular</h2>
       <div class="grid">
-        <div class="field"><label for="vas">Dispne VAS <span>0–10</span></label><input id="vas" type="number" inputmode="decimal" step="any" value="7"></div>
-        <div class="field"><label for="crp">CRP <span>mg/L</span></label><input id="crp" type="number" inputmode="decimal" step="any" value="28"></div>
+        <div class="field"><label for="vas">Dispne VAS <span>0–10</span></label><input data-aralik="0-10" id="vas" type="number" inputmode="decimal" step="any" value="7"></div>
+        <div class="field"><label for="crp">CRP <span>mg/L</span></label><input data-aralik="0-600 mg/L" id="crp" type="number" inputmode="decimal" step="any" value="28"></div>
         <div class="field"><label for="bspo2">Bazal SpO₂ <span>% (biliniyorsa)</span></label><input id="bspo2" type="number" inputmode="decimal" step="any" value=""></div>
       </div>
       <h3>Arter kan gazı</h3>
@@ -226,17 +226,17 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       </div>
       <h3>Tepe akım hızı (PEF)</h3>
       <div class="grid">
-        <div class="field"><label for="pef">Ölçülen PEF <span>L/dk</span></label><input id="pef" type="number" inputmode="decimal" step="any" value="210"></div>
+        <div class="field"><label for="pef">Ölçülen PEF <span>L/dk</span></label><input data-aralik="30-900 L/dk" id="pef" type="number" inputmode="decimal" step="any" value="210"></div>
       </div>
       <span class="lbl">Referans değer</span>
       <div class="seg"><button type="button" data-g="ref" data-v="pb" aria-pressed="true">Kişisel en iyi</button><button type="button" data-g="ref" data-v="pr" aria-pressed="false">Beklenen (hesapla)</button></div>
       <div class="grid" id="w-pb">
-        <div class="field"><label for="pb">Kişisel en iyi PEF <span>L/dk</span></label><input id="pb" type="number" inputmode="decimal" step="any" value="450"></div>
+        <div class="field"><label for="pb">Kişisel en iyi PEF <span>L/dk</span></label><input data-aralik="50-900 L/dk" id="pb" type="number" inputmode="decimal" step="any" value="450"></div>
       </div>
       <div id="w-pr" hidden>
         <div class="seg" style="margin-bottom:12px"><button type="button" data-g="sx" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="sx" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div>
         <div class="grid">
-          <div class="field"><label for="boy">Boy <span>cm</span></label><input id="boy" data-hasta="boy" type="number" inputmode="decimal" step="any" value="170"></div>
+          <div class="field"><label for="boy">Boy <span>cm</span></label><input data-aralik="100-230 cm" id="boy" data-hasta="boy" type="number" inputmode="decimal" step="any" value="170"></div>
         </div>
         <p class="note" style="margin-top:8px">Beklenen PEF: Nunn ve Gregg 1989 (erişkin). Erkek: e^(0,544·ln yaş − 0,0151·yaş − 74,7/boy + 5,48); kadın: e^(0,376·ln yaş − 0,0120·yaş − 58,8/boy + 5,63). Kişisel en iyi değer biliniyorsa onu kullanın.</p>
       </div>
@@ -269,8 +269,8 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <section class="card">
       <h2>Taburculuk değerlendirmesi</h2>
       <div class="grid">
-        <div class="field"><label for="pef2">Tedavi sonrası PEF <span>L/dk</span></label><input id="pef2" type="number" inputmode="decimal" step="any" value=""></div>
-        <div class="field"><label for="spo2b">Taburculuk öncesi SpO₂ <span>% oda havası</span></label><input id="spo2b" type="number" inputmode="decimal" step="any" value=""></div>
+        <div class="field"><label for="pef2">Tedavi sonrası PEF <span>L/dk</span></label><input data-aralik="30-900 L/dk" id="pef2" type="number" inputmode="decimal" step="any" value=""></div>
+        <div class="field"><label for="spo2b">Taburculuk öncesi SpO₂ <span>% oda havası</span></label><input data-aralik="30-100 %" id="spo2b" type="number" inputmode="decimal" step="any" value=""></div>
       </div>
       <div class="items">
         <label class="item"><input type="checkbox" id="d1"><span class="txt">Son salbutamol dozundan en az 1–2 saat sonra “hafif” ölçütlerini karşılıyor</span></label>

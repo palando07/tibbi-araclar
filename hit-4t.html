@@ -91,8 +91,8 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   <section class="card">
     <h2>Trombosit düşüşü <span class="note" style="font-weight:400">(isteğe bağlı)</span></h2>
     <div class="grid">
-      <div class="field"><label for="pb">Başlangıç <span>×10³/µL</span></label><input id="pb" type="number" inputmode="decimal" step="any" value="240"></div>
-      <div class="field"><label for="pn">En düşük (nadir) <span>×10³/µL</span></label><input id="pn" type="number" inputmode="decimal" step="any" value="95"></div>
+      <div class="field"><label for="pb">Başlangıç <span>×10³/µL</span></label><input data-aralik="1-2000 ×10³/µL" id="pb" type="number" inputmode="decimal" step="any" value="240"></div>
+      <div class="field"><label for="pn">En düşük (nadir) <span>×10³/µL</span></label><input data-aralik="0.1-2000 ×10³/µL" id="pn" type="number" inputmode="decimal" step="any" value="95"></div>
       <div class="field"><label for="pc">Mevcut trombosit <span>×10³/µL</span></label><input id="pc" data-hasta="plt" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
       <div class="field"><label for="kg">Ağırlık <span>kg</span></label><input id="kg" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
     </div>
@@ -174,6 +174,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   function calc(){
     plt();
     var s=rv('t')+rv('z')+rv('o')+rv('d');$('sc').textContent=s;$('rx').innerHTML='';
+    if(['t','z','o','d'].some(function(n){return !document.querySelector('input[name='+n+']:checked')})){$('sc').textContent='–';pill('pl','Eksik: bütün maddeleri seçin','var(--muted)');$('ppv').textContent='–';$('adv').textContent='Puanlanmamış madde var; skor yorumlanmaz.';return}
     var kg=v('kg'),kc=segVal('kc')==='1',ag=segVal('ag')==='1';
     if(s<=3){
       pill('pl','Düşük olasılık','var(--ok)');$('ppv').textContent='< %1 (NÖD %99,8)';

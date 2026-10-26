@@ -70,7 +70,7 @@ details p{margin:8px 0 0}
 .seg button{min-width:0}
 </style>
 </head>
-<body>
+<body data-ornek-secim="et">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -94,11 +94,11 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     <div class="grid">
       <div class="field" id="w-age"><label for="age" id="l-age">Yaş <span id="u-age"></span></label><input id="age" data-hasta="yas" type="number" inputmode="decimal" step="any" value="64" placeholder=""></div>
       <div class="field" id="w-ure"><label for="ure" id="l-ure">Üre <span id="u-ure">mg/dL</span></label><input id="ure" data-hasta="ure" type="number" inputmode="decimal" step="any" value="62" placeholder=""></div>
-      <div class="field" id="w-bun"><label for="bun" id="l-bun">BUN <span id="u-bun">mg/dL</span></label><input id="bun" type="number" inputmode="decimal" step="any" value="29" placeholder=""></div>
-      <div class="field" id="w-wbc"><label for="wbc" id="l-wbc">Lökosit <span id="u-wbc">/mm³</span></label><input id="wbc" type="number" inputmode="decimal" step="any" value="17500" placeholder=""></div>
+      <div class="field" id="w-bun"><label for="bun" id="l-bun">BUN <span id="u-bun">mg/dL</span></label><input data-aralik="1-300 mg/dL" id="bun" type="number" inputmode="decimal" step="any" value="29" placeholder=""></div>
+      <div class="field" id="w-wbc"><label for="wbc" id="l-wbc">Lökosit <span id="u-wbc">/mm³</span></label><input data-aralik="0-500000 /mm³" id="wbc" type="number" inputmode="decimal" step="any" value="17500" placeholder=""></div>
       <div class="field" id="w-glu"><label for="glu" id="l-glu">Glukoz <span id="u-glu">mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="180" placeholder=""></div>
-      <div class="field" id="w-ldh"><label for="ldh" id="l-ldh">LDH <span id="u-ldh">U/L</span></label><input id="ldh" type="number" inputmode="decimal" step="any" value="420" placeholder=""></div>
-      <div class="field" id="w-ast"><label for="ast" id="l-ast">AST <span id="u-ast">U/L</span></label><input id="ast" type="number" inputmode="decimal" step="any" value="120" placeholder=""></div>
+      <div class="field" id="w-ldh"><label for="ldh" id="l-ldh">LDH <span id="u-ldh">U/L</span></label><input data-aralik="50-20000 U/L" id="ldh" type="number" inputmode="decimal" step="any" value="420" placeholder=""></div>
+      <div class="field" id="w-ast"><label for="ast" id="l-ast">AST <span id="u-ast">U/L</span></label><input data-aralik="1-20000 U/L" id="ast" type="number" inputmode="decimal" step="any" value="120" placeholder=""></div>
     </div>
     <div class="items">
       <label class="item" id="w-men"><input type="checkbox" id="men"><span class="txt">Bilinç bozukluğu<small>GKS < 15 (dezoryantasyon, letarji, somnolans, stupor, koma)</small></span></label>
@@ -118,12 +118,12 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     <h2>İlk 48 saatte</h2>
     <p class="note">Boş bırakılan alanlar puan almaz.</p>
     <div class="grid">
-      <div class="field" id="w-hct"><label for="hct" id="l-hct">Hematokrit düşüşü <span id="u-hct">puan</span></label><input id="hct" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 12"></div>
-      <div class="field" id="w-dbun"><label for="dbun" id="l-dbun">BUN artışı <span id="u-dbun">mg/dL</span></label><input id="dbun" type="number" inputmode="decimal" step="any" value="" placeholder="üre artışı ÷ 2,14"></div>
+      <div class="field" id="w-hct"><label for="hct" id="l-hct">Hematokrit düşüşü <span id="u-hct">puan</span></label><input data-aralik="0-50 puan" id="hct" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 12"></div>
+      <div class="field" id="w-dbun"><label for="dbun" id="l-dbun">BUN artışı <span id="u-dbun">mg/dL</span></label><input data-aralik="0-200 mg/dL" id="dbun" type="number" inputmode="decimal" step="any" value="" placeholder="üre artışı ÷ 2,14"></div>
       <div class="field" id="w-ca"><label for="ca" id="l-ca">Kalsiyum <span id="u-ca">mg/dL</span></label><input id="ca" data-hasta="ca" type="number" inputmode="decimal" step="any" value="" placeholder=""></div>
       <div class="field" id="w-po2"><label for="po2" id="l-po2">PaO₂ <span id="u-po2">mmHg</span></label><input id="po2" type="number" inputmode="decimal" step="any" value="" placeholder=""></div>
-      <div class="field" id="w-be"><label for="be" id="l-be">Baz açığı <span id="u-be">mEq/L</span></label><input id="be" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 5"></div>
-      <div class="field" id="w-fl"><label for="fl" id="l-fl">Sıvı açığı <span id="u-fl">L</span></label><input id="fl" type="number" inputmode="decimal" step="any" value="" placeholder="giren − çıkan"></div>
+      <div class="field" id="w-be"><label for="be" id="l-be">Baz açığı <span id="u-be">mEq/L</span></label><input data-aralik="0-40 mEq/L" id="be" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 5"></div>
+      <div class="field" id="w-fl"><label for="fl" id="l-fl">Sıvı açığı <span id="u-fl">L</span></label><input data-aralik="0-30 L" id="fl" type="number" inputmode="decimal" step="any" value="" placeholder="giren − çıkan"></div>
     </div>
   </section>
 

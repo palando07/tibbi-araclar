@@ -81,7 +81,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
 input[type=number]::placeholder{color:var(--muted);font-weight:400;font-size:1rem}
 </style>
 </head>
-<body>
+<body data-ornek-secim="dur">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -156,11 +156,11 @@ input[type=number]::placeholder{color:var(--muted);font-weight:400;font-size:1re
         <label class="item"><input type="checkbox" id="edema"><span class="txt">Bilateral pretibial ödem<small>ayrıca −%5</small></span></label>
         <label class="item"><input type="checkbox" id="sarc"><span class="txt">Malnütrisyon veya sarkopeni<small>protein 1,5 g/kg (ESPEN 2019 karaciğer)</small></span></label>
       </div>
-      <div class="field" style="margin-top:12px"><label for="dry">Bilinen kuru kilo (isteğe bağlı) <span>kg</span></label><input id="dry" type="number" inputmode="decimal" step="any" value="" placeholder="parasentez sonrası veya asit öncesi kilo"></div>
+      <div class="field" style="margin-top:12px"><label for="dry">Bilinen kuru kilo (isteğe bağlı) <span>kg</span></label><input data-aralik="20-350 kg" id="dry" type="number" inputmode="decimal" step="any" value="" placeholder="parasentez sonrası veya asit öncesi kilo"></div>
     </div>
     <div class="grid">
-      <div class="field"><label for="tk">Hedef enerji <span>kcal/kg/gün</span></label><input id="tk" type="number" inputmode="decimal" step="any" value="" placeholder="önerilen"></div>
-      <div class="field"><label for="tp">Hedef protein <span>g/kg/gün</span></label><input id="tp" type="number" inputmode="decimal" step="any" value="" placeholder="önerilen"></div>
+      <div class="field"><label for="tk">Hedef enerji <span>kcal/kg/gün</span></label><input data-aralik="5-50 kcal/kg/gün" id="tk" type="number" inputmode="decimal" step="any" value="" placeholder="önerilen"></div>
+      <div class="field"><label for="tp">Hedef protein <span>g/kg/gün</span></label><input data-aralik="0.3-3 g/kg/gün" id="tp" type="number" inputmode="decimal" step="any" value="" placeholder="önerilen"></div>
     </div>
     <p class="note">Hedef alanları boş bırakılırsa seçilen durum için önerilen değer kullanılır; değer girerseniz o kullanılır. VKİ ≥ 30’da hesap ESPEN düzeltilmiş kilosuyla yapılır.</p>
   </section>
@@ -184,7 +184,7 @@ input[type=number]::placeholder{color:var(--muted);font-weight:400;font-size:1re
     <span class="lbl">Ürün enerji yoğunluğu</span>
     <div class="seg"><button type="button" data-g="dens" data-v="1" aria-pressed="true">1,0 kcal/mL</button><button type="button" data-g="dens" data-v="1.5" aria-pressed="false">1,5 kcal/mL</button><button type="button" data-g="dens" data-v="2" aria-pressed="false">2,0 kcal/mL</button></div>
     <div class="grid">
-      <div class="field"><label for="hrs">İnfüzyon süresi <span>saat/gün</span></label><input id="hrs" type="number" inputmode="decimal" step="any" value="20"></div>
+      <div class="field"><label for="hrs">İnfüzyon süresi <span>saat/gün</span></label><input id="hrs" data-sabit data-aralik="1-24 saat/gün" type="number" inputmode="decimal" step="any" value="20"></div>
     </div>
     <div class="items">
       <label class="item"><input type="checkbox" id="rf"><span class="txt">Refeeding riski var<small><a href="idame-sivi.html">İdame Sıvı ve Refeeding</a> aracında değerlendirin</small></span></label>
@@ -211,8 +211,8 @@ input[type=number]::placeholder{color:var(--muted);font-weight:400;font-size:1re
       <li>Dekstrozlu idame sıvıları ve propofol (lipid) de enerji sayılır.</li>
     </ul>
     <div class="grid">
-      <div class="field"><label for="dx">Dekstroz <span>%</span></label><input id="dx" type="number" inputmode="decimal" step="any" value="10"></div>
-      <div class="field"><label for="dxr">Hız <span>mL/saat</span></label><input id="dxr" type="number" inputmode="decimal" step="any" value="80"></div>
+      <div class="field"><label for="dx">Dekstroz <span>%</span></label><input id="dx" data-sabit data-aralik="5-70 %" type="number" inputmode="decimal" step="any" value="10"></div>
+      <div class="field"><label for="dxr">Hız <span>mL/saat</span></label><input id="dxr" data-aralik="0-500 mL/saat" type="number" inputmode="decimal" step="any" value="80"></div>
     </div>
     <p class="note">Kilo Hasta kartından alınır (gerçek kilo; obezde düzeltilmiş kiloya göre değer de gösterilir).</p>
   </section>
@@ -260,10 +260,10 @@ input[type=number]::placeholder{color:var(--muted);font-weight:400;font-size:1re
 
   var state={};
   function calc(){
-    var wt=pos(v('wt')),ht=pos(v('ht')),age=v('age'),sx=segVal('sx'),dur=segVal('dur'),d=D[dur];
+    var wt=pos(v('wt')),ht=pos(v('ht')),age=v('age'),sx=segVal('sx'),dur=segVal('dur'),d=D[dur]||null;
     var hm=ht?ht/100:null;
     $('w-sir').hidden=dur!=='sir';
-    $('tk').placeholder='önerilen '+fm(d.k);$('tp').placeholder='önerilen '+fm(d.p,2);
+    $('tk').placeholder=d?'önerilen '+fm(d.k):'';$('tp').placeholder=d?'önerilen '+fm(d.p,2):'';
 
     // Siroz: kuru kilo
     var dryIn=pos(v('dry')),ascP=parseFloat(segVal('asc'))+($('edema').checked?5:0);
@@ -304,14 +304,14 @@ input[type=number]::placeholder{color:var(--muted);font-weight:400;font-size:1re
     // ===== 2) Enerji / protein =====
     $('rxE').innerHTML='';
     var tkIn=pos(v('tk')),tpIn=pos(v('tp'));
-    var kpk=tkIn!==null?tkIn:d.k,ppk=tpIn!==null?tpIn:d.p;
+    var kpk=tkIn!==null?tkIn:(d?d.k:null),ppk=tpIn!==null?tpIn:(d?d.p:null);
     if(dur==='sir'&&tpIn===null&&$('sarc').checked)ppk=1.5;
     if(dur==='sir'&&obese&&tkIn===null)kpk=30;
     if(dur==='sir'&&obese&&tpIn===null)ppk=1.5;
-    $('erng').textContent=rng(d.kr,'kcal/kg')+(cw?' = '+(d.kr[0]===d.kr[1]?r0(d.kr[0]*cw):r0(d.kr[0]*cw)+'–'+r0(d.kr[1]*cw))+' kcal':'');
-    $('prng').textContent=(dur==='yas'?'≥ 1 g/kg':rng(d.pr,'g/kg',2))+(cw?' = '+(d.pr[0]===d.pr[1]?r0(d.pr[0]*cw):r0(d.pr[0]*cw)+'–'+r0(d.pr[1]*cw))+' g':'');
+    $('erng').textContent=!d?'–':rng(d.kr,'kcal/kg')+(cw?' = '+(d.kr[0]===d.kr[1]?r0(d.kr[0]*cw):r0(d.kr[0]*cw)+'–'+r0(d.kr[1]*cw))+' kcal':'');
+    $('prng').textContent=!d?'–':(dur==='yas'?'≥ 1 g/kg':rng(d.pr,'g/kg',2))+(cw?' = '+(d.pr[0]===d.pr[1]?r0(d.pr[0]*cw):r0(d.pr[0]*cw)+'–'+r0(d.pr[1]*cw))+' g':'');
     var kcal=null;
-    if(!cw){dash(['kcal','prot','cw','perkg']);pill('kcalp','','');li('rxE','Kilo girin','Gerçek kilo olmadan enerji ve protein hesaplanamaz.')}
+    if(!cw||kpk===null||ppk===null){dash(['kcal','prot','cw','perkg']);pill('kcalp','','');if(!cw)li('rxE','Kilo girin','Gerçek kilo olmadan enerji ve protein hesaplanamaz.');else li('rxE','Klinik durumu seçin','Enerji ve protein hedefi klinik duruma göre değişir.')}
     else{
       kcal=kpk*cw;var prot=ppk*cw;
       $('kcal').textContent=r0(kcal);$('prot').textContent=r0(prot);

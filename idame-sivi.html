@@ -83,8 +83,8 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   <section class="card">
     <h2>Hasta</h2>
     <div class="grid">
-      <div class="field"><label for="wt">Gerçek kilo <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
-      <div class="field"><label for="ht">Boy <span>cm</span></label><input id="ht" data-hasta="boy" type="number" inputmode="decimal" step="any" value="170"></div>
+      <div class="field"><label for="wt">Gerçek kilo <span>kg</span></label><input id="wt" data-hasta="kilo" data-aralik="1-350 kg" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="ht">Boy <span>cm</span></label><input id="ht" data-hasta="boy" data-aralik="40-230 cm" type="number" inputmode="decimal" step="any" value="170"></div>
       <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="4.0"></div>
       <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="139"></div>
     </div>
@@ -142,12 +142,12 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     <h2>Refeeding riski: bilgiler</h2>
     <p class="note">Kilo ve boy “Hasta” kartından alınır; VKİ buradan hesaplanır. Elektrolitler beslenme öncesi değerlerdir; potasyum “Hasta” kartındadır.</p>
     <div class="grid">
-      <div class="field"><label for="wl">İstemsiz kilo kaybı, son 3–6 ay <span>%</span></label><input id="wl" type="number" inputmode="decimal" step="any" value="12"></div>
-      <div class="field"><label for="days">Çok az / hiç beslenme <span>gün</span></label><input id="days" type="number" inputmode="decimal" step="1" value="6"></div>
-      <div class="field"><label for="p">Fosfor <span>mg/dL</span></label><input id="p" type="number" inputmode="decimal" step="any" value="3.0"></div>
-      <div class="field"><label for="mg">Magnezyum <span>mg/dL</span></label><input id="mg" type="number" inputmode="decimal" step="any" value="1.9"></div>
+      <div class="field"><label for="wl">İstemsiz kilo kaybı, son 3–6 ay <span>%</span></label><input data-aralik="0-80 %" id="wl" type="number" inputmode="decimal" step="any" value="12"></div>
+      <div class="field"><label for="days">Çok az / hiç beslenme <span>gün</span></label><input data-aralik="0-90 gün" id="days" type="number" inputmode="decimal" step="1" value="6"></div>
+      <div class="field"><label for="p">Fosfor <span>mg/dL</span></label><input data-aralik="0.2-20 mg/dL" id="p" type="number" inputmode="decimal" step="any" value="3.0"></div>
+      <div class="field"><label for="mg">Magnezyum <span>mg/dL</span></label><input data-aralik="0.2-12 mg/dL" id="mg" type="number" inputmode="decimal" step="any" value="1.9"></div>
     </div>
-    <div class="field"><label for="wprev">Kilo kaybını önceki kilodan hesapla (isteğe bağlı) <span>önceki kilo, kg</span></label><input id="wprev" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 3–6 ay önce"></div>
+    <div class="field"><label for="wprev">Kilo kaybını önceki kilodan hesapla (isteğe bağlı) <span>önceki kilo, kg</span></label><input data-aralik="1-350 kg" id="wprev" type="number" inputmode="decimal" step="any" value="" placeholder="ör. 3–6 ay önce"></div>
     <div class="items">
       <label class="item"><input type="checkbox" id="h-alc"><span class="txt">Alkol kötüye kullanımı öyküsü</span></label>
       <label class="item"><input type="checkbox" id="h-drug"><span class="txt">İlaç öyküsü<small>insülin, kemoterapi, antiasitler veya diüretikler</small></span></label>

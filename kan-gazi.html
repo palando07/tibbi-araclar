@@ -101,7 +101,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;fo
     <h3>Oksijenizasyon (isteğe bağlı)</h3>
     <div class="grid">
       <div class="field"><label for="po2">pO₂ <span>mmHg</span></label><input id="po2" type="number" inputmode="decimal" step="any" value=""></div>
-      <div class="field"><label for="fio2">FiO₂ <span>%</span></label><input id="fio2" type="number" inputmode="decimal" step="any" value="21"></div>
+      <div class="field"><label for="fio2">FiO₂ <span>%</span></label><input id="fio2" data-aralik="21-100 %" type="number" inputmode="decimal" step="any" value="21"></div>
       <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="decimal" step="any" value=""></div>
     </div>
     <p class="note">Örnek değerler doldurulmuştur. Venöz gazda pH arterden yaklaşık 0,03 düşük, pCO₂ 4–5 mmHg yüksektir; pO₂ yorumlanmaz.</p>
@@ -112,7 +112,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;fo
     <div class="res"><span class="pill" id="pl"></span></div>
     <p class="big advice" id="main">–</p>
     <div class="sub"><span>Kompanzasyon</span><b id="comp">–</b></div>
-    <div class="sub" id="ag-r"><span>Anyon açığı (albümine göre)</span><b id="ag">–</b></div>
+    <div class="sub" id="ag-r"><span>Anyon açığı (albümine göre)</span><b id="ag" data-gecerli="-10:80">–</b></div>
     <div class="sub" id="dr-r"><span>Delta oranı</span><b id="dr">–</b></div>
     <p class="note" id="dr-n" hidden>Delta oranı yol göstericidir; bireysel değişkenlik büyüktür (DKA'da 0–2,8). Tek başına karışık bozukluk tanısı koydurmaz (Rastegar 2007).</p>
     <div class="sub" id="aa-r" hidden><span>A-a gradyenti</span><b id="aa">–</b></div>
@@ -202,7 +202,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;fo
       $('dr').textContent=g1(dr)+' · '+(dr<0.4?'normal anyon açıklı asidoz baskın':dr<0.8?'yüksek + normal anyon açıklı asidoz birlikte':dr<=2?'saf yüksek anyon açıklı asidoz':'eşlik eden metabolik alkaloz (veya kronik solunumsal asidoz)');
       if(dr<0.8&&dd.indexOf('nag')<0)dd.push('nag');if(dr>2&&dd.indexOf('malk')<0)dd.push('malk');
       adv.push('Yüksek anyon açığında ozmolar açığa bakın: ölçülen ozmolalite − (2 × Na + glukoz/18 + BUN/2,8); > 10 ise toksik alkol düşünün. Laktat ve keton ölçün.');}
-    else{$('dr-r').hidden=true;$('dr-n').hidden=true}
+    else{$('dr').textContent='–';$('dr-r').hidden=true;$('dr-n').hidden=true}
     // Oksijenizasyon
     if(po2!==null&&fi!==null){var PA=fi/100*713-pc/0.8,aa=PA-po2,exp=age!==null?age/4+4:null;$('aa-r').hidden=false;
       $('aa').textContent=g1(aa)+' mmHg'+(exp!==null?' (beklenen < '+g1(exp)+')':'')+(exp!==null&&aa>exp?' · artmış':'')+' · P/F '+Math.round(po2/(fi/100));

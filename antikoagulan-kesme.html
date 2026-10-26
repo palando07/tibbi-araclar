@@ -70,7 +70,7 @@ details p{margin:8px 0 0}
 .seg button{min-width:0}
 </style>
 </head>
-<body>
+<body data-ornek-secim="br #dr">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -163,7 +163,10 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
   (function(){var d=new Date();d.setDate(d.getDate()+7);d.setHours(9,0,0,0);var z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);$('dt').value=z.toISOString().slice(0,16)})();
   function li(b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$('rx').appendChild(l)}
   var BRN=['Antikoagülan kesilmeden yapılabilir.','Yaklaşık 2 gün içinde kanama riski < %2.','Yaklaşık 2 gün içinde kanama riski ≥ %2 veya kanamanın ciddi sonuç doğuracağı bölge.'];
-  function calc(){var dr=$('dr').value,c=v('crcl'),w=v('wt'),br=+segVal('br'),nx=$('nx').checked;$('rx').innerHTML='';$('brn').textContent=BRN[br]+(nx&&br<2?' Nöroaksiyal girişim işaretli: yüksek kanama riski gibi planlanır.':'');if(nx)br=2;
+  function calc(){var dr=$('dr').value,c=v('crcl'),w=v('wt'),brs=segVal('br'),br=+brs,nx=$('nx').checked;$('rx').innerHTML='';
+    // İlaç veya kanama riski seçilmeden plan yazılmaz (seçimsiz risk 0 sayılıp "kesmeyin" denmesin)
+    if(!dr||brs===null){$('trc').hidden=dr!=='war';$('brn').textContent=brs===null?'Kanama riskini seçin.':BRN[br];$('t').textContent='Plan';pill('pl','Seçim eksik','var(--muted)');li(!dr?'İlacı seçin':'Girişimin kanama riskini seçin','Plan ilaç ve kanama riskine göre değişir.');return}
+    $('brn').textContent=BRN[br]+(nx&&br<2?' Nöroaksiyal girişim işaretli: yüksek kanama riski gibi planlanır.':'');if(nx)br=2;
     $('trc').hidden=dr!=='war';var NM={api:'Apiksaban',riv:'Rivaroksaban',edo:'Edoksaban',dab:'Dabigatran',war:'Varfarin',lmwh:'Terapötik DMAH'};$('t').textContent=NM[dr]+': plan';
     pill('pl','');
     if(dr==='war'){

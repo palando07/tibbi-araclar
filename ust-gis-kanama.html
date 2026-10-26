@@ -81,7 +81,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
 .rel a{color:var(--accent);font-weight:600;font-size:.88rem;text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;background:var(--surface)}
 </style>
 </head>
-<body>
+<body data-ornek-secim="tip fr at ab">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -97,7 +97,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="8.4"></div>
       <div class="field"><label for="hr">Nabız <span>/dk</span></label><input id="hr" data-hasta="nabiz" type="number" inputmode="numeric" step="1" value="108"></div>
       <div class="field"><label for="sbp">Sistolik KB <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="numeric" step="1" value="96"></div>
-      <div class="field"><label for="gbs">Glasgow-Blatchford <span>0–23</span></label><input id="gbs" type="number" inputmode="numeric" step="1" value="9"></div>
+      <div class="field"><label for="gbs">Glasgow-Blatchford <span>0–23</span></label><input data-aralik="0-23" id="gbs" type="number" inputmode="numeric" step="1" value="9"></div>
     </div>
     <p class="note">GBS’yi bilmiyorsanız <a href="glasgow-blatchford.html" style="color:var(--accent)">Glasgow-Blatchford</a> aracında hesaplayın; boş bırakılabilir.</p>
     <span class="lbl">Akut veya kronik kardiyovasküler hastalık</span>
@@ -184,7 +184,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   <section class="card vr">
     <h2>Preemptif TIPS</h2>
     <div class="grid">
-      <div class="field"><label for="ctp">Child-Pugh puanı <span>5–15</span></label><input id="ctp" type="number" inputmode="numeric" step="1" value="10"></div>
+      <div class="field"><label for="ctp">Child-Pugh puanı <span>5–15</span></label><input data-aralik="5-15" id="ctp" type="number" inputmode="numeric" step="1" value="10"></div>
     </div>
     <span class="lbl">İlk endoskopide aktif kanama</span>
     <div class="seg"><button type="button" data-g="ab" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="ab" data-v="1" aria-pressed="true">Var</button></div>
@@ -223,8 +223,9 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   function calc(){
     var hb=v('hb'),hr=v('hr'),sbp=v('sbp'),gbs=v('gbs'),cvd=segVal('cvd')==='1',tip=segVal('tip');
     var nv=tip==='nv';
+    // Kanama tipi seçilmeden varis/varis dışı bölümleri gösterilmez, eşik yazılmaz
     document.querySelectorAll('.nv').forEach(function(e){e.hidden=!nv});
-    document.querySelectorAll('.vr').forEach(function(e){e.hidden=nv});
+    document.querySelectorAll('.vr').forEach(function(e){e.hidden=nv||!tip});
 
     // 1) Hemodinami
     var hypo=sbp!==null&&sbp<90,tachy=hr!==null&&hr>=100;
@@ -240,16 +241,19 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     if(nv&&!cvd){thr='≤ 7 g/dL';tgt='7–9 g/dL';trig=hb!==null&&hb<=7}
     else if(nv){thr='≤ 8 g/dL';tgt='≥ 10 g/dL';trig=hb!==null&&hb<=8}
     else{thr='< 7 g/dL';tgt='7–8 g/dL';trig=hb!==null&&hb<7}
-    $('thr').textContent=thr+(nv?(cvd?' (KV hastalık, ESGE)':' (ESGE, ACG)'):' (Baveno VII, AASLD)');
-    $('tgt').textContent=tgt+(!nv&&cvd?' (KV hastalıkta bireysel)':'');
+    if(!tip){thr=tgt=null;trig=false}
+    $('thr').textContent=!tip?'kanama tipini seçin':thr+(nv?(cvd?' (KV hastalık, ESGE)':' (ESGE, ACG)'):' (Baveno VII, AASLD)');
+    $('tgt').textContent=!tip?'–':tgt+(!nv&&cvd?' (KV hastalıkta bireysel)':'');
     $('hbo').textContent=hb===null?'–':fm(hb);
     if(hb===null)pill('trp','','');
+    else if(!tip)pill('trp','Kanama tipi seçilmedi','var(--muted)');
     else if(hypo)pill('trp',trig?'Transfüzyon önerilir':'Hb eşiği tek ölçüt değil: dengesiz hasta','var(--high)');
     else if(trig)pill('trp','Transfüzyon önerilir','var(--high)');
     else pill('trp','Eşiğin üstünde: transfüzyon gerekmiyor','var(--ok)');
 
     li('rx0','İki geniş çaplı periferik damar yolu, kan grubu ve çapraz karşılaştırma','Hemogram, BUN/üre, kreatinin, INR, karaciğer testleri. Hemodinami dengesizse hemen kristaloid ile volüm replasmanı (ESGE 2021); varis şüphesinde hedef doku perfüzyonunu korumak, aşırı volümden kaçınmak (Baveno VII).');
-    if(nv){
+    if(!tip)li('rx0','Kanama tipini seçin','Transfüzyon eşiği, endoskopi zamanı ve ilaçlar varis dışı ve varis kanamasında farklıdır.');
+    else if(nv){
       if(cvd)li('rx0','Kardiyovasküler hastalıkta daha liberal strateji','Hemodinamik olarak stabil hastada Hb ≤ 8 g/dL ise eritrosit transfüzyonu; transfüzyon sonrası hedef ≥ 10 g/dL (ESGE 2021).');
       else li('rx0','Kısıtlayıcı transfüzyon','Hemodinamik olarak stabil hastada Hb ≤ 7 g/dL ise eritrosit transfüzyonu; transfüzyon sonrası hedef 7–9 g/dL (ESGE 2021; ACG 2021 eşik 7 g/dL).');
     }else{
@@ -278,6 +282,8 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     $('rx2').innerHTML='';
     var fr=segVal('fr'),F=FR[fr];
     document.querySelectorAll('#frt tbody tr').forEach(function(r){r.classList.toggle('cur',r.dataset.f===fr)});
+    if(!F){$('fro').textContent='–';pill('frp','Forrest sınıfı seçilmedi','var(--muted)');li('rx2','Endoskopik bulguya göre Forrest sınıfını seçin','PPI dozu ve süresi Forrest sınıfına göre belirlenir.');}
+    else{
     $('fro').textContent=F.r;
     pill('frp','Forrest '+fr+(F.hi?': yüksek risk':': düşük risk'),F.hi?'var(--high)':'var(--ok)');
     li('rx2',F.t,F.a);
@@ -286,12 +292,14 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       li('rx2','Sonra oral PPI günde iki kez, ilk 2 hafta','Ardından günde bir kez; süre ülserin nedenine göre (ACG 2021).');
       li('rx2','Yeniden kanamada','Tekrar endoskopi; kapak üstü klips (OTSC) düşünülebilir. İkinci endoskopik deneme başarısızsa transkateter anjiyografik embolizasyon, yapılamıyorsa ya da başarısızsa cerrahi (ESGE 2021). Rutin ikinci bakış endoskopisi önerilmez.');
     }else li('rx2','Oral PPI günde bir kez','Yüksek doz IV PPI gerekmez.');
+    }
     li('rx2','Helicobacter pylori','Peptik ülser kanamasında test edin ve pozitifse eradike edin; akut dönemde negatif sonuç yanlış negatif olabilir, testi sonra tekrarlayın. NSAİİ’yi kesin.');
 
     // 5) Antitrombotik
     $('rx3').innerHTML='';
     var at=segVal('at');
-    if(at==='0')li('rx3','Antitrombotik ilaç yok','—');
+    if(at===null)li('rx3','Antitrombotik ilaç kullanımını seçin','—');
+    else if(at==='0')li('rx3','Antitrombotik ilaç yok','—');
     else if(at==='asa'){
       li('rx3','Sekonder korumada düşük doz aspirini kesmeyin','Herhangi bir nedenle kesildiyse en kısa sürede, tercihen 3–5 gün içinde yeniden başlayın (ESGE 2021, güçlü öneri).');
       li('rx3','Primer korumada aspirin','Kesin ve endikasyonunu yeniden değerlendirin.');
@@ -304,7 +312,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       li('rx3','DOAK’ı kesin, endoskopiyi geciktirmeyin','Ağır, süren kanamada DOAK antidotu (dabigatran için idarusizumab; anti-Xa için andeksanet alfa) veya IV PKK düşünülmeli (ESGE 2021).');
       li('rx3','Yeniden başlama','Kanama kontrol altına alınınca, tromboembolik riske göre tercihen 7 gün içinde ya da hemen sonrasında; DOAK’ların etkisinin VKA’dan çok daha hızlı başladığını hesaba katın (ESGE 2021).');
     }
-    if(at!=='0'&&!nv)li('rx3','Varis kanamasında antikoagülan','Kanama kontrol altına alınana kadar geçici olarak kesin; kesme süresi endikasyonun gücüne göre bireyselleştirilir (Baveno VII).');
+    if(at!==null&&at!=='0'&&tip==='v')li('rx3','Varis kanamasında antikoagülan','Kanama kontrol altına alınana kadar geçici olarak kesin; kesme süresi endikasyonun gücüne göre bireyselleştirilir (Baveno VII).');
 
     // 6) Varis
     $('rx4').innerHTML='';

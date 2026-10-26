@@ -78,7 +78,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
 .mk.y{color:var(--ok)} .mk.n{color:var(--high)} .mk.u{color:var(--muted)}
 </style>
 </head>
-<body>
+<body data-ornek-secim="vol">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -93,7 +93,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
       <div class="field"><label for="glu">Glukoz <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="110"></div>
       <div class="field"><label for="osm">Ölçülen osmolalite <span>mOsm/kg</span></label><input id="osm" type="number" inputmode="decimal" step="any" value="258" placeholder="yoksa hesaplanır"></div>
       <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="60"></div>
-      <div class="field"><label for="ua">Ürik asit <span>mg/dL, isteğe bağlı</span></label><input id="ua" type="number" inputmode="decimal" step="any" value="3.1"></div>
+      <div class="field"><label for="ua">Ürik asit <span>mg/dL, isteğe bağlı</span></label><input data-aralik="0.1-30 mg/dL" id="ua" type="number" inputmode="decimal" step="any" value="3.1"></div>
       <div class="field"><label for="ure">Üre <span>mg/dL, isteğe bağlı</span></label><input id="ure" data-hasta="ure" type="number" inputmode="decimal" step="any" value="18"></div>
     </div>
     <p class="note">Osmolalite boş bırakılırsa efektif osmolalite hesaplanır (2 × Na + glukoz / 18). Kılavuz ölçülen osmolaliteyi esas alır. Üre değil BUN biliniyorsa: üre = BUN × 2,14.</p>
@@ -105,8 +105,8 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
       <div class="field"><label for="uosm">Osmolalite <span>mOsm/kg</span></label><input id="uosm" type="number" inputmode="decimal" step="any" value="480"></div>
       <div class="field"><label for="una">Sodyum <span>mmol/L</span></label><input id="una" type="number" inputmode="decimal" step="any" value="62"></div>
       <div class="field"><label for="uk">Potasyum <span>mmol/L</span></label><input id="uk" type="number" inputmode="decimal" step="any" value="28"></div>
-      <div class="field"><label for="feua">FE ürat <span>%, isteğe bağlı</span></label><input id="feua" type="number" inputmode="decimal" step="any" value="14"></div>
-      <div class="field"><label for="uvol">24 saat idrar <span>mL, isteğe bağlı</span></label><input id="uvol" type="number" inputmode="decimal" step="any" value="" placeholder="biliniyorsa"></div>
+      <div class="field"><label for="feua">FE ürat <span>%, isteğe bağlı</span></label><input data-aralik="0-100 %" id="feua" type="number" inputmode="decimal" step="any" value="14"></div>
+      <div class="field"><label for="uvol">24 saat idrar <span>mL, isteğe bağlı</span></label><input data-aralik="0-20000 mL" id="uvol" type="number" inputmode="decimal" step="any" value="" placeholder="biliniyorsa"></div>
     </div>
     <p class="note">FE ürat = (idrar ürik asit × serum kreatinin) / (serum ürik asit × idrar kreatinin) × 100.</p>
   </section>
@@ -123,7 +123,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     <div class="items">
       <label class="item"><input type="checkbox" id="diu"><span class="txt">Son dönemde diüretik kullanımı<small>Tiyazid, indapamid, kıvrım diüretiği, amilorid</small></span></label>
       <label class="item"><input type="checkbox" id="ckd"><span class="txt">Böbrek hastalığı / böbrek yetmezliği</span></label>
-      <label class="item"><input type="checkbox" id="tsh" checked><span class="txt">Tiroid işlevi bakıldı, normal<small>TSH ve serbest T4</small></span></label>
+      <label class="item"><input type="checkbox" id="tsh" data-sabit checked><span class="txt">Tiroid işlevi bakıldı, normal<small>TSH ve serbest T4</small></span></label>
       <label class="item"><input type="checkbox" id="cort"><span class="txt">Adrenal yetmezlik dışlandı<small>Sabah kortizolü yeterli veya ACTH uyarı testi normal</small></span></label>
     </div>
     <span class="lbl">ODS risk etkenleri</span>
@@ -273,6 +273,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
         }else{
           li('alg','İdrar osmolalitesi '+fm(uosm,0)+' > 100 mOsm/kg','Vazopressin etkisi sürüyor; idrar sodyumuna bakın.');
           if(una===null){li('alg','İdrar sodyumu: veri yok','');pill('dxp','İdrar sodyumu gerekli','var(--muted)')}
+          else if(!vol){li('alg','Klinik volüm durumu seçilmedi','Hipovolemik, övolemik ya da hipervolemik seçin.');pill('dxp','Volüm durumu gerekli','var(--muted)')}
           else if(una<=30){
             li('alg','İdrar Na '+fm(una)+' ≤ 30 mmol/L','Düşük efektif arteriyel volüm.'+(diu?' Diüretik etkisi geçtiyse (uzak diüretik) idrar Na düşük olabilir.':''));
             if(vol==='hyper'){
@@ -319,7 +320,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     var e=[];
     e.push(['Efektif osmolalite < 275 mOsm/kg',hypot===null?null:hypot,osm===null?'veri yok':fm(osm,0)+(calcO?' (hesaplanan)':'')]);
     e.push(['İdrar osmolalitesi > 100 mOsm/kg',uosm===null?null:uosm>100,uosm===null?'veri yok':fm(uosm,0)]);
-    e.push(['Klinik övolemi',vol==='eu',{hypo:'hipovolemik',eu:'övolemik',hyper:'hipervolemik'}[vol]]);
+    e.push(['Klinik övolemi',vol?vol==='eu':null,vol?{hypo:'hipovolemik',eu:'övolemik',hyper:'hipervolemik'}[vol]:'seçilmedi']);
     e.push(['İdrar Na > 30 mmol/L',una===null?null:una>30,una===null?'veri yok':fm(una)]);
     var endo=ckd?false:(tsh&&cort?true:null);
     e.push(['Adrenal, tiroid, hipofiz, böbrek yetmezliği yok',endo,ckd?'böbrek hastalığı var':(tsh&&cort?'dışlandı':[!tsh?'tiroid':null,!cort?'adrenal':null].filter(Boolean).join(' ve ')+' bakılmadı')]);

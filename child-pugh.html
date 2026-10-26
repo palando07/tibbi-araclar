@@ -70,7 +70,7 @@ details p{margin:8px 0 0}
 .seg button{min-width:0}
 </style>
 </head>
-<body>
+<body data-ornek-secim="asc enc">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -113,9 +113,12 @@ details p{margin:8px 0 0}
 
   function calc(){
     var bil=v('bil'),alb=v('alb'),inr=v('inr');
-    if(bil===null||alb===null||inr===null){$('sc').textContent='–';pill('cls','');$('adv').textContent='Bilirubin, albümin ve INR girin.';return}
+    var sa=segVal('asc'),se=segVal('enc');
+    // Laboratuvar eksikse ya da asit/ensefalopati seçilmemişse skor ve ara puanlar gösterilmez (seçimsiz madde 0 sayılmaz)
+    if(bil===null||alb===null||inr===null||sa===null||se===null){$('sc').textContent='–';pill('cls','');['p-bil','p-alb','p-inr','p-asc','p-enc'].forEach(function(i){$(i).textContent='–'});
+      $('adv').textContent=bil===null||alb===null||inr===null?'Bilirubin, albümin ve INR girin.':'Asit ve ensefalopati durumunu seçin.';return}
     var pb=bil<2?1:bil<=3?2:3, pa=alb>3.5?1:alb>=2.8?2:3, pi=inr<1.7?1:inr<=2.3?2:3;
-    var ps=+segVal('asc'), pe=+segVal('enc'), s=pb+pa+pi+ps+pe;
+    var ps=+sa, pe=+se, s=pb+pa+pi+ps+pe;
     [['p-bil',pb],['p-alb',pa],['p-inr',pi],['p-asc',ps],['p-enc',pe]].forEach(function(a){$(a[0]).textContent='+'+a[1]});
     $('sc').textContent=s;
     if(s<=6){pill('cls','Sınıf A','var(--ok)');$('adv').textContent='İyi kompanse siroz. Tahmini 1 yıllık sağkalım yaklaşık %100, 2 yıllık %85.'}

@@ -83,7 +83,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
 .sub small{font-size:.78rem}
 </style>
 </head>
-<body>
+<body data-ornek-secim="kl">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -95,11 +95,11 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     <h2>Serum ve plevral sıvı</h2>
     <p class="note">Serum ve sıvı örneklerini aynı gün (tercihen torasentezle eş zamanlı) alın.</p>
     <div class="grid">
-      <div class="field"><label for="sp">Serum total protein <span>g/dL</span></label><input id="sp" type="number" inputmode="decimal" step="any" value="6.8"></div>
-      <div class="field"><label for="pp">Sıvı total protein <span>g/dL</span></label><input id="pp" type="number" inputmode="decimal" step="any" value="3.6"></div>
-      <div class="field"><label for="sl">Serum LDH <span>U/L</span></label><input id="sl" type="number" inputmode="decimal" step="any" value="240"></div>
-      <div class="field"><label for="pl">Sıvı LDH <span>U/L</span></label><input id="pl" type="number" inputmode="decimal" step="any" value="150"></div>
-      <div class="field"><label for="uln">Serum LDH üst sınırı <span>U/L, laboratuvarınız</span></label><input id="uln" data-sabit type="number" inputmode="decimal" step="any" value="250"></div>
+      <div class="field"><label for="sp">Serum total protein <span>g/dL</span></label><input data-aralik="1-15 g/dL" id="sp" type="number" inputmode="decimal" step="any" value="6.8"></div>
+      <div class="field"><label for="pp">Sıvı total protein <span>g/dL</span></label><input data-aralik="0-12 g/dL" id="pp" type="number" inputmode="decimal" step="any" value="3.6"></div>
+      <div class="field"><label for="sl">Serum LDH <span>U/L</span></label><input data-aralik="20-10000 U/L" id="sl" type="number" inputmode="decimal" step="any" value="240"></div>
+      <div class="field"><label for="pl">Sıvı LDH <span>U/L</span></label><input data-aralik="1-100000 U/L" id="pl" type="number" inputmode="decimal" step="any" value="150"></div>
+      <div class="field"><label for="uln">Serum LDH üst sınırı <span>U/L, laboratuvarınız</span></label><input data-aralik="100-1000 U/L" id="uln" data-sabit type="number" inputmode="decimal" step="any" value="250"></div>
     </div>
   </section>
 
@@ -125,8 +125,8 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     <div class="seg wrapseg"><button type="button" data-g="kl" data-v="0" aria-pressed="false">Belirgin değil</button><button type="button" data-g="kl" data-v="ky" aria-pressed="true">KY / diüretik</button><button type="button" data-g="kl" data-v="hh" aria-pressed="false">Siroz (hepatik hidrotoraks)</button></div>
     <div class="grid">
       <div class="field"><label for="sa">Serum albümin <span>g/dL</span></label><input id="sa" data-hasta="alb" type="number" inputmode="decimal" step="any" value="3.4"></div>
-      <div class="field"><label for="pa">Sıvı albümin <span>g/dL</span></label><input id="pa" type="number" inputmode="decimal" step="any" value="1.9"></div>
-      <div class="field"><label for="chol">Sıvı kolesterol <span>mg/dL, isteğe bağlı</span></label><input id="chol" type="number" inputmode="decimal" step="any" value="" placeholder="ölçülmediyse boş"></div>
+      <div class="field"><label for="pa">Sıvı albümin <span>g/dL</span></label><input data-aralik="0-7 g/dL" id="pa" type="number" inputmode="decimal" step="any" value="1.9"></div>
+      <div class="field"><label for="chol">Sıvı kolesterol <span>mg/dL, isteğe bağlı</span></label><input data-aralik="0-1000 mg/dL" id="chol" type="number" inputmode="decimal" step="any" value="" placeholder="ölçülmediyse boş"></div>
     </div>
     <p class="note">Protein gradyanı yukarıdaki serum ve sıvı proteininden hesaplanır.</p>
   </section>

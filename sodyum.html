@@ -91,7 +91,7 @@ table.t th.n{text-align:right}
       <div class="field"><label for="na">Serum sodyum <span>mEq/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="118"></div>
       <div class="field"><label for="wt">Kilo <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
       <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="72"></div>
-      <div class="field"><label for="chg">Hedef değişim (24 sa) <span>mEq/L</span></label><input id="chg" type="number" inputmode="decimal" step="any" value="8"></div>
+      <div class="field"><label for="chg">Hedef değişim (24 sa) <span>mEq/L</span></label><input id="chg" data-sabit data-aralik="0-20 mEq/L" type="number" inputmode="decimal" step="any" value="8"></div>
     </div>
     <div class="field"><span class="lbl">Cinsiyet</span><div class="seg wrapseg"><button type="button" data-g="sex" data-v="f" data-hasta-cins="f" aria-pressed="true">Kadın</button><button type="button" data-g="sex" data-v="m" data-hasta-cins="m" aria-pressed="false">Erkek</button></div></div>
     <p class="note">Değerler örnek olarak doldurulmuştur. Hedef değişim, sodyum düşükse 8, yüksekse 10 mEq/L olarak kendiliğinden ayarlanır; isterseniz değiştirebilirsiniz.</p>
@@ -124,10 +124,12 @@ table.t th.n{text-align:right}
   function calc(){
     var na=v('na'),wt=v('wt'),age=v('age'),f=segVal('sex')==='f';
     var tb=$('tbl').tBodies[0];tb.innerHTML='';
-    if(na===null||wt===null||age===null){$('main').textContent='–';$('mode').textContent='Sonuç';pill('pl','');$('adv').textContent='Sodyum, kilo ve yaşı girin.';$('warn').hidden=true;return}
+    if(na===null||wt===null||age===null){$('main').textContent='–';$('mode').textContent='Sonuç';pill('pl','');$('adv').textContent='Sodyum, kilo ve yaşı girin.';$('warn').hidden=true;$('mainu').textContent='';['tgt','fac','tbw'].forEach(function(i){$(i).textContent='–'});$('formula').textContent='';return}
     var mode=na<135?'hypo':na>145?'hyper':'normal';
     if(mode!==lastMode){if(mode==='hypo')$('chg').value=8;if(mode==='hyper')$('chg').value=10;lastMode=mode}
-    var chg=v('chg')||0;
+    var chg=v('chg');
+    // Hedef değişim boşsa 0 sayılmaz: açık 0 çıkıp yanıltmasın
+    if(chg===null&&mode!=='normal'){$('main').textContent='–';$('mode').textContent='Sonuç';pill('pl','');$('adv').textContent='Hedef değişimi (24 saat) girin.';$('warn').hidden=true;['tgt','fac','tbw'].forEach(function(i){$(i).textContent='–'});$('formula').textContent='';return}
     var fac=age>=65?(f?0.45:0.5):(f?0.5:0.6), tbw=fac*wt;
     $('fac').textContent=String(fac).replace('.',',');$('tbw').textContent=f1(tbw)+' L';
     $('warn').hidden=false;

@@ -70,7 +70,7 @@ details p{margin:8px 0 0}
 .seg button{min-width:0}
 </style>
 </head>
-<body>
+<body data-ornek-secim="eat">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -103,8 +103,8 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
       <label class="item"><input type="checkbox" id="ster"><span class="txt">Steroid alıyor<small>sabah tek doz prednizolon / metilprednizolon</small></span></label>
     </div>
     <div class="grid">
-      <div class="field" id="home-f" hidden><label for="htdd">Evdeki günlük toplam insülin <span>ünite</span></label><input id="htdd" type="number" inputmode="decimal" step="any" value="40"></div>
-      <div class="field" id="ster-f" hidden><label for="pred">Prednizolon eşdeğeri <span>mg/gün</span></label><input id="pred" type="number" inputmode="decimal" step="any" value="40"></div>
+      <div class="field" id="home-f" hidden><label for="htdd">Evdeki günlük toplam insülin <span>ünite</span></label><input data-aralik="0-500 ünite" id="htdd" type="number" inputmode="decimal" step="any" value="40"></div>
+      <div class="field" id="ster-f" hidden><label for="pred">Prednizolon eşdeğeri <span>mg/gün</span></label><input data-aralik="0-2000 mg/gün" id="pred" type="number" inputmode="decimal" step="any" value="40"></div>
     </div>
     <p class="note" id="ster-n" hidden>Metilprednizolon 4 mg = prednizolon 5 mg. Deksametazon 0,75 mg = prednizolon 5 mg.</p>
     <p class="note">Örnek hasta doldurulmuştur: 68 yaş, 80 kg, eGFR 55, kan şekeri 250 mg/dL, yemek yiyor. Diyabetik ketoasidoz, HHS ve yoğun bakımda IV insülin gereken hastalar için değildir.</p>
@@ -137,7 +137,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
   <section class="card">
     <h2>Bazal doz titrasyonu</h2>
     <div class="grid">
-      <div class="field"><label for="cb">Şu anki bazal doz <span>ünite</span></label><input id="cb" type="number" inputmode="decimal" step="any" value="20"></div>
+      <div class="field"><label for="cb">Şu anki bazal doz <span>ünite</span></label><input data-aralik="0-300 ünite" id="cb" type="number" inputmode="decimal" step="any" value="20"></div>
       <div class="field"><label for="fbg">Sabah açlık kan şekeri <span>mg/dL</span></label><input id="fbg" type="number" inputmode="numeric" step="1" value="190"></div>
     </div>
     <div class="items">

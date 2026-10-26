@@ -82,7 +82,7 @@ input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
   <section class="card" aria-live="polite">
     <h2>Anyon açığı</h2>
-    <div class="res"><span class="num" id="ag">–</span><span class="unit">mEq/L</span><span class="pill" id="ag-pill"></span></div>
+    <div class="res"><span class="num" id="ag" data-gecerli="-10:80">–</span><span class="unit">mEq/L</span><span class="pill" id="ag-pill"></span></div>
     <div class="sub"><span>Albümine göre düzeltilmiş</span><b id="cag">–</b></div>
     <div class="sub" id="dr-row"><span>Delta oranı</span><b id="dr">–</b></div>
     <p class="advice" id="dr-txt"></p>
@@ -127,8 +127,8 @@ input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
           :dr<0.8?'Delta oranı 0,4–0,8: yüksek ve normal anyon açıklı asidoz birlikte düşünülebilir.'
           :dr<=2?'Delta oranı 0,8–2: saf yüksek anyon açıklı metabolik asidozla uyumlu (DKA\'da sıklıkla ~1, laktik asidozda ~1,6).'
           :'Delta oranı > 2: eşlik eden metabolik alkaloz veya önceden var olan yüksek bikarbonat (ör. kronik solunumsal asidoz) düşünülebilir.';
-      }else{$('dr-row').hidden=true;$('dr-txt').textContent=''}
-    }else{$('ag').textContent='–';$('cag').textContent='–';pill('ag-pill','');$('dr-row').hidden=true;$('dr-txt').textContent=''}
+      }else{$('dr').textContent='–';$('dr-row').hidden=true;$('dr-txt').textContent=''}
+    }else{$('ag').textContent='–';$('cag').textContent='–';pill('ag-pill','');$('dr').textContent='–';$('dr-row').hidden=true;$('dr-txt').textContent=''}
 
     if(na!==null&&glu!==null){
       var ex=Math.max(glu-100,0)/100, h=na+2.4*ex, k=na+1.6*ex;

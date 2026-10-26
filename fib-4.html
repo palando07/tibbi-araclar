@@ -70,7 +70,7 @@ details p{margin:8px 0 0}
 .seg button{min-width:0}
 </style>
 </head>
-<body>
+<body data-ornek-secim="et">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -83,8 +83,8 @@ details p{margin:8px 0 0}
     <div class="grid">
       <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="58"></div>
       <div class="field"><label for="plt">Trombosit <span>×10³/µL</span></label><input id="plt" data-hasta="plt" type="number" inputmode="decimal" step="any" value="160"></div>
-      <div class="field"><label for="ast">AST <span>U/L</span></label><input id="ast" type="number" inputmode="decimal" step="any" value="45"></div>
-      <div class="field"><label for="alt">ALT <span>U/L</span></label><input id="alt" type="number" inputmode="decimal" step="any" value="38"></div>
+      <div class="field"><label for="ast">AST <span>U/L</span></label><input data-aralik="1-20000 U/L" id="ast" type="number" inputmode="decimal" step="any" value="45"></div>
+      <div class="field"><label for="alt">ALT <span>U/L</span></label><input data-aralik="1-20000 U/L" id="alt" type="number" inputmode="decimal" step="any" value="38"></div>
     </div>
     <p class="note">Değerler örnek olarak doldurulmuştur.</p>
   </section>
