@@ -143,7 +143,7 @@ input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:
     <div class="res"><span class="pill" id="cp"></span></div>
     <div id="cl"></div>
     <ol class="rec" id="cr"></ol>
-    <p class="note">Yalnız klinik olarak en önemli substratlar listelenmiştir. Güçlü CYP3A4 inhibitörleri: klaritromisin, itrakonazol, vorikonazol, posakonazol, ritonavir (Paxlovid). Orta: eritromisin, flukonazol, verapamil, diltiazem. Güçlü indükleyiciler: rifampisin, karbamazepin, fenitoin. Greyfurt suyu da bağırsak CYP3A4’ünü inhibe eder.</p>
+    <p class="note">Yalnız klinik olarak en önemli substratlar listelenmiştir. Güçlü CYP3A4 inhibitörleri: klaritromisin, itrakonazol, vorikonazol, posakonazol, ritonavir (nirmatrelvir-ritonavir dahil). Orta: eritromisin, flukonazol, verapamil, diltiazem, siklosporin. Güçlü indükleyiciler: rifampisin, karbamazepin, fenitoin. Greyfurt suyu da bağırsak CYP3A4’ünü inhibe eder.</p>
   </section>
 
   <section class="card" aria-live="polite">
@@ -179,7 +179,7 @@ input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:
   // [ad, piyasa adları, etiketler]
   // qtb/qto/qtk/qts: CredibleMeds bilinen / olası / koşullu / özel risk
   // kpl hiperkalemi · akg antikoagülan · agg antiagregan · nsa NSAİİ · ssri SSRI/SNRI · ste sistemik steroid
-  // c3ig/c3io güçlü/orta CYP3A4 inhibitörü · c3e güçlü indükleyici · c3s önemli CYP3A4 substratı
+  // c3ig/c3io güçlü/orta CYP3A4 inhibitörü · c3e güçlü indükleyici · c3s önemli CYP3A4 substratı · pge P-gp indükleyici
   // pgi P-gp inhibitörü · pgs P-gp substratı · ser serotonerjik · wa/wd varfarin etkisini artırır/azaltır
   // c19i CYP2C19 inhibitörü · k2c9 CYP2C9 inhibitörü · nit nitrat · pde5 · opi opioid · bzd · gab gabapentinoid
   // cns SSS etkin · ras RAS blokeri · diu diüretik · teo teofilin · hipok hipokalemi yapar
@@ -193,11 +193,11 @@ input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:
   ['Diltiazem','diltizem, altizem, tiacard, kardil','qtk c3io pgi'],
   ['Metoprolol','beloc, lopresor, saneloc, problok',''],
   ['İvabradin','','qtb'],
-  ['ACE inhibitörü (ramipril, perindopril, enalapril)','kapril, kaptoril, nobepril','kpl ras'],
+  ['ACE inhibitörü (ramipril, perindopril, enalapril, kaptopril)','kapril, kaptoril, nobepril','kpl ras'],
   ['ARB (valsartan, losartan, irbesartan)','','kpl ras'],
   ['Sakubitril-valsartan','oneptus, ovefran, neprilex','kpl ras'],
   ['Spironolakton','aldactone, aldactazide, spylacton','kpl'],
-  ['Eplerenon','inspra, epleday','kpl'],
+  ['Eplerenon','inspra, epleday','kpl c3s'],
   ['Finerenon','kerendia','kpl c3s'],
   ['Amilorid','moduretic, kalurid','kpl'],
   ['Furosemid','lasix, desal, furomid, urever','qtk diu hipok'],
@@ -233,8 +233,8 @@ input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:
   ['Vorikonazol','','qtk c3ig wa'],
   ['İtrakonazol','','qtk c3ig pgi'],
   ['Posakonazol','','qtk c3ig'],
-  ['Ritonavir (Paxlovid)','','c3ig pgi'],
-  ['Rifampisin','rifam, rafamin, rifcap','c3e wd'],
+  ['Ritonavir (nirmatrelvir ile birlikte dahil)','','c3ig pgi'],
+  ['Rifampisin','rifam, rafamin, rifcap','c3e pge wd'],
   ['Seftriakson','rocephin, unacefin, desefin, novosef',''],
   ['Piperasilin-tazobaktam','tazocin, tazoper, tazeracin, tazoject',''],
   ['Meropenem','meronem, maxipen, merosid, mopem','vpa'],
@@ -249,7 +249,7 @@ input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:
   ['Domperidon','','qtb'],
   ['Loperamid','','qtk'],
   ['Haloperidol','norodol, sedaperidol, leptol','qtb cns'],
-  ['Ketiapin','','qtk cns'],
+  ['Ketiapin','','qtk cns c3s'],
   ['Olanzapin','','qtk cns'],
   ['Risperidon','','qtk cns'],
   ['Klozapin','','qto cns'],
@@ -264,8 +264,8 @@ input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:
   ['Trazodon','','qtk ser cns c3s'],
   ['Amitriptilin','','qtk ser cns'],
   ['Lityum','lithuril, kilonum, litomaks','qto ser cns lit'],
-  ['Karbamazepin','tegretol, karbalex, karazepin, teril','c3e wd cns'],
-  ['Fenitoin','epanutin, epdantoin, hidantin','c3e wd cns'],
+  ['Karbamazepin','tegretol, karbalex, karazepin, teril','c3e pge c3s wd cns'],
+  ['Fenitoin','epanutin, epdantoin, hidantin','c3e pge wd cns'],
   ['Valproat','depakin, convulex, depalex','cns wa vps'],
   ['Levetirasetam','keppra, epixx, levemax, epitam','cns'],
   ['Lamotrijin','lamictal, pinral, latrigal','cns'],
@@ -288,7 +288,7 @@ input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:
   ['Prednizolon','deltacortril','ste'],
   ['Hidroksiklorokin','','qtb'],
   ['Takrolimus','prograf, advagraf, adoport, panolimus','qto c3s pgs kpl'],
-  ['Siklosporin','sandimmun, sandimmun-neoral, drosporin','c3s pgi kpl'],
+  ['Siklosporin','sandimmun, sandimmun-neoral, drosporin','c3s c3io pgi kpl'],
   ['Teofilin','talotren, teokap, bronkolin, teosel','teo'],
   ['Salbutamol','ventolin, combivent, salbutol, ventide','qts hipok'],
   ['Formoterol','foradil, foster, symbicort','qts hipok'],
@@ -357,10 +357,12 @@ input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:
     else if(qtc!==null&&qtc>=470)ekrisk.push('QTc '+fm(qtc,0)+' ms sınırda');
     if(hk.length)ekrisk.push('hipokalemi yapan ilaç: '+adlar(hk));
     if(ekrisk.length)satir('qtl','Ek risk etkenleri',ekrisk.join(' · '));
-    if(!n&&!sr.length){pill('qtp',secili.length?'QT uyarısı yok':'İlaç seçin',secili.length?'var(--ok)':'var(--muted)')}
+    if(!n&&!sr.length){
+      if(qtc!==null&&qtc>=500){pill('qtp','QTc ≥ 500: listede QT ilacı yok','var(--high)');li('qtr','QTc zaten uzun','Seçilen ilaçlar arasında listedeki QT uzatan ilaç yok, ama QTc ≥ 500 ms. Nedeni (elektrolit, bradikardi, listede olmayan ilaç, doğuştan uzun QT) araştırın ve yeni QT uzatan ilaçtan kaçının.')}
+      else pill('qtp',secili.length?'Listedeki ilaçlarda QT uyarısı yok':'İlaç seçin',secili.length?'var(--ok)':'var(--muted)')}
     else if(b.length>=2||(b.length&&(o.length+kk.length))||(qtc!==null&&qtc>=500)){
       pill('qtp','Yüksek risk','var(--high)');
-      li('qtr','Kombinasyonu gözden geçirin','Bilinen riskli ilaçların birlikte kullanımından kaçının; birini QT uzatmayan bir seçenekle değiştirin (ör. makrolid yerine uygunsa başka grup, ondansetron yerine metoklopramid ya da tersi değil — ikisi de listede).');
+      li('qtr','Kombinasyonu gözden geçirin','Bilinen riskli ilaçların birlikte kullanımından kaçının; birini QT uzatmayan bir seçenekle değiştirin (ör. makrolid ya da kinolon yerine uygunsa başka bir antibiyotik grubu). Antiemetik ve antipsikotiklerin çoğu da listededir; değiştirirken yeni ilacın kategorisine bakın.');
     }else if(b.length){pill('qtp','Dikkat: bilinen riskli ilaç','var(--warn)')}
     else if(n>=2){pill('qtp','Birden çok QT uzatan ilaç','var(--warn)')}
     else{pill('qtp','Tek ilaç, düşük risk','var(--ok)')}
@@ -435,27 +437,35 @@ input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:
       'Tadalafil':['Düzeyi artar; güçlü inhibitörle doz azaltılır (hipotansiyon).','o'],
       'Tolvaptan':['Düzeyi belirgin artar; güçlü inhibitörle birlikte kullanmayın, aşırı hızlı sodyum düzelmesi riski.','g'],
       'Trazodon':['Düzeyi artar: sedasyon ve QT uzaması.','o'],
-      'Metilprednizolon':['Düzeyi artar: Cushing benzeri etkiler ve adrenal baskılanma; uzun kullanımda dozu gözden geçirin.','o']};
+      'Metilprednizolon':['Düzeyi artar: Cushing benzeri etkiler ve adrenal baskılanma; uzun kullanımda dozu gözden geçirin.','o'],
+      'Eplerenon':['Güçlü CYP3A4 inhibitörüyle (klaritromisin, itrakonazol, ritonavir) kontrendike: hiperkalemi. Orta inhibitörle (eritromisin, flukonazol, verapamil, diltiazem) en çok 25 mg/gün; K ve kreatinini izleyin.','g'],
+      'Ketiapin':['Düzeyi kat kat artar (ketokonazolle 5–8 kat): sedasyon, hipotansiyon, QT uzaması. AB KÜB’ü azol antifungaller, klaritromisin, eritromisin ve HIV proteaz inhibitörleriyle birlikte kullanımı kontrendike sayar; diğer inhibitörlerle düşük dozla ve izleyerek kullanın.','g'],
+      'Karbamazepin':['Düzeyi artar: baş dönmesi, ataksi, çift görme, hiponatremi. Düzey ölçün, gerekirse dozu azaltın (özellikle klaritromisin ve eritromisinle).','g']};
     if(inh.length&&sub.length){
       sub.forEach(function(s){
-        var oz=OZ[s[0]];if(!oz)return;
+        var oz=OZ[s[0]],ob=inh.filter(function(x){return x!==s});if(!oz||!ob.length)return;
         ciftler++;
-        li('cr',adlar(inh)+' + '+s[0],oz[0]);
+        li('cr',adlar(ob)+' + '+s[0],oz[0]);
       });
     }
-    if(ie.length&&sub.length){
+    var isub=sub.concat(has('pgs').filter(function(x){return sub.indexOf(x)<0})).filter(function(x){return ie.indexOf(x)<0});
+    if(ie.length&&isub.length){
       ciftler++;
-      li('cr','Güçlü indükleyici ('+adlar(ie)+') + '+adlar(sub),'Substratın düzeyi düşer ve ilaç etkisiz kalabilir. DOAK’larda rifampisinden kaçının (dabigatranla birlikte kullanmayın); varfarine geçmeyi ya da ilacı değiştirmeyi düşünün. Takrolimus ve siklosporinde rejeksiyon riski: düzeyi erken ölçün. İndükleyici kesildikten sonra etki 1–2 hafta sürer.');
+      li('cr','Güçlü indükleyici ('+adlar(ie)+') + '+adlar(isub),'Substratın düzeyi düşer ve ilaç etkisiz kalabilir (rifampisin, karbamazepin ve fenitoin CYP3A4 ile birlikte P-gp’yi de indükler). DOAK’larda bu indükleyicilerle birlikte kullanımdan kaçının (dabigatran ve edoksabanda da düzey belirgin düşer); digoksin düzeyi de düşer; varfarine geçmeyi ya da ilacı değiştirmeyi düşünün. Takrolimus ve siklosporinde rejeksiyon riski: düzeyi erken ölçün. İndükleyici kesildikten sonra etki 1–2 hafta sürer.');
     }
     if(pgi.length&&sec('Dabigatran')){ciftler++;
-      li('cr','Dabigatran + P-gp inhibitörü ('+adlar(pgi)+')','Dabigatran düzeyi artar. İtrakonazol, siklosporin ve takrolimusla birlikte kontrendike; dronedaronla kullanmayın. Verapamille birlikte bazı endikasyonlarda 110 mg 2×1’e düşürülür. Klaritromisin ve amiodaronla dikkatle izleyin (NHS SPS).');}
+      li('cr','Dabigatran + P-gp inhibitörü ('+adlar(pgi)+')','Dabigatran düzeyi artar. İtrakonazol, ketokonazol, siklosporin ve dronedaronla birlikte kontrendike; takrolimusla önerilmez. Verapamille birlikte bazı endikasyonlarda 110 mg 2×1’e düşürülür. Klaritromisin ve amiodaronla dikkatle izleyin (NHS SPS).');}
     if(pgi.length&&sec('Digoksin')){ciftler++;
       li('cr','Digoksin + P-gp inhibitörü ('+adlar(pgi)+')','Digoksin düzeyi yükselir; klaritromisinle birlikte digoksin toksisitesine bağlı hastaneye yatışlar belgelenmiştir. Dozu azaltın (sıklıkla yarıya), düzeyi ve K’yı ölçün, bradikardi ve bulantı sorgulayın.');}
-    if(pgi.length&&(sec('Edoksaban')||sec('Apiksaban')||sec('Rivaroksaban'))&&!inh.length){ciftler++;
+    if(pgi.length&&sec('Kolşisin')&&!inh.filter(function(x){return x[0]!=='Kolşisin'}).length){ciftler++;
+      li('cr','Kolşisin + P-gp inhibitörü ('+adlar(pgi)+')','P-gp inhibitörleri (amiodaron, siklosporin, verapamil, klaritromisin) kolşisin düzeyini artırır; ölümcül toksisite bildirilmiştir. Böbrek ya da karaciğer yetmezliğinde birlikte kullanmayın; değilse dozu belirgin azaltın ya da ilacı geçici kesin.');}
+    if(sec('Simvastatin')&&sec('Amiodaron')){ciftler++;
+      li('cr','Amiodaron + simvastatin','Miyopati ve rabdomiyoliz riski: simvastatin en çok 20 mg/gün (MHRA). Gerekirse etkileşimi az bir statine geçin.');}
+    if(pgi.length&&(sec('Edoksaban')||((sec('Apiksaban')||sec('Rivaroksaban'))&&!inh.length))){ciftler++;
       li('cr','Faktör Xa inhibitörü + P-gp inhibitörü','Kanama riski artar; edoksaban bazı inhibitörlerle 30 mg’a düşürülür (siklosporin, dronedaron, eritromisin, ketokonazol). Hemoglobin ve kanama belirtilerini izleyin.');}
     if(!ciftler){
       pill('cp',secili.length?(inh.length||ie.length||sub.length?'Önemli bir çift yok':'Uyarı yok'):'İlaç seçin',secili.length?'var(--ok)':'var(--muted)');
-      if(inh.length&&!sub.length)li('cr','İnhibitör var, listelenen substrat yok','Hastanın listede olmayan ilaçlarını (ör. ketiapin, karbamazepin, bazı onkolojik ilaçlar) KÜB’ünden kontrol edin.');
+      if(inh.length&&!sub.length)li('cr','İnhibitör var, listelenen substrat yok','Hastanın listede olmayan ilaçlarını (ör. kalsiyum kanal blokerleri, bazı immünsüpresif ve onkolojik ilaçlar) KÜB’ünden kontrol edin.');
     }else pill('cp',ig.length?'Güçlü etkileşim var':'Etkileşim var',ig.length?'var(--high)':'var(--warn)');
 
     // ---- Diğer ikililer ----
