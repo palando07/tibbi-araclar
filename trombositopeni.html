@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trombositopeni Yaklaşımı</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartları, sonra sonuç kartları */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 10px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.seg.wrapseg{flex-wrap:wrap}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub span{min-width:0}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sub b.w{white-space:normal;text-align:right;font-family:var(--font-body)}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+.warnbox a,.advice a,.note a{color:var(--accent);font-weight:600}
+.mk{font-weight:700}
+.mk.y{color:var(--ok)} .mk.n{color:var(--high)} .mk.u{color:var(--muted)}
+</style>
+</head>
+<body data-ornek-secim="dd">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Trombositopeni Yaklaşımı</h1>
+    <p>Şiddet, psödotrombositopeni, olası neden grupları, acil tablolar (TTP için PLASMIC, HIT, DİK için ISTH skoru) ve transfüzyon–antikoagülasyon eşikleri</p>
+  </header>
+
+  <section class="card">
+    <h2>Hemogram ve pıhtılaşma</h2>
+    <div class="grid">
+      <div class="field"><label for="plt">Trombosit <span>×10³/µL</span></label><input id="plt" data-hasta="plt" type="number" inputmode="decimal" step="any" value="18"></div>
+      <div class="field"><label for="pltp">Önceki trombosit <span>×10³/µL</span></label><input data-aralik="1-2000 ×10³/µL" id="pltp" type="number" inputmode="decimal" step="any" value="210"></div>
+      <div class="field"><label for="mcv">MCV <span>fL</span></label><input data-aralik="40-150 fL" id="mcv" type="number" inputmode="decimal" step="any" value="88"></div>
+      <div class="field"><label for="inr">INR</label><input id="inr" data-hasta="inr" type="number" inputmode="decimal" step="any" value="1.2"></div>
+      <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.4"></div>
+      <div class="field"><label for="fib">Fibrinojen <span>mg/dL</span></label><input data-aralik="10-1200 mg/dL" id="fib" type="number" inputmode="decimal" step="any" value="180"></div>
+      <div class="field"><label for="ptu">PT uzaması <span>saniye, kontrole göre</span></label><input data-aralik="0-60 saniye" id="ptu" type="number" inputmode="decimal" step="any" value="2"></div>
+    </div>
+    <span class="lbl">D-dimer (fibrin yıkım ürünleri)</span>
+    <div class="seg wrapseg"><button type="button" data-g="dd" data-v="0" aria-pressed="false">Artış yok</button><button type="button" data-g="dd" data-v="2" aria-pressed="true">Orta artış</button><button type="button" data-g="dd" data-v="3" aria-pressed="false">Belirgin artış</button></div>
+    <p class="note">D-dimer eşikleri yönteme göre değişir; ISTH skoru “orta” ve “belirgin” artışı tanımlamaz. Yaygın uygulama: üst sınırın 5 katına kadar orta, 5 katından fazlası belirgin artış (doğrulanmadı, laboratuvarınıza göre yorumlayın).</p>
+  </section>
+
+  <section class="card">
+    <h2>Klinik</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="hep"><span class="txt">Son 5–14 günde heparin (DMAH dahil)<small>HIT olasılığı için 4T skoru gerekir</small></span></label>
+      <label class="item"><input type="checkbox" id="ila"><span class="txt">Yeni başlanan ilaç (son 1–2 hafta)<small>Linezolid, vankomisin, piperasilin-tazobaktam, TMP-SMX, kinin, karbamazepin, valproat, GP IIb/IIIa inhibitörü, kemoterapi</small></span></label>
+      <label class="item"><input type="checkbox" id="hem" checked><span class="txt">Hemoliz bulgusu<small>Şistosit, LDH yüksek, haptoglobin düşük, indirekt bilirubin &gt; 2 mg/dL, retikülositoz</small></span></label>
+      <label class="item"><input type="checkbox" id="sep"><span class="txt">Sepsis, ağır enfeksiyon, travma, obstetrik olay ya da malignite<small>DİK için altta yatan hastalık koşulu</small></span></label>
+      <label class="item"><input type="checkbox" id="kc"><span class="txt">Kronik karaciğer hastalığı veya splenomegali</span></label>
+      <label class="item"><input type="checkbox" id="geb"><span class="txt">Gebelik veya doğum sonrası ilk hafta</span></label>
+      <label class="item"><input type="checkbox" id="kan"><span class="txt">Aktif kanama var</span></label>
+      <label class="item"><input type="checkbox" id="kns"><span class="txt">Son 1 yılda aktif kanser</span></label>
+      <label class="item"><input type="checkbox" id="nak"><span class="txt">Solid organ veya kök hücre nakli öyküsü</span></label>
+    </div>
+    <p class="note">Değerler örnek olarak doldurulmuştur: hemolizli, kreatinini hafif yüksek, trombositi 18.000’e düşmüş hasta (TTP dalı). Seçimleri hastaya göre yapın.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Şiddet ve ilk adımlar</h2>
+    <div class="res"><span class="num" id="po">–</span><span class="of">×10³/µL</span><span class="pill" id="sevp"></span></div>
+    <div class="sub"><span>Önceki değere göre</span><b class="w" id="dus">–</b></div>
+    <p class="warnbox" id="acil" hidden></p>
+    <ol class="rec" id="ilk"></ol>
+    <p class="note">Şiddet sınıfları yaygın kullanılan kaba bir ayırımdır (kılavuz tanımı değildir): hafif 100–149, orta 50–99, ağır 20–49, çok ağır &lt; 20 ×10³/µL. Kendiliğinden kanama riski asıl olarak &lt; 10–20 ×10³/µL düzeyinde artar.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>PLASMIC skoru (TTP olasılığı)</h2>
+    <div class="res"><span class="num" id="plN">–</span><span class="of">/ 7</span><span class="pill" id="plp"></span></div>
+    <div id="pll"></div>
+    <ol class="rec" id="plr"></ol>
+    <p class="note">PLASMIC (Bendapudi 2017): trombosit &lt; 30 ×10³/µL; hemoliz bulgusu (retikülosit &gt; %2,5 ya da haptoglobin saptanamıyor ya da indirekt bilirubin &gt; 2 mg/dL); son 1 yılda aktif kanser yok; solid organ/kök hücre nakli yok; MCV &lt; 90 fL; INR &lt; 1,5; kreatinin &lt; 2,0 mg/dL. Her madde 1 puan. 0–4 düşük, 5 orta, 6–7 yüksek olasılık (ağır ADAMTS13 eksikliği). Skor mikroanjiyopatik hemolitik anemi + trombositopeni tablosunda kullanılır; her trombositopenide değil.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>ISTH DİK skoru</h2>
+    <div class="res"><span class="num" id="dcN">–</span><span class="of">/ 8</span><span class="pill" id="dcp"></span></div>
+    <table class="t">
+      <thead><tr><th>Değişken</th><th>Değer</th><th>Puan</th></tr></thead>
+      <tbody>
+        <tr><td>Trombosit</td><td id="d1v">–</td><td id="d1">–</td></tr>
+        <tr><td>D-dimer</td><td id="d2v">–</td><td id="d2">–</td></tr>
+        <tr><td>PT uzaması</td><td id="d3v">–</td><td id="d3">–</td></tr>
+        <tr><td>Fibrinojen</td><td id="d4v">–</td><td id="d4">–</td></tr>
+      </tbody>
+    </table>
+    <ol class="rec" id="dcr"></ol>
+    <p class="note">ISTH aşikâr DİK skoru (Taylor 2001): trombosit &gt; 100 = 0, 50–100 = 1, &lt; 50 = 2; D-dimer artış yok = 0, orta = 2, belirgin = 3; PT uzaması &lt; 3 sn = 0, 3–6 sn = 1, &gt; 6 sn = 2; fibrinojen ≥ 100 mg/dL = 0, &lt; 100 mg/dL = 1. ≥ 5 puan aşikâr DİK ile uyumlu, günlük tekrarlanır; &lt; 5 aşikâr olmayan DİK’i düşündürür, 1–2 gün sonra tekrarlanır. Skor yalnız DİK ile ilişkili bir altta yatan hastalık varken uygulanır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Olası neden grupları ve tetkikler</h2>
+    <div class="res"><span class="pill" id="nedp"></span></div>
+    <ol class="rec" id="neden"></ol>
+    <h3>İlk tetkikler</h3>
+    <ol class="rec" id="tet"></ol>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Transfüzyon eşikleri</h2>
+    <table class="t">
+      <thead><tr><th>Durum</th><th>Eşik</th><th>Şimdi</th></tr></thead>
+      <tbody>
+        <tr><td>Profilaksi: kemoterapi / allojenik nakil <small>kanaması yok</small></td><td>&lt; 10</td><td id="t1">–</td></tr>
+        <tr><td>Tüketime bağlı trombositopeni (erişkin) <small>majör kanama yok</small></td><td>&lt; 10</td><td id="t2">–</td></tr>
+        <tr><td>Lomber ponksiyon</td><td>&lt; 20</td><td id="t3">–</td></tr>
+        <tr><td>Santral kateter <small>basınç uygulanabilen bölge</small></td><td>&lt; 10</td><td id="t4">–</td></tr>
+        <tr><td>Girişimsel radyoloji <small>düşük / yüksek riskli işlem</small></td><td>&lt; 20 / &lt; 50</td><td id="t5">–</td></tr>
+        <tr><td>Majör cerrahi <small>nöroaksiyel olmayan</small></td><td>&lt; 50</td><td id="t6">–</td></tr>
+      </tbody>
+    </table>
+    <ol class="rec" id="trf"></ol>
+    <p class="note">AABB/ICTMG 2025 (Metcalf RA ve ark., JAMA 2025) önerileri. Kılavuz nöroaksiyel anestezi ve epidural kateter için eşik vermez; anestezi ekibiyle konuşun. Nonoperatif kafa içi kanamada trombosit &gt; 100 ×10³/µL ise (antiagregan kullananlar dahil) transfüzyon önerilmez; kalp cerrahisinde trombositopenisi ve majör kanaması olmayan hastada transfüzyon önerilmez. Diğer kan ürünleri için <a href="transfuzyon.html">Transfüzyon</a> sayfasına bakın.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Antikoagülasyon</h2>
+    <div class="res"><span class="pill" id="akp"></span></div>
+    <ol class="rec" id="ak"></ol>
+    <p class="note">Akut venöz tromboembolisi olan ve trombositopeni gelişen hastada ISTH temelli uzlaşı: trombosit ≥ 50 ×10³/µL tam doz; 25–50 arasında yüksek riskli tromboz (semptomatik proksimal DVT/PE, yüksek pıhtı yükü) için tam doz + trombositi 40–50 ×10³/µL üzerinde tutacak transfüzyon desteği, düşük riskli tromboz için dozun yarıya indirilmesi ya da profilaktik doz; &lt; 25 ×10³/µL geçici olarak kesilir. Randomize kanıt yoktur. Profilaktik antikoagülasyon için kılavuzda net bir trombosit eşiği yoktur (doğrulanmadı): uygulamada &lt; 50 ×10³/µL’de bireysel karar verilir, mekanik profilaksi tercih edilir — bkz. <a href="vte-profilaksisi.html">VTE Profilaksisi</a>.</p>
+  </section>
+
+  <p class="note">Kaynaklar: Bendapudi PK ve ark., Lancet Haematol 2017;4:e157–64 (PLASMIC skoru ve risk grupları); Taylor FB ve ark., Thromb Haemost 2001;86:1327–30 (ISTH aşikâr DİK skoru); Metcalf RA ve ark., Platelet Transfusion: 2025 AABB and ICTMG International Clinical Practice Guidelines, JAMA 2025 (transfüzyon eşikleri: profilaksi &lt; 10, lomber ponksiyon &lt; 20, santral kateter &lt; 10, girişimsel radyoloji &lt; 20 / &lt; 50, majör cerrahi &lt; 50, kafa içi kanama ve kalp cerrahisi için transfüzyon önermeme); Samuelson Bannow BR ve ark., Res Pract Thromb Haemost 2018;2:664–9 (kansere bağlı trombozda trombositopeni: &lt; 50 ×10³/µL’de azaltılmış doz, &lt; 25’te geçici kesme) ve bu uzlaşının güncel özeti (Res Pract Thromb Haemost 2025, START çalışması derlemesi); Lo GK ve ark. 4T skoru için <a href="hit-4t.html">4T Skoru (HIT)</a> sayfası. Şiddet sınıfları ve psödotrombositopeni yaklaşımı standart iç hastalıkları/hematoloji metinlerine dayanır; tek bir kılavuz tanımı yoktur. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var ck=function(id){return $(id).checked};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);
+    if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function row(box,label,state,val){
+    var d=document.createElement('div');d.className='sub';var s=document.createElement('span');s.textContent=label;
+    var b=document.createElement('b');b.className='w';var m=document.createElement('span');
+    m.className='mk '+(state===true?'y':state===false?'n':'u');m.textContent=state===true?'✓ ':state===false?'✗ ':'? ';
+    b.appendChild(m);b.appendChild(document.createTextNode(val));d.appendChild(s);d.appendChild(b);$(box).appendChild(d)}
+
+  function calc(){
+    var P=v('plt'),PP=v('pltp'),mcv=v('mcv'),inr=v('inr'),cr=v('cr'),fib=v('fib'),ptu=v('ptu');
+    var dd=segVal('dd');
+    var hep=ck('hep'),ila=ck('ila'),hem=ck('hem'),sep=ck('sep'),kc=ck('kc'),geb=ck('geb'),kan=ck('kan'),kns=ck('kns'),nak=ck('nak');
+    ['ilk','pll','plr','dcr','neden','tet','trf','ak'].forEach(function(id){$(id).innerHTML=''});
+
+    // 1) Şiddet
+    var sev=null;
+    if(P===null){$('po').textContent='–';pill('sevp','Trombosit girin','var(--muted)')}
+    else{
+      $('po').textContent=fm(P,0);
+      if(P>=150){sev='none';pill('sevp','Trombositopeni yok (≥ 150)','var(--ok)')}
+      else if(P>=100){sev='mild';pill('sevp','Hafif (100–149)','var(--warn)')}
+      else if(P>=50){sev='mod';pill('sevp','Orta (50–99)','var(--warn)')}
+      else if(P>=20){sev='sev';pill('sevp','Ağır (20–49)','var(--high)')}
+      else{sev='vsev';pill('sevp','Çok ağır (< 20)','var(--high)')}
+    }
+    if(P!==null&&PP!==null&&PP>0){var dp=100*(PP-P)/PP;
+      $('dus').textContent=dp>0?'%'+fm(dp,0)+' düşüş ('+fm(PP,0)+' → '+fm(P,0)+')':'düşüş yok ('+fm(PP,0)+' → '+fm(P,0)+')';
+    }else $('dus').textContent='önceki değer girilmedi';
+
+    // PLASMIC
+    var pl=[['Trombosit < 30 ×10³/µL',P===null?null:P<30,P===null?'veri yok':fm(P,0)],
+      ['Hemoliz bulgusu var',hem,hem?'var':'yok'],
+      ['Son 1 yılda aktif kanser yok',!kns,kns?'aktif kanser var':'yok'],
+      ['Organ / kök hücre nakli yok',!nak,nak?'nakil öyküsü var':'yok'],
+      ['MCV < 90 fL',mcv===null?null:mcv<90,mcv===null?'veri yok':fm(mcv,0)+' fL'],
+      ['INR < 1,5',inr===null?null:inr<1.5,inr===null?'veri yok':fm(inr,2)],
+      ['Kreatinin < 2,0 mg/dL',cr===null?null:cr<2,cr===null?'veri yok':fm(cr,2)+' mg/dL']];
+    var pn=0,pu=0;pl.forEach(function(x){row('pll',x[0],x[1],x[2]);if(x[1]===true)pn++;else if(x[1]===null)pu++});
+    $('plN').textContent=pu?pn+'+':pn;
+    var ttp=false;
+    if(!hem){pill('plp','Hemoliz yok: skor uygulanmaz','var(--muted)');
+      li('plr','Hemoliz bulgusu yok','PLASMIC skoru mikroanjiyopatik hemolitik anemi + trombositopeni tablosu için geliştirilmiştir. Hemoliz bulgusu yokken skor yorumlanmaz; yine de şüphe varsa periferik yaymada şistosit arayın, LDH ve haptoglobine bakın.')}
+    else if(pu){pill('plp','Eksik veri ('+pu+' madde)','var(--muted)');li('plr','Eksik maddeleri tamamlayın','MCV, INR ve kreatinin olmadan skor güvenilir değildir.')}
+    else if(pn>=6){ttp=true;pill('plp','6–7: yüksek olasılık','var(--high)')}
+    else if(pn===5){ttp=true;pill('plp','5: orta olasılık','var(--warn)')}
+    else pill('plp','0–4: düşük olasılık','var(--ok)');
+    if(pn>=5&&hem){
+      li('plr','TTP’den şüphelenin: aynı gün hematoloji','Periferik yaymada şistosit arayın; ADAMTS13 aktivitesi ve inhibitörü için kan alın (sonucu beklemeden tedavi kararı verilir). Plazma değişimi gecikmemelidir; hematolojiyle birlikte kortikosteroid ve kaplasizumab kararı verilir.');
+      li('plr','Trombosit süspansiyonu vermeyin','TTP ve HIT’te kanama yoksa profilaktik trombosit transfüzyonu trombozu kötüleştirebilir; yalnız yaşamı tehdit eden kanamada hematolojiyle birlikte verilir.');
+    }
+
+    // ISTH DİK
+    var d1=P===null?null:(P>100?0:P>=50?1:2);
+    var d2=dd===null?null:+dd;
+    var d3=ptu===null?null:(ptu<3?0:ptu<=6?1:2);
+    var d4=fib===null?null:(fib<100?1:0);
+    $('d1v').textContent=P===null?'–':fm(P,0)+' ×10³/µL';$('d1').textContent=d1===null?'–':d1;
+    $('d2v').textContent=dd===null?'seçilmedi':['artış yok','','orta artış','belirgin artış'][+dd];$('d2').textContent=d2===null?'–':d2;
+    $('d3v').textContent=ptu===null?'–':fm(ptu,1)+' sn';$('d3').textContent=d3===null?'–':d3;
+    $('d4v').textContent=fib===null?'–':fm(fib,0)+' mg/dL';$('d4').textContent=d4===null?'–':d4;
+    var dsum=null;
+    if(d1!==null&&d2!==null&&d3!==null&&d4!==null){dsum=d1+d2+d3+d4;$('dcN').textContent=dsum}
+    else $('dcN').textContent='–';
+    if(dsum===null)pill('dcp','Eksik veri','var(--muted)');
+    else if(!sep)pill('dcp',dsum+' puan, ama altta yatan hastalık işaretlenmedi','var(--warn)');
+    else if(dsum>=5)pill('dcp','≥ 5: aşikâr DİK ile uyumlu','var(--high)');
+    else pill('dcp','< 5: aşikâr DİK değil','var(--ok)');
+    if(dsum!==null){
+      if(!sep)li('dcr','Skor yalnız uygun hastada geçerli','ISTH skoru sepsis, ağır travma, malignite, obstetrik olay gibi DİK ile ilişkili bir hastalık varken uygulanır. Yukarıdaki kutuyu işaretleyin ya da skoru yorumlamayın.');
+      else if(dsum>=5)li('dcr','Aşikâr DİK: altta yatan nedeni tedavi edin','Skoru günlük tekrarlayın. Kanaması olan ya da girişim planlanan hastada taze donmuş plazma ve fibrinojen (kriyopresipitat ya da fibrinojen konsantresi, hedef ≥ 150 mg/dL yaygın uygulamadır, doğrulanmadı) düşünülür; kanaması olmayanda laboratuvar değerini düzeltmek için ürün verilmez. Tromboz baskınsa profilaktik heparin.');
+      else li('dcr','Aşikâr DİK değil','Klinik şüphe sürüyorsa 1–2 gün içinde tekrarlayın; DİK dinamik bir süreçtir.');
+    }
+
+    // Acil şerit
+    var ac=$('acil');ac.hidden=true;ac.innerHTML='';
+    var uyar=[];
+    if(pn>=5&&hem&&!pu)uyar.push('PLASMIC '+pn+'/7 ve hemoliz: TTP dışlanmalı (aynı gün hematoloji, plazma değişimi gecikmesin).');
+    if(hep)uyar.push('Heparin maruziyeti var: HIT olasılığı için 4T skorunu hesaplayın; HIT düşünülüyorsa heparini kesip alternatif antikoagülana geçin.');
+    if(dsum!==null&&dsum>=5&&sep)uyar.push('ISTH DİK skoru '+dsum+'/8: aşikâr DİK.');
+    if(kan&&P!==null&&P<50)uyar.push('Aktif kanama ve trombosit < 50 ×10³/µL.');
+    if(uyar.length){ac.hidden=false;ac.appendChild(document.createTextNode(uyar.join(' ')+' '));
+      if(hep){var a=document.createElement('a');a.href='hit-4t.html';a.textContent='4T Skoru (HIT) →';ac.appendChild(a)}}
+
+    // İlk adımlar
+    if(sev===null)li('ilk','Trombosit değerini girin','');
+    else if(sev==='none')li('ilk','Trombosit normal','Bu sayfa trombositopeni içindir.');
+    else{
+      li('ilk','Psödotrombositopeniyi dışlayın','Kanama bulgusu olmayan, beklenmedik trombositopenide önce EDTA’ya bağlı kümelenmeyi dışlayın: periferik yayma (trombosit kümeleri, dev trombosit) ve sitratlı ya da heparinli tüple tekrar sayım. Sayım cihazından gelen her düşük değer doğrulanmalıdır.');
+      li('ilk','Periferik yayma','Şistosit (TTP/HUS/DİK), blast (lösemi), dev trombosit, lökosit anormallikleri, kümelenme. Trombositopeninin en hızlı ve en ucuz ayırıcı testi yaymadır.');
+      li('ilk','İlaç listesini gözden geçirin','Heparin başta olmak üzere son 2 hafta içinde başlanan tüm ilaçları (reçetesiz ve bitkisel dahil) sorgulayın; şüpheli ilacı kesin.');
+      li('ilk','Kanama değerlendirmesi',kan?'Aktif kanama var: kanama yerini ve ciddiyetini belirleyin, antikoagülan ve antiagreganı gözden geçirin, eşiklere göre transfüzyon planlayın.':'Peteşi, purpura, mukozal kanama (ıslak purpura), hematüri, melena açısından muayene edin. Trombosit sayısı ile kanama riski her zaman orantılı değildir (TTP ve HIT’te tromboz baskındır).');
+    }
+
+    // Nedenler
+    var cat=[];
+    if(sev&&sev!=='none'){
+      if(hep)cat.push(['Heparine bağlı trombositopeni (HIT)','Tipik olarak heparinin 5.–10. gününde, %50 düşüş ve tromboz eğilimi. 4T skorunu hesaplayın; orta/yüksek olasılıkta heparini (yıkama dozları dahil) kesin ve argatroban, fondaparinuks gibi alternatife geçin, HIT antikoru isteyin. Varfarini akut dönemde başlatmayın.']);
+      if(pn>=5&&hem)cat.push(['Trombotik mikroanjiyopati (TTP, HUS, ilaç ilişkili TMA)','Şistosit, LDH yüksekliği, haptoglobin düşüklüğü; TTP’de böbrek ve nörolojik bulgular değişkendir. Gebelikte HELLP ve aHUS ayırıcı tanıdadır.']);
+      if(sep)cat.push(['Sepsis ve DİK','Sepsiste trombositopeni sık ve çok nedenlidir (tüketim, hemofagositoz, kemik iliği baskılanması). ISTH skorunu hesaplayın; asıl tedavi enfeksiyonun tedavisidir.']);
+      if(ila)cat.push(['İlaca bağlı immün trombositopeni','Genellikle ilaca başladıktan 1–2 hafta sonra ya da aralıklı kullanımda saatler içinde ani ve ağır düşüş. Şüpheli ilacı kesin; çoğu olguda 5–7 günde düzelir. Sık nedenler: kinin, vankomisin, piperasilin-tazobaktam, TMP-SMX, linezolid (uzun kullanımda kemik iliği baskılanması), karbamazepin, valproat, GP IIb/IIIa inhibitörleri.']);
+      if(kc)cat.push(['Karaciğer hastalığı ve hipersplenizm','Splenik sekestrasyon ve trombopoietin yapımının azalması; genellikle 50–100 ×10³/µL düzeyinde, kanama eğilimi sınırlıdır. Sirozda hem kanama hem tromboz riski artar.']);
+      if(geb)cat.push(['Gebelik','Gestasyonel trombositopeni (en sık, genellikle > 70 ×10³/µL, 3. trimester), preeklampsi/HELLP, akut yağlı karaciğer, TTP ve aHUS. Kadın doğum ile birlikte değerlendirin.']);
+      cat.push(['İmmün trombositopeni (ITP)','Dışlama tanısıdır: izole trombositopeni, normal yayma, başka neden yok. Sekonder nedenler: HIV, HCV, H. pylori, SLE, antifosfolipid sendromu, lenfoproliferatif hastalık, ortak değişken immün yetmezlik.']);
+      cat.push(['Yapım azlığı','Kemik iliği hastalığı (MDS, lösemi, aplastik anemi, infiltrasyon), B12/folat eksikliği, alkol, kemoterapi ve radyoterapi, viral enfeksiyon. Tek seri değil pansitopeni varsa öncelikli düşünün.']);
+      cat.push(['Dilüsyonel ve diğer','Masif transfüzyon, kardiyopulmoner baypas, ekstrakorporeal destek, yaygın kanama.']);
+      pill('nedp',hep?'Önce HIT’i dışlayın':(pn>=5&&hem?'Önce TTP’yi dışlayın':(sep?'Sepsis / DİK ön planda':'Olası neden grupları')),hep||(pn>=5&&hem)?'var(--high)':'var(--warn)');
+    }else pill('nedp','','');
+    cat.forEach(function(c){li('neden',c[0],c[1])});
+
+    if(sev&&sev!=='none'){
+      li('tet','Her hastada','Periferik yayma, tam kan sayımı tekrarı (sitratlı tüp), retikülosit, LDH, haptoglobin, indirekt bilirubin, kreatinin, karaciğer testleri, PT/INR, aPTT, fibrinojen, D-dimer.');
+      li('tet','Yönlendirilmiş','HIV ve HCV serolojisi (ITP şüphesinde her hastada), B12 ve folat, TSH, ANA, direkt Coombs (Evans), gebelik testi; heparin maruziyetinde HIT antikoru; şüpheli TTP’de ADAMTS13.');
+      li('tet','Kemik iliği','Pansitopeni, atipik hücre, açıklanamayan ya da tedaviye yanıtsız trombositopenide ve 60 yaş üstünde yeni başlayan trombositopenide düşünün.');
+    }
+
+    // Transfüzyon eşikleri
+    function esik(id,s){ $(id).textContent=P===null?'–':(P<s?'eşiğin altında':'eşiğin üstünde') }
+    esik('t1',10);esik('t2',10);esik('t3',20);esik('t4',10);esik('t6',50);
+    $('t5').textContent=P===null?'–':(P<20?'ikisinin de altında':P<50?'yüksek riskli işlem için altında':'eşiklerin üstünde');
+    if(sev&&sev!=='none'){
+      if(kan)li('trf','Aktif kanama','Eşikler kanaması olmayan hasta içindir. Majör kanamada trombosit transfüzyonu, kanama yerinin kontrolü, traneksamik asit (uygunsa) ve altta yatan pıhtılaşma bozukluğunun düzeltilmesi birlikte planlanır.');
+      if(pn>=5&&hem)li('trf','TTP düşünülüyorsa','Kanama yoksa trombosit süspansiyonu vermeyin.');
+      if(hep)li('trf','HIT düşünülüyorsa','Kanama yoksa profilaktik trombosit transfüzyonundan kaçının.');
+      li('trf','Bir ünite aferez trombositi','Erişkinde sayıyı yaklaşık 30–50 ×10³/µL artırması beklenir; 1 saat sonraki sayımla yanıtı değerlendirin. Yanıtsızlıkta ateş, sepsis, splenomegali, DİK, ilaç ve alloimmünizasyonu düşünün.');
+      li('trf','Transfüzyon eşiği tek başına karar değildir','Kılavuz eşikleri koşullu önerilerdir; ateş, sepsis, hızlı düşüş, antikoagülan kullanımı ve işlem tipine göre daha yüksek eşik seçilebilir. Eritrosit ve plazma ürünleri için Transfüzyon sayfasını kullanın.');
+    }
+
+    // Antikoagülasyon
+    if(P===null||sev==='none'){pill('akp','','')}
+    else if(P>=50){pill('akp','≥ 50: tam doz uygun','var(--ok)');
+      li('ak','Akut VTE varsa tam doz','Trombositi izleyin; düşüş sürüyorsa nedenini araştırın.');}
+    else if(P>=25){pill('akp','25–50: tromboz riskine göre','var(--warn)');
+      li('ak','Yüksek riskli tromboz','Semptomatik proksimal DVT ya da PE, yüksek pıhtı yükü: tam doz sürdürülür ve trombosit transfüzyonuyla sayı 40–50 ×10³/µL üzerinde tutulur.');
+      li('ak','Düşük riskli tromboz','Distal DVT, izole subsegmenter PE, kateter ilişkili tromboz: doz yarıya indirilir ya da profilaktik doza geçilir.');}
+    else{pill('akp','< 25: genellikle geçici olarak kesilir','var(--high)');
+      li('ak','Antikoagülanı geçici kesin','Trombosit > 50 ×10³/µL olunca (transfüzyonsuz) tam doza dönülür. Kanama riski çok yüksek ve tromboz yeniyse (son 1 ay) vena kava filtresi gündeme gelebilir; hematoloji ve ilgili uzmanla birlikte karar verin.');}
+    if(P!==null&&sev!=='none'){
+      li('ak','HIT’te farklıdır','HIT’te trombositopeniye rağmen antikoagülasyon gereklidir (argatroban, fondaparinuks, DOAK); heparin kesilir. Kararı 4T skoruyla verin.');
+      if(hep)li('ak','Heparin maruziyeti var','Önce HIT olasılığını değerlendirin: 4T skoru.');
+    }
+  }
+  seg('dd',calc);
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

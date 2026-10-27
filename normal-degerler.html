@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Normal Değerler</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartları, sonra sonuç kartları */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 10px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.seg.wrapseg{flex-wrap:wrap}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub span{min-width:0}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sub b.w{white-space:normal;text-align:right;font-family:var(--font-body)}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+.warnbox a,.advice a,.note a{color:var(--accent);font-weight:600}
+.mk{font-weight:700}
+.mk.y{color:var(--ok)} .mk.n{color:var(--high)} .mk.u{color:var(--muted)}
+</style>
+</head>
+<body data-ornek-yok>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Normal Değerler</h1>
+    <p>Erişkinde en sık kullanılan laboratuvar testlerinin referans aralıkları, Türkiye’de kullanılan birimlerle ve SI çevrim katsayısıyla</p>
+  </header>
+<style>
+input[type=search]{font:500 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input[type=search]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+table.t td.nm{font-family:var(--font-body);font-variant-numeric:normal}
+table.t td.rf{font-family:var(--font-num);font-weight:600;white-space:normal}
+table.t td.si{font-size:.82rem;color:var(--muted);font-family:var(--font-num);white-space:normal}
+table.t th:first-child{width:38%}
+.card.grp[hidden]{display:none}
+</style>
+
+  <section class="card">
+    <input type="search" id="q" placeholder="Test ara: kreatinin, INR, ferritin…" aria-label="Test ara" autocomplete="off">
+    <p class="note" id="say"></p>
+  </section>
+
+  <section class="card grp" id="g-bio"><h2>Biyokimya</h2><table class="t"><thead><tr><th>Test</th><th>Aralık</th><th>SI</th></tr></thead><tbody id="l-bio"></tbody></table></section>
+  <section class="card grp" id="g-hem"><h2>Hemogram</h2><table class="t"><thead><tr><th>Test</th><th>Aralık</th><th>SI</th></tr></thead><tbody id="l-hem"></tbody></table></section>
+  <section class="card grp" id="g-koa"><h2>Koagülasyon</h2><table class="t"><thead><tr><th>Test</th><th>Aralık</th><th>SI</th></tr></thead><tbody id="l-koa"></tbody></table></section>
+  <section class="card grp" id="g-kg"><h2>Kan gazı (arteriyel, oda havası)</h2><table class="t"><thead><tr><th>Test</th><th>Aralık</th><th>SI</th></tr></thead><tbody id="l-kg"></tbody></table></section>
+  <section class="card grp" id="g-tir"><h2>Tiroid</h2><table class="t"><thead><tr><th>Test</th><th>Aralık</th><th>SI</th></tr></thead><tbody id="l-tir"></tbody></table></section>
+  <section class="card grp" id="g-dem"><h2>Demir ve vitaminler</h2><table class="t"><thead><tr><th>Test</th><th>Aralık</th><th>SI</th></tr></thead><tbody id="l-dem"></tbody></table></section>
+  <section class="card grp" id="g-lip"><h2>Lipid ve kardiyak belirteçler</h2><table class="t"><thead><tr><th>Test</th><th>Aralık</th><th>SI</th></tr></thead><tbody id="l-lip"></tbody></table></section>
+  <section class="card grp" id="g-idr"><h2>İdrar ve böbrek</h2><table class="t"><thead><tr><th>Test</th><th>Aralık</th><th>SI</th></tr></thead><tbody id="l-idr"></tbody></table></section>
+  <p class="note" id="yok" hidden>Aramaya uyan test yok.</p>
+
+  <section class="card">
+    <h2>Kullanırken</h2>
+    <ul style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem">
+      <li><b>Her laboratuvarın kendi referans aralığı geçerlidir.</b> Aralıklar yönteme, cihaza ve topluma göre değişir; karar verirken hastanenizin raporundaki aralığı kullanın.</li>
+      <li>Aralıklar erişkin içindir; gebelik, çocuk ve yaşlıda farklıdır (ör. gebelikte kreatinin ve TSH daha düşük, ALP ve D-dimer daha yüksek).</li>
+      <li>Referans aralığı sağlıklı kişilerin %95’ini kapsar: sağlıklı 20 kişiden 1’inde en az bir test aralık dışında çıkar. Tek bir aralık dışı değer hastalık demek değildir.</li>
+      <li>Lipid, troponin ve NT-proBNP satırları referans aralığı değil <b>karar eşiğidir</b>; kılavuzlara göre değişir.</li>
+      <li>Birim çevirisi için <a href="birim-cevirici.html">Birim Çevirici</a>, kan gazı yorumu için <a href="kan-gazi.html">Kan Gazı</a> sayfasını kullanın.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynak: ABIM Laboratory Test Reference Ranges, Ocak 2026 (tüm aralıklar; <a href="https://www.abim.org/Media/bfijryql/laboratory-reference-ranges.pdf">abim.org</a>). SI çevrim katsayıları: AMA Manual of Style SI birim tablosu ve bu sitedeki <a href="birim-cevirici.html">Birim Çevirici</a> ile aynı katsayılar (kreatinin × 88,4; glukoz × 0,0555; üre × 0,1665; kalsiyum × 0,2495; magnezyum × 0,4114; fosfor × 0,3229; ürik asit × 59,48; bilirubin × 17,1; kolesterol × 0,02586; trigliserid × 0,01129; demir × 0,179; B12 × 0,7378; folat × 2,266; 25-OH D × 2,496; sT4 × 12,87; T3 × 1,536; amonyak × 0,5872; laktat × 0,111). Üre satırı: ABIM BUN 8–20 mg/dL değerinden üreye çevrilmiştir (üre = BUN × 2,14). INR, tedavi almayanlarda kullanılan 0,8–1,2 aralığıyla verilmiştir; ABIM tablosunda INR satırı yoktur (doğrulanmadı, laboratuvarınızın aralığını kullanın). D-dimer eşiği yönteme göre değişir (FEU ya da DDU); laboratuvarınızın birimine bakın. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  // [ad, arama anahtarları, aralık (TR birimi), SI karşılığı / çevrim]
+  var D={
+  bio:[
+    ['Sodyum (Na)','na natrium sodyum','136–145 mEq/L','= 136–145 mmol/L'],
+    ['Potasyum (K)','k kalium potasyum','3,5–5,0 mEq/L','= 3,5–5,0 mmol/L'],
+    ['Klor (Cl)','cl klorür chloride','98–106 mEq/L','= 98–106 mmol/L'],
+    ['Bikarbonat (HCO₃, serum)','hco3 bikarbonat co2 karbondioksit','23–28 mEq/L','= 23–28 mmol/L'],
+    ['Üre','üre urea bun','17–43 mg/dL','2,9–7,1 mmol/L (üre × 0,1665)'],
+    ['BUN','bun kan üre azotu','8–20 mg/dL','2,9–7,1 mmol/L (× 0,357)'],
+    ['Kreatinin','kreatinin creatinine krea','K 0,50–1,10 · E 0,70–1,30 mg/dL','44–97 · 62–115 µmol/L (× 88,4)'],
+    ['Glukoz (açlık)','glukoz glucose şeker kan şekeri','70–99 mg/dL','3,9–5,5 mmol/L (× 0,0555)'],
+    ['HbA1c','hba1c a1c glikozile hemoglobin','%4,0–5,6','20–38 mmol/mol (IFCC)'],
+    ['Kalsiyum (total)','ca kalsiyum calcium','8,6–10,2 mg/dL','2,15–2,55 mmol/L (× 0,2495)'],
+    ['İyonize kalsiyum','iyonize kalsiyum ionized ca','1,16–1,31 mmol/L','≈ 4,6–5,3 mg/dL'],
+    ['Magnezyum','mg magnezyum magnesium','1,6–2,6 mg/dL','0,66–1,07 mmol/L (× 0,4114)'],
+    ['Fosfor','p fosfor fosfat phosphorus','3,0–4,5 mg/dL','0,97–1,45 mmol/L (× 0,3229)'],
+    ['Ürik asit','ürik asit uric acid ürat','3,0–7,0 mg/dL','178–416 µmol/L (× 59,48)'],
+    ['Albümin','albümin albumin','3,5–5,5 g/dL','35–55 g/L (× 10)'],
+    ['Total protein','total protein','5,5–9,0 g/dL','55–90 g/L (× 10)'],
+    ['Total bilirubin','bilirubin total','0,3–1,0 mg/dL','5–17 µmol/L (× 17,1)'],
+    ['Direkt bilirubin','bilirubin direkt konjuge','0,1–0,3 mg/dL','2–5 µmol/L (× 17,1)'],
+    ['AST (SGOT)','ast sgot aspartat transaminaz karaciğer','10–40 U/L','= U/L (0,17 µkat/L)'],
+    ['ALT (SGPT)','alt sgpt alanin transaminaz karaciğer','10–40 U/L','= U/L (0,17 µkat/L)'],
+    ['ALP','alp alkalen fosfataz alkaline phosphatase','30–120 U/L','= U/L'],
+    ['GGT','ggt gama glutamil transferaz','K 8–40 · E 9–50 U/L','= U/L'],
+    ['LDH','ldh laktat dehidrogenaz','80–225 U/L','= U/L'],
+    ['Amilaz','amilaz amylase pankreatit','25–125 U/L','= U/L'],
+    ['Lipaz','lipaz lipase pankreatit','10–140 U/L','= U/L'],
+    ['CK (kreatin kinaz)','ck cpk kreatin kinaz rabdomiyoliz','K 30–135 · E 55–170 U/L','= U/L'],
+    ['CRP','crp c reaktif protein enfeksiyon','≤ 0,8 mg/dL','≤ 8 mg/L (× 10)'],
+    ['Prokalsitonin','prokalsitonin pct sepsis','≤ 0,10 ng/mL','= µg/L'],
+    ['Sedimentasyon (ESR)','sedim sedimentasyon esr eritrosit sedimentasyon','K 0–20 · E 0–15 mm/saat','—'],
+    ['Osmolalite (serum)','osmolalite osmolality osm','275–295 mOsm/kg','= mOsm/kg H₂O'],
+    ['Laktat (venöz)','laktat lactate laktik asit','0,7–1,8 mmol/L','= 6–16 mg/dL (× 0,111)'],
+    ['Amonyak','amonyak ammonia nh3 ensefalopati','40–70 µg/dL','23–41 µmol/L (× 0,5872)'],
+    ['Homosistein','homosistein homocysteine','5–15 µmol/L','= µmol/L']
+  ],
+  hem:[
+    ['Hemoglobin','hb hgb hemoglobin anemi','K 12–16 · E 14–18 g/dL','120–160 · 140–180 g/L (× 10)'],
+    ['Hematokrit','hct hematokrit','K %37–47 · E %42–50','0,37–0,47 · 0,42–0,50 (oran)'],
+    ['Eritrosit (RBC)','rbc eritrosit alyuvar','4,2–5,9 milyon/µL','4,2–5,9 × 10¹²/L'],
+    ['Lökosit (WBC)','wbc lökosit beyaz küre','4.000–11.000 /µL','4,0–11,0 × 10⁹/L'],
+    ['Nötrofil (mutlak, ANS)','ans anc nötrofil nötropeni','2.000–8.250 /µL','2,0–8,25 × 10⁹/L'],
+    ['Lenfosit (mutlak)','lenfosit lymphocyte','1.200–4.950 /µL','1,2–4,95 × 10⁹/L'],
+    ['Trombosit','plt trombosit platelet','150.000–450.000 /µL','150–450 × 10⁹/L'],
+    ['MCV','mcv ortalama eritrosit hacmi','80–98 fL','= fL'],
+    ['MCH','mch','28–32 pg','= pg'],
+    ['MCHC','mchc','33–36 g/dL','330–360 g/L'],
+    ['RDW','rdw dağılım genişliği','%9,0–14,5','—'],
+    ['Retikülosit','retikülosit reticulocyte','%0,5–1,5','—'],
+    ['Haptoglobin','haptoglobin hemoliz','83–267 mg/dL','0,83–2,67 g/L']
+  ],
+  koa:[
+    ['PT (protrombin zamanı)','pt protrombin zamanı','11–13 saniye','—'],
+    ['INR','inr varfarin','0,8–1,2 (tedavi almayan)','doğrulanmadı: laboratuvarınızın aralığı'],
+    ['aPTT','aptt parsiyel tromboplastin heparin','25–35 saniye','—'],
+    ['Fibrinojen','fibrinojen fibrinogen dik','200–400 mg/dL','2,0–4,0 g/L (× 0,01)'],
+    ['D-dimer','d dimer ddimer pulmoner emboli','< 0,5 µg/mL','< 500 ng/mL (yönteme göre FEU/DDU)']
+  ],
+  kg:[
+    ['pH','ph asidoz alkaloz','7,38–7,44','—'],
+    ['PaO₂','pao2 po2 oksijen','75–100 mmHg','10,0–13,3 kPa (× 0,133)'],
+    ['PaCO₂','paco2 pco2 karbondioksit','38–42 mmHg','5,1–5,6 kPa (× 0,133)'],
+    ['Bikarbonat (arteriyel)','hco3 bikarbonat kan gazı','23–26 mEq/L','= 23–26 mmol/L'],
+    ['SaO₂','sao2 satürasyon oksijen','≥ %95','—']
+  ],
+  tir:[
+    ['TSH','tsh tirotropin tiroid','0,5–4,0 µIU/mL','= 0,5–4,0 mIU/L'],
+    ['Serbest T4 (sT4)','st4 ft4 serbest tiroksin','0,8–1,8 ng/dL','10,3–23,2 pmol/L (× 12,87)'],
+    ['Total T4','total t4 tiroksin','5–12 µg/dL','64–154 nmol/L (× 12,87)'],
+    ['Serbest T3 (sT3)','st3 ft3 serbest triiyodotironin','2,3–4,2 pg/mL','3,5–6,5 pmol/L (× 1,536)'],
+    ['Total T3','total t3 triiyodotironin','80–180 ng/dL','1,2–2,8 nmol/L (× 0,01536)']
+  ],
+  dem:[
+    ['Demir (serum)','demir iron fe','50–150 µg/dL','9,0–26,9 µmol/L (× 0,179)'],
+    ['Ferritin','ferritin demir deposu','K 24–307 · E 24–336 ng/mL','= µg/L'],
+    ['Transferrin','transferrin','200–400 mg/dL','2,0–4,0 g/L'],
+    ['TDBK (TIBC)','tdbk tibc demir bağlama','250–310 µg/dL','44,8–55,5 µmol/L (× 0,179)'],
+    ['Transferrin satürasyonu','tsat transferrin satürasyon','%20–50','—'],
+    ['Vitamin B12','b12 kobalamin vitamin','200–800 pg/mL','148–590 pmol/L (× 0,7378)'],
+    ['Folat','folat folik asit folate','1,8–9,0 ng/mL','4,1–20,4 nmol/L (× 2,266)'],
+    ['25-OH D vitamini','d vitamini 25 oh vitamin d','30–60 ng/mL','75–150 nmol/L (× 2,496)'],
+    ['PTH (intakt)','pth paratiroid hormon','10–65 pg/mL','1,1–6,9 pmol/L (× 0,106)']
+  ],
+  lip:[
+    ['Total kolesterol','kolesterol cholesterol lipid','hedef < 200 mg/dL','< 5,2 mmol/L (× 0,02586)'],
+    ['LDL kolesterol','ldl kolesterol lipid','optimal < 100 mg/dL','< 2,6 mmol/L (× 0,02586)'],
+    ['HDL kolesterol','hdl kolesterol lipid','düşük: K < 50 · E < 40 mg/dL','< 1,3 · < 1,0 mmol/L'],
+    ['Trigliserid (açlık)','trigliserid tg triglyceride','< 150 mg/dL','< 1,7 mmol/L (× 0,01129)'],
+    ['Troponin I (konvansiyonel)','troponin i tni kardiyak','≤ 0,04 ng/mL','≤ 40 ng/L'],
+    ['hs-Troponin I','hs troponin yüksek duyarlı','K ≤ 15 · E ≤ 20 ng/L','= pg/mL'],
+    ['hs-Troponin T','hs troponin t yüksek duyarlı','K ≤ 10 · E ≤ 15 ng/L','= pg/mL'],
+    ['NT-proBNP','ntprobnp bnp kalp yetmezliği','KY olası değil ≤ 300 pg/mL','yüksek olasılık: 18–49 y ≥ 450 · 50–75 y ≥ 900 · > 75 y ≥ 1800 · eGFR < 60 ≥ 1200']
+  ],
+  idr:[
+    ['İdrar dansitesi','dansite idrar yoğunluk specific gravity','1,002–1,030','—'],
+    ['İdrar pH','idrar ph','4,5–8,0','—'],
+    ['İdrar osmolalitesi','idrar osmolalite uosm','38–1400 mOsm/kg','= mOsm/kg H₂O'],
+    ['İdrar proteini (24 saat)','proteinüri idrar protein 24 saat','< 100 mg/gün','—'],
+    ['İdrar albümini (24 saat)','mikroalbümin albüminüri','< 25 mg/gün','—'],
+    ['İdrar kreatinini (24 saat)','idrar kreatinin 24 saat','15–25 mg/kg/gün','—'],
+    ['Kreatinin klerensi','kreatinin klerensi crcl','90–140 mL/dk/1,73 m²','—'],
+    ['İdrar Na / K (spot)','idrar sodyum potasyum spot','alıma göre değişir','yorum: aça göre değerlendirilir']
+  ]};
+
+  var total=0;
+  Object.keys(D).forEach(function(g){
+    var tb=$('l-'+g);
+    D[g].forEach(function(r){
+      total++;
+      var tr=document.createElement('tr');
+      tr.dataset.ara=(r[0]+' '+r[1]).toLocaleLowerCase('tr-TR');
+      var a=document.createElement('td');a.className='nm';a.textContent=r[0];
+      var b=document.createElement('td');b.className='rf';b.textContent=r[2];
+      var c=document.createElement('td');c.className='si';c.textContent=r[3];
+      tr.appendChild(a);tr.appendChild(b);tr.appendChild(c);tb.appendChild(tr);
+    });
+  });
+
+  function ara(){
+    var s=$('q').value.toLocaleLowerCase('tr-TR').trim(),n=0;
+    Object.keys(D).forEach(function(g){
+      var gor=0;
+      Array.prototype.forEach.call($('l-'+g).rows,function(tr){
+        var m=!s||tr.dataset.ara.indexOf(s)>=0;tr.hidden=!m;if(m){gor++;n++}
+      });
+      $('g-'+g).hidden=gor===0;
+    });
+    $('yok').hidden=n>0;
+    $('say').textContent=s?n+' test gösteriliyor ('+total+' test içinde)':total+' test. Aramak için yazın.';
+  }
+  $('q').addEventListener('input',ara);ara();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hipokalemi Yaklaşımı</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartları, sonra sonuç kartları */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 10px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.seg.wrapseg{flex-wrap:wrap}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub span{min-width:0}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sub b.w{white-space:normal;text-align:right;font-family:var(--font-body)}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+.warnbox a,.advice a,.note a{color:var(--accent);font-weight:600}
+.mk{font-weight:700}
+.mk.y{color:var(--ok)} .mk.n{color:var(--high)} .mk.u{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Hipokalemi Yaklaşımı</h1>
+    <p>Şiddet, acil bulgular ve nedenin ayırımı: hücre içine kayma, böbrek dışı kayıp ve böbrek kaybı; asit–baz ve tansiyon dallarıyla</p>
+  </header>
+
+  <section class="card">
+    <h2>Laboratuvar</h2>
+    <div class="grid">
+      <div class="field"><label for="k">Potasyum <span>mEq/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="2.7"></div>
+      <div class="field"><label for="mg">Magnezyum <span>mg/dL</span></label><input id="mg" type="number" inputmode="decimal" step="any" value="1.4"></div>
+      <div class="field"><label for="ph">pH <span>kan gazı, isteğe bağlı</span></label><input id="ph" type="number" inputmode="decimal" step="any" value="7.48"></div>
+      <div class="field"><label for="hco3">HCO₃ <span>mEq/L</span></label><input id="hco3" type="number" inputmode="decimal" step="any" value="32"></div>
+      <div class="field"><label for="uk">İdrar K <span>mmol/L, spot</span></label><input id="uk" type="number" inputmode="decimal" step="any" value="38"></div>
+      <div class="field"><label for="ucr">İdrar kreatinini <span>mg/dL, spot</span></label><input data-aralik="1-900 mg/dL" id="ucr" type="number" inputmode="decimal" step="any" value="65"></div>
+      <div class="field"><label for="sbp">Sistolik TA <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="numeric" step="1" value="162"></div>
+      <div class="field"><label for="dbp">Diyastolik TA <span>mmHg</span></label><input id="dbp" data-hasta="dbp" type="number" inputmode="numeric" step="1" value="98"></div>
+    </div>
+    <p class="note">İdrar örneği replasmandan önce alınmalıdır. İdrar K ve kreatinini aynı spot örnekte ölçülür. Kan gazı ve idrar değerleri boş bırakılabilir; girilmezse o dal atlanır.</p>
+  </section>
+
+  <section class="card">
+    <h2>Klinik</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="diu"><span class="txt">Diüretik kullanıyor<small>Tiyazid, indapamid, kıvrım diüretiği, asetazolamid</small></span></label>
+      <label class="item"><input type="checkbox" id="kus"><span class="txt">Kusma veya nazogastrik drenaj</span></label>
+      <label class="item"><input type="checkbox" id="ish"><span class="txt">İshal, laksatif, yüksek debili stoma veya fistül</span></label>
+      <label class="item"><input type="checkbox" id="ins"><span class="txt">İnsülin, β-agonist, teofilin veya yeniden beslenme<small>Salbutamol nebül, insülin infüzyonu, DKA tedavisi, uzun açlık sonrası beslenme</small></span></label>
+      <label class="item"><input type="checkbox" id="ekg"><span class="txt">EKG değişikliği veya ciddi belirti<small>U dalgası, ST çökmesi, QT uzaması, aritmi, kas güçsüzlüğü, paralizi, ileus, rabdomiyoliz</small></span></label>
+      <label class="item"><input type="checkbox" id="dij"><span class="txt">Digoksin kullanıyor</span></label>
+    </div>
+    <p class="note">Değerler örnek olarak doldurulmuştur: K 2,7, Mg 1,4, alkaloz, idrar K/kreatinin yüksek ve hipertansiyon (hiperaldosteronizm dalı).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Şiddet ve aciliyet</h2>
+    <div class="res"><span class="num" id="ko">–</span><span class="of">mEq/L</span><span class="pill" id="sevp"></span></div>
+    <div class="sub"><span>Magnezyum</span><b class="w" id="mgo">–</b></div>
+    <div class="sub"><span>Yol</span><b class="w" id="yolo">–</b></div>
+    <p class="warnbox" id="acil" hidden></p>
+    <ol class="rec" id="ilk"></ol>
+    <p class="note">Şiddet sınıfları (biyokimyasal, kaba bir yol göstericidir): hafif 3,0–3,4; orta 2,5–2,9; ağır &lt; 2,5 mEq/L. Asıl ölçüt belirtiler ve EKG’dir. Doz ve hız için <a href="elektrolit-replasmani.html">Elektrolit Replasmanı</a> sayfasını kullanın; bu sayfa doz vermez.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>İdrar potasyum atılımı</h2>
+    <span class="lbl">İdrar K / idrar kreatinin</span>
+    <div class="res"><span class="num" id="rat">–</span><span class="of">mEq/g kreatinin</span><span class="pill" id="ratp"></span></div>
+    <div class="sub"><span>SI karşılığı</span><b id="rsi">–</b></div>
+    <div class="sub"><span>Spot idrar K</span><b class="w" id="uko">–</b></div>
+    <p class="note">Eşik: &gt; 13 mEq/g kreatinin (&gt; 1,5 mmol/mmol) böbrek yoluyla aşırı potasyum atılımını gösterir (Harrison’s). Altındaki değerler böbrek dışı kayıp ya da hücre içine kaymayı düşündürür. Bazı kaynaklar 15 mmol/g eşiğini kullanır; sınıra yakın değerleri klinikle birlikte yorumlayın. Spot idrar K &lt; 15 mmol/L de böbrek dışı kaybı destekler. Diüretik etkisi sürerken idrar K yüksek çıkar, etkisi geçtikten sonra düşer.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Mekanizma ve en olası nedenler</h2>
+    <div class="res"><span class="pill" id="mekp"></span></div>
+    <div class="sub"><span>Asit–baz</span><b class="w" id="abo">–</b></div>
+    <div class="sub"><span>Tansiyon</span><b class="w" id="tao">–</b></div>
+    <ol class="rec" id="neden"></ol>
+    <p class="note">Hipomagnezemi hem hipokalemiye neden olur hem de düzelmesini engeller (ROMK kanalı). Hipokalemi + hipertansiyon + metabolik alkaloz birlikteliğinde primer hiperaldosteronizmi araştırın: aldosteron/renin oranı, ilaç etkilerini (MRA, ACE inhibitörü, beta bloker) göz önünde tutarak.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>İstenecek tetkikler</h2>
+    <ol class="rec" id="tet"></ol>
+    <p class="note">İdrar klorü kusma (düşük, &lt; 20 mmol/L) ile Bartter/Gitelman ve süren diüretik etkisini (yüksek) ayırır. Gitelman’da hipomagnezemi ve hipokalsiüri, Bartter’da hiperkalsiüri beklenir.</p>
+  </section>
+
+  <p class="note">Kaynaklar: Harrison’s Principles of Internal Medicine / Harrison’s Manual of Medicine, sıvı–elektrolit bölümü (idrar K/kreatinin &gt; 13 mmol/g ≈ 1,5 mmol/mmol aşırı atılım eşiği; hipokalemide TTKG &lt; 3 beklenir); Hypokalaemia in Primary Care: Investigation and Management (adults), York &amp; Scarborough Teaching Hospitals NHS FT, Nisan 2024 (şiddet sınırları 3,1–3,4 / 2,5–3,0 / &lt; 2,5; EKG bulguları; spot idrar K &lt; 15 mmol/L böbrek dışı kayıp; magnezyumun önce düzeltilmesi; eGFR &lt; 45’te temkinli replasman); Haq K ve ark., Cleve Clin J Med 2024;91:345–51 (idrar klorüyle volüm yanıtlı / yanıtsız alkaloz ayırımı, tansiyon–renin–aldosteron dalları, idrar K/kreatinin &gt; 15 mmol/g eşiği, FE K &gt; %9,3); Kraft MD ve ark., Am J Health Syst Pharm 2005 (replasman, <a href="elektrolit-replasmani.html">Elektrolit Replasmanı</a> sayfasıyla aynı kaynak). Transselüler kayma, periyodik paralizi ve RTA nedenleri standart iç hastalıkları metinlerinden derlenmiştir. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var ck=function(id){return $(id).checked};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);
+    if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+
+  function calc(){
+    var K=v('k'),M=v('mg'),ph=v('ph'),hco3=v('hco3'),uk=v('uk'),ucr=v('ucr'),sbp=v('sbp'),dbp=v('dbp');
+    var diu=ck('diu'),kus=ck('kus'),ish=ck('ish'),ins=ck('ins'),ekg=ck('ekg'),dij=ck('dij');
+    ['ilk','neden','tet'].forEach(function(id){$(id).innerHTML=''});
+
+    // 1) Şiddet
+    var sev=null;
+    if(K===null){$('ko').textContent='–';pill('sevp','Potasyum girin','var(--muted)')}
+    else{
+      $('ko').textContent=fm(K,1);
+      if(K>=5.1){sev='high';pill('sevp','Hipokalemi yok (yüksek)','var(--high)')}
+      else if(K>=3.5){sev='none';pill('sevp','Normal (3,5–5,0)','var(--ok)')}
+      else if(K>=3.0){sev='mild';pill('sevp','Hafif (3,0–3,4)','var(--warn)')}
+      else if(K>=2.5){sev='mod';pill('sevp','Orta (2,5–2,9)','var(--high)')}
+      else{sev='sev';pill('sevp','Ağır (< 2,5)','var(--high)')}
+    }
+    var lowMg=M!==null&&M<1.7;
+    $('mgo').textContent=M===null?'bakılmadı — hipokalemide mutlaka bakın':(lowMg?fm(M,1)+' mg/dL: düşük, önce düzeltin':fm(M,1)+' mg/dL: normal');
+    var ivGerek=sev==='sev'||ekg||(sev==='mod'&&dij);
+    $('yolo').textContent=sev===null||sev==='none'||sev==='high'?'–':(ivGerek?'IV (monitörize) + ağızdan; dozu Elektrolit Replasmanı sayfasından alın':'Ağızdan KCl yeterli olabilir; dozu Elektrolit Replasmanı sayfasından alın');
+
+    var ac=$('acil');ac.hidden=true;ac.innerHTML='';
+    if(sev&&sev!=='none'&&sev!=='high'){
+      var uy=[];
+      if(sev==='sev')uy.push('K < 2,5 mEq/L: ağır hipokalemi.');
+      if(ekg)uy.push('EKG değişikliği ya da ciddi belirti var.');
+      if(dij)uy.push('Digoksin kullanıyor: hipokalemi digoksin toksisitesini ve aritmiyi tetikler.');
+      if(uy.length){ac.hidden=false;ac.appendChild(document.createTextNode(uy.join(' ')+' Kardiyak monitör, 12 derivasyonlu EKG ve IV replasman gerekir. Doz ve hız için '));
+        var a=document.createElement('a');a.href='elektrolit-replasmani.html';a.textContent='Elektrolit Replasmanı →';ac.appendChild(a);}
+    }
+    if(sev==='none'||sev==='high'||sev===null){
+      if(sev==='high')li('ilk','Potasyum yüksek','Bu sayfa hipokalemi içindir. Hiperkalemi için akut tedavi ve EKG değerlendirmesi gerekir.');
+      else if(sev==='none')li('ilk','Potasyum normal','Replasman gerekmez. Kalp hastasında ve digoksin kullananlarda hedef ≥ 4,0 mEq/L tutulur.');
+    }else{
+      if(lowMg)li('ilk','Önce magnezyumu düzeltin','Hipomagnezemi düzeltilmeden hipokalemi kalıcı olarak düzelmez. Magnezyumu potasyumla birlikte verin; dozu Elektrolit Replasmanı sayfasından alın.');
+      else if(M===null)li('ilk','Magnezyumu bakın','Açıklanamayan, tekrarlayan ya da diüretiğe bağlı hipokalemide serum magnezyumunu mutlaka ölçün.');
+      li('ilk','EKG çekin',ekg?'Bulgu var: U dalgası, ST çökmesi, T düzleşmesi, QT uzaması, PR uzaması; ventriküler aritmi riski.':'Orta ve ağır hipokalemide, digoksin kullananlarda ve belirtili hastada 12 derivasyonlu EKG zorunludur.');
+      li('ilk','Sorumlu ilaçları gözden geçirin','Tiyazid ve kıvrım diüretikleri, yüksek doz β-agonist, insülin, amfoterisin B, yüksek doz steroid, aminoglikozid, sisplatin, kafein/teofilin, laksatif kötüye kullanımı.');
+      li('ilk','Replasman','Doz, yol, hız ve kontrol aralığı için Elektrolit Replasmanı sayfasını kullanın (bu sayfa doz vermez). Potasyumu dekstrozlu sıvıda sulandırmayın; IV puşe verilmez. eGFR < 45 ise ve potasyum tutucu ilaç varsa daha temkinli verin ve daha sık kontrol edin.');
+    }
+
+    // 2) İdrar K/kreatinin
+    var rat=null;
+    if(uk!==null&&ucr!==null&&ucr>0){rat=100*uk/ucr;
+      $('rat').textContent=fm(rat,0);$('rsi').textContent=fm(rat*0.11312,2)+' mmol/mmol';
+      if(rat>13)pill('ratp','> 13: böbrek kaybı','var(--high)');
+      else pill('ratp','≤ 13: böbrek dışı','var(--low)');
+    }else{$('rat').textContent='–';$('rsi').textContent='–';pill('ratp','İdrar K ve kreatinini girin','var(--muted)')}
+    $('uko').textContent=uk===null?'–':fm(uk,0)+' mmol/L'+(uk<15?' (< 15: böbrek dışı kaybı destekler)':'');
+
+    // 3) Asit–baz ve tansiyon
+    var ab=null;
+    if(ph!==null&&hco3!==null){
+      if(ph>7.45&&hco3>26)ab='alk';
+      else if(ph<7.35&&hco3<22)ab='asi';
+      else ab='norm';
+      $('abo').textContent=(ab==='alk'?'metabolik alkaloz':ab==='asi'?'metabolik asidoz':'belirgin metabolik bozukluk yok')+' (pH '+fm(ph,2)+', HCO₃ '+fm(hco3,0)+')';
+    }else if(hco3!==null){ab=hco3>26?'alk':hco3<22?'asi':'norm';
+      $('abo').textContent=(ab==='alk'?'HCO₃ yüksek: alkaloz olası':ab==='asi'?'HCO₃ düşük: asidoz olası':'HCO₃ normal')+' (pH girilmedi)';
+    }else $('abo').textContent='kan gazı girilmedi';
+    var ht=null;
+    if(sbp!==null&&dbp!==null){ht=sbp>=140||dbp>=90;$('tao').textContent=fm(sbp,0)+'/'+fm(dbp,0)+' mmHg'+(ht?': yüksek':': yüksek değil')}
+    else if(sbp!==null){ht=sbp>=140;$('tao').textContent=fm(sbp,0)+' mmHg sistolik'+(ht?': yüksek':': yüksek değil')}
+    else $('tao').textContent='girilmedi';
+
+    // 4) Mekanizma
+    if(sev===null||sev==='none'||sev==='high'){pill('mekp','','');}
+    else if(rat===null&&!ins&&!kus&&!ish&&!diu){
+      pill('mekp','Veri eksik','var(--muted)');
+      li('neden','İdrar K ve kreatinini isteyin','Replasmandan önce spot idrarda K ve kreatinin bakılırsa böbrek kaybı ile böbrek dışı kayıp ayrılır.');
+    }else{
+      var renal=rat!==null?rat>13:(diu?true:null);
+      if(renal===false||(renal===null&&(ins||ish||kus))){
+        var kayma=ins&&(rat===null||rat<=13);
+        pill('mekp',kayma?'Hücre içine kayma olası':(ish||kus?'Böbrek dışı (GİS) kayıp':'Böbrek dışı kayıp / hücre içine kayma'),'var(--low)');
+        if(kayma){
+          li('neden','Transselüler kayma','İnsülin, β-agonist (salbutamol nebül), teofilin/kafein, yeniden beslenme sendromu, alkaloz, ağır anemi tedavisinde hızlı hücre yapımı, hipotermi. Toplam vücut potasyumu normal olabilir: aşırı replasmanda düzelince hiperkalemi gelişir, sık ölçün.');
+          li('neden','Tirotoksik ya da ailesel periyodik paralizi','Ani, ağır hipokalemi ile kas güçsüzlüğü; tiroid fonksiyonlarına bakın. Replasman dikkatle yapılır (geri dönüşte hiperkalemi).');
+        }
+        if(ish){li('neden','Alt GİS kaybı (ishal, laksatif, stoma, fistül)','Hiperkloremik (normal anyon açıklı) metabolik asidozla birlikte; idrar K düşüktür. Nedeni tedavi edin, potasyumu ağızdan verin.')}
+        if(kus){li('neden','Kusma / nazogastrik drenaj','Esas kayıp mide suyundan değil böbrektendir: metabolik alkaloz ve volüm açığı bikarbonatüri ve hiperaldosteronizm yoluyla potasyum attırır. İdrar klorü düşüktür (< 20 mmol/L). Serum fizyolojikle volümü yerine koyun; alkaloz düzelince potasyum tutulur.')}
+        if(!ish&&!kus&&!ins){
+          li('neden','Böbrek dışı kayıp ya da yetersiz alım','İdrar K atılımı düşük: ishal/laksatif, stoma, yüksek debili fistül, terleme, çok düşük potasyum alımı (alkol kullanım bozukluğu, anoreksiya) ya da hücre içine kayma. Öyküyü yeniden sorgulayın.');
+        }
+      }else if(renal===true){
+        if(ab==='asi'){
+          pill('mekp','Böbrek kaybı + metabolik asidoz','var(--warn)');
+          li('neden','Renal tübüler asidoz (tip 1 distal, tip 2 proksimal)','Normal anyon açıklı asidoz, hipokalemi ve uygunsuz idrar pH’sı. Tip 1’de idrar pH > 5,5, nefrokalsinoz ve taş; tip 2’de Fanconi bulguları (glukozüri, fosfatüri, aminoasidüri).');
+          li('neden','Diyabetik ketoasidoz ve tedavisi','Ozmotik diürez ve insülinle hızlı düşüş; K < 3,3 iken insülin başlanmaz.');
+          li('neden','Asetazolamid, toluen (tiner) inhalasyonu, üreterosigmoidostomi','');
+        }else if(ab==='alk'||ab===null||ab==='norm'){
+          if(ht===true){
+            pill('mekp','Böbrek kaybı + hipertansiyon: mineralokortikoid fazlalığı','var(--high)');
+            li('neden','Primer hiperaldosteronizm (Conn)','Hipokalemi, metabolik alkaloz ve dirençli hipertansiyon. Aldosteron/renin oranına bakın; MRA, amilorid, yüksek doz diüretik ve ACE inhibitörü/ARB sonucu etkiler (ölçümden önce mümkünse MRA’yı 4 hafta kesin).');
+            li('neden','Renovasküler hastalık, renin salgılayan tümör','Yüksek renin + yüksek aldosteron.');
+            li('neden','Cushing sendromu, ektopik ACTH','Özellikle ektopik ACTH’de ağır hipokalemik alkaloz.');
+            li('neden','Liddle sendromu, görünürde mineralokortikoid fazlalığı, meyan kökü (likoris)','Düşük renin + düşük aldosteron.');
+            if(diu)li('neden','Diüretik (hipertansiyon tedavisi)','Tiyazid ve kıvrım diüretikleri bu tabloyu taklit eder ve en sık nedendir; önce diüretiği gözden geçirin.');
+          }else{
+            pill('mekp','Böbrek kaybı, tansiyon yüksek değil','var(--warn)');
+            if(diu)li('neden','Diüretik (en sık neden)','Tiyazid ve kıvrım diüretikleri; etkisi sürerken idrar K ve Cl yüksektir. Mümkünse kesin ya da potasyum tutucu ekleyin; magnezyumu da düzeltin.');
+            li('neden','Bartter ve Gitelman sendromu','Hipokalemik metabolik alkaloz, normal tansiyon, yüksek idrar klorü. Gitelman: hipomagnezemi ve düşük idrar kalsiyumu (tiyazid benzeri). Bartter: hiperkalsiüri (kıvrım diüretiği benzeri), genellikle daha genç yaşta.');
+            li('neden','Gizli diüretik kullanımı / kusma','Gizli kusmada idrar klorü düşüktür; gizli diüretikte idrar klorü dalgalanır. İdrar diüretik taraması düşünülebilir.');
+            li('neden','Hipomagnezemi','Tek başına böbrekten potasyum kaybına yol açar ve replasmanı etkisiz kılar.');
+            li('neden','İlaçlar: amfoterisin B, aminoglikozid, sisplatin, yüksek doz penisilinler','Tübüler hasar ya da emilemeyen anyonla potasyum kaybı.');
+          }
+        }
+      }else{
+        pill('mekp','Veri eksik','var(--muted)');
+        li('neden','İdrar K ve kreatinini isteyin','Mekanizma ayırımı için gereklidir.');
+      }
+    }
+
+    // 5) Tetkikler
+    if(sev&&sev!=='none'&&sev!=='high'){
+      li('tet','Her hastada','Magnezyum, kalsiyum, kreatinin ve eGFR, venöz kan gazı veya HCO₃, glukoz, spot idrarda K ve kreatinin (replasmandan önce), 12 derivasyonlu EKG.');
+      if(ab==='alk'||ab===null)li('tet','Alkaloz varsa','Spot idrar klorü: < 20 mmol/L kusma ya da etkisi geçmiş diüretik (volüm yanıtlı); ≥ 20 mmol/L süren diüretik etkisi, Bartter/Gitelman ya da mineralokortikoid fazlalığı.');
+      if(ht===true)li('tet','Hipertansiyon varsa','Plazma aldosteron ve renin (aldosteron/renin oranı); gerekirse 24 saatlik idrar kortizolü ya da gece yarısı deksametazon testi. Etkileyen ilaçları not edin.');
+      if(ab==='asi')li('tet','Asidoz varsa','İdrar pH’sı, idrar anyon açığı, serum anyon açığı, keton, glukoz; Fanconi için idrar glukozu, fosfor ve ürik asit.');
+      if(rat!==null&&rat<=13&&!ish&&!kus)li('tet','İdrar K düşükse','Alım azlığını ve hücre içine kaymayı sorgulayın; tiroid fonksiyon testleri (tirotoksik periyodik paralizi), yeniden beslenme için fosfor ve magnezyum izlemi.');
+      li('tet','Tekrarlayan ya da açıklanamayan hipokalemide','Gizli kusma/laksatif ve diüretik kullanımını, nadir tübülopatileri (Gitelman/Bartter) ve ilaç listesini yeniden gözden geçirin; nefroloji görüşü alın.');
+    }
+  }
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

@@ -53,6 +53,10 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | İnsülin dozu (bazal-bolus, düzeltme skalası, steroid NPH, titrasyon) | `insulin-dozu.html` |
 | Nöbet takip listesi: menüde yok, ayrı uygulama (nobet.webmanifest; veriler yalnız cihazda, localStorage) | `nobet-listesi.html` |
 | Birim çevirici (konvansiyonel ↔ SI, mEq ↔ mg) | `birim-cevirici.html` |
+| Normal değerler (86 test, erişkin referans aralıkları) | `normal-degerler.html` |
+| İlaç etkileşimi (QT, kanama, hiperkalemi, CYP3A4/2C19, P-gp, serotonin) | `ilac-etkilesimi.html` |
+| Trombositopeni yaklaşımı (PLASMIC, ISTH DİK, işlem eşikleri) | `trombositopeni.html` |
+| Hipokalemi yaklaşımı (neden ayrımı) | `hipokalemi.html` |
 | İdame sıvı ve refeeding riski (NICE CG174/CG32, ASPEN) | `idame-sivi.html` |
 | PESI ve sPESI (pulmoner emboli, ESC 2019 risk sınıfı) | `pesi.html` |
 | 4T skoru (heparin ilişkili trombositopeni, ASH 2018) | `hit-4t.html` |
