@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kalp Yetersizliği</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.st{display:inline-block;padding:2px 9px;border-radius:999px;font-weight:700;font-size:.78rem;color:#fff;white-space:nowrap}
+table.t td.why{font-size:.82rem;color:var(--muted)}
+</style>
+</head>
+<body data-ornek-secim="kj pf ef">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Kalp Yetersizliği</h1>
+    <p>Dekompanse KY’de klinik profil, IV loop diüretik dozu ve yanıt kontrolü; taburculukta HFrEF ilaçlarının dozu ve başlama eşikleri</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="4.6"></div>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" data-hasta="egfr" type="number" inputmode="decimal" step="any" value="48"></div>
+      <div class="field"><label for="sbp">Sistolik KB <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="decimal" step="any" value="118"></div>
+      <div class="field"><label for="hr">Nabız <span>/dk</span></label><input id="hr" data-hasta="nabiz" type="number" inputmode="decimal" step="any" value="88"></div>
+    </div>
+    <span class="lbl">Ejeksiyon fraksiyonu</span>
+    <div class="seg"><button type="button" data-g="ef" data-v="r" aria-pressed="true">≤ %40</button><button type="button" data-g="ef" data-v="m" aria-pressed="false">%41–49</button><button type="button" data-g="ef" data-v="p" aria-pressed="false">≥ %50</button></div>
+  </section>
+
+  <section class="card">
+    <h2>1. Dekompanse KY: profil</h2>
+    <span class="lbl">Konjesyon</span>
+    <div class="seg"><button type="button" data-g="kj" data-v="1" aria-pressed="true">Var (ıslak)</button><button type="button" data-g="kj" data-v="0" aria-pressed="false">Yok (kuru)</button></div>
+    <p class="note">Ortopne, akciğerde raller, juguler venöz dolgunluk, periferik ödem, hepatomegali, asit.</p>
+    <span class="lbl">Perfüzyon</span>
+    <div class="seg"><button type="button" data-g="pf" data-v="1" aria-pressed="true">Yeterli (sıcak)</button><button type="button" data-g="pf" data-v="0" aria-pressed="false">Bozuk (soğuk)</button></div>
+    <p class="note">Hipoperfüzyon: soğuk ve nemli ekstremite, oligüri, bilinç bulanıklığı, laktat yüksekliği, düşük nabız basıncı.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Profil ve ilk yaklaşım</h2>
+    <div class="res"><span class="pill" id="prp"></span></div>
+    <ol class="rec" id="rxP"></ol>
+  </section>
+
+  <section class="card">
+    <h2>IV loop diüretik</h2>
+    <div class="grid">
+      <div class="field"><label for="fh">Evdeki oral furosemid <span>mg/gün, almıyorsa 0</span></label><input id="fh" data-aralik="0-1000 mg" type="number" inputmode="decimal" step="any" value="40"></div>
+    </div>
+    <span class="lbl">Önerilen aralığın</span>
+    <div class="seg"><button type="button" data-g="uc" data-v="alt" aria-pressed="false">Alt ucu</button><button type="button" data-g="uc" data-v="ust" aria-pressed="true">Üst ucu</button></div>
+    <p class="note">Evde diüretik alan hastada aralık günlük oral dozun 1–2 katı, almayan hastada 20–40 mg’dır. Böbrek işlevi bozuksa daha yüksek doz gerekebilir (HFA 2019).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>İlk IV furosemid dozu</h2>
+    <div class="res"><span class="num" id="d0">–</span><span class="of">mg IV</span><span class="pill" id="d0p"></span></div>
+    <div class="sub"><span>Önerilen aralık</span><b id="dra">–</b></div>
+    <div class="sub"><span>Bir sonraki basamak (iki katı)</span><b id="d1">–</b></div>
+    <div class="sub"><span>Günlük toplam en yüksek doz</span><b>400–600 mg</b></div>
+    <p class="advice" id="d0a"></p>
+  </section>
+
+  <section class="card">
+    <h2>Yanıt kontrolü</h2>
+    <div class="grid">
+      <div class="field"><label for="una">Spot idrar Na, 2. saat <span>mmol/L</span></label><input id="una" data-aralik="0-300 mmol/L" type="number" inputmode="decimal" step="any" value="45"></div>
+      <div class="field"><label for="uo">İdrar, ilk 6 saat <span>mL/saat</span></label><input id="uo" data-aralik="0-2000 mL/saat" type="number" inputmode="decimal" step="any" value="80"></div>
+    </div>
+    <p class="note">İdrar ilk 6 saatin saatlik ortalamasıdır (ör. 6 saatte 600 mL = 100 mL/saat). Biri bilinmiyorsa boş bırakın.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Yanıt ve sonraki adım</h2>
+    <div class="res"><span class="pill" id="rsp"></span></div>
+    <div class="sub"><span>Spot idrar Na (yeterli ≥ 50–70)</span><b id="rna">–</b></div>
+    <div class="sub"><span>İdrar (yeterli ≥ 100–150 mL/saat)</span><b id="ruo">–</b></div>
+    <ol class="rec" id="rxR"></ol>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>2. Taburculuk: ilaç tedavisi</h2>
+    <div class="res"><span class="pill" id="gp"></span></div>
+    <table class="t" id="gt">
+      <thead><tr><th>Grup</th><th>Durum</th><th>Neden</th></tr></thead>
+      <tbody id="gtb"></tbody>
+    </table>
+    <ol class="rec" id="rxG"></ol>
+    <p class="note" id="gn">Başlamayın: değer, kılavuzda ilacın kesilmesi ya da kontrendikasyon eşiğinin ötesinde. Dikkat: kılavuzda “dikkatli olun / uzman görüşü alın” eşiği. Eşikler ESC 2021 ek tablolarındandır.</p>
+  </section>
+
+  <section class="card">
+    <h2>HFrEF: başlangıç ve hedef dozlar</h2>
+    <table class="t">
+      <thead><tr><th>İlaç</th><th>Başlangıç</th><th>Hedef</th></tr></thead>
+      <tbody>
+        <tr><td colspan="3"><b>ARNI / ACEi / ARB</b></td></tr>
+        <tr><td>Sakubitril/valsartan <small>Oneptus, Ovefran, Neprilex</small></td><td>49/51 mg × 2</td><td>97/103 mg × 2</td></tr>
+        <tr><td>Enalapril</td><td>2,5 mg × 2</td><td>10–20 mg × 2</td></tr>
+        <tr><td>Ramipril</td><td>2,5 mg × 2</td><td>5 mg × 2</td></tr>
+        <tr><td>Lisinopril</td><td>2,5–5 mg × 1</td><td>20–35 mg × 1</td></tr>
+        <tr><td>Kaptopril <small>Kapril, Kaptoril, Nobepril</small></td><td>6,25 mg × 3</td><td>50 mg × 3</td></tr>
+        <tr><td>Kandesartan</td><td>4 mg × 1</td><td>32 mg × 1</td></tr>
+        <tr><td>Losartan</td><td>50 mg × 1</td><td>150 mg × 1</td></tr>
+        <tr><td>Valsartan</td><td>40 mg × 2</td><td>160 mg × 2</td></tr>
+        <tr><td colspan="3"><b>Beta bloker</b></td></tr>
+        <tr><td>Bisoprolol</td><td>1,25 mg × 1</td><td>10 mg × 1</td></tr>
+        <tr><td>Karvedilol</td><td>3,125 mg × 2</td><td>25 mg × 2 <small>&gt; 85 kg: 50 mg × 2</small></td></tr>
+        <tr><td>Metoprolol süksinat <small>uzun salımlı</small></td><td>12,5–25 mg × 1</td><td>200 mg × 1</td></tr>
+        <tr><td>Nebivolol</td><td>1,25 mg × 1</td><td>10 mg × 1</td></tr>
+        <tr><td colspan="3"><b>MRA</b></td></tr>
+        <tr><td>Spironolakton <small>Aldactone, Spylacton</small></td><td>25 mg × 1</td><td>50 mg × 1</td></tr>
+        <tr><td>Eplerenon <small>Inspra, Epleday</small></td><td>25 mg × 1</td><td>50 mg × 1</td></tr>
+        <tr><td colspan="3"><b>SGLT2 inhibitörü</b></td></tr>
+        <tr><td>Dapagliflozin <small>Forziga, Calira, Dapadap</small></td><td>10 mg × 1</td><td>10 mg × 1</td></tr>
+        <tr><td>Empagliflozin <small>Jardiance</small></td><td>10 mg × 1</td><td>10 mg × 1</td></tr>
+      </tbody>
+    </table>
+    <ul class="chk">
+      <li>Sakubitril/valsartan: semptomatik hipotansiyon öyküsünde 24/26 mg × 2 ile başlanabilir. ACEi’den geçişte son ACEi dozundan sonra en az 36 saat bekleyin. eGFR ≥ 30 olmalı.</li>
+      <li>Spironolakton: böbrek işlevi ya da K nedeniyle dikkat gerekiyorsa 12,5 mg ile başlanabilir.</li>
+      <li>Beta bloker: klinik olarak stabil, övolemik hastada düşük dozla başlayın. 2. ya da 3. derece AV blokta (pil yoksa) kullanmayın.</li>
+      <li>SGLT2i başlayınca eGFR’de küçük ve geri dönüşlü düşüş beklenir; ilacı kesme nedeni değildir. Diürezi artırabilir.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Tedavi sırasında doz azaltma / kesme</h2>
+    <ul class="chk">
+      <li><b>ACEi / ARB:</b> kreatininde %50’ye kadar ya da 3 mg/dL’ye (eGFR 25) kadar artış kabul edilir. K &gt; 5,5 mmol/L, kreatinin %100’den fazla artar ya da &gt; 3,5 mg/dL (eGFR &lt; 20) olursa kesin, uzmana danışın.</li>
+      <li><b>ARNI:</b> K &gt; 5,5 mmol/L ya da eGFR &lt; 30 olursa kesin, uzmana danışın.</li>
+      <li><b>MRA:</b> K &gt; 5,5 ya da kreatinin 2,5 mg/dL (eGFR &lt; 30) olursa dozu yarıya indirin. K &gt; 6,0 ya da kreatinin &gt; 3,5 mg/dL (eGFR &lt; 20) olursa hemen kesin.</li>
+      <li><b>Beta bloker:</b> nabız &lt; 50 ve yakınma artıyorsa dozu yarıya indirin; ağır kötüleşmede kesin. EKG ile kalp bloğunu dışlayın.</li>
+      <li><b>Hipotansiyon:</b> belirtisiz düşük KB genellikle doz değişikliği gerektirmez. Belirtili hipotansiyonda önce diğer vazodilatörleri gözden geçirin; konjesyon yoksa diüretiği azaltın.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Hızlı titrasyon (STRONG-HF)</h2>
+    <ul class="chk">
+      <li>ESC 2023 (Sınıf I, B): KY yatışından sonra kanıta dayalı ilaçlara taburculuk öncesinde başlayıp ilk 6 haftada sık kontrolle hızla artırın.</li>
+      <li>STRONG-HF: taburculuktan önce RAS blokeri, beta bloker ve MRA önerilen dozun yarısına; taburculuktan sonraki 2 hafta içinde tam doza çıkarıldı. Kontroller 1., 2., 3. ve 6. haftada (klinik, K, kreatinin, NT-proBNP).</li>
+      <li>Çalışmada SKB &lt; 95 mmHg, K &gt; 5,0 mmol/L ya da eGFR &lt; 30 ise RAS blokeri ve MRA artırılmadı. NT-proBNP taburculuk değerinin %10’undan fazla yükseldiyse beta bloker artırılmadı, diüretik artırıldı.</li>
+      <li>SGLT2i çalışma protokolünde yoktu; ESC 2021/2023’e göre HFrEF’te dört grubun hepsi önerilir.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: McDonagh TA ve ark. 2021 ESC kalp yetersizliği kılavuzu, Eur Heart J 2021;42:3599–726 (Tablo 8 başlangıç ve hedef dozlar ve dipnotları; Şekil 13 dipnotları: IV loop diüretikte günlük en yüksek doz furosemid 400–600 mg, ağır böbrek yetersizliğinde 1000 mg’a kadar, kombinasyon tiyazid, metolazon ya da asetazolamid; SKB &gt; 110 mmHg’de IV vazodilatör IIb; SKB &lt; 90 ve hipoperfüzyonda inotrop IIb; kardiyojenik şokta norepinefrin IIb; dirençli ödemde loop + tiyazid IIa) ve çevrimiçi ek tablolar 2–6 (ACEi, beta bloker, MRA, ARNI ve SGLT2i için dikkat ve kesme eşikleri); McDonagh TA ve ark. 2023 ESC odaklı güncelleme, Eur Heart J 2023;44:3627–39 (HFmrEF ve HFpEF’te dapagliflozin ya da empagliflozin Sınıf I, A; yoğun başlatma ve hızlı titrasyon Sınıf I, B); Mullens W ve ark. HFA tutum bildirisi, Eur J Heart Fail 2019;21:137–55 (diüretik almayanda en az 20–40 mg IV; 2. saatte spot idrar Na &lt; 50–70 mmol/L ya da ilk 6 saatte idrar &lt; 100–150 mL/saat yetersiz yanıt; dozu iki katına çıkarma; en yüksek günlük doz 400–600 mg; asetazolamid 500 mg IV; HCTZ 25 mg, aralık 12,5–100 mg); Mebazaa A ve ark. STRONG-HF, Lancet 2022;400:1938–52; Mullens W ve ark. ADVOR, N Engl J Med 2022;387:1185–95 (asetazolamid 500 mg IV günde bir, loop diüretik oral dozun iki katı IV); Trullàs JC ve ark. CLOROTIC, Eur Heart J 2023;44:411–21 (HCTZ ekleme); Nohria A ve ark. J Am Coll Cardiol 2003;41:1797–804 (sıcak/soğuk, ıslak/kuru profiller). Piyasa adları örnek amaçlıdır. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  var RENK=['var(--ok)','var(--warn)','var(--high)'],AD=['Başlanabilir','Dikkat','Başlamayın'];
+
+  // Grup durumu: ham değerle karşılaştırılır, gösterirken yuvarlanır
+  function durum(g,K,E,S,H){
+    var s=0,n=[];function e(l,t){if(l>s)s=l;n.push(t)}
+    if(g==='raas'){
+      if(K!==null){if(K>5.5)e(2,'K > 5,5');else if(K>5)e(1,'K > 5,0')}
+      if(E!==null){if(E<20)e(2,'eGFR < 20');else if(E<30)e(1,'eGFR < 30')}
+      if(S!==null&&S<90)e(1,'SKB < 90; belirtili hipotansiyonda başlamayın');
+    }else if(g==='arni'){
+      if(K!==null){if(K>5.5)e(2,'K > 5,5');else if(K>5)e(1,'K > 5,0')}
+      if(E!==null&&E<30)e(2,'eGFR < 30');
+      if(S!==null&&S<90)e(2,'SKB < 90');
+    }else if(g==='bb'){
+      if(H!==null&&H<50)e(1,'Nabız < 50: uzman görüşü');
+      if(S!==null&&S<90)e(1,'SKB < 90');
+    }else if(g==='mra'){
+      if(K!==null){if(K>5.5)e(2,'K > 5,5');else if(K>5)e(1,'K > 5,0')}
+      if(E!==null){if(E<20)e(2,'eGFR < 20');else if(E<30)e(1,'eGFR < 30')}
+    }else if(g==='sglt'){
+      if(E!==null){if(E<20)e(2,'eGFR < 20');else if(E<25)e(1,'eGFR 20–24: empagliflozin (dapagliflozin çalışmalarında ≥ 25)')}
+      if(S!==null&&S<95)e(2,'SKB < 95');
+    }
+    return {s:s,n:n};
+  }
+
+  function calc(){
+    var K=v('k'),E=v('egfr'),S=v('sbp'),H=v('hr'),ef=segVal('ef'),kj=segVal('kj'),pf=segVal('pf');
+
+    // 1) Profil
+    $('rxP').innerHTML='';
+    if(kj===null||pf===null){pill('prp','Konjesyon ve perfüzyonu seçin','var(--muted)')}
+    else if(kj==='1'&&pf==='1'){pill('prp','Sıcak–ıslak','var(--warn)');
+      li('rxP','IV loop diüretik','Dozu aşağıda hesaplanır; 2. ve 6. saatte yanıtı kontrol edin.');
+      li('rxP',S!==null&&S>110?'SKB > 110: IV vazodilatör düşünülebilir':'IV vazodilatör yalnız SKB > 110 mmHg ise','ESC 2021 IIb, ör. nitrogliserin infüzyonu; hipotansiyondan kaçının.');
+      li('rxP','Tetikleyiciyi arayın','İskemi, aritmi (AF), enfeksiyon, kontrolsüz hipertansiyon, tuz/sıvı ve ilaç uyumsuzluğu, NSAİİ.')}
+    else if(kj==='1'){pill('prp','Soğuk–ıslak','var(--high)');
+      li('rxP','Kardiyoloji / yoğun bakım','Hipoperfüzyon ve konjesyon birlikte: kardiyojenik şok açısından değerlendirin.');
+      li('rxP','SKB < 90 ve hipoperfüzyonda inotrop düşünülebilir','ESC 2021 IIb; rutin kullanılmaz. Kardiyojenik şokta vazopressör olarak tercihen norepinefrin (IIb).');
+      li('rxP','Diüretik','Perfüzyon durumundan bağımsız olarak yeterli dozda IV loop diüretik önerilir (ESC 2021).')}
+    else if(pf==='1'){pill('prp','Sıcak–kuru','var(--ok)');
+      li('rxP','Kompanse','IV diüretik gerekmez. Yakınmanın başka nedenini arayın; oral tedaviyi düzenleyin.')}
+    else{pill('prp','Soğuk–kuru','var(--high)');
+      li('rxP','Hipovolemi düşünün','Aşırı diürez, kanama, sıvı kaybı: diüretiği durdurun; dikkatli sıvı verin ve yanıtı izleyin.');
+      li('rxP','Perfüzyon düzelmezse kardiyoloji','Düşük debi sürüyorsa inotrop açısından değerlendirin.')}
+
+    // 2) IV diüretik dozu
+    var fh=v('fh'),ust=segVal('uc')!=='alt',d0=null;
+    $('d0a').textContent='';
+    if(fh===null){$('d0').textContent='–';$('dra').textContent='–';$('d1').textContent='–';pill('d0p','','')}
+    else{
+      if(fh<=0){d0=ust?40:20;$('dra').textContent='20–40 mg'}
+      else{d0=ust?2*fh:fh;$('dra').textContent=fm(fh,0)+'–'+fm(2*fh,0)+' mg'}
+      $('d0').textContent=fm(d0,0);
+      var d1=2*d0;
+      $('d1').textContent=d1>600?'> 600 mg: en yüksek doz aşılır':fm(d1,0)+' mg IV';
+      if(d0>600)pill('d0p','En yüksek günlük dozu aşıyor','var(--high)');
+      else if(d0>=400)pill('d0p','En yüksek doz aralığında','var(--warn)');
+      else pill('d0p','IV bolus','var(--ok)');
+      $('d0a').textContent=(d0>600?'Hesaplanan doz günlük en yüksek dozu (400–600 mg) aşıyor; ardışık nefron blokajını erken düşünün. ':'')+'İlk dozu IV bolus olarak verin. Yanıt yeterliyse aynı dozla sürdürün; her gün kilo, sıvı dengesi, K, Na ve kreatinin izleyin.';
+    }
+
+    // 3) Yanıt
+    $('rxR').innerHTML='';
+    var na=v('una'),uo=v('uo');
+    function sinif(x,a,b){return x===null?null:x<a?2:x<b?1:0}
+    var cn=sinif(na,50,70),cu=sinif(uo,100,150),YZ=['yeterli','sınırda','yetersiz'];
+    $('rna').textContent=na===null?'–':fm(na,0)+' mmol/L · '+YZ[cn];
+    $('ruo').textContent=uo===null?'–':fm(uo,0)+' mL/saat · '+YZ[cu];
+    var w=Math.max(cn===null?-1:cn,cu===null?-1:cu);
+    var dd=d0!==null?2*d0:null,tav=dd===null?'iki katına':(dd>600?'en yüksek doza (günlük toplam 400–600 mg)':fm(dd,0)+' mg IV’ye');
+    if(w<0){pill('rsp','Yanıt değeri girilmedi','var(--muted)');
+      li('rxR','2. saatte spot idrar Na, ilk 6 saatte idrar miktarına bakın','Na < 50–70 mmol/L ya da idrar < 100–150 mL/saat yetersiz yanıttır.')}
+    else if(w===0){pill('rsp','Yanıt yeterli','var(--ok)');
+      li('rxR','Aynı dozla sürdürün','Konjesyon tamamen geçene kadar devam edin; günlük kilo, sıvı dengesi ve elektrolit izleyin.')}
+    else{
+      pill('rsp',w===2?'Yanıt yetersiz':'Yanıt sınırda',w===2?'var(--high)':'var(--warn)');
+      li('rxR',(w===2?'Dozu ':'Dozu artırmayı düşünün: ')+tav+(w===2?' çıkarın':''),'Ardından 2. ve 6. saatte yeniden değerlendirin. Günlük toplam en yüksek doz furosemid 400–600 mg; ağır böbrek yetersizliğinde 1000 mg’a kadar düşünülebilir.');
+      li('rxR','En yüksek dozda yanıt yetersizse: ardışık nefron blokajı','Asetazolamid 500 mg IV günde bir (ADVOR) ya da hidroklorotiyazid 25–100 mg/gün PO (CLOROTIC; böbrek işlevi düştükçe yüksek doz). Loop + tiyazid dirençli ödemde ESC 2021 IIa.');
+      li('rxR','Kombinasyonda yakın izlem','K, Na, Mg ve kreatinini sık izleyin; hipokalemi, hiponatremi ve kreatinin artışı sıktır. Yanıt yoksa kardiyoloji ile ultrafiltrasyon/renal replasman düşünün.');
+    }
+
+    // 4) GDMT
+    $('gtb').innerHTML='';$('rxG').innerHTML='';
+    var G=[['arni','ARNI'],['raas','ACEi / ARB'],['bb','Beta bloker'],['mra','MRA'],['sglt','SGLT2i']];
+    if(ef!=='r')G=[['sglt','SGLT2i']];
+    var eks=[];if(K===null&&ef==='r')eks.push('K');if(E===null)eks.push('eGFR');if(S===null)eks.push('SKB');if(H===null&&ef==='r')eks.push('nabız');
+    var enk=2,say=[0,0,0];
+    G.forEach(function(g){var r=durum(g[0],K,E,S,H);say[r.s]++;
+      var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td'),c=document.createElement('td');
+      a.textContent=g[1];var sp=document.createElement('span');sp.className='st';sp.textContent=AD[r.s];sp.style.background=RENK[r.s];b.appendChild(sp);
+      c.className='why';c.textContent=r.n.length?r.n.join('; '):'Eşik aşılmadı';
+      tr.appendChild(a);tr.appendChild(b);tr.appendChild(c);$('gtb').appendChild(tr)});
+    if(ef===null){pill('gp','EF’yi seçin','var(--muted)')}
+    else if(ef==='r'){
+      pill('gp',say[2]?say[2]+' grupta başlamayın':say[1]?say[1]+' grupta dikkat':'Dört gruba da başlanabilir',say[2]?'var(--high)':say[1]?'var(--warn)':'var(--ok)');
+      li('rxG','HFrEF: dört temel grup','ARNI ya da ACEi (ARNI kullanılamazsa ARB) + beta bloker + MRA + SGLT2i. Taburculuk öncesinde başlayın (ESC 2021 Sınıf I).');
+      li('rxG','Hızlı titrasyon','Taburculukta önerilen dozun yarısı, 2 haftada tam doz; ilk 6 haftada sık kontrol (STRONG-HF, ESC 2023 Sınıf I, B).');
+    }else{
+      var r2=durum('sglt',K,E,S,H);
+      pill('gp',(ef==='m'?'HFmrEF':'HFpEF')+': SGLT2i '+AD[r2.s].toLowerCase(),RENK[r2.s]);
+      li('rxG','Dapagliflozin ya da empagliflozin 10 mg/gün','ESC 2023 odaklı güncelleme: HFmrEF ve HFpEF’te KY yatışı ya da KV ölüm riskini azaltmak için Sınıf I, A.');
+      li('rxG','Konjesyonda diüretik','Sıvı yükünü diüretikle giderin; eşlik eden hastalıkları (hipertansiyon, AF, obezite) tedavi edin.');
+      if(ef==='m')li('rxG','HFmrEF’te diğer gruplar','ACEi, ARB, ARNI, beta bloker ve MRA düşünülebilir (ESC 2021 IIb).');
+    }
+    if(eks.length)li('rxG','Girilmeyen değer: '+eks.join(', '),'Bu değere bağlı eşikler değerlendirilmedi.');
+  }
+  ['ef','kj','pf','uc'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

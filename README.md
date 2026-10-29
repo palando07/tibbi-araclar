@@ -54,6 +54,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Nöbet takip listesi: menüde yok, ayrı uygulama (nobet.webmanifest; veriler yalnız cihazda, localStorage) | `nobet-listesi.html` |
 | Birim çevirici (konvansiyonel ↔ SI, mEq ↔ mg) | `birim-cevirici.html` |
 | Normal değerler (86 test, erişkin referans aralıkları) | `normal-degerler.html` |
+| Kalp yetersizliği (IV diüretik dozu, yanıt kontrolü, GDMT, ESC 2021/2023) | `kalp-yetersizligi.html` |
 | İlaç etkileşimi (QT, kanama, hiperkalemi, CYP3A4/2C19, P-gp, serotonin) | `ilac-etkilesimi.html` |
 | Trombositopeni yaklaşımı (PLASMIC, ISTH DİK, işlem eşikleri) | `trombositopeni.html` |
 | Hipokalemi yaklaşımı (neden ayrımı) | `hipokalemi.html` |
