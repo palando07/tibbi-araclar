@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DKA ve HHS</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.st{display:inline-block;padding:2px 9px;border-radius:999px;font-weight:700;font-size:.78rem;color:#fff;white-space:nowrap}
+table.t td.why{font-size:.82rem;color:var(--muted)}
+.nt{font-size:.82rem;color:var(--muted);margin:0}.ok{color:var(--ok);font-weight:700}.no{color:var(--high);font-weight:700}.na{color:var(--muted)}
+</style>
+</head>
+<body data-ornek-secim="uk=n tb=a">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>DKA ve HHS</h1>
+    <p>Diyabetik ketoasidoz ve hiperglisemik hiperozmolar durumda tanı, saatlik sıvı, insülin ve potasyum, düşüş hızı kontrolü, çözülme ve SC insüline geçiş</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta: şimdiki değerler</h2>
+    <div class="grid">
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="any" value="34"></div>
+      <div class="field"><label for="glu">Glukoz <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="480"></div>
+      <div class="field"><label for="bhb">Kan ketonu (β-OHB) <span>mmol/L</span></label><input id="bhb" data-aralik="0-15 mmol/L" type="number" inputmode="decimal" step="any" value="5.2"></div>
+      <div class="field"><label for="ph">Venöz pH</label><input id="ph" type="number" inputmode="decimal" step="any" value="7.12"></div>
+      <div class="field"><label for="hco3">HCO₃ <span>mmol/L</span></label><input id="hco3" type="number" inputmode="decimal" step="any" value="9"></div>
+      <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="132"></div>
+      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="4.8"></div>
+      <div class="field"><label for="cl">Klor <span>mmol/L</span></label><input id="cl" type="number" inputmode="decimal" step="any" value="96"></div>
+      <div class="field"><label for="ure">Üre <span>mg/dL, BUN değil</span></label><input id="ure" data-hasta="ure" type="number" inputmode="decimal" step="any" value="60"></div>
+      <div class="field"><label for="osm">Ölçülen osmolalite <span>mOsm/kg, varsa</span></label><input id="osm" type="number" inputmode="decimal" step="any" value=""></div>
+    </div>
+    <span class="lbl">İdrar ketonu</span>
+    <div class="seg"><button type="button" data-g="uk" data-v="n" aria-pressed="true">Bakılmadı</button><button type="button" data-g="uk" data-v="0" aria-pressed="false">&lt; 2+</button><button type="button" data-g="uk" data-v="1" aria-pressed="false">≥ 2+</button></div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="dm"><span class="txt">Bilinen diyabet<small>glukoz &lt; 200 mg/dL olsa da DKA ölçütü D karşılanır</small></span></label>
+      <label class="item"><input type="checkbox" id="sglt"><span class="txt">SGLT2 inhibitörü kullanıyor<small>öglisemik DKA riski: dapagliflozin (Forziga), empagliflozin (Jardiance)</small></span></label>
+      <label class="item"><input type="checkbox" id="dik"><span class="txt">Kalp ya da böbrek yetersizliği, diyaliz, gebelik, ileri yaş<small>daha küçük sıvı bolusu, yakın izlem</small></span></label>
+      <label class="item"><input type="checkbox" id="sok"><span class="txt">Sistolik KB &lt; 90 mmHg</span></label>
+      <label class="item"><input type="checkbox" id="bil"><span class="txt">Stupor ya da koma<small>GKS &lt; 12</small></span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite" id="cTani">
+    <h2>1. Tanı</h2>
+    <div class="res"><span class="pill" id="tp"></span><span class="pill" id="sp"></span></div>
+    <table class="t">
+      <thead><tr><th>Ölçüt</th><th>Hasta</th><th>Durum</th></tr></thead>
+      <tbody id="ktb"></tbody>
+    </table>
+    <div class="sub"><span>Anyon açığı</span><b id="ag">–</b></div>
+    <div class="sub"><span>Düzeltilmiş Na (Hillier 2,4 · Katz 1,6)</span><b id="cna">–</b></div>
+    <div class="sub"><span>Efektif osmolalite</span><b id="eo">–</b></div>
+    <div class="sub"><span>Toplam (hesaplanan) osmolalite</span><b id="to">–</b></div>
+    <ol class="rec" id="rxT"></ol>
+    <p class="f">AA = Na − (Cl + HCO₃) · düzeltilmiş Na = Na + 2,4 × (glukoz − 100) / 100 · efektif = 2 × Na + glukoz / 18 · toplam = efektif + BUN / 2,8 · BUN = üre / 2,14</p>
+  </section>
+
+  <section class="card" aria-live="polite" id="cTed">
+    <h2>2. Tedavi: şimdi</h2>
+    <span class="lbl">Tedavi edilen tablo</span>
+    <div class="seg"><button type="button" data-g="tb" data-v="a" aria-pressed="true">Tanıya göre</button><button type="button" data-g="tb" data-v="d" aria-pressed="false">DKA</button><button type="button" data-g="tb" data-v="h" aria-pressed="false">HHS</button></div>
+    <p class="nt">Tedavi ilerledikçe değerler tanı ölçütlerinin altına iner; o zaman başlangıçtaki tabloyu seçin. Karışık DKA-HHS için DKA seçin.</p>
+    <div class="res"><span class="pill" id="ip"></span></div>
+    <div class="sub"><span>İnsülin infüzyonu (50 ünite / 50 mL)</span><b id="ins">–</b></div>
+    <div class="sub"><span>Glukoz &lt; 250: dekstroz + 0,05 ünite/kg/saat</span><b id="ins2">–</b></div>
+    <div class="sub"><span>Hedef idrar ≥ 0,5 mL/kg/saat</span><b id="uo">–</b></div>
+    <ol class="rec" id="rxS"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Saatlik kontrol: önceki ölçüm</h2>
+    <div class="grid">
+      <div class="field"><label for="sa">Kaç saat önce <span>saat</span></label><input id="sa" data-sabit data-aralik="0.25-24 saat" type="number" inputmode="decimal" step="any" value="1"></div>
+      <div class="field"><label for="pglu">Önceki glukoz <span>mg/dL</span></label><input id="pglu" data-aralik="10-3000 mg/dL" type="number" inputmode="decimal" step="any" value="560"></div>
+      <div class="field"><label for="pbhb">Önceki keton <span>mmol/L</span></label><input id="pbhb" data-aralik="0-15 mmol/L" type="number" inputmode="decimal" step="any" value="5.9"></div>
+      <div class="field"><label for="phco3">Önceki HCO₃ <span>mmol/L</span></label><input id="phco3" data-aralik="1-60 mmol/L" type="number" inputmode="decimal" step="any" value="7"></div>
+      <div class="field"><label for="pna">Önceki Na <span>mmol/L</span></label><input id="pna" data-aralik="90-200 mmol/L" type="number" inputmode="decimal" step="any" value="131"></div>
+    </div>
+    <p class="note">Şimdiki değerler yukarıdaki Hasta kartından alınır. Her kontrolde yeni değerleri yukarıya, bir öncekileri buraya yazın.</p>
+  </section>
+
+  <section class="card" aria-live="polite" id="cHiz">
+    <h2>Düşüş hızı</h2>
+    <div class="res"><span class="pill" id="hp"></span></div>
+    <table class="t">
+      <thead><tr><th>Değer</th><th>Saatlik değişim</th><th>Hedef</th></tr></thead>
+      <tbody id="htb"></tbody>
+    </table>
+    <ol class="rec" id="rxH"></ol>
+  </section>
+
+  <section class="card" aria-live="polite" id="cCoz">
+    <h2>3. Çözülme ve SC insüline geçiş</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="idr"><span class="txt">İdrar ≥ 0,5 mL/kg/saat</span></label>
+      <label class="item"><input type="checkbox" id="bdz"><span class="txt">Bilinç düzeldi</span></label>
+      <label class="item"><input type="checkbox" id="yer"><span class="txt">Ağızdan yiyip içebiliyor</span></label>
+    </div>
+    <div class="field"><label for="evi">Evde toplam insülin <span>ünite/gün, kullanmıyorsa boş</span></label><input id="evi" data-aralik="1-300 ünite/gün" type="number" inputmode="decimal" step="any" value=""></div>
+    <div class="res"><span class="pill" id="cp"></span></div>
+    <ol class="rec" id="rxC"></ol>
+    <div class="sub"><span>Toplam günlük doz (0,5–0,6 ünite/kg)</span><b id="tdd">–</b></div>
+    <div class="sub"><span>Hipoglisemi riski yüksekse (0,3 ünite/kg)</span><b id="tdd3">–</b></div>
+    <div class="sub"><span>Bazal (yaklaşık yarısı)</span><b id="baz">–</b></div>
+    <div class="sub"><span>Her öğün hızlı etkili (kalan yarı / 3)</span><b id="bol">–</b></div>
+    <p class="note">Bazal: glarjin (Lantus, Toujeo, Basaglar, Glarin), degludek (Tresiba), detemir (Levemir). Öğün: aspart (NovoRapid, Fiasp), lispro (Humalog), glulisin (Apidra). IV infüzyon: regüler insülin (Actrapid, Humulin R). Doz ayarı ve düzeltme dozu için İnsülin dozu aracını kullanın.</p>
+  </section>
+
+  <section class="card">
+    <h2>Kısa özet</h2>
+    <table class="t">
+      <thead><tr><th></th><th>DKA</th><th>HHS</th></tr></thead>
+      <tbody>
+        <tr><td>Glukoz</td><td>≥ 200 mg/dL ya da bilinen diyabet</td><td>≥ 600 mg/dL</td></tr>
+        <tr><td>Keton</td><td>β-OHB ≥ 3,0 mmol/L ya da idrar ≥ 2+</td><td>β-OHB &lt; 3,0, idrar &lt; 2+</td></tr>
+        <tr><td>Asit-baz</td><td>pH &lt; 7,3 ve/veya HCO₃ &lt; 18</td><td>pH ≥ 7,3 ve HCO₃ ≥ 15</td></tr>
+        <tr><td>Osmolalite</td><td>–</td><td>efektif &gt; 300 ya da toplam &gt; 320</td></tr>
+        <tr><td>İnsülin</td><td>0,1 ünite/kg/saat</td><td>0,05 ünite/kg/saat <small>β-OHB ≥ 3, idrar ≥ 2+, pH &lt; 7,3 ya da HCO₃ &lt; 18 ise karışık tablo: 0,1</small></td></tr>
+        <tr><td>Hedef glukoz</td><td>150–200 mg/dL (2024: yaklaşık 200)</td><td>180–270 mg/dL (JBDS, ilk 24 saat)</td></tr>
+        <tr><td>Çözülme</td><td>keton &lt; 0,6 ve (pH ≥ 7,3 ya da HCO₃ ≥ 18)</td><td>osmolalite &lt; 300, glukoz &lt; 250, idrar &gt; 0,5 mL/kg/saat, bilinç düzeldi</td></tr>
+      </tbody>
+    </table>
+    <ul class="chk">
+      <li>Glukoz saatte bir (1–2 saatte bir); Na, K, Cl, HCO₃, venöz pH, keton, fosfat ve kreatinin 2–4 saatte bir. K insülinden 2 saat sonra, sonra 4 saatte bir.</li>
+      <li>Tetikleyiciyi arayın: enfeksiyon, insülin atlama ya da yeni tanı, MI, inme, pankreatit, SGLT2 inhibitörü, steroid. SGLT2 inhibitörünü kesin.</li>
+      <li>Fosfat &lt; 1,0 mmol/L (≈ 3,1 mg/dL; 2024 metni) ve kas güçsüzlüğü, kalp ya da solunum yetersizliği varsa replasman düşünün; eski ADA 2009 eşiği &lt; 1,0 mg/dL idi. Gerekirse sıvıya 20–30 mmol potasyum fosfat. HHS’de profilaktik DMAH verin.</li>
+      <li>Hafif ya da komplikasyonsuz orta DKA’da (yoğun bakım dışı) 1–2 saatte bir SC hızlı etkili analog bir seçenektir (2024).</li>
+      <li>Ağır DKA, HHS, karışık tablo, bilinç bozukluğu ya da ağır tetikleyicide yoğun bakım ya da yüksek bağımlılık ünitesi. JBDS ağırlık belirteçlerine nabız &gt; 100 ya da &lt; 60/dk ve SpO₂ &lt; %92 de girer.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: Umpierrez GE ve ark. Hyperglycemic crises in adults with diabetes: a consensus report (ADA/EASD/JBDS/AACE/DTS), Diabetes Care 2024;47:1257–75 ve Diabetologia 2024;67:1455–79 (tanı ölçütleri; şiddet: hafif pH &gt; 7,25–&lt; 7,30 ya da HCO₃ 15–18, orta pH 7,0–7,25 ya da HCO₃ 10–&lt;15, ağır pH &lt; 7,0 ya da HCO₃ &lt; 10, β-OHB &gt; 6, stupor/koma; öglisemik DKA glukoz &lt; 200 mg/dL; karışık DKA-HHS; sıvı ilk 2–4 saatte 500–1000 mL/saat, riskli hastada 250 mL bolus, açığı 24–48 saatte kapatma; insülin DKA 0,1, HHS 0,05 ünite/kg/saat, glukoz &lt; 250’de %5–10 dekstroz ve 0,05 ünite/kg/saat; HHS’de β-OHB ≥ 3, pH &lt; 7,3 ya da HCO₃ &lt; 18 ise 0,1; fosfat &lt; 1,0 mmol/L; K &lt; 3,5’te insülini erteleme ve 10 mmol/saat K; K &lt; 5,0 olunca replasman, hedef 4–5; bikarbonat yalnız pH &lt; 7,0, 100 mmol 400 mL steril suda 2 saatte; HHS’de glukoz düşüşü ≤ 90–120 mg/dL/saat, osmolalite 3–8 mOsm/kg/saat, Na 24 saatte ≤ 10 mmol/L; çözülme ölçütleri; bazali IV insülini kesmeden 1–2 saat önce, insülin kullanmayanda 0,5–0,6 ünite/kg/gün, riskli hastada 0,3). Joint British Diabetes Societies, The management of diabetic ketoacidosis in adults, Mart 2023 (sıvı şeması 1 L 1 saatte, sonra 2, 2, 4, 4 ve 6 saatte birer litre; K 3,5–5,5’te litreye 40 mmol; keton saatte ≥ 0,5 mmol/L düşmüyor, HCO₃ ≥ 3 mmol/L yükselmiyor ya da glukoz ≥ 3 mmol/L düşmüyorsa insülini saatte 1 ünite artırma; glukoz &lt; 14 mmol/L’de %10 glukoz 125 mL/saat; ağırlık belirteçleri). Mustafa OG ve ark. JBDS, The management of hyperosmolar hyperglycaemic state in adults, Diabet Med 2023;40:e15005 (HHS 2022 güncellemesi: 1 L ilk saatte, 6. saatte +2–3 L, 12. saatte +3–6 L; sıvı açığı 100–220 mL/kg; keton &gt; 3,0 mmol/L ya da idrar &gt; 2+ değilse insülini glukoz sıvıyla düşmeyi bırakınca 0,05 ünite/kg/saat başlatma, gerekirse saatte 1 ünite artırma; glukoz saatte ≤ 5 mmol/L düşmeli; ilk 24 saat hedef glukoz 10–15 mmol/L). TEMD Diabetes Mellitus ve Komplikasyonlarının Tanı, Tedavi ve İzlem Kılavuzu 2026 (Türkiye). Hillier TA ve ark. Am J Med 1999 ve Katz MA, N Engl J Med 1973 (düzeltilmiş Na). Piyasa adları örnek amaçlıdır. Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir; klinik değerlendirmenin yerini tutmaz.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var ck=function(id){return $(id).checked};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function row(tb,cells,cls){var tr=document.createElement('tr');cells.forEach(function(c,i){var td=document.createElement('td');td.textContent=c;if(i===2&&cls)td.className=cls;tr.appendChild(td)});$(tb).appendChild(tr)}
+  // Üç değerli mantık: true / false / null (bilinmiyor)
+  function ve(a){if(a.indexOf(false)>=0)return false;return a.indexOf(null)>=0?null:true}
+  function veya(a){if(a.indexOf(true)>=0)return true;return a.indexOf(null)>=0?null:false}
+  var DUR=function(x){return x===true?['Var','ok']:x===false?['Yok','no']:['Bilinmiyor','na']};
+  var ph2=function(x){return fm(x,2)};
+
+  function calc(){
+    var w=v('wt'),yas=v('yas'),g=v('glu'),b=v('bhb'),ph=v('ph'),h=v('hco3'),na=v('na'),K=v('k'),cl=v('cl'),ure=v('ure'),om=v('osm');
+    var uk=segVal('uk'),dm=ck('dm'),sg=ck('sglt'),dik=ck('dik')||(yas!==null&&yas>=65),sok=ck('sok'),bil=ck('bil');
+
+    // Hesaplar
+    var ag=(na!==null&&cl!==null&&h!==null)?na-(cl+h):null;
+    var eo=(na!==null&&g!==null)?2*na+g/18:null;
+    var to=(eo!==null&&ure!==null)?eo+ure/2.14/2.8:null;
+    $('ag').textContent=ag===null?'–':fm(ag)+' mmol/L'+(ag>12?' · yüksek':'');
+    $('cna').textContent=(na!==null&&g!==null)?(g>100?fm(na+2.4*(g-100)/100)+' · '+fm(na+1.6*(g-100)/100)+' mmol/L':'gerekmez (glukoz ≤ 100)'):'–';
+    $('eo').textContent=eo===null?'–':fm(eo)+' mOsm/kg';
+    $('to').textContent=to===null?(eo===null?'–':'üre girilmedi'):fm(to)+' mOsm/kg';
+
+    // Ölçütler (ham değerle)
+    var D=g!==null?(g>=200||dm):(dm?true:null);
+    var Kt=veya([b===null?null:b>=3,uk==='n'?null:uk==='1']);
+    var A=veya([ph===null?null:ph<7.3,h===null?null:h<18]);
+    var dka=ve([D,Kt,A]);
+    var hg=g===null?null:g>=600;
+    var ho=veya([eo===null?null:eo>300,to===null?null:to>320,om===null?null:om>320]);
+    var kyok=((b!==null&&b>=3)||uk==='1')?false:(b!==null||uk==='0')?true:null;
+    var ayok=ve([ph===null?null:ph>=7.3,h===null?null:h>=15]);
+    var hhs=ve([hg,ho,kyok,ayok]);
+    var hipo=ve([hg,ho]);
+    $('ktb').innerHTML='';
+    var r=DUR(D);row('ktb',['DKA · D: glukoz ≥ 200 ya da bilinen diyabet',g===null?(dm?'bilinen diyabet':'–'):fm(g,0)+' mg/dL',r[0]],r[1]);
+    r=DUR(Kt);row('ktb',['DKA · K: β-OHB ≥ 3,0 ya da idrar ≥ 2+',(b===null?'–':fm(b)+' mmol/L')+(uk==='n'?'':uk==='1'?' · idrar ≥ 2+':' · idrar < 2+'),r[0]],r[1]);
+    r=DUR(A);row('ktb',['DKA · A: pH < 7,3 ya da HCO₃ < 18',(ph===null?'pH –':'pH '+ph2(ph))+' · '+(h===null?'HCO₃ –':'HCO₃ '+fm(h)),r[0]],r[1]);
+    r=DUR(hg);row('ktb',['HHS: glukoz ≥ 600',g===null?'–':fm(g,0)+' mg/dL',r[0]],r[1]);
+    r=DUR(ho);row('ktb',['HHS: efektif > 300 ya da toplam > 320',(eo===null?'–':fm(eo,0))+(to===null?'':' · '+fm(to,0))+(om===null?'':' · ölçülen '+fm(om,0)),r[0]],r[1]);
+    r=DUR(kyok);row('ktb',['HHS: belirgin ketoz yok (β-OHB < 3, idrar < 2+)',b===null?'–':fm(b)+' mmol/L',r[0]],r[1]);
+    r=DUR(ayok);row('ktb',['HHS: asidoz yok (pH ≥ 7,3 ve HCO₃ ≥ 15)',(ph===null?'pH –':'pH '+ph2(ph))+' · '+(h===null?'HCO₃ –':'HCO₃ '+fm(h)),r[0]],r[1]);
+
+    var mod=null,tani;
+    $('rxT').innerHTML='';
+    if(dka===true&&hipo===true){mod='dka';tani='Karışık DKA-HHS';pill('tp',tani,'var(--high)');
+      li('rxT','Karışık tablo: DKA gibi tedavi edin','İnsülin 0,1 ünite/kg/saat; hiperozmolalite nedeniyle osmolalite ve Na düşüş hızını HHS sınırlarında tutun (3–8 mOsm/kg/saat, Na 24 saatte ≤ 10 mmol/L).')}
+    else if(dka===true){mod='dka';tani=(g!==null&&g<200)?'Öglisemik DKA':'DKA';pill('tp',tani,'var(--high)');
+      if(g!==null&&g<200)li('rxT','Öglisemik DKA: glukoz < 200 mg/dL','Keton ve asidoz tanıyı koyar. SGLT2 inhibitörü, gebelik, açlık, alkol, karaciğer hastalığı düşünün. Ketoasidozu çözmek için insülin gerekir: dekstrozu insülinle birlikte baştan başlayın ve glukozu 150–200 mg/dL’de tutun; insülini keton < 0,6 olana dek sürdürün.')}
+    else if(hhs===true){mod='hhs';tani='HHS';pill('tp',tani,'var(--high)');
+      if(A===true)li('rxT','HHS, ancak pH < 7,3 ya da HCO₃ < 18','2024 uzlaşısına göre karışık DKA-HHS gibi tedavi edin: insülin 0,1 ünite/kg/saat; osmolalite ve Na düşüş hızını HHS sınırlarında tutun.')}
+    else if(dka===false&&hhs===false){tani='DKA ve HHS ölçütü karşılanmıyor';pill('tp',tani,'var(--ok)');
+      if(Kt===true&&A===false)li('rxT','Ketoz var, asidoz yok','Açlık ketozu ya da gelişmekte olan DKA olabilir; keton ve gazı tekrarlayın.');
+      if(hg===true||ho===true)li('rxT','Hiperglisemi ya da hiperozmolalite var','HHS ölçütlerinin hepsi karşılanmıyor; sıvı açığını değerlendirin, 1–2 saat sonra tekrar bakın.')}
+    else{tani='Tanı için değer eksik';pill('tp',tani,'var(--muted)');
+      var eks=[];if(g===null&&!dm)eks.push('glukoz');if(b===null&&uk==='n')eks.push('keton');if(ph===null)eks.push('pH');if(h===null)eks.push('HCO₃');if(na===null)eks.push('Na');
+      li('rxT','Girilmeyen: '+(eks.join(', ')||'–'),'Eksik değere bağlı ölçütler “Bilinmiyor” gösterilir.')}
+    if(sg)li('rxT','SGLT2 inhibitörü: ilacı kesin','Glukoz normal ya da hafif yüksek olsa da keton ve gaz bakın; öglisemik DKA kolay atlanır.');
+
+    // Şiddet (DKA): en kötü parametre
+    var sv=null,why=[];
+    if(mod==='dka'){sv=1;
+      var up=function(l,t){if(l>sv)sv=l;if(l>1)why.push(t)};
+      if(ph!==null){if(ph<7)up(3,'pH < 7,0');else if(ph<=7.25)up(2,'pH 7,00–7,25')}
+      if(h!==null){if(h<10)up(3,'HCO₃ < 10');else if(h<15)up(2,'HCO₃ 10–14,9')}
+      if(b!==null&&b>6)up(3,'β-OHB > 6');
+      if(bil)up(3,'stupor/koma');
+      pill('sp',['','Hafif','Orta','Ağır'][sv]+(why.length?' ('+why.join(', ')+')':''),sv===3?'var(--high)':sv===2?'var(--warn)':'var(--ok)');
+    }else pill('sp','','');
+    var jb=[];if(b!==null&&b>6)jb.push('keton > 6');if(h!==null&&h<5)jb.push('HCO₃ < 5');if(ph!==null&&ph<7)jb.push('pH < 7,0');if(K!==null&&K<3.5)jb.push('K < 3,5');if(ag!==null&&ag>16)jb.push('anyon açığı > 16');if(sok)jb.push('SKB < 90');if(bil)jb.push('GKS < 12');
+    if(mod&&jb.length)li('rxT','Ağırlık belirteci (JBDS): '+jb.join(', '),'Kıdemli hekim değerlendirmesi; yoğun bakım ya da yüksek bağımlılık ünitesi düşünün.');
+    $('cTani').setAttribute('data-not',tani+(sv?' · '+['','hafif','orta','ağır'][sv]:'')+(ag!==null?' · AA '+fm(ag):'')+(eo!==null?' · efektif osm '+fm(eo,0):''));
+
+    // 2) Tedavi: seçilen tablo tanıyı geçersiz kılar (tedavi sırasında ölçütler kaybolur)
+    var tb=segVal('tb');if(tb==='d')mod='dka';else if(tb==='h')mod='hhs';
+    $('rxS').innerHTML='';
+    var keto=(b!==null&&b>=3)||uk==='1'||(A===true);
+    var u1=w?0.1*w:null,u05=w?0.05*w:null;
+    var ins01=mod==='dka'||(mod==='hhs'&&keto);
+    var rate=ins01?u1:u05;
+    $('uo').textContent=w?'≥ '+fm(0.5*w,0)+' mL/saat':'kilo girilmedi';
+    var dusuk=g!==null&&g<250;
+    if(!mod){$('ins').textContent=w?fm(u1)+' (HHS '+fm(u05)+') ünite/saat':'kilo girilmedi'}
+    else $('ins').textContent=w?(dusuk&&ins01?fm(u05)+' ünite/saat = '+fm(u05)+' mL/saat (glukoz < 250)':fm(rate)+' ünite/saat = '+fm(rate)+' mL/saat'):'kilo girilmedi';
+    $('ins2').textContent=w?fm(u05)+' ünite/saat':'kilo girilmedi';
+    var ipTxt,ipC;
+    if(K===null){ipTxt='K bilinmeden insülin başlamayın';ipC='var(--high)'}
+    else if(K<3.5){ipTxt='K '+fm(K,2)+' < 3,5: insülini bekletin';ipC='var(--high)'}
+    else if(!w){ipTxt='Kilo girilmedi: insülin hızı hesaplanamadı';ipC='var(--warn)'}
+    else if(!mod){ipTxt='Önce tanıyı netleştirin';ipC='var(--muted)'}
+    else{ipTxt='İnsülin başlanabilir: '+fm(dusuk&&ins01?u05:rate)+' ünite/saat'+(mod==='hhs'&&!keto?' (JBDS: önce sıvı)':'');ipC='var(--ok)'}
+    pill('ip',ipTxt,ipC);
+
+    // Sıvı
+    if(sok)li('rxS','SKB < 90: 500 mL %0,9 NaCl 10–15 dakikada','SKB < 90 sürerse tekrarlayın; düzelmezse yoğun bakım. Sonra aşağıdaki şemaya geçin.');
+    if(mod==='hhs'){
+      var df=w?fm(0.1*w)+'–'+fm(0.22*w)+' L':'100–220 mL/kg';
+      li('rxS','Sıvı (HHS): ilk saatte 1000 mL %0,9 NaCl'+(dik?' (riskli hasta: 250 mL bolus, sık yeniden değerlendirme)':''),'Sonra daha yavaş: 6. saatte toplam pozitif denge 2–3 L, 12. saatte 3–6 L (2–6. saat ortalama yaklaşık 200–400 mL/saat). Tahmini açık '+df+'; yarısını ilk 8–12 saatte, tamamını 24–48 saatte kapatın. Osmolalite saatte 3–8 mOsm/kg düşmeli, Na 24 saatte en fazla 10 mmol/L.');
+    }else{
+      li('rxS','Sıvı: %0,9 NaCl ya da dengeli kristaloid'+(dik?' (riskli hasta: 250 mL bolus ile, sık yeniden değerlendirme)':''),'İlk 2–4 saatte 500–1000 mL/saat (2024). JBDS şeması: 1. saat 1000 mL; 2–5. saat 500 mL/saat; 6–13. saat 250 mL/saat; sonra 167 mL/saat (1 L/6 saat). Açığı 24–48 saatte kapatın; 12. saatte volümü yeniden değerlendirin.');
+    }
+    // Potasyum
+    if(K===null)li('rxS','Potasyum girilmedi: K bilinmeden insülin başlamayın','Kan gazından ya da biyokimyadan K’yı hemen ölçün.');
+    else if(K<3.5)li('rxS','K '+fm(K,2)+' mmol/L < 3,5: önce potasyum','İnsülini K > 3,5 olana kadar erteleyin; saatte 10 mmol KCl verin (2024; JBDS: kıdemli görüş ve ek K). Periferden genellikle ≤ 10 mmol/saat, daha hızlısı santral yol ve monitörle. 1–2 saatte bir K bakın.');
+    else if(K<=5)li('rxS','K '+fm(K,2)+' mmol/L: her litre sıvıya 10–20 mmol KCl','Hedef K 4–5 mmol/L (2024; 2024 metni çoğu hastada litreye 20–30 mmol, JBDS K 3,5–5,5’te litreye 40 mmol). İnsülinden 2 saat sonra, sonra 4 saatte bir ölçün.');
+    else li('rxS','K '+fm(K,2)+' mmol/L > 5,0: şimdilik K vermeyin','2 saatte bir kontrol edin; insülinle düşecektir. K < 5,0 olunca replasmana başlayın.');
+    // İnsülin
+    if(mod==='hhs'&&keto){
+      li('rxS','İnsülin (HHS, ketoz ya da asidoz var): 0,1 ünite/kg/saat'+(w?' = '+fm(u1)+' ünite/saat':''),'2024: β-OHB ≥ 3, idrar ≥ 2+, pH < 7,3 ya da HCO₃ < 18 karışık DKA-HHS demektir; sıvıyla birlikte hemen 0,1 ünite/kg/saat başlayın (50 ünite / 50 mL: '+(w?fm(u1)+' mL/saat':'kilo × 0,1 mL/saat')+'). Osmolalite ve Na düşüş hızını HHS sınırlarında tutun.'+(K!==null&&K<3.5?' Şimdi başlamayın: K < 3,5.':K===null?' K bilinmeden başlamayın.':''));
+    }else if(mod==='hhs'){
+      li('rxS','İnsülin (HHS): 0,05 ünite/kg/saat'+(w?' = '+fm(u05)+' ünite/saat = '+fm(u05)+' mL/saat':''),'Belirgin ketoz ve asidoz yoksa (β-OHB < 3, pH ≥ 7,3, HCO₃ ≥ 18) bu doz (2024). JBDS 2022: keton > 3,0 mmol/L ya da idrar > 2+ değilse önce yalnız sıvı verin; glukoz sıvıyla düşmeyi bırakınca sıvı dengesi ve böbrek işlevini değerlendirip başlayın.'+(K!==null&&K<3.5?' Şimdi başlamayın: K < 3,5.':K===null?' K bilinmeden başlamayın.':''));
+    }else{
+      li('rxS','İnsülin: regüler insülin 0,1 ünite/kg/saat'+(w?' = '+fm(u1)+' ünite/saat':''),'50 ünite / 50 mL %0,9 NaCl: 1 mL = 1 ünite, yani '+(w?fm(u1)+' mL/saat':'kilo × 0,1 mL/saat')+'. IV yol gecikirse 0,1 ünite/kg'+(w?' ('+fm(u1)+' ünite)':'')+' bolus. Evdeki bazal insülini sürdürün.'+(K!==null&&K<3.5?' Şimdi başlamayın: K < 3,5.':K===null?' K bilinmeden başlamayın.':''));
+    }
+    if(dusuk)li('rxS','Glukoz '+fm(g,0)+' < 250: dekstroz ekleyin','%5–10 dekstroz (JBDS: %10, 125 mL/saat) %0,9 NaCl ile birlikte. '+(!ins01?'HHS’de ilk 24 saat hedef glukoz 180–270 mg/dL (JBDS: 10–15 mmol/L).':'İnsülini kesmeden 0,05 ünite/kg/saate'+(w?' ('+fm(u05)+' ünite/saat)':'')+' indirin; hedef glukoz 150–200 mg/dL; ketoasidoz düzelene dek sürdürün.'));
+    else li('rxS','Glukoz < 250 mg/dL olunca dekstroz','%5–10 dekstroz ekleyin; DKA’da insülini 0,05 ünite/kg/saate'+(w?' ('+fm(u05)+' ünite/saat)':'')+' indirin ama kesmeyin.');
+    if(ph===null)li('rxS','Bikarbonat: pH girilmedi','Yalnız pH < 7,0 ise düşünülür.');
+    else if(ph<7)li('rxS','pH '+ph2(ph)+' < 7,0: sodyum bikarbonat düşünülebilir','100 mmol (%8,4, 100 mL) 400 mL steril suda, toplam hacim 2 saatte (yaklaşık 250 mL/saat). 2 saatte bir pH bakın; pH > 7,0 olunca durdurun. K’yı izleyin.');
+    else li('rxS','Bikarbonat gerekmez','pH '+ph2(ph)+' ≥ 7,0: rutin bikarbonat önerilmez.');
+    $('cTed').setAttribute('data-not',(mod==='hhs'?'HHS':'DKA')+' tedavisi: '+ipTxt+(K!==null?' (K '+fm(K)+')':''));
+
+    // Saatlik hız
+    $('htb').innerHTML='';$('rxH').innerHTML='';
+    var sa=v('sa'),pg=v('pglu'),pb=v('pbhb'),ph3=v('phco3'),pn=v('pna'),kot=0,say=0;
+    function hz(cur,prev){return (cur===null||prev===null||!sa||sa<=0)?null:(prev-cur)/sa}
+    var gk=hz(g,pg),bk=hz(b,pb),hk=hz(h,ph3)===null?null:-hz(h,ph3),nk=hz(na,pn);
+    var peo=(pn!==null&&pg!==null)?2*pn+pg/18:null,ok_=hz(eo,peo);
+    function d(x,u,dn){return x===null?'önceki/şimdiki değer yok':(x>=0?dn+' ':'')+fm(Math.abs(x))+' '+u+'/saat'+(x<0?(dn==='düşüş'?' artış':' düşüş'):'')}
+    function sinif(ad,deg,hed,durum){var c=durum===0?'ok':durum===2?'no':'na';row('htb',[ad,deg,hed],c);if(durum!==null){say++;if(durum===2)kot++}}
+    var hed=mod==='hhs';
+    // keton
+    var kd=(bk===null||hed)?null:bk>=0.5?0:2;sinif('Keton',d(bk,'mmol/L','düşüş'),'≥ 0,5 düşüş'+(hed?' (DKA hedefi)':kd===null?'':kd===0?' · yeterli':' · yetersiz'),kd);
+    var hd=(hk===null||hed)?null:hk>=3?0:2;sinif('HCO₃',d(hk,'mmol/L','artış'),'≥ 3 artış'+(hed?' (DKA hedefi)':hd===null?'':hd===0?' · yeterli':' · yetersiz'),hd);
+    var gd=null,gt;
+    if(hed){gt='en fazla 90–120 düşüş';if(gk!==null){gd=(gk>120||gk<=0)?2:0;gt+=gk>120?' · hızlı':gk<=0?' · düşmüyor':gk>90?' · üst sınırda':' · uygun'}}
+    else{gt='50–75 düşüş';if(gk!==null){gd=gk>=50?0:2;gt+=gk>=50?' · yeterli':' · yetersiz'}}
+    sinif('Glukoz',d(gk,'mg/dL','düşüş'),gt,gd);
+    var od=ok_===null?null:(ok_>8||ok_<3)?2:0;sinif('Efektif osmolalite',d(ok_,'mOsm/kg','düşüş'),'3–8 düşüş'+(od===null?'':ok_>8?' · hızlı':ok_<3?' · yavaş':' · uygun'),hed||hipo===true?od:null);
+    var nd=nk===null?null:nk*24>10?2:0;sinif('Na',d(nk,'mmol/L','düşüş'),'24 saatte ≤ 10 düşüş'+(nd===null?'':nd===2?' · hızlı':' · uygun'),hed||hipo===true?nd:null);
+    if(!say)pill('hp','Önceki değer girilmedi','var(--muted)');
+    else if(kot)pill('hp',kot+' değer hedef dışında','var(--high)');
+    else pill('hp','Hedefte','var(--ok)');
+    var cr=(ins01||!mod)?(dusuk?u05:u1):u05;
+    var art=w?' (şimdi '+fm(cr)+' → '+fm(cr+1)+' ünite/saat)':'';
+    if(!hed&&(kd===2||hd===2||gd===2))li('rxH','Yetersiz yanıt: insülini saatte 1 ünite artırın'+art,'Önce pompa, hat ve infüzyon hazırlığını kontrol edin (JBDS 2023). Hedefe ulaşılana dek saatlik yineleyin.'+(dusuk?' Glukoz < 250 iken insülini artırırken dekstrozu da artırın.':''));
+    if(hed&&gk!==null&&gk<=0)li('rxH','HHS: glukoz sıvıyla düşmüyor','Sıvı dengesi ve böbrek işlevini değerlendirin; yeterliyse insülin 0,05 ünite/kg/saat başlayın'+(w?' ('+fm(u05)+' ünite/saat)':'')+'; zaten alıyorsa hızı saatte 1 ünite artırın (JBDS 2022).');
+    if(gk!==null&&((hed&&gk>120)||(!hed&&hipo===true&&gk>120)))li('rxH','Glukoz hızlı düşüyor (> 120 mg/dL/saat)','Serebral ödem riski: insülin hızını azaltın, dekstroz düşünün.');
+    if(ok_!==null&&ok_>8&&(hed||hipo===true))li('rxH','Osmolalite hızlı düşüyor (> 8 mOsm/kg/saat)','Sıvı ve/veya insülin hızını azaltın.');
+    if(ok_!==null&&ok_<3&&hed)li('rxH','Osmolalite yavaş düşüyor','Sıvı dengesini gözden geçirin; yeterli sıvı ve insüline karşın düşmüyorsa %0,45 NaCl düşünülebilir.');
+    if(nd===2&&(hed||hipo===true))li('rxH','Na hızlı düşüyor','Bu hızla 24 saatte 10 mmol/L’den fazla düşer; sıvıyı ve insülini gözden geçirin.');
+    if(!say)li('rxH','Önceki ölçümü girin','Keton, HCO₃, glukoz ve Na’nın saatlik değişimi hesaplanır.');
+    $('cHiz').setAttribute('data-not','Saatlik: '+(say?(kot?kot+' değer hedef dışında':'hedefte'):'önceki değer yok')+(gk!==null?' · glukoz '+fm(gk,0)+' mg/dL/saat':'')+(bk!==null?' · keton '+fm(bk)+'/saat':''));
+
+    // 3) Çözülme
+    $('rxC').innerHTML='';
+    var cz,cn;
+    if(mod==='hhs'){
+      var om2=om!==null?om:(to!==null?to:eo);
+      var c=ve([om2===null?null:om2<300,g===null?null:g<250,ck('idr')?true:null,ck('bdz')?true:null]);
+      cz=c===true;cn=[];if(om2===null||om2>=300)cn.push('osmolalite < 300');if(g===null||g>=250)cn.push('glukoz < 250');if(!ck('idr'))cn.push('idrar ≥ 0,5 mL/kg/saat');if(!ck('bdz'))cn.push('bilinç düzelmesi');
+    }else{
+      var c2=ve([b===null?null:b<0.6,veya([ph===null?null:ph>=7.3,h===null?null:h>=18])]);
+      cz=c2===true;cn=[];if(b===null||b>=0.6)cn.push('keton < 0,6');if(!((ph!==null&&ph>=7.3)||(h!==null&&h>=18)))cn.push('pH ≥ 7,3 ya da HCO₃ ≥ 18');
+    }
+    if(!mod)pill('cp','Tanı netleşmedi','var(--muted)');
+    else if(cz)pill('cp',(mod==='hhs'?'HHS':'DKA')+' çözüldü','var(--ok)');
+    else pill('cp','Çözülmedi: '+cn.join(', ')+' bekleniyor','var(--warn)');
+    if(mod&&cz){
+      if(ck('yer'))li('rxC','SC bazal-bolus insüline geçin','Bazali IV insülini kesmeden 1–2 saat önce yapın; öğün öncesi hızlı etkili insülin verildikten sonra IV infüzyonu en az 30 dakika–1 saat daha sürdürün.');
+      else li('rxC','Yiyemiyor: IV insülin ve dekstrozla sürdürün','Yiyemeyen hastada çözülme sonrası değişken hızlı infüzyonla devam edin; SC geçişi yemeye başlayınca yapın.');
+      if(mod!=='hhs'&&g!==null&&g>=200)li('rxC','Glukoz '+fm(g,0)+' mg/dL','Çözülmede glukozun < 200 mg/dL olması tercih edilir.');
+    }else if(mod)li('rxC','IV insüline devam edin','Ölçütler karşılanınca bu kart SC geçiş dozlarını gösterir; dozlar aşağıda önceden hesaplanmıştır.');
+    var ev=v('evi');
+    if(ev!==null)li('rxC','Evde '+fm(ev,0)+' ünite/gün kullanıyor','Olağan dozuna dönün; kontrol kötü ya da hipoglisemi varsa ayarlayın. Bazal insülini yatışta kesmediyseniz aynı dozla sürdürün.');
+    $('tdd').textContent=w?fm(0.5*w,0)+'–'+fm(0.6*w,0)+' ünite/gün':'kilo girilmedi';
+    $('tdd3').textContent=w?fm(0.3*w,0)+' ünite/gün':'–';
+    $('baz').textContent=w?fm(0.25*w,0)+'–'+fm(0.3*w,0)+' ünite/gün':'–';
+    $('bol').textContent=w?fm(0.25*w/3,0)+'–'+fm(0.3*w/3,0)+' ünite':'–';
+    $('cCoz').setAttribute('data-not',(mod?(cz?'Çözüldü':'Çözülmedi'):'Tanı netleşmedi')+(w?' · SC toplam '+fm(0.5*w,0)+'–'+fm(0.6*w,0)+' ünite/gün':''));
+  }
+  seg('uk',calc);seg('tb',calc);
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

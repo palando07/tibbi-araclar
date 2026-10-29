@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lipid Tedavisi</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartları, sonra sonuç kartları */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 10px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.seg.wrapseg{flex-wrap:wrap}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub span{min-width:0}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sub b.w{white-space:normal;text-align:right;font-family:var(--font-body)}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+.warnbox a,.advice a,.note a{color:var(--accent);font-weight:600}
+.mk{font-weight:700}
+.mk.y{color:var(--ok)} .mk.n{color:var(--high)} .mk.u{color:var(--muted)}
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+table.t td.y{color:var(--ok);font-weight:700} table.t td.n{color:var(--high);font-weight:700}
+table.t tr.sec td{background:var(--accent-soft)}
+.seg.col{flex-direction:column}
+.seg.col button{text-align:left;border-bottom:1px solid var(--line)}
+.seg.col button:last-child{border-bottom:0}
+</style>
+</head>
+<body data-ornek-secim="dm fh=0 #tx">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Lipid Tedavisi</h1>
+    <p>KV risk kategorisi, LDL-K hedefi ve gereken azalma; hedefe ulaştıracak statin, ezetimib, PCSK9 inhibitörü ve bempedoik asit basamağı tahmini LDL ile</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="any" value="62"></div>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" data-hasta="egfr" type="number" inputmode="decimal" step="any" value="52"></div>
+      <div class="field"><label for="sbp">Sistolik KB <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="decimal" step="any" value="138"></div>
+      <div class="field"><label for="dbp">Diyastolik KB <span>mmHg</span></label><input id="dbp" data-hasta="dbp" type="number" inputmode="decimal" step="any" value="82"></div>
+      <div class="field"><label for="score">SCORE2 / SCORE2-OP <span>10 yıllık risk, %</span></label><input id="score" data-aralik="0-100 %" type="number" inputmode="decimal" step="any"></div>
+      <div class="field"><label for="lpa">Lp(a) <span>mg/dL, isteğe bağlı</span></label><input id="lpa" data-aralik="0-500 mg/dL" type="number" inputmode="decimal" step="any"></div>
+    </div>
+    <p class="note">SCORE2 (40–69 yaş) ve SCORE2-OP (≥ 70 yaş) burada hesaplanmaz; ESC risk tablosundan ya da hesaplayıcıdan bulduğunuz yüzdeyi girin. Türkiye SCORE2 için <b>yüksek risk bölgesi</b> ülkeleri arasındadır; bu bölgenin tablosunu kullanın. SCORE2 yalnız ASKVH, diyabet, KBH ve ailesel hiperkolesterolemisi olmayan kişide kullanılır.</p>
+  </section>
+
+  <section class="card">
+    <h2>KV risk durumu</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="askvh"><span class="txt">Belgelenmiş ASKVH<small>MI, AKS, koroner ya da diğer arter revaskülarizasyonu, inme/TİA, periferik arter hastalığı ya da görüntülemede belirgin plak (koroner anjiyografi/BT’de anlamlı plak, karotis plağı)</small></span></label>
+      <label class="item"><input type="checkbox" id="tekrar"><span class="txt">Maksimum tolere edilen statinle 2 yıl içinde ikinci vasküler olay<small>Yalnız ASKVH ile birlikte değerlendirilir</small></span></label>
+    </div>
+    <span class="lbl" id="dmL">Diyabet</span>
+    <div class="seg col" role="group" aria-labelledby="dmL"><button type="button" data-g="dm" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="dm" data-v="4" aria-pressed="false">Hedef organ hasarı ya da ≥ 3 majör RF ya da erken başlangıçlı tip 1 &gt; 20 yıl</button><button type="button" data-g="dm" data-v="3" aria-pressed="true">Hedef organ hasarı yok; süre ≥ 10 yıl ya da ek RF</button><button type="button" data-g="dm" data-v="2" aria-pressed="false">Genç (tip 1 &lt; 35, tip 2 &lt; 50 yaş), süre &lt; 10 yıl, ek RF yok</button></div>
+    <p class="note">Hedef organ hasarı: mikroalbüminüri, retinopati ya da nöropati. ESC/EAS 2019 bu üç grubun dışında kalan diyabetliyi (ör. 50 yaş üstünde tanı almış, &lt; 10 yıllık, ek RF’siz tip 2) ayrıca tanımlamaz; “genç” ölçütünü karşılamıyorsa orta risk seçeneğini kullanmayın. ESC 2023 diyabet kılavuzu ASKVH ve ağır hedef organ hasarı olmayan tip 2 diyabetlide SCORE2-Diabetes önerir.</p>
+    <span class="lbl" id="fhL">Ailesel hiperkolesterolemi</span>
+    <div class="seg col" role="group" aria-labelledby="fhL"><button type="button" data-g="fh" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="fh" data-v="3" aria-pressed="false">Var, başka majör RF yok</button><button type="button" data-g="fh" data-v="4" aria-pressed="false">Var + ASKVH ya da başka majör RF</button></div>
+  </section>
+
+  <section class="card">
+    <h2>Lipid ve mevcut tedavi</h2>
+    <div class="grid">
+      <div class="field"><label for="ldl">Güncel LDL-K <span>mg/dL</span></label><input id="ldl" data-aralik="10-1000 mg/dL" type="number" inputmode="decimal" step="any" value="118"></div>
+      <div class="field"><label for="ldl0">Tedavi öncesi LDL-K <span>mg/dL, biliniyorsa</span></label><input id="ldl0" data-aralik="10-1000 mg/dL" type="number" inputmode="decimal" step="any"></div>
+      <div class="field"><label for="tg">Trigliserid <span>mg/dL</span></label><input id="tg" data-aralik="10-10000 mg/dL" type="number" inputmode="decimal" step="any" value="210"></div>
+    </div>
+    <div class="field"><label for="tx">Şu an kullandığı lipid tedavisi</label>
+      <select id="tx">
+        <option value="yok">Tedavi yok</option>
+        <option value="orta" selected>Orta yoğunluk statin</option>
+        <option value="yuk">Yüksek yoğunluk statin</option>
+        <option value="yez">Yüksek yoğunluk statin + ezetimib</option>
+        <option value="ypc">Yüksek yoğunluk statin + PCSK9 mAb</option>
+        <option value="yezpc">Yüksek yoğunluk statin + ezetimib + PCSK9 mAb</option>
+        <option value="ez">Yalnız ezetimib</option>
+        <option value="bez">Bempedoik asit + ezetimib</option>
+        <option value="pc">Yalnız PCSK9 mAb</option>
+      </select></div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="int"><span class="txt">Statin intoleransı<small>Yakınma ya da CK artışı nedeniyle en az 2 farklı statinin (biri en düşük başlangıç dozunda) tolere edilememesi; doz azaltınca ya da kesince düzelir (ILEP tanımı)</small></span></label>
+    </div>
+    <p class="note">Değerler örnek olarak doldurulmuştur: 62 yaşında, hedef organ hasarı olmayan 12 yıllık tip 2 diyabetli, eGFR 52, orta yoğunluk statinle LDL-K 118 mg/dL olan hasta. Seçimleri hastaya göre yapın.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>KV risk kategorisi</h2>
+    <div class="res"><span class="pill" id="katp"></span></div>
+    <ol class="rec" id="neden"></ol>
+    <p class="warnbox" id="eksik" hidden></p>
+    <p class="note">ESC/EAS 2019: çok yüksek risk — belgelenmiş ASKVH; hedef organ hasarı, ≥ 3 majör risk faktörü ya da &gt; 20 yıllık erken başlangıçlı tip 1 diyabet; eGFR &lt; 30; ASKVH ya da başka majör risk faktörü olan AH. Yüksek risk — tek risk faktörünün belirgin yüksekliği (total kolesterol &gt; 310 mg/dL, LDL-K &gt; 190 mg/dL, KB ≥ 180/110 mmHg); başka majör risk faktörü olmayan AH; hedef organ hasarı olmadan ≥ 10 yıllık ya da ek risk faktörlü diyabet; eGFR 30–59. Orta risk — genç ve kısa süreli diyabet. ESC 2025 odaklı güncellemesinde SCORE2/SCORE2-OP eşikleri: ≥ %20 çok yüksek, %10–&lt;20 yüksek, %2–&lt;10 orta, &lt; %2 düşük; Lp(a) &gt; 50 mg/dL (105 nmol/L) ve kalıcı hs-CRP &gt; 2 mg/L risk artırıcıdır, orta riskli kişiyi yüksek riske taşıyabilir. Total kolesterol &gt; 310 mg/dL de yüksek risk ölçütüdür (burada sorulmadı).</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>LDL-K hedefi</h2>
+    <div class="res"><span class="num" id="hedN">–</span><span class="of" id="hedB">mg/dL</span><span class="pill" id="durp"></span></div>
+    <div class="sub"><span>Hedef</span><b class="w" id="hed">–</b></div>
+    <div class="sub"><span>Güncel LDL-K</span><b class="w" id="cur">–</b></div>
+    <div class="sub"><span>Tedavisiz LDL-K</span><b class="w" id="base">–</b></div>
+    <div class="sub"><span>%50 azalma sınırı</span><b class="w" id="yari">–</b></div>
+    <div class="sub"><span>Hedef için gereken azalma</span><b class="w" id="ger">–</b></div>
+    <p class="note">ESC/EAS 2019 hedefleri: çok yüksek risk &lt; 55 mg/dL (1,4 mmol/L) ve tedavisiz değere göre ≥ %50 azalma; yüksek risk &lt; 70 mg/dL (1,8 mmol/L) ve ≥ %50 azalma; orta risk &lt; 100 mg/dL (2,6 mmol/L); düşük risk &lt; 116 mg/dL (3,0 mmol/L). Maksimum tolere edilen statinle 2 yıl içinde ikinci vasküler olay geçiren ASKVH’li hastada &lt; 40 mg/dL (1,0 mmol/L) düşünülebilir (IIb). ESC 2025 odaklı güncellemesi bu hedefleri değiştirmedi ve ayrı bir “aşırı yüksek risk” kategorisi tanımlamadı. mmol/L = mg/dL ÷ 38,67.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Basamak önerisi</h2>
+    <div class="res"><span class="pill" id="basp"></span></div>
+    <table class="t" id="tab" hidden>
+      <thead><tr><th>Tedavi</th><th>Tedavisize göre azalma</th><th>Tahmini LDL-K</th><th>Hedef</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+    <ol class="rec" id="bas"></ol>
+    <p class="note">Tahmini LDL-K = güncel LDL-K × (1 − yeni tedavinin azaltması) ÷ (1 − mevcut tedavinin azaltması). Beklenen ortalama azalmalar (ESC/EAS 2019): orta yoğunluk statin ~%30, yüksek yoğunluk statin ~%50, yüksek yoğunluk statin + ezetimib ~%65, PCSK9 mAb tek başına ~%60, yüksek yoğunluk statin + PCSK9 mAb ~%75, üçü birlikte ~%85; ezetimib tek başına %15–22 (burada %20). Bempedoik asit (ESC 2025): tek başına ~%23, statine eklenince ek ~%18, ezetimible sabit kombinasyonda ~%38. “Statin + ezetimib + bempedoik asit” satırı %65 ile ek %18’in çarpımından türetilmiştir (doğrudan çalışma verisi değildir). Bireysel yanıt değişkendir; 4–6 hafta sonra LDL-K’yi ölçün.</p>
+  </section>
+
+  <section class="card">
+    <h2>İlaçlar ve dozlar</h2>
+    <table class="t">
+      <thead><tr><th>İlaç</th><th>Doz</th></tr></thead>
+      <tbody>
+        <tr><td>Yüksek yoğunluk statin <small>LDL-K’de ≥ %50 azalma</small></td><td>Atorvastatin 40–80 mg ya da rosuvastatin 20–40 mg, günde 1 <small>Rosuvastatin: KrKl &lt; 60 mL/dk’da 5 mg ile başlanır, 40 mg kontrendike; KrKl &lt; 30’da kontrendike</small></td></tr>
+        <tr><td>Orta yoğunluk statin <small>%30–49 azalma</small></td><td>Atorvastatin 10–20 mg, rosuvastatin 5–10 mg, simvastatin 20–40 mg, pravastatin 40–80 mg</td></tr>
+        <tr><td>Ezetimib <small>Ezetrol, Ezetec, Kolez</small></td><td>10 mg günde 1</td></tr>
+        <tr><td>Bempedoik asit</td><td>180 mg günde 1</td></tr>
+        <tr><td>PCSK9 mAb</td><td>Evolokumab 140 mg 2 haftada bir ya da 420 mg ayda bir SC; alirokumab 75–150 mg 2 haftada bir SC</td></tr>
+        <tr><td>İnklisiran <small>siRNA, ~%50 azalma</small></td><td>284 mg SC: 0. gün, 3. ay, sonra 6 ayda bir</td></tr>
+      </tbody>
+    </table>
+    <p class="warnbox" id="renal" hidden></p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Trigliserid ve statin intoleransı</h2>
+    <ol class="rec" id="tgr"></ol>
+  </section>
+
+  <p class="note">Kaynaklar: Mach F ve ark., 2019 ESC/EAS Guidelines for the management of dyslipidaemias, Eur Heart J 2020;41:111–88 (risk kategorileri, LDL-K hedefleri, tedavilerin beklenen LDL-K azalmaları, &lt; 40 mg/dL önerisi, ezetimib %15–22, trigliserid ve statin intoleransı yaklaşımı, diyalizde statin); 2025 Focused Update of the 2019 ESC/EAS Guidelines for the management of dyslipidaemias, Eur Heart J 2025 (SCORE2/SCORE2-OP eşikleri ≥ %20 / %10–20 / %2–10 / &lt; %2, Lp(a) &gt; 50 mg/dL ve hs-CRP risk artırıcı, statin kullanamayanda bempedoik asit I-B, statin ± ezetimibe eklenmesi IIa-C, AKS’de yatışta tedavinin yoğunlaştırılması I-C ve statin + ezetimib IIa-B, ikosapent etil IIa-B; hedefler 2019 ile aynı); SCORE2 working group, Eur Heart J 2021;42:2439–54 (Türkiye yüksek risk bölgesinde); Grundy SM ve ark., 2018 AHA/ACC Kolesterol Kılavuzu (statin yoğunluğu ve dozları); rosuvastatin ve atorvastatin kısa ürün bilgileri (böbrek yetersizliğinde doz); Ray KK ve ark., N Engl J Med 2020;382:1507–19 (inklisiran ORION-10/11); Stroes ES ve ark., EAS Consensus Panel, Eur Heart J 2015;36:1012–22 ve Banach M ve ark., ILEP 2022 (statin intoleransı tanımı ve yaklaşımı). TEMD Dislipidemi Tanı ve Tedavi Kılavuzu 2021: Türkiye’yi yüksek riskli ülkeler arasında sayar, risk kategorileri için ESC/EAS 2019 tablolarını uyarlar. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var mmol=function(x){return fm(x/38.67,1)};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?+b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);
+    if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+
+  // Beklenen LDL-K azalması, tedavisiz değere göre (%), ESC/EAS 2019; bempedoik asit ESC 2025
+  var TX={yok:{r:0,ad:'Tedavi yok'},orta:{r:30,ad:'Orta yoğunluk statin'},yuk:{r:50,ad:'Yüksek yoğunluk statin'},
+    yez:{r:65,ad:'Yüksek yoğunluk statin + ezetimib'},ypc:{r:75,ad:'Yüksek yoğunluk statin + PCSK9 mAb'},
+    yezpc:{r:85,ad:'Yüksek yoğunluk statin + ezetimib + PCSK9 mAb'},ez:{r:20,ad:'Ezetimib'},
+    bez:{r:38,ad:'Bempedoik asit + ezetimib'},pc:{r:60,ad:'PCSK9 mAb'},
+    yezb:{r:100-35*0.82,ad:'Yüksek yoğunluk statin + ezetimib + bempedoik asit',turev:true}};
+  var KAT={4:['Çok yüksek risk','var(--high)'],3:['Yüksek risk','var(--high)'],2:['Orta risk','var(--warn)'],1:['Düşük risk','var(--ok)']};
+  var HEDEF={4:55,3:70,2:100,1:116};
+
+  function calc(){
+    var yas=v('yas'),egfr=v('egfr'),sbp=v('sbp'),dbp=v('dbp'),sc=v('score'),lpa=v('lpa'),ldl=v('ldl'),ldl0=v('ldl0'),tg=v('tg');
+    if(ldl!==null&&ldl<=0)ldl=null;if(ldl0!==null&&ldl0<=0)ldl0=null;
+    var askvh=$('askvh').checked,tekrar=$('tekrar').checked,intol=$('int').checked,dm=segVal('dm'),fh=segVal('fh');
+    var txk=$('tx').value||null,tx=txk?TX[txk]:null;
+    ['neden','bas','tb','tgr'].forEach(function(id){$(id).innerHTML=''});
+
+    // 1) Risk kategorisi: en yüksek ölçüt belirler
+    var cat=0,add=function(k,t){if(k>cat)cat=k;li('neden',KAT[k][0]+': '+t,'')};
+    if(askvh)add(4,'belgelenmiş ASKVH');
+    if(dm===4)add(4,'hedef organ hasarı / ≥ 3 majör RF / uzun süreli tip 1 diyabet');
+    if(dm===3)add(3,'hedef organ hasarı olmadan ≥ 10 yıllık ya da ek RF’li diyabet');
+    if(dm===2)add(2,'genç, kısa süreli, ek RF’siz diyabet');
+    if(egfr!==null){if(egfr<30)add(4,'eGFR '+fm(egfr,1)+' (< 30, ağır KBH)');else if(egfr<60)add(3,'eGFR '+fm(egfr,1)+' (30–59, orta KBH)')}
+    if(fh===4)add(4,'ailesel hiperkolesterolemi + ASKVH ya da başka majör RF');
+    if(fh===3)add(3,'ailesel hiperkolesterolemi');
+    var ldlHam=ldl0!==null?ldl0:ldl;
+    if(ldlHam!==null&&ldlHam>190)add(3,(ldl0!==null?'tedavi öncesi ':'')+'LDL-K '+fm(ldlHam,0)+' mg/dL (> 190)');
+    if((sbp!==null&&sbp>=180)||(dbp!==null&&dbp>=110))add(3,'KB ≥ 180/110 mmHg');
+    var opAd=yas!==null&&yas>=70?'SCORE2-OP':'SCORE2';
+    if(sc!==null){add(sc>=20?4:sc>=10?3:sc>=2?2:1,opAd+' %'+fm(sc,1)+(sc>=20?' (≥ %20)':sc>=10?' (%10–<20)':sc>=2?' (%2–<10)':' (< %2)'))}
+    if(cat===2&&lpa!==null&&lpa>50)add(3,'Lp(a) '+fm(lpa,0)+' mg/dL (> 50) risk artırıcı, orta riskten yükseltildi');
+    var ekstrem=askvh&&tekrar;
+
+    var hasta=askvh||(dm!==null&&dm>0)||(egfr!==null&&egfr<60)||(fh!==null&&fh>0);
+    var eksik=[];
+    if(cat<4){
+      if(dm===null)eksik.push('diyabet durumu');
+      if(egfr===null)eksik.push('eGFR');
+      if(fh===null)eksik.push('ailesel hiperkolesterolemi');
+      if(sc===null&&!hasta)eksik.push(opAd+' yüzdesi');
+      if(cat<3&&(sbp===null||dbp===null))eksik.push('kan basıncı');
+      if(cat<3&&ldlHam===null)eksik.push('LDL-K');
+      if(cat<3&&ldl0===null&&ldl!==null&&tx&&tx.r>0)eksik.push('tedavi öncesi LDL-K (> 190 mg/dL ise yüksek risk)');
+    }
+    var ek=$('eksik');ek.hidden=!eksik.length;
+    ek.textContent=eksik.length?'Girilmedi: '+eksik.join(', ')+'. Kategori bu ölçütler olmadan belirlendi; gerçek risk daha yüksek olabilir.':'';
+    if(cat===0){cat=null;pill('katp',eksik.length?'Risk belirlenemedi':'Risk belirlenemedi','var(--muted)')}
+    else pill('katp',(eksik.length?'En az: ':'')+KAT[cat][0]+(ekstrem?' · tekrarlayan olay':''),KAT[cat][1]);
+    if(sc!==null&&hasta)li('neden','Not','SCORE2 ASKVH, diyabet, KBH ve AH’li hastada kullanılmaz; kategori öteki ölçütlerle belirlenmelidir. Girilen yüzde burada kategoriyi yalnız yükseltebilir: SCORE2 nedeniyle yükseldiyse kutuyu boşaltıp yeniden değerlendirin.');
+    if(sc!==null&&yas!==null&&yas<40)li('neden','Not','SCORE2 40 yaş altında geçerli değildir.');
+    if(lpa!==null&&lpa>50&&cat!==null&&cat!==3)li('neden','Lp(a) > 50 mg/dL','Risk artırıcıdır; ömür boyu riski yüksektir, birinci derece yakınları taranabilir.');
+    if(cat!==null&&cat<3&&ldl0===null&&ldl!==null&&tx&&tx.r>0&&ldl/(1-tx.r/100)>190)li('neden','Tedavisiz LDL-K > 190 mg/dL olabilir','Güncel LDL-K ve '+tx.ad.toLocaleLowerCase('tr')+' ile tahmini tedavisiz değer ~'+fm(ldl/(1-tx.r/100),0)+' mg/dL. Tedavi öncesi LDL-K > 190 mg/dL ise hasta yüksek risk kategorisindedir (hedef < 70 mg/dL ve ≥ %50 azalma); tedavi öncesi değeri girin.');
+    if(tekrar&&!askvh)li('neden','Tekrarlayan olay işaretli ama ASKVH işaretli değil','< 40 mg/dL hedefi yalnız ASKVH’li hastada düşünülür.');
+
+    // 2) Hedef
+    var goal=cat===null?null:(ekstrem?40:HEDEF[cat]),yarim=cat!==null&&cat>=3;
+    var base=null,baseTah=false;
+    if(ldl0!==null)base=ldl0;else if(ldl!==null&&tx){base=ldl/(1-tx.r/100);baseTah=tx.r>0}
+    $('hedN').textContent=goal===null?'–':'< '+goal;
+    $('hed').textContent=goal===null?'risk kategorisi belirlenmedi':'< '+goal+' mg/dL (< '+mmol(goal)+' mmol/L)'+(yarim?' ve ≥ %50 azalma':'')+(ekstrem?' · IIb önerisi':'');
+    $('cur').textContent=ldl===null?'girilmedi':fm(ldl,0)+' mg/dL ('+mmol(ldl)+' mmol/L)';
+    $('base').textContent=base===null?(ldl===null?'–':'mevcut tedaviyi seçin'):fm(base,0)+' mg/dL'+(ldl0!==null?' (girilen)':baseTah?' (tahmini: '+tx.ad.toLocaleLowerCase('tr')+' ~%'+fm(tx.r,0)+' varsayımıyla)':'');
+    var yari=base!==null?base*0.5:null;
+    $('yari').textContent=!yarim?(cat===null?'–':'bu kategoride gerekmez'):yari===null?'–':'≤ '+fm(yari,0)+' mg/dL ('+mmol(yari)+' mmol/L)';
+    var esik=null;
+    if(goal!==null&&ldl!==null&&(!yarim||yari!==null)){
+      esik=yarim?Math.min(goal,yari):goal;
+      var mutlak=Math.max(0,100*(1-goal/ldl)),y50=yarim?Math.max(0,100*(1-yari/ldl)):0;
+      $('ger').textContent=mutlak<=0&&y50<=0?'ek azalma gerekmez':'%'+fm(Math.max(mutlak,y50),0)+' (mutlak hedef için %'+fm(mutlak,0)+(yarim?', %50 kuralı için %'+fm(y50,0):'')+')';
+    }else $('ger').textContent='–';
+    function hedefte(x){return goal!==null&&x<goal&&(!yarim||(yari!==null&&x<=yari+1e-6))}
+    var curOk=null;
+    if(ldl===null)pill('durp','LDL-K girin','var(--muted)');
+    else if(cat===null)pill('durp','Önce risk kategorisi','var(--muted)');
+    else if(yarim&&yari===null)pill('durp','Mevcut tedaviyi seçin','var(--muted)');
+    else{curOk=hedefte(ldl);
+      if(curOk&&eksik.length)pill('durp','Bu kategoriye göre hedefte, eksik veri var','var(--warn)');
+      else if(curOk)pill('durp','Hedefte','var(--ok)');
+      else pill('durp','Hedefin üstünde','var(--high)');}
+
+    // 3) Basamaklar
+    $('tab').hidden=true;
+    if(ldl===null||cat===null||!tx){
+      pill('basp',ldl===null?'LDL-K girin':cat===null?'Risk kategorisi belirlenmedi':'Mevcut tedaviyi seçin','var(--muted)');
+    }else{
+      var ana=intol?['ez','bez','pc']:(cat>=3?['yuk','yez','yezpc']:['orta','yuk','yez','yezpc']);
+      var alt=intol?[]:['yezb','ypc'];
+      var liste=ana.concat(alt).filter(function(k){return TX[k].r>tx.r+1e-6}).sort(function(a,b){return TX[a].r-TX[b].r});
+      var sec=null;
+      if(!curOk)ana.forEach(function(k){if(sec===null&&TX[k].r>tx.r+1e-6&&hedefte(ldl*(1-TX[k].r/100)/(1-tx.r/100)))sec=k});
+      liste.forEach(function(k){var t=TX[k],est=ldl*(1-t.r/100)/(1-tx.r/100),ok=hedefte(est);
+        var tr=document.createElement('tr');if(k===sec)tr.className='sec';
+        var a=document.createElement('td');a.textContent=t.ad;if(alt.indexOf(k)>=0){var s=document.createElement('small');s.textContent=k==='yezb'?'alternatif, PCSK9 yerine; türetilmiş tahmin':'alternatif, ezetimib kullanılamazsa';a.appendChild(s)}
+        var b=document.createElement('td');b.textContent='~%'+fm(t.r,0);
+        var c=document.createElement('td');c.textContent=fm(est,0)+' mg/dL';var s2=document.createElement('small');s2.textContent=mmol(est)+' mmol/L';c.appendChild(s2);
+        var d=document.createElement('td');d.className=ok?'y':'n';d.textContent=ok?'✓':'✗';
+        [a,b,c,d].forEach(function(x){tr.appendChild(x)});$('tb').appendChild(tr)});
+      $('tab').hidden=!liste.length;
+      if(curOk){pill('basp',eksik.length?'Mevcut tedavi bu kategoriye göre yeterli':'Mevcut tedaviyi sürdürün',eksik.length?'var(--warn)':'var(--ok)');
+        li('bas','Mevcut tedavi: '+tx.ad,'LDL-K '+fm(ldl,0)+' mg/dL, hedef < '+goal+' mg/dL'+(yarim?' ve ≤ '+fm(yari,0)+' mg/dL':'')+'. Uyumu ve yan etkileri izleyin; LDL-K’yi yılda bir ölçün.')}
+      else if(sec){var e=ldl*(1-TX[sec].r/100)/(1-tx.r/100);
+        pill('basp','Öneri: '+TX[sec].ad,'var(--high)');
+        li('bas',TX[sec].ad+': tahmini LDL-K '+fm(e,0)+' mg/dL ('+mmol(e)+' mmol/L)','Mevcut '+tx.ad.toLocaleLowerCase('tr')+' ile '+fm(ldl,0)+' mg/dL. Hedef < '+goal+' mg/dL'+(yarim?' ve ≤ '+fm(yari,0)+' mg/dL (%50 azalma)':'')+'. Tahmin ortalama yanıta dayanır; 4–6 hafta sonra LDL-K ölçün, hedefte değilse bir sonraki basamağa geçin.')}
+      else if(!liste.length){pill('basp','Daha yoğun basamak yok','var(--high)');
+        li('bas','En yoğun kombinasyonda hedefte değil','Uyumu ve doğru kullanımı (PCSK9 mAb enjeksiyon aralığı) kontrol edin; ikincil nedenleri (hipotiroidi, nefrotik sendrom, kolestaz, ilaçlar) dışlayın; lipid uzmanına yönlendirin.')}
+      else{pill('basp','Hiçbir basamak tek başına yetmeyebilir','var(--high)');
+        li('bas','En yoğun basamakta bile hedefin üstünde','Tahmini değerler hedefe ulaşmıyor: en yoğun tolere edilen kombinasyonu kullanın, ailesel hiperkolesterolemi ve ikincil nedenleri araştırın, lipid uzmanına yönlendirin.')}
+      if(!curOk&&!intol){
+        if(txk==='yok'&&cat>=3)li('bas','Statinle başlayın','Yüksek ve çok yüksek riskte maksimum tolere edilen yüksek yoğunluk statin önerilir (I-A). AKS ile yatan, statin kullanmayan ve tek başına statinle hedefe ulaşması beklenmeyen hastada yatış sırasında yüksek yoğunluk statin + ezetimib başlanabilir (ESC 2025, IIa-B); statin kullanıyorsa yatışta tedavi yoğunlaştırılır (I-C).');
+        li('bas','Sıra','Maksimum tolere edilen statin → hedefte değilse ezetimib (I-B) → hâlâ hedefte değilse PCSK9 inhibitörü (çok yüksek riskte I-A). Bempedoik asit, statin ± ezetimible hedefe ulaşamayan yüksek/çok yüksek riskli hastada eklenebilir (ESC 2025, IIa-C). İnklisiran PCSK9 mAb yerine kullanılabilen siRNA’dır (~%50 azalma).');
+      }
+      if(intol)li('bas','Statin intoleransında sıra','Ezetimib (I-B), bempedoik asit (ESC 2025, I-B; ezetimible sabit kombinasyonu ~%38), gerekirse PCSK9 mAb ya da inklisiran. Mümkünse düşük doz ya da gün aşırı statini yeniden deneyin: az miktar statin bile LDL-K’yi ve olay riskini azaltır.');
+      if(cat<=2&&!curOk)li('bas','Orta ve düşük riskte','Önce yaşam tarzı değişikliği; LDL-K hedefin üstünde kalırsa ilaç düşünülür (ESC 2019: orta riskte LDL-K ≥ 100, düşük riskte ≥ 116 mg/dL ise IIa). Risk artırıcılar (Lp(a), hs-CRP, koroner kalsiyum skoru) kararı değiştirebilir.');
+    }
+
+    // Böbrek
+    var rn=$('renal');rn.hidden=true;rn.textContent='';
+    if(egfr!==null&&egfr<30){rn.hidden=false;rn.textContent='eGFR '+fm(egfr,1)+' (< 30): rosuvastatin ağır böbrek yetersizliğinde (kreatinin klerensi < 30 mL/dk) tüm dozlarda kontrendikedir (Türkiye KÜB). Atorvastatin böbrek işlevine göre doz ayarı gerektirmez; yüksek yoğunluk için atorvastatin 40–80 mg kullanılır.'+(egfr<15?' Diyalize bağımlı ve ASKVH’si olmayan hastada statine yeni başlanması önerilmez (ESC 2019, III-A); zaten kullanıyorsa sürdürülebilir.':'')}
+    else if(egfr!==null&&egfr<60){rn.hidden=false;rn.textContent='eGFR '+fm(egfr,1)+' (30–59): rosuvastatin orta derece böbrek yetersizliğinde (kreatinin klerensi < 60 mL/dk) 5 mg ile başlanır, 40 mg kontrendikedir (Türkiye KÜB); yüksek yoğunluk için en çok rosuvastatin 20 mg ya da atorvastatin 40–80 mg (doz ayarı gerekmez). KÜB eşikleri kreatinin klerensine göredir.'}
+
+    // 4) Trigliserid ve intolerans
+    if(tg===null)li('tgr','Trigliserid girilmedi','');
+    else if(tg>500){li('tgr','Trigliserid '+fm(tg,0)+' mg/dL (> 500): ağır hipertrigliseridemi','Pankreatit riski özellikle > 880 mg/dL’de (10 mmol/L) belirgindir. İkincil nedenleri (kontrolsüz diyabet, alkol, hipotiroidi, böbrek hastalığı, östrojen, steroid, antipsikotik) düzeltin; alkolü kesin, yağ kısıtlaması uygulayın; fibrat değerlendirin. Friedewald formülü TG > 400 mg/dL’de güvenilir değildir: direkt LDL-K, non-HDL-K ya da apoB kullanın.')}
+    else if(tg>150){li('tgr','Trigliserid '+fm(tg,0)+' mg/dL (> 150): KV riski artırır','Önce statin ve yaşam tarzı (kilo, alkol, rafine karbonhidrat). Statin altında TG 135–499 mg/dL olan yüksek/çok yüksek riskli hastada ikosapent etil 2 × 2 g/gün düşünülebilir (ESC 2025, IIa-B).'+(tg>400?' TG > 400 mg/dL’de Friedewald LDL-K güvenilir değildir.':''))}
+    else li('tgr','Trigliserid '+fm(tg,0)+' mg/dL (≤ 150)','');
+    li('tgr','Statin intoleransı','Yakınma çoğu zaman nosebo ya da başka nedenlidir: TSH, CK, D vitamini, etkileşen ilaçlar (ör. makrolid, azol, siklosporin, fibrat) gözden geçirilir. CK > 4 × üst sınır ise statini kesin, 2–6 hafta sonra tekrar ölçün; düzelince farklı statin ya da düşük doz/gün aşırı ile yeniden deneyin. Kas yakınması olup CK normalse 2–4 hafta ara verip tekrar deneyin. Ezetimib ve bempedoik asit statin dışı ilk seçeneklerdir.');
+  }
+  seg('dm',calc);seg('fh',calc);
+  document.querySelectorAll('input,select').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
