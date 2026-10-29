@@ -525,7 +525,7 @@
     'pankreatit':['news2','elektrolit-replasmani','r-faktor','kan-gazi'],
     'r-faktor':['fib-4','child-pugh','pankreatit'],
     'fib-4':['child-pugh','meld-na','r-faktor','siroz-asit'],
-    'acil-tedavi':['elektrolit-replasmani','infuzyon-hizi','insulin-dozu','kan-gazi'],
+    'acil-tedavi':['dka-hhs','elektrolit-replasmani','insulin-dozu','kan-gazi'],
     'hipertansif-acil':['ortalama-arter-basinci','infuzyon-hizi','acil-tedavi','glasgow-koma'],
     'infuzyon-hizi':['acil-tedavi','hipertansif-acil','elektrolit-replasmani','opioid-donusumu'],
     'ampirik-antibiyotik':['bobrek-ilac-dozu','curb-65','qsofa','news2'],
@@ -599,7 +599,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v61', SURUM_TARIH = '29 Ekim 2026', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v62', SURUM_TARIH = '29 Ekim 2026', GB_ADRES = 'blgnonur97@gmail.com';
   window.vizitSurum = SURUM; window.vizitGbAdres = GB_ADRES;
   var sEl = document.getElementById('surum'); if (sEl) sEl.textContent = 'Sürüm ' + SURUM + ' · ' + SURUM_TARIH;
   var kap = document.querySelector('.wrap');
