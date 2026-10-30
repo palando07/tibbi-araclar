@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hiperkalemi Yaklaşımı</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartları, sonra sonuç kartları */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 10px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.seg.wrapseg{flex-wrap:wrap}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub span{min-width:0}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sub b.w{white-space:normal;text-align:right;font-family:var(--font-body)}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+.warnbox a,.advice a,.note a{color:var(--accent);font-weight:600}
+.mk{font-weight:700}
+.mk.y{color:var(--ok)} .mk.n{color:var(--high)} .mk.u{color:var(--muted)}
+</style>
+</head>
+<body data-ornek-secim="ekg">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Hiperkalemi Yaklaşımı</h1>
+    <p>Şiddet ve EKG, psödohiperkalemi, acil tedavi dozları, nedenin ayırımı ve RAAS inhibitörünü sürdürerek kronik yönetim</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="6.7"></div>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" data-hasta="egfr" type="number" inputmode="decimal" step="any" value="24"></div>
+      <div class="field"><label for="glu">Glukoz <span>mg/dL, tedaviden önce</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="104"></div>
+      <div class="field"><label for="wt">Kilo <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="74"></div>
+      <div class="field"><label for="ph">pH <span>kan gazı, isteğe bağlı</span></label><input id="ph" data-aralik="6.5-8" type="number" inputmode="decimal" step="any" value="7.29"></div>
+      <div class="field"><label for="hco3">HCO₃ <span>mEq/L</span></label><input id="hco3" data-aralik="1-60 mEq/L" type="number" inputmode="decimal" step="any" value="17"></div>
+    </div>
+    <span class="lbl">12 derivasyonlu EKG</span>
+    <div class="seg"><button type="button" data-g="ekg" data-v="1" aria-pressed="true">Değişiklik var</button><button type="button" data-g="ekg" data-v="0" aria-pressed="false">Değişiklik yok</button></div>
+    <p class="note">Hiperkalemi bulguları: sivri T, PR uzaması, P kaybı, geniş QRS, sinüs dalgası, bradikardi, ventriküler aritmi. EKG normal olsa da ağır hiperkalemi dışlanmaz.</p>
+  </section>
+
+  <section class="card">
+    <h2>Ölçüm ve klinik</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="hem"><span class="txt">Hemoliz, zor kan alma, uzun turnike ya da yumruk sıkma</span></label>
+      <label class="item"><input type="checkbox" id="trl"><span class="txt">Belirgin trombositoz veya lökositoz<small>Miyeloproliferatif hastalık, KLL; pıhtılaşırken hücrelerden K çıkar</small></span></label>
+      <label class="item"><input type="checkbox" id="edta"><span class="txt">EDTA bulaşı ya da geç işlenen örnek kuşkusu<small>K çok yüksek, kalsiyum beklenmedik düşük; uzun taşıma süresi</small></span></label>
+      <label class="item"><input type="checkbox" id="aki"><span class="txt">Akut böbrek hasarı ya da oligüri</span></label>
+      <label class="item"><input type="checkbox" id="dok"><span class="txt">Doku yıkımı<small>Rabdomiyoliz, tümör lizisi, hemoliz, büyük GİS kanaması, yanık</small></span></label>
+      <label class="item"><input type="checkbox" id="dm"><span class="txt">Diyabet<small>Hiporeninemik hipoaldosteronizm (tip 4 RTA) için</small></span></label>
+      <label class="item"><input type="checkbox" id="diy"><span class="txt">Diyaliz hastası</span></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Kullandığı ilaçlar</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="raasi" checked><span class="txt">ACE inhibitörü, ARB ya da ARNI<small>ARNI: sakubitril-valsartan (Oneptus, Ovefran, Neprilex)</small></span></label>
+      <label class="item"><input type="checkbox" id="mra" checked><span class="txt">MRA<small>Spironolakton (Aldactone), eplerenon (Inspra), finerenon (Kerendia)</small></span></label>
+      <label class="item"><input type="checkbox" id="tmp"><span class="txt">Trimetoprim-sülfametoksazol<small>Bactrim, Kemoprim</small></span></label>
+      <label class="item"><input type="checkbox" id="cni"><span class="txt">Kalsinörin inhibitörü<small>Takrolimus (Prograf), siklosporin (Sandimmun)</small></span></label>
+      <label class="item"><input type="checkbox" id="hep"><span class="txt">Heparin ya da DMAH</span></label>
+      <label class="item"><input type="checkbox" id="nsa"><span class="txt">NSAİİ</span></label>
+      <label class="item"><input type="checkbox" id="bb"><span class="txt">Beta bloker</span></label>
+      <label class="item"><input type="checkbox" id="dig"><span class="txt">Digoksin</span></label>
+      <label class="item"><input type="checkbox" id="kdes"><span class="txt">Potasyum desteği ya da potasyumlu tuz</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Şiddet</h2>
+    <div class="res"><span class="num" id="ko">–</span><span class="of">mmol/L</span><span class="pill" id="sevp"></span></div>
+    <div class="sub"><span>EKG</span><b class="w" id="ekgo">–</b></div>
+    <div class="sub"><span>Ölçüm</span><b class="w" id="psdo">–</b></div>
+    <p class="warnbox" id="acil" hidden></p>
+    <p class="note">UKKA: hafif 5,5–5,9; orta 6,0–6,4; ağır ≥ 6,5 mmol/L. EKG değişikliği varsa düzeyden bağımsız olarak acil kabul edin. K ≥ 6,5, EKG değişikliği ya da K 6,0–6,4 olup kliniği kötü hastada sürekli kardiyak monitör.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Acil tedavi</h2>
+    <ol class="rec" id="tdv"></ol>
+    <p class="note">Potasyumu tedaviden sonra 1, 2, 4, 6 ve 24. saatlerde ölçün. Aynı sayılar <a href="acil-tedavi.html">Acil Tedavi</a> sayfasındaki hiperkalemi bölümünde de kullanılır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Olası nedenler</h2>
+    <div class="sub"><span>Böbrek işlevi</span><b class="w" id="gfro">–</b></div>
+    <div class="sub"><span>Asit–baz</span><b class="w" id="abo">–</b></div>
+    <ol class="rec" id="ned"></ol>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Kronik yönetim ve RAAS inhibitörü</h2>
+    <ol class="rec" id="kro"></ol>
+    <p class="note">KDIGO 2024: RAAS inhibitörüyle gelişen hiperkalemi çoğu zaman potasyumu düşüren önlemlerle yönetilebilir; doz azaltma ya da kesme, tedaviye karşın kontrol edilemeyen hiperkalemi için düşünülür. ACEi/ARB eGFR 30’un altına inince de sürdürülür. Kalp yetersizliğinde ayrıntı için <a href="kalp-yetersizligi.html">Kalp Yetersizliği</a> sayfası.</p>
+  </section>
+
+  <p class="note">Kaynaklar: UK Kidney Association, Clinical Practice Guideline: Management of Hyperkalaemia in Adults, Temmuz 2026 güncellemesi (şiddet sınıfları; IV kalsiyum yalnız EKG değişikliğinde, kalsiyum glukonat %10 30 mL 10 dakikada; insülin 10 ünite + 25 g glukoz, tedavi öncesi glukoz &lt; 7,0 mmol/L ise %10 glukoz 50 mL/saat 5 saat; glukoz 0–360. dakikalar arasında; salbutamol 10–20 mg nebül yardımcı tedavi; SZC 10 g 3×1, 72 saate kadar; patiromer 8,4 g; IV bikarbonat rutin değil, KBH’de HCO₃ &lt; 22 mmol/L ise ağızdan bikarbonat; polistiren sülfonat akut tedavide rutin değil; eşleşmiş lityum heparin + serum örneği; topluluktaki RAASi ve MRA eşikleri; SZC KBH 3b–5 ya da KY’de kalıcı K ≥ 5,5, patiromer ≥ 6,0); KDIGO 2024 CKD Guideline, uygulama noktaları 3.6.2, 3.6.3, 3.6.5, 3.6.7, 3.8.3, 3.11.5.2 ve Şekil 26 (finerenon: başlama K ≤ 4,8, &gt; 5,5’te ara ver); McDonagh TA ve ark., 2021 ESC Kalp Yetersizliği Kılavuzu ve 2023 odaklı güncelleme ile ESC/HFA pratik rehberi (MRA: K &gt; 5,5’te yarıya, &gt; 6,0’da kes; K bağlayıcılar RAASi başlama/titrasyon için düşünülebilir); Türkiye kısa ürün bilgileri: Simkelma (sodyum zirkonyum siklosilikat; düzeltme 10 g 3×1 en çok 72 saat, idame 5 g/gün, 5 g’da 400 mg sodyum), Kerendia (finerenon). Patiromer için Türkiye kaydı bulunamadı. Nedenler ve eGFR ilişkisi standart iç hastalıkları metinlerinden derlenmiştir. Bu araç klinik karar desteği içindir; hastanenizin protokolüyle karşılaştırın.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  var ck=function(id){return $(id).checked};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);
+    if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function segVal(g){var b=document.querySelector('[data-g="'+g+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  document.querySelectorAll('[data-g]').forEach(function(b){b.addEventListener('click',function(){
+    document.querySelectorAll('[data-g="'+b.dataset.g+'"]').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false')});calc()})});
+
+  function calc(){
+    var K=v('k'),gfr=v('egfr'),glu=v('glu'),wt=v('wt'),ph=v('ph'),hco3=v('hco3');
+    var e=segVal('ekg'),ekg=e==='1',ekgBil=e===null;
+    var psd=ck('hem')||ck('trl')||ck('edta');
+    ['tdv','ned','kro'].forEach(function(id){$(id).innerHTML=''});
+    var ac=$('acil');ac.hidden=true;ac.textContent='';
+
+    // 1) Şiddet
+    var sev=null;
+    if(K===null){$('ko').textContent='–';pill('sevp','Potasyum girin','var(--muted)')}
+    else{$('ko').textContent=fm(K,1);
+      if(K>=6.5){sev='sev';pill('sevp','Ağır (≥ 6,5)','var(--high)')}
+      else if(K>=6.0){sev='mod';pill('sevp','Orta (6,0–6,4)','var(--high)')}
+      else if(K>=5.5){sev='mild';pill('sevp','Hafif (5,5–5,9)','var(--warn)')}
+      else if(K>=3.5){sev='none';pill('sevp','Hiperkalemi yok (< 5,5)','var(--ok)')}
+      else{sev='low';pill('sevp','Düşük (< 3,5)','var(--low)')}
+    }
+    var hk=sev==='mild'||sev==='mod'||sev==='sev';
+    $('ekgo').textContent=ekgBil?'yanıtlanmadı: hemen 12 derivasyonlu EKG çekin':ekg?'hiperkalemi değişikliği var: acil':'değişiklik yok (ağır hiperkalemiyi dışlamaz)';
+    $('psdo').textContent=psd?'psödohiperkalemi olası: tekrar ölçün'+(ekg||sev==='sev'?', ama tedaviyi geciktirmeyin':''):(hk?'beklenmedik sonuçta tekrar ölçün':'–');
+    if(hk&&(ekg||sev==='sev'||ekgBil&&sev==='mod')){ac.hidden=false;
+      ac.textContent=(ekg?'EKG değişikliği var. ':'')+(sev==='sev'?'K ≥ 6,5 mmol/L: ağır hiperkalemi. ':'')+(ekgBil?'EKG henüz değerlendirilmedi. ':'')+'Sürekli kardiyak monitör, IV yol; tedaviyi ölçüm tekrarını beklemeden başlatın.'}
+
+    // 2) Acil tedavi
+    if(sev===null){li('tdv','Potasyum değerini girin','')}
+    else if(!hk){li('tdv',sev==='low'?'Potasyum düşük':'Acil tedavi gerekmez',sev==='low'?'Hipokalemi için Hipokalemi Yaklaşımı sayfasını kullanın.':'K < 5,5 mmol/L. RAASi ve MRA kullanıyorsa izlem aralığını aşağıdaki bölüme göre ayarlayın.')}
+    else{
+      if(psd)li('tdv','Önce ölçümü doğrulayın (psödohiperkalemi)','Büyük venden, hafif turnikeyle, yumruk sıktırmadan alın; eşleşmiş lityum heparinli plazma ve serum örneğini hemen çalışın. Serum K plazma K’dan belirgin yüksekse psödohiperkalemi. EKG değişikliği ya da K ≥ 6,5 varsa sonucu beklemeden tedavi edin.');
+      else if(!ekg&&sev!=='sev')li('tdv','Beklenmedik sonuçsa tekrar ölçün','Hemoliz, zor kan alma, trombositoz, lökositoz ve EDTA bulaşı yalancı yükseklik yapar.');
+      if(ekgBil)li('tdv','EKG çekin','EKG yanıtı girilmedi. Değişiklik varsa hemen kalsiyum verin (aşağıda).');
+      var dg=ck('dig');
+      if(ekg)li('tdv','Kalsiyum glukonat %10, 30 mL IV, 10 dakikada','Membranı stabilize eder, potasyumu düşürmez. 5–10 dakika sonra EKG düzelmezse tekrarlayın. Resüsitasyonda kalsiyum klorür %10, 10 mL (5 dakikada) tercih edilir.'+(dg?' Digoksin kullanıyor: daha yavaş verin (20–30 dakika).':''));
+      else if(ekgBil)li('tdv','EKG değişikliği varsa: kalsiyum glukonat %10, 30 mL IV, 10 dakikada','5–10 dakika sonra EKG düzelmezse tekrarlayın.'+(dg?' Digoksin kullanıyor: daha yavaş verin (20–30 dakika).':''));
+      else li('tdv','EKG değişikliği yok: IV kalsiyum rutin değil','UKKA IV kalsiyumu yalnız EKG değişikliğinde önerir. EKG değişirse kalsiyum glukonat %10, 30 mL IV, 10 dakikada.');
+      if(sev!=='mild'){
+        var u=(gfr!==null&&gfr<30)||(wt!==null&&wt<60)?5:10;
+        li('tdv','Kısa etkili (regüler) insülin '+u+' ünite + 25 g glukoz IV, 15 dakikada','25 g glukoz = %50 dekstroz 50 mL ya da %10 dekstroz 250 mL. Regüler insülin: Actrapid, Humulin R. Potasyumu 15–30 dakikada düşürür, etkisi 4–6 saat sürer.'+(u===5?' eGFR < 30 ya da kilo < 60 kg nedeniyle 5 ünite seçildi (hipoglisemi riski; Acil Tedavi sayfasıyla aynı). UKKA herkese 10 ünite ve glukoz izlemi önerir; 5 ünitede K düşüşü daha az olabilir.':''));
+        if(glu===null)li('tdv','Tedavi öncesi glukozu ölçün','Glukoz girilmedi. Tedavi öncesi glukoz < 126 mg/dL (7,0 mmol/L) ise insülin-glukozdan sonra %10 dekstroz 50 mL/saat, 5 saat (250 mL, 25 g) başlayın. Glukozu 6 saat boyunca saatlik izleyin (geç hipoglisemi).');
+        else if(glu<126)li('tdv','Ardından %10 dekstroz 50 mL/saat, 5 saat (250 mL)','Tedavi öncesi glukoz '+fm(glu,0)+' mg/dL < 126: hipoglisemi riski yüksek. Glukozu 6 saat boyunca saatlik izleyin (UKKA: 0, 30, 60, 90, 120. dakika, sonra saatlik).');
+        else li('tdv','Glukozu 6 saat izleyin','Tedavi öncesi glukoz '+fm(glu,0)+' mg/dL (≥ 126): ek dekstroz infüzyonu gerekmez. Yine de glukozu 6 saat boyunca saatlik izleyin (UKKA: 0, 30, 60, 90, 120. dakika, sonra saatlik); < 126’ya inerse %10 dekstroz 50 mL/saat başlayın.');
+      }else li('tdv','Hafif hiperkalemi: insülin-glukoz genellikle gerekmez','UKKA insülin-glukozu ağır hiperkalemide önerir, ortada (6,0–6,4) düşünür. Nedeni düzeltin, ilaçları gözden geçirin. Beklenmedik sonuçsa 3 gün içinde, hasta iyi ve AKI yoksa 14 gün içinde tekrar ölçün (UKKA).');
+      if(sev==='sev')li('tdv','Salbutamol 10–20 mg nebül','İnsülin-glukoza ek olarak; tek başına kullanılmaz. 2,5 mg’lık nebülden 4–8 adet (Ventolin). Taşiaritmi ya da iskemik kalp hastalığında dikkat.');
+      else if(sev==='mod')li('tdv','Salbutamol 10–20 mg nebül düşünülebilir','Ortada yardımcı tedavi olarak kullanılabilir (UKKA 2C); tek başına kullanılmaz.');
+      if(sev!=='mild')li('tdv','Sodyum zirkonyum siklosilikat 10 g, günde 3 kez, 72 saate kadar','Türkiye’de Simkelma. Alternatif patiromer 8,4 g/gün (Türkiye kaydı bulunamadı). Polistiren sülfonat akut tedavide artık rutin önerilmez. Volüm uygun ve idrar çıkışı varsa kıvrım diüretiği yardımcıdır.');
+      else li('tdv','Kalıcıysa potasyum bağlayıcı','Sodyum zirkonyum siklosilikat (Simkelma): aşağıdaki kronik yönetim eşiklerine bakın.');
+      var asid=(ph!==null&&ph<7.35)||(hco3!==null&&hco3<22);
+      if(ph!==null&&ph<7.2)li('tdv','Belirgin metabolik asidoz: sodyum bikarbonat düşünülebilir','pH '+fm(ph,2)+'. Tek başına etkisi sınırlı; insüline ek olarak düşünülür. UKKA akut tedavide IV bikarbonatı rutin önermez.');
+      else if(ph===null&&hco3===null)li('tdv','Venöz kan gazına bakın','Bikarbonat yalnız metabolik asidozda düşünülür; asidoz yoksa verilmez.');
+      else li('tdv','IV bikarbonat gerekmez',asid?'Asidoz hafif (pH ≥ 7,2 ya da girilmedi): IV bikarbonat rutin değil. KBH’de HCO₃ < 22 ise kronik dönemde ağızdan bikarbonat (aşağıda).':'Metabolik asidoz yok.');
+      var hd=[];
+      if(ck('diy'))hd.push('diyaliz hastası: acil diyaliz');
+      if(sev==='sev')hd.push('ağır hiperkalemi tıbbi tedaviye yanıt vermezse');
+      if(ck('aki'))hd.push('oligürik akut böbrek hasarı');
+      if(gfr!==null&&gfr<15)hd.push('eGFR < 15');
+      if(ck('dok'))hd.push('süren doku yıkımı (hızlı yükselme beklenir)');
+      if(hd.length)li('tdv','Hemodiyaliz için nefroloji ile hemen görüşün',hd.join('; ')+'. Diyaliz hemen yapılamıyorsa tıbbi tedaviyi sürdürün; EKG değişikliğinde diyaliz hazır olsa da kalsiyum verin.');
+      else li('tdv','Hemodiyaliz ölçütleri','Tıbbi tedaviye dirençli ağır hiperkalemi, oligürik AKI ya da ileri böbrek yetmezliği, diyaliz hastası, süren doku yıkımı.');
+      var kes=[];if(ck('raasi'))kes.push('ACEi/ARB/ARNI');if(ck('mra'))kes.push('MRA');if(ck('tmp'))kes.push('TMP-SMX');if(ck('nsa'))kes.push('NSAİİ');if(ck('kdes'))kes.push('potasyum desteği');if(ck('hep'))kes.push('heparin (gözden geçirin)');if(ck('bb'))kes.push('beta bloker (gözden geçirin)');
+      if(sev!=='mild')li('tdv','Akut dönemde potasyum yükselten ilaçları durdurun',(kes.length?kes.join(', ')+'. ':'ACEi, ARB, MRA, NSAİİ, trimetoprim, potasyum desteği. ')+'Düzelince yeniden başlamayı aşağıdaki eşiklere göre planlayın.');
+    }
+
+    // 3) Nedenler
+    $('gfro').textContent=gfr===null?'eGFR girilmedi':gfr>=60?fm(gfr,0)+': korunmuş':gfr>=30?fm(gfr,0)+': KBH G3':gfr>=15?fm(gfr,0)+': KBH G4':fm(gfr,0)+': G5 (< 15)';
+    var asd=null;
+    if(ph!==null||hco3!==null){asd=(ph!==null&&ph<7.35)||(hco3!==null&&hco3<22);
+      $('abo').textContent=(asd?'metabolik asidoz':'asidoz yok')+(ph!==null?' (pH '+fm(ph,2):' (')+(hco3!==null?(ph!==null?', ':'')+'HCO₃ '+fm(hco3,0):'')+')';}
+    else $('abo').textContent='kan gazı girilmedi';
+    if(!hk){li('ned',sev===null?'Potasyum değerini girin':'Hiperkalemi yok','')}
+    else{
+      if(psd)li('ned','Psödohiperkalemi','Hemoliz, trombositoz, lökositoz, yumruk sıkma, EDTA bulaşı ya da geç işlenen örnek. Gerçek hiperkalemiden önce dışlayın.');
+      var il=[];
+      if(ck('raasi'))il.push('ACEi/ARB/ARNI (aldosteron azalır)');
+      if(ck('mra'))il.push('MRA');
+      if(ck('tmp'))il.push('trimetoprim (amilorid benzeri ENaC blokajı)');
+      if(ck('cni'))il.push('kalsinörin inhibitörü');
+      if(ck('hep'))il.push('heparin (aldosteron sentezini baskılar)');
+      if(ck('nsa'))il.push('NSAİİ (renin baskısı, GFR düşüşü)');
+      if(ck('bb'))il.push('beta bloker (hücre içine geçişi azaltır)');
+      if(ck('dig'))il.push('digoksin (Na-K ATPaz; toksisitede belirgin)');
+      if(ck('kdes'))il.push('potasyum desteği ya da potasyumlu tuz');
+      if(il.length)li('ned','İlaçlar',il.join('; ')+'. Birden fazla ilaç ve azalmış eGFR birlikte riski katlar.');
+      if(ck('aki'))li('ned','Akut böbrek hasarı','Özellikle oligüride hızla yükselir. Nedeni ve volümü düzeltin; Akut Böbrek Hasarı sayfası.');
+      if(gfr!==null&&gfr<30)li('ned','İleri KBH (eGFR '+fm(gfr,0)+')','eGFR < 30’da potasyum atılımı belirgin azalır; diyet yükü, asidoz, ilaçlar ve kabızlık tetikler.');
+      else if(gfr!==null&&!ck('aki'))li('ned','eGFR '+fm(gfr,0)+': böbrek işlevi tek başına açıklamaz','Bu düzeyde KBH tek başına hiperkalemiyi nadiren açıklar. İlaçları, hipoaldosteronizmi (tip 4 RTA), doku yıkımını, hücre dışına kaymayı ve psödohiperkalemiyi düşünün.');
+      if(ck('dm')||asd&&gfr!==null&&gfr>=20)li('ned','Hipoaldosteronizm (tip 4 RTA)','Hafif–orta KBH ile orantısız hiperkalemi ve normal anyon açıklı (hiperkloremik) asidoz; diyabetik böbrek hastalığında sık (hiporeninemik). Renin, aldosteron ve sabah kortizolüne bakın; adrenal yetmezliği atlamayın.');
+      if(ck('dok'))li('ned','Doku yıkımı','Rabdomiyoliz (CK), tümör lizisi (ürik asit, fosfor, kalsiyum), hemoliz, büyük GİS kanaması. Potasyum hızlı yükselebilir: sık ölçün.');
+      if(asd)li('ned','Metabolik asidoz','Özellikle mineral (normal anyon açıklı) asidoz potasyumu hücre dışına kaydırır.');
+      if(glu!==null&&glu>=250)li('ned','Hiperglisemi ('+fm(glu,0)+' mg/dL)','Hiperozmolalite ve insülin eksikliği potasyumu hücre dışına kaydırır (DKA, HHS). Toplam vücut potasyumu düşük olabilir; insülinle hızla düşer. DKA ve HHS sayfası.');
+      if(!psd&&!il.length&&!ck('aki')&&!ck('dok')&&!asd&&!(gfr!==null&&gfr<30))li('ned','Belirgin neden girilmedi','Ölçümü tekrarlayın; ilaç listesini, diyeti, potasyumlu tuz kullanımını, kabızlığı ve adrenal yetmezliği sorgulayın.');
+    }
+
+    // 4) Kronik yönetim
+    li('kro','Diyet','Kalıcı K > 5,5 mmol/L’de diyetisyen eşliğinde bireysel diyet; işlenmiş gıdalar ve potasyumlu katkılar, potasyumlu tuz (tuz yerine geçen) sınırlanır. Önce kabızlık, asidoz ve kötü glisemik kontrol düzeltilir.');
+    li('kro','Diüretik','Oligürik olmayan, volümü yeterli hastada kıvrım diüretiği yardımcıdır (UKKA 2C).');
+    if(hco3!==null&&hco3<22&&(gfr===null||gfr<60))li('kro','Ağızdan sodyum bikarbonat','HCO₃ '+fm(hco3,0)+' < 22 mEq/L: KBH’de ağızdan bikarbonat önerilir (UKKA 1B); tansiyon, sıvı ve potasyum üzerindeki etkisini izleyin.');
+    if(K!==null&&K>=5.5){
+      if(ck('raasi'))li('kro','ACEi / ARB / ARNI',K>=6.0?'K ≥ 6,0: kesin; KBH G3b–5 ya da KY’de K bağlayıcıyla sürdürme uygunsa uzmanla birlikte bağlayıcı başlayıp yeniden verin (UKKA). Kalp yetersizliğinde ESC pratik rehberi K > 5,5’te kesip uzmana danışmayı önerir.':'K 5,5–5,9: KBH’de önce potasyumu düşüren önlemler; dozu azaltmayı düşünün ve sık izleyin (UKKA, KDIGO 3.6.3). Kalp yetersizliğinde ESC pratik rehberi K > 5,5’te kesip uzmana danışmayı önerir; K bağlayıcıyla sürdürme düşünülebilir.');
+      if(ck('mra'))li('kro','MRA',K>6.0?'K > 6,0: kesin (ESC). Kalp yetersizliğinde K bağlayıcı başlayıp sürdürme bir seçenektir (UKKA). Finerenon: K > 5,5’te ara verin, K ≤ 5,0 olunca yeniden başlayın (KÜB).':'K 5,5–6,0: dozu yarıya indirin, böbrek işlevi ve K’yı izleyin (ESC, UKKA). Finerenon: K > 5,5’te ara verin, K ≤ 5,0 olunca yeniden başlayın (KÜB).');
+      li('kro','Potasyum bağlayıcıyla RAASi’yi sürdürme','Sodyum zirkonyum siklosilikat (Simkelma): KBH G3b–5 (diyaliz dışı) ya da KY’de, RAASi dozu yetersizken kalıcı K ≥ 5,5 (UKKA 2026). İdame günde 1 kez 5 g; gerekirse 10 g’a çıkılır ya da gün aşırı 5 g’a inilir (KÜB). Hemodiyalizde yalnız diyaliz dışı günlerde, 5 g’dan başlanır. Her 5 g’da 400 mg sodyum: ödem ve KY’de dikkat. Patiromer kalıcı K ≥ 6,0’da seçenek (Türkiye kaydı bulunamadı). RAASi kesilirse bağlayıcı da kesilir. KY’de bağlayıcılar RAASi başlama ve titrasyonu için düşünülebilir (ESC 2021).');
+    }else if(K!==null){
+      li('kro','RAASi ve MRA’yı sürdürün','K < 5,5: doz değişikliği gerekmez. ACEi/ARB ya da MRA başladıktan ya da doz arttıktan 2–4 hafta sonra K ve kreatinin bakın (KDIGO 3.6.2). Finerenon başlamak için K ≤ 4,8 (KDIGO Şekil 26).');
+    }
+  }
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

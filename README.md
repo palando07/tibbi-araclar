@@ -59,6 +59,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | DKA ve HHS (tanı, saatlik sıvı/insülin/K, çözülme, ADA/EASD/JBDS 2024) | `dka-hhs.html` |
 | İlaç etkileşimi (QT, kanama, hiperkalemi, CYP3A4/2C19, P-gp, serotonin) | `ilac-etkilesimi.html` |
 | Trombositopeni yaklaşımı (PLASMIC, ISTH DİK, işlem eşikleri) | `trombositopeni.html` |
+| Hiperkalemi yaklaşımı (acil tedavi, neden ayrımı, kronik yönetim, UKKA 2026) | `hiperkalemi.html` |
 | Hipokalemi yaklaşımı (neden ayrımı) | `hipokalemi.html` |
 | İdame sıvı ve refeeding riski (NICE CG174/CG32, ASPEN) | `idame-sivi.html` |
 | PESI ve sPESI (pulmoner emboli, ESC 2019 risk sınıfı) | `pesi.html` |
