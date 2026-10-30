@@ -182,7 +182,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     // 1) Şiddet
     var sev=null;
     if(K===null){$('ko').textContent='–';pill('sevp','Potasyum girin','var(--muted)')}
-    else{$('ko').textContent=fm(K,1);
+    else{$('ko').textContent=fm(K,2);
       if(K>=6.5){sev='sev';pill('sevp','Ağır (≥ 6,5)','var(--high)')}
       else if(K>=6.0){sev='mod';pill('sevp','Orta (6,0–6,4)','var(--high)')}
       else if(K>=5.5){sev='mild';pill('sevp','Hafif (5,5–5,9)','var(--warn)')}
@@ -206,9 +206,9 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
       if(ekg)li('tdv','Kalsiyum glukonat %10, 30 mL IV, 10 dakikada','Membranı stabilize eder, potasyumu düşürmez. 5–10 dakika sonra EKG düzelmezse tekrarlayın. Resüsitasyonda kalsiyum klorür %10, 10 mL (5 dakikada) tercih edilir.'+(dg?' Digoksin kullanıyor: daha yavaş verin (20–30 dakika).':''));
       else if(ekgBil)li('tdv','EKG değişikliği varsa: kalsiyum glukonat %10, 30 mL IV, 10 dakikada','5–10 dakika sonra EKG düzelmezse tekrarlayın.'+(dg?' Digoksin kullanıyor: daha yavaş verin (20–30 dakika).':''));
       else li('tdv','EKG değişikliği yok: IV kalsiyum rutin değil','UKKA IV kalsiyumu yalnız EKG değişikliğinde önerir. EKG değişirse kalsiyum glukonat %10, 30 mL IV, 10 dakikada.');
-      if(sev!=='mild'){
-        var u=(gfr!==null&&gfr<30)||(wt!==null&&wt<60)?5:10;
-        li('tdv','Kısa etkili (regüler) insülin '+u+' ünite + 25 g glukoz IV, 15 dakikada','25 g glukoz = %50 dekstroz 50 mL ya da %10 dekstroz 250 mL. Regüler insülin: Actrapid, Humulin R. Potasyumu 15–30 dakikada düşürür, etkisi 4–6 saat sürer.'+(u===5?' eGFR < 30 ya da kilo < 60 kg nedeniyle 5 ünite seçildi (hipoglisemi riski; Acil Tedavi sayfasıyla aynı). UKKA herkese 10 ünite ve glukoz izlemi önerir; 5 ünitede K düşüşü daha az olabilir.':''));
+      if(sev!=='mild'||ekg){
+        var u=10;
+        li('tdv','Kısa etkili (regüler) insülin '+u+' ünite + 25 g glukoz IV, 15 dakikada','25 g glukoz = %50 dekstroz 50 mL ya da %10 dekstroz 250 mL. Regüler insülin: Actrapid, Humulin R. Potasyumu 15–30 dakikada düşürür, etkisi 4–6 saat sürer.'+' eGFR < 30 ya da düşük kiloda da doz 10 ünitedir (UKKA 2026); hipoglisemiye karşı dozu azaltmayın, aşağıdaki dekstroz ve glukoz izlemini uygulayın.');
         if(glu===null)li('tdv','Tedavi öncesi glukozu ölçün','Glukoz girilmedi. Tedavi öncesi glukoz < 126 mg/dL (7,0 mmol/L) ise insülin-glukozdan sonra %10 dekstroz 50 mL/saat, 5 saat (250 mL, 25 g) başlayın. Glukozu 6 saat boyunca saatlik izleyin (geç hipoglisemi).');
         else if(glu<126.1)li('tdv','Ardından %10 dekstroz 50 mL/saat, 5 saat (250 mL)','Tedavi öncesi glukoz '+fm(glu,0)+' mg/dL (< 7,0 mmol/L): hipoglisemi riski yüksek. Glukozu 6 saat boyunca saatlik izleyin (UKKA: 0, 30, 60, 90, 120. dakika, sonra saatlik).');
         else li('tdv','Glukozu 6 saat izleyin','Tedavi öncesi glukoz '+fm(glu,0)+' mg/dL (≥ 126): ek dekstroz infüzyonu gerekmez. Yine de glukozu 6 saat boyunca saatlik izleyin (UKKA: 0, 30, 60, 90, 120. dakika, sonra saatlik); < 126’ya inerse %10 dekstroz 50 mL/saat başlayın.');
@@ -222,7 +222,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
       else if(ph===null&&hco3===null)li('tdv','Venöz kan gazına bakın','Bikarbonat yalnız metabolik asidozda düşünülür; asidoz yoksa verilmez.');
       else li('tdv','IV bikarbonat gerekmez',asid?'Asidoz hafif (pH ≥ 7,2 ya da girilmedi): IV bikarbonat rutin değil. KBH’de HCO₃ < 22 ise kronik dönemde ağızdan bikarbonat (aşağıda).':'Metabolik asidoz yok.');
       var hd=[];
-      if(ck('diy'))hd.push('diyaliz hastası: acil diyaliz');
+      if(ck('diy'))hd.push(K>=6.5?'diyaliz hastası, K ≥ 6,5: acil diyaliz':'diyaliz hastası: diyaliz zamanlamasını öne almayı değerlendirin');
       if(sev==='sev')hd.push('ağır hiperkalemi tıbbi tedaviye yanıt vermezse');
       if(ck('aki'))hd.push('oligürik akut böbrek hasarı');
       if(gfr!==null&&gfr<15)hd.push('eGFR < 15');

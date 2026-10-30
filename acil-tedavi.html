@@ -148,10 +148,10 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     if(K<5.5)return{s:[['Potasyum '+g1(K)+' mEq/L: hiperkalemi yok','']],n:[]};
     var sev=K>=6.5||p.ekg?'Ağır':K>=6.0?'Orta':'Hafif';
     s.push(['Önce doğrulayın; EKG çekin'+(K>=6.0||p.ekg?' ve kardiyak monitöre alın':''),'Hemoliz şüphesinde (zor kan alma, trombositoz, lökositoz) tekrar ölçün; ama EKG değişikliği varsa tedaviyi geciktirmeyin. Düzey: '+sev+'.']);
-    if(p.ekg)s.push(['Kalsiyum glukonat %10, 30 mL IV, 5–10 dakikada','Membranı stabilize eder, potasyumu düşürmez. 5–10 dakika sonra EKG düzelmezse tekrarlayın. Digoksin kullananda daha yavaş (20–30 dakika) verin.']);
+    if(p.ekg)s.push(['Kalsiyum glukonat %10, 30 mL IV, 10 dakikada','Membranı stabilize eder, potasyumu düşürmez. 5–10 dakika sonra EKG düzelmezse tekrarlayın. Digoksin kullananda daha yavaş (20–30 dakika) verin.']);
     else if(K>=6.5)s.push(['EKG değişikliği yok: kalsiyum rutin değil','UKKA IV kalsiyumu yalnız EKG değişikliği varsa önerir. Sürekli kardiyak monitör; EKG değişirse kalsiyum glukonat %10, 30 mL IV verin.']);
-    if(K>=6.0){var u=p.egfr!==null&&p.egfr<30||p.wt!==null&&p.wt<60?5:10;
-      s.push(['Kısa etkili insülin '+u+' ünite IV + 25 g glukoz (%50 dekstroz 50 mL veya %10 dekstroz 250 mL) 15 dakikada','Potasyumu 15–30 dakikada 0,6–1 mEq/L düşürür, etkisi 4–6 saat sürer.'+(u===5?' Böbrek yetmezliği veya düşük kilo nedeniyle 5 ünite seçildi (hipoglisemi riski). UKKA herkese 10 ünite ve glukoz izlemi önerir; bazı merkezler böbrek yetmezliğinde 5 ünite kullanır, bu dozla K düşüşü daha az olabilir.':'')+(p.glu!==null&&p.glu<126?' Kan şekeri 126 mg/dL altında: ardından %10 dekstroz 50 mL/saat, 5 saat.':'')]);}
+    if(K>=6.0||p.ekg){var u=10;
+      s.push(['Kısa etkili insülin '+u+' ünite IV + 25 g glukoz (%50 dekstroz 50 mL veya %10 dekstroz 250 mL) 15 dakikada','Potasyumu 15–30 dakikada 0,6–1 mEq/L düşürür, etkisi 4–6 saat sürer.'+' Böbrek yetmezliği ya da düşük kiloda da doz 10 ünitedir (UKKA 2026); hipoglisemiye karşı dozu azaltmayın, glukozu 6 saat izleyin.'+(p.glu!==null&&p.glu<126.1?' Kan şekeri 126 mg/dL altında: ardından %10 dekstroz 50 mL/saat, 5 saat.':'')]);}
     if(K>=6.5)s.push(['Salbutamol 10–20 mg nebül','İnsüline ek olarak verilir. Taşiaritmi veya iskemik kalp hastalığında dikkat.']);
     s.push(['Potasyum yükselten ilaçları kesin','ACE inhibitörü, ARB, spironolakton, NSAİİ, trimetoprim, heparin, potasyum desteği, beta bloker.']);
     s.push(['Potasyumu vücuttan uzaklaştırın','Potasyum bağlayıcı: sodyum zirkonyum siklosilikat 10 g 3×1 (72 saate kadar); alternatif patiromer 8,4 g/gün. Polistiren sülfonat akut tedavide artık rutin önerilmez. Volüm uygunsa furosemid 40–80 mg IV.']);
