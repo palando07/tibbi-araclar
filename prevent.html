@@ -75,7 +75,7 @@ details p{margin:8px 0 0}
   <header>
     <a class="back" href="./">← Vizit</a>
     <h1>PREVENT Risk Hesaplayıcı</h1>
-    <p>AHA PREVENT: 10 yıllık kardiyovasküler hastalık, ASKVH ve kalp yetmezliği riski</p>
+    <p>AHA PREVENT: 10 yıllık ASKVH, toplam kardiyovasküler hastalık ve kalp yetmezliği riski; 2026 ACC/AHA lipid risk sınıfı</p>
   </header>
 
   <section class="card">
@@ -99,12 +99,12 @@ details p{margin:8px 0 0}
   </section>
 
   <section class="card" aria-live="polite">
-    <span class="lbl">10 yıllık kardiyovasküler hastalık riski</span>
-    <div class="res"><span class="num" id="cvd">–</span><span class="of">%</span><span class="pill" id="pl"></span></div>
+    <span class="lbl">10 yıllık aterosklerotik KVH (ASKVH) riski</span>
+    <div class="res"><span class="num" id="ascvd">–</span><span class="of">%</span><span class="pill" id="pl"></span></div>
     <p class="advice" id="adv"></p>
-    <div class="sub"><span>Aterosklerotik KVH (ASKVH)</span><b id="ascvd">–</b></div>
+    <div class="sub"><span>Toplam kardiyovasküler hastalık</span><b id="cvd">–</b></div>
     <div class="sub"><span>Kalp yetmezliği</span><b id="hf">–</b></div>
-    <p class="note">Toplam KVH = ASKVH (koroner kalp hastalığı, inme) + kalp yetmezliği. Risk sınıfları: &lt; %5 düşük, %5–7,4 sınırda, %7,5–19,9 orta, ≥ %20 yüksek. Taban (base) model kullanılır; HbA1c, idrar albümin/kreatinin oranı ve sosyal yoksunluk indeksi dahil değildir. PREVENT, eski Pooled Cohort skoruna göre genellikle daha düşük risk verir; statin eşikleri henüz PREVENT'e göre güncellenmemiştir. Kaynak: Khan SS ve ark., Circulation 2024;149:430–449; 2025 AHA/ACC Hipertansiyon Kılavuzu.</p>
+    <p class="note">ASKVH = koroner kalp hastalığı ve inme; toplam KVH = ASKVH + kalp yetmezliği. Lipid risk sınıfı 10 yıllık ASKVH riskiyle belirlenir (2026 ACC/AHA): &lt; %3 düşük, %3–&lt; 5 sınırda, %5–&lt; 10 orta, ≥ %10 yüksek. Bu sınıflama ASKVH'si olmayan, LDL-K 70–189 mg/dL olan 30–79 yaş erişkinler içindir. Sınırda riskte statin kararını etkileyen risk artırıcılar: ailede erken ASKVH, kronik inflamatuvar hastalık, kalıcı yüksek trigliserid, yüksek Lp(a), tekrarlayan hs-CRP ≥ 2 mg/L, preeklampsi ve erken menopoz (&lt; 45 yaş). Hipertansiyonda toplam KVH riski kullanılır: evre 1 hipertansiyonda (130–139/80–89 mmHg) risk ≥ %7,5 ise ilaç tedavisi önerilir (2025 AHA/ACC). Taban (base) model kullanılır; HbA1c, idrar albümin/kreatinin oranı ve sosyal yoksunluk indeksi dahil değildir. Kaynak: Khan SS ve ark., Circulation 2024;149:430–449; 2026 ACC/AHA Dislipidemi Kılavuzu, Circulation 2026 (Tablo 1, bölüm 4.2.3 ve 4.2.5); 2025 AHA/ACC Hipertansiyon Kılavuzu.</p>
   </section>
 </div>
 <script>
@@ -134,11 +134,14 @@ details p{margin:8px 0 0}
         el=(Math.min(egfr,60)-60)/-15, eh=(Math.max(egfr,60)-90)/-15, bl=(Math.min(bmi,30)-25)/5, bh=(Math.max(bmi,30)-30)/5;
     var x=[1,a,nh,h,sl,sh,dm,smk,el,eh,bpm,st,bpm*sh,st*nh,a*nh,a*h,a*sh,a*dm,a*smk,a*el];
     var xh=[1,a,sl,sh,dm,smk,bl,bh,el,eh,bpm,bpm*sh,a*sh,a*dm,a*smk,a*bh,a*el];
-    var c=dot(K.cvd[sx],x);$('cvd').textContent=f1(c);$('ascvd').textContent='%'+f1(dot(K.ascvd[sx],x));$('hf').textContent='%'+f1(dot(K.hf[sx],xh));
-    if(c<5){pill('pl','Düşük','var(--ok)');$('adv').textContent='Sağlıklı yaşam tarzı önerileri.'}
-    else if(c<7.5){pill('pl','Sınırda','var(--warn)');$('adv').textContent='Statin kararı risk artırıcı faktörlere göre bireysel verilir.'}
-    else if(c<20){pill('pl','Orta','var(--warn)');$('adv').textContent='Statin tedavisi düşünülmelidir. Evre 1 hipertansiyonda (130–139/80–89 mmHg) ilaç tedavisi başlanması önerilir (2025 AHA/ACC).'}
-    else{pill('pl','Yüksek','var(--high)');$('adv').textContent='Statin tedavisi ve risk faktörlerinin sıkı kontrolü önerilir.'}
+    var c=dot(K.cvd[sx],x),r=dot(K.ascvd[sx],x),t;$('ascvd').textContent=f1(r);$('cvd').textContent='%'+f1(c);$('hf').textContent='%'+f1(dot(K.hf[sx],xh));
+    if(r<3){pill('pl','Düşük','var(--ok)');t='Sağlıklı yaşam tarzı önerileri. LDL-K 160–189 mg/dL ya da 30 yıllık risk ≥ %10 ise (30–59 yaş) orta yoğunluk statin makuldür.'}
+    else if(r<5){pill('pl','Sınırda','var(--warn)');t='Risk artırıcılar değerlendirilip hastayla konuşularak orta yoğunluk statin düşünülebilir. Başlanırsa hedef LDL-K < 100, non-HDL-K < 130 mg/dL.'}
+    else if(r<10){pill('pl','Orta','var(--warn)');t='En az orta yoğunluk statin önerilir; aralığın üst ucunda yüksek yoğunluk yararlıdır. Hedef LDL-K < 100, non-HDL-K < 130 mg/dL.'}
+    else{pill('pl','Yüksek','var(--high)');t='Yüksek yoğunluk statin önerilir (LDL-K’de ≥ %50 azalma). Hedef LDL-K < 70, non-HDL-K < 100 mg/dL; statinle ulaşılamazsa ezetimib eklenebilir.'}
+    if(dm&&age>=40&&age<=75)t+=' Diyabette (40–75 yaş) riskten bağımsız en az orta yoğunluk statin önerilir.';
+    if(c>=7.5)t+=' Toplam KVH ≥ %7,5: evre 1 hipertansiyonda (130–139/80–89 mmHg) ilaç tedavisi önerilir (2025 AHA/ACC).';
+    $('adv').textContent=t;
   }
   seg('sex',calc);document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
   calc();

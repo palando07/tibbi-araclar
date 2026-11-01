@@ -159,7 +159,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     <ul class="chk" id="chk"></ul>
   </section>
 
-  <p class="note">Kaynaklar: ADA Standards of Care in Diabetes 2025; ADA/EASD Uzlaşı Raporu 2022; KDIGO Diyabet ve KBH 2022; TEMD Diabetes Mellitus Kılavuzu 2026. SGK geri ödeme koşulları (özellikle GLP-1 RA, SGLT2i ve DPP-4i için) reçete öncesinde SUT'tan ayrıca kontrol edilmelidir. Bu araç klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz.</p>
+  <p class="note">Kaynaklar: ADA Standards of Care in Diabetes 2026 (Bölüm 6 glisemik hedefler ve hipoglisemi, Bölüm 9 ilaç seçimi); ADA 2025 Bölüm 10 (lipid ve tansiyon); ADA/EASD Uzlaşı Raporu 2022; KDIGO Diyabet ve KBH 2022; TEMD Diabetes Mellitus Kılavuzu 2026. SGK geri ödeme koşulları (özellikle GLP-1 RA, SGLT2i ve DPP-4i için) reçete öncesinde SUT'tan ayrıca kontrol edilmelidir. Bu araç klinik karar desteği içindir, klinik değerlendirmenin yerini tutmaz.</p>
 
 </div>
 <script>
@@ -197,21 +197,23 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     $('tadv').textContent=why+(gap>=1.5?' HbA1c hedefin ≥ 1,5 puan üzerinde: tek ilaç yerine kombinasyon tedavisi düşünülmelidir.':'');
 
     // 2) Öneriler
-    var needIns=a1c>=10||cata;
+    var needIns=a1c>10||cata;
     if(preg)li(rec,'Gebelik: tedavinin temeli insülin','SGLT2i, GLP-1 RA, tirzepatid, DPP-4i ve pioglitazon gebelikte kullanılmaz; gebelik planlanıyorsa kesilmelidir. Metformin seçilmiş hastalarda kullanılabilir. Perinatoloji/endokrinoloji ile birlikte izleyin.');
-    if(needIns&&!preg)li(rec,'İnsülin başlanmasını değerlendirin',(cata?'Katabolik bulgular var. ':'')+(a1c>=10?'HbA1c ≥ %10. ':'')+'Bazal insülin 10 ünite veya 0,1–0,2 ünite/kg/gün ile başlanır, açlık glukozuna göre 3 günde bir titre edilir. GLP-1 RA ile kombinasyon insülin dozunu ve kilo artışını azaltır. Glukotoksisite düzeldikçe insülin azaltılabilir.');
+    if(needIns&&!preg)li(rec,'İnsülin başlanmasını değerlendirin',(cata?'Katabolik bulgular var. ':'')+(a1c>10?'HbA1c > %10. ':'')+'Bazal insülin 10 ünite veya 0,1–0,2 ünite/kg/gün ile başlanır, açlık glukozuna göre 3 günde bir titre edilir. İnsülinle birlikte GLP-1 RA veya tirzepatid önerilir'+(mtc?' (MTK/MEN2 öyküsünde kullanılmaz)':'')+'; insülin dozunu ve kilo artışını azaltır. Diğer ilaçlar kontrendikasyon yoksa sürdürülür. Glukotoksisite düzeldikçe insülin azaltılabilir.');
     if(!preg){
       if(hf)li(rec,'SGLT2 inhibitörü: kalp yetmezliği nedeniyle','Empagliflozin veya dapagliflozin; HFrEF ve HFpEF\'te hastaneye yatışı ve KV ölümü azaltır. HbA1c\'den bağımsız önerilir.'+(egfr<20?' eGFR < 20 olduğu için başlanması önerilmez.':''));
-      if(ckd&&egfr>=20)li(rec,'SGLT2 inhibitörü: kronik böbrek hastalığı nedeniyle','Dapagliflozin, empagliflozin veya kanagliflozin; eGFR ≥ 20 ise başlanır, diyalize kadar sürdürülebilir. eGFR < 45\'te glukoz düşürücü etkisi azalır ama böbrek ve kalp koruması sürer.');
+      if(hf&&obese&&!mtc)li(rec,'Tirzepatid veya semaglutid: obezite ve semptomatik HFpEF','Obezite ve semptomatik HFpEF\'te tirzepatid ya da KY yararı gösterilmiş GLP-1 RA (semaglutid) önerilir; semptomları ve KY olaylarını azaltır. HbA1c\'den bağımsız. HFrEF için geçerli değildir.');
+      if(ckd&&egfr>=20)li(rec,'SGLT2 inhibitörü: kronik böbrek hastalığı nedeniyle','Dapagliflozin, empagliflozin veya kanagliflozin; eGFR ≥ 20 ise başlanır, eGFR 20\'nin altına düşse de diyalize kadar sürdürülebilir. eGFR < 45\'te glukoz düşürücü etkisi azalır ama böbrek ve kalp koruması sürer.');
       if(ascvd||hrisk)li(rec,'GLP-1 RA ve/veya SGLT2i: '+(ascvd?'aterosklerotik KV hastalık':'yüksek KV risk')+' nedeniyle','KV yararı kanıtlanmış GLP-1 RA (semaglutid, liraglutid, dulaglutid) veya SGLT2i (empagliflozin, kanagliflozin, dapagliflozin). HbA1c hedefteyse bile önerilir.'+(egfr<20?' eGFR < 20: SGLT2i yeni başlanmaz; GLP-1 RA tercih edin.':'')+(mtc?' MTK/MEN2 öyküsü nedeniyle GLP-1 RA kullanılmamalı; SGLT2i tercih edin.':''));
-      if(alb&&!mtc)li(rec,'GLP-1 RA: albüminürik KBH','Semaglutid böbrek sonlanımlarını azaltır (FLOW). SGLT2i\'ye ek olarak düşünülebilir.');
+      if(ckd&&!mtc)li(rec,'GLP-1 RA: kronik böbrek hastalığı nedeniyle','Böbrek yararı kanıtlanmış GLP-1 RA (semaglutid, FLOW) SGLT2i\'ye ek olarak ya da SGLT2i kullanılamıyorsa onun yerine önerilir.'+(egfr<30?' eGFR < 30: glisemi kontrolü için GLP-1 RA tercih edilir (hipoglisemi riski düşük); diyalizde de başlanabilir.':''));
       if(obese&&!mtc)li(rec,'Kilo yönetimi: semaglutid veya tirzepatid','VKİ '+f1(bmi)+'. Kilo kaybı etkisi en güçlü ilaçlar bunlardır; %5–15 kilo kaybı glisemi, tansiyon ve lipidleri iyileştirir.');
-      if(masld)li(rec,'MASLD / MASH','GLP-1 RA (semaglutid), tirzepatid veya pioglitazon'+(hf?' (kalp yetmezliği olduğu için pioglitazon hariç)':'')+' tercih edilebilir. FIB-4 ile fibrozis riskini değerlendirin.');
+      if(masld)li(rec,'MASLD / MASH',(mtc?'MTK/MEN2 öyküsü nedeniyle GLP-1 RA ve tirzepatid kullanılmaz'+(hf?'; kalp yetmezliği nedeniyle pioglitazon da kullanılmaz. ':'; pioglitazon düşünülebilir. '):'MASH yararı gösterilmiş GLP-1 RA (semaglutid) tercih edilir; '+(hf?'tirzepatid de':'tirzepatid ya da pioglitazon da')+' düşünülebilir'+(hf?' (kalp yetmezliği nedeniyle pioglitazon hariç)':'; pioglitazon + GLP-1 RA birlikte kullanılabilir')+'. ')+'FIB-4 ile fibrozis riskini değerlendirin.');
       if(!uMet&&egfr>=45)li(rec,'Metformin','Kontrendikasyon yoksa temel tedavi; düşük maliyetli ve hipoglisemi yapmaz. 500 mg ile başlayıp GİS toleransına göre artırın (en fazla 2000–2550 mg/gün).');
       if(!uMet&&egfr>=30&&egfr<45)li(rec,'Metformine yeni başlamayın','eGFR 30–44: yeni başlanması önerilmez; kullanıyorsa günlük doz en fazla 1000 mg.');
       if(uMet&&egfr<30)li(rec,'Metformini kesin','eGFR < 30 mL/dk/1,73 m²: laktik asidoz riski nedeniyle kontrendike.');
       if(uMet&&egfr>=30&&egfr<45)li(rec,'Metformin dozunu azaltın','eGFR 30–44: günlük doz en fazla 1000 mg.');
-      if(uDpp&&uGlp)li(rec,'DPP-4 inhibitörünü kesin','GLP-1 RA ile birlikte kullanımı ek fayda sağlamaz.');
+      if(uDpp&&uGlp)li(rec,'DPP-4 inhibitörünü kesin','GLP-1 RA veya tirzepatid ile birlikte kullanımı ek glukoz düşüşü sağlamaz.');
+      if(uIns&&!uGlp&&!mtc)li(rec,'İnsüline GLP-1 RA veya tirzepatid ekleyin','İnsülin kullananda kombinasyon önerilir; eklerken ya da dozu artırırken hipoglisemiye karşı insülin dozunu yeniden değerlendirin.');
       if(uPio&&hf)li(rec,'Pioglitazonu kesin','Kalp yetmezliğinde sıvı retansiyonu ve dekompansasyon riski.');
       if(uSu&&(hypo||frail||age>=65))li(rec,'Sülfonilüreyi gözden geçirin','Hipoglisemi riski yüksek/yaşlı hastada dozu azaltın ya da hipoglisemi yapmayan bir ilaçla değiştirin; kullanılacaksa gliklazid tercih edilir, glibenklamidden kaçının.');
       if(gap>0&&!needIns){
@@ -234,14 +236,14 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     row('SGLT2 inhibitörü',preg?'ki':egfr<20?'warn':(hf||ckd||ascvd||hrisk)?'pri':(dka||geni)?'warn':'ok',
       preg?'Gebelikte kullanılmaz.':egfr<20?'eGFR < 20: başlanmaz; kullanıyorsa diyalize kadar sürdürülebilir.':
       (dka?'Ketoasidoz öyküsü: öglisemik DKA riski. ':'')+(geni?'Tekrarlayan genital enfeksiyon riski. ':'')+'Kalp ve böbrek koruması; kilo kaybı, hipoglisemi yok. Ameliyattan 3 gün önce (ertugliflozin 4 gün) kesin; dehidratasyon ve akut hastalıkta ara verin.'+(age>=75||frail?' Yaşlıda volüm kaybına dikkat.':''));
-    row('GLP-1 RA',preg||mtc?'ki':panc?'warn':(ascvd||hrisk||obese||masld||alb)?'pri':'ok',
-      preg?'Gebelikte kullanılmaz.':mtc?'MTK/MEN2 öyküsünde kontrendike.':(panc?'Pankreatit öyküsünde dikkatli kullanın. ':'')+'Yüksek etkinlik, belirgin kilo kaybı, KV yarar (semaglutid, liraglutid, dulaglutid). GİS yan etkileri; gastroparezide kaçının; semaglutid ile hızlı HbA1c düşüşünde retinopati izleyin.');
+    row('GLP-1 RA',preg||mtc?'ki':panc?'warn':(ascvd||hrisk||obese||masld||ckd)?'pri':'ok',
+      preg?'Gebelikte kullanılmaz.':mtc?'MTK/MEN2 öyküsünde kontrendike.':(panc?'Pankreatit öyküsünde dikkatli kullanın. ':'')+'Yüksek etkinlik, belirgin kilo kaybı, KV yarar (semaglutid, liraglutid, dulaglutid), böbrek yararı (semaglutid).'+(egfr<30?' eGFR < 30\'da glisemi için tercih edilir.':'')+' GİS yan etkileri; gastroparezide kaçının; semaglutid ile hızlı HbA1c düşüşünde retinopati izleyin.');
     row('Tirzepatid',preg||mtc?'ki':panc?'warn':(obese||masld)?'pri':'ok',
-      preg?'Gebelikte kullanılmaz.':mtc?'MTK/MEN2 öyküsünde kontrendike.':'GIP/GLP-1 agonisti; HbA1c ve kilo üzerine en güçlü etkili ilaçlardan. Yan etkiler GLP-1 RA ile benzer.');
+      preg?'Gebelikte kullanılmaz.':mtc?'MTK/MEN2 öyküsünde kontrendike.':'GIP/GLP-1 agonisti; HbA1c ve kilo üzerine en güçlü etkili ilaçlardan. Obezite ve semptomatik HFpEF\'te KY yararı var. Böbrekte doz ayarı gerekmez. Yan etkiler GLP-1 RA ile benzer.');
     row('DPP-4 inhibitörü',preg||uGlp?'ki':(hf||panc)?'warn':'ok',
-      preg?'Gebelikte kullanılmaz.':uGlp?'GLP-1 RA ile birlikte kullanılmaz.':(hf?'Kalp yetmezliğinde saksagliptin ve alogliptinden kaçının. ':'')+(panc?'Pankreatit öyküsünde dikkat. ':'')+'Orta etkinlik, hipoglisemi yok, kilo nötr. Linagliptin dışındakilerde böbreğe göre doz ayarı gerekir.');
-    row('Pioglitazon',hf||preg?'ki':masld?'pri':'ok',
-      hf?'Kalp yetmezliğinde kontrendike.':preg?'Gebelikte kullanılmaz.':'Yüksek etkinlik, düşük maliyet, MASH\'te yararlı. Ödem, kilo artışı, kırık riski; mesane kanseri öyküsünde kaçının.');
+      preg?'Gebelikte kullanılmaz.':uGlp?'GLP-1 RA veya tirzepatid ile birlikte kullanılmaz.':(hf?'Kalp yetmezliğinde saksagliptin ve alogliptinden kaçının. ':'')+(panc?'Pankreatit öyküsünde dikkat. ':'')+'Orta etkinlik, hipoglisemi yok, kilo nötr. Linagliptin dışındakilerde böbreğe göre doz ayarı gerekir.');
+    row('Pioglitazon',hf||preg?'ki':'ok',
+      hf?'Kalp yetmezliğinde kontrendike.':preg?'Gebelikte kullanılmaz.':'Yüksek etkinlik, düşük maliyet; MASH\'te GLP-1 RA\'ya alternatif ya da ek olarak düşünülebilir. Ödem, kilo artışı, kırık riski; mesane kanseri öyküsünde kaçının.');
     row('Sülfonilüre',preg?'warn':(hypo||frail||age>=65||egfr<30)?'warn':'ok',
       preg?'Gebelikte insülin tercih edilir.':(hypo||frail||age>=65||egfr<30?'Hipoglisemi riski artmış. ':'')+'Yüksek etkinlik, düşük maliyet; hipoglisemi ve kilo artışı. Gliklazid tercih edilir, glibenklamidden kaçının.');
     row('İnsülin',(needIns||preg)?'pri':'ok',(preg?'Gebelikte tercih edilen tedavi. ':'')+'En yüksek etkinlik. Hipoglisemi ve kilo artışı; hasta ve yakınına hipoglisemi eğitimi verin.');
@@ -258,7 +260,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     L.push('Yılda en az bir kez: idrar albümin/kreatinin oranı, eGFR, göz dibi muayenesi, ayak muayenesi (monofilament), lipid profili.');
     if(uMet||egfr>=45)L.push('Metformin kullananlarda periyodik B12 düzeyi.');
     L.push('Hasta gün kuralları: kusma, ishal, dehidratasyon veya ameliyat öncesinde metformin ve SGLT2i\'ye ara verilir.');
-    if(uSu||uIns||needIns)L.push('Hipoglisemi belirtileri ve 15 g hızlı karbonhidrat kuralı konusunda eğitim; ağır hipoglisemi riskinde glukagon.');
+    if(uSu||uIns||needIns||hypo)L.push('Hipoglisemi belirtileri ve 15 g hızlı karbonhidrat kuralı konusunda eğitim; insülin kullanan veya hipoglisemi riski yüksek herkese glukagon reçete edin. Düzey 2 (< 54 mg/dL) ya da düzey 3 (yardım gerektiren) hipoglisemi tedavi planının gözden geçirilmesini gerektirir.');
     L.push('Aşılar: yıllık grip, pnömokok, hepatit B (60 yaş altı), COVID-19, 50 yaş üstünde zona.');
     if(masld||obese)L.push('MASLD taraması: FIB-4 hesaplayın; > 1,3 ise elastografi ile ileri değerlendirme.');
     L.push('Sigarayı bırakma, haftada en az 150 dakika egzersiz, beslenme danışmanlığı ve diyabet eğitimi.');

@@ -133,7 +133,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     <ul class="chk" id="nt"></ul>
   </section>
 
-  <p class="note">Kaynaklar: ATS/IDSA 2019 ve ATS 2025 güncellemesi (TKP), CAPE COD (Dequin ve ark., NEJM 2023), IDSA/ATS 2016 (HKP), IDSA 2011 (sistit) ve IDSA 2025 (komplike idrar yolu enfeksiyonu), IDSA 2014 (deri ve yumuşak doku), SIS/IDSA 2010–2017 (intraabdominal), IDSA 2010 ve ASCO/IDSA 2018 (febril nötropeni), Surviving Sepsis 2021, IDSA/SHEA 2021 (C. difficile), IDSA 2004 ve ESCMID 2016 (menenjit). Ülkemizde E. coli'de kinolon ve TMP-SMX direnci ile ESBL sıklığı yüksektir; hastanenizin antibiyogram verilerine ve enfeksiyon hastalıkları önerilerine göre uyarlayın. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: ATS/IDSA 2019 ve ATS 2025 güncellemesi (TKP), CAPE COD (Dequin ve ark., NEJM 2023), IDSA/ATS 2016 (HKP), IDSA 2011 (sistit) ve IDSA 2025 (komplike idrar yolu enfeksiyonu), IDSA 2014 (deri ve yumuşak doku), SIS/IDSA 2010–2017 (intraabdominal), IDSA 2010 ve ASCO/IDSA 2018 (febril nötropeni), Surviving Sepsis Campaign 2021 ve 2026 (Prescott ve ark., Crit Care Med 2026;54:725–812), IDSA/SHEA 2021 (C. difficile), IDSA 2004 ve ESCMID 2016 (menenjit). Ülkemizde E. coli'de kinolon ve TMP-SMX direnci ile ESBL sıklığı yüksektir; hastanenizin antibiyogram verilerine ve enfeksiyon hastalıkları önerilerine göre uyarlayın. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -170,7 +170,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
       if(s===1&&r.hos&&!(r.mrsa&&r.pse))nt.push('Son 90 günde yatış + parenteral antibiyotik: balgam kültürü ve burun MRSA PCR alın; ampirik MRSA/Pseudomonas kapsamını kültür sonucuna kadar ertelemeniz, kültür pozitifse eklemeniz önerilir (ATS/IDSA 2019).');
       if(mr||ps)nt.push('MRSA/Pseudomonas kapsamı başladıysanız kültür negatifse ve hasta düzeliyorsa 48 saatte kesin; burun MRSA PCR negatifliği vankomisini kesmeyi destekler.');
       nt.push('Grip mevsiminde influenza testi; pozitifse oseltamivir 75 mg 2×1, 5 gün.');
-      if(s===2)nt.push('Ağır TKP\'de (influenza dışı) ilk 24 saatte hidrokortizon 200 mg/gün IV, 4–7 gün ve ardından azaltarak düşünülebilir (CAPE COD, ATS 2025). Vazopresör gerektiren septik şokta hidrokortizon 200 mg/gün (SSC 2021).');
+      if(s===2)nt.push('Ağır TKP\'de (influenza dışı) ilk 24 saatte hidrokortizon 200 mg/gün IV, 4–7 gün ve ardından azaltarak düşünülebilir (CAPE COD, ATS 2025). Septik şokta IV kortikosteroid önerilir (SSC 2026); tipik doz hidrokortizon 200 mg/gün (SSC 2021).');
     }
     nt.push('IV başlandıysa klinik stabil olunca ağızdan tedaviye geçin.');
     return{rx:rx,alt:alt,dur:dur,nt:nt}}},
@@ -222,7 +222,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     var rx=[(r.esbl||s===1)?'Meropenem 1 g IV 3×1 (uzatılmış infüzyon tercih edilebilir)':'Piperasilin-tazobaktam 4,5 g IV 4×1'];
     if(r.mrsa)rx.push('+ vankomisin 15–20 mg/kg IV 2–3×1 (yükleme 25 mg/kg)');
     return{rx:rx,alt:['Aztreonam 2 g IV 3×1 + vankomisin 15–20 mg/kg IV 2–3×1 (abdominal kaynak düşünülüyorsa + metronidazol 500 mg IV 3×1)','Ya da meropenem (çapraz reaksiyon < %1)'],dur:'Kaynağa göre; çoğu olguda 7 gün. Prokalsitonin kesme kararını destekleyebilir.',
-      nt:['Septik şokta veya sepsis olasılığı yüksekse antibiyotik hemen, ideal olarak ilk 1 saatte; şok yoksa ve sepsis yalnızca olasıysa hızlı değerlendirme yapın, şüphe sürerse 3 saat içinde başlayın.',C,'Kaynağı arayın (akciğer, idrar, karın, deri, kateter) ve kaynak kontrolü yapın.','30 mL/kg kristaloid, ortalama arter basıncı hedefi ≥ 65 mmHg.',D]}}},
+      nt:['Şok olası veya kesinse ya da sepsis olasılığı yüksekse antibiyotik hemen, ideal olarak ilk 1 saatte; şok yoksa ve sepsis yalnızca olasıysa hızlı değerlendirme yapın, şüphe sürerse 3 saat içinde başlayın (SSC 2026).',C,'Kaynağı arayın (akciğer, idrar, karın, deri, kateter) ve kaynak kontrolünü erken, ideal olarak 6 saat içinde yapın (SSC 2026).','Beta-laktamı yükleme dozundan sonra uzatılmış infüzyonla sürdürün (SSC 2026).','Hipoperfüzyon veya şokta ilk 3 saatte en az 30 mL/kg kristaloid; septik şokta ortalama arter basıncı hedefi 65 mmHg, 65 yaş ve üstünde 60–65 mmHg (SSC 2026).',D]}}},
   cdi:{d:0,sev:['Ağır değil','Ağır (BK ≥ 15 000 veya kreatinin > 1,5)','Fulminan (hipotansiyon, ileus, megakolon)'],risks:[],f:function(s){
     var rx=s===2?['Vankomisin 500 mg PO/nazogastrik 4×1','+ metronidazol 500 mg IV 3×1','İleusta rektal vankomisin 500 mg / 100 mL SF 4×1']:['Fidaksomisin 200 mg PO 2×1 (tercih)','veya vankomisin 125 mg PO 4×1'].concat(s===0?['İkisi de yoksa metronidazol 500 mg PO 3×1']:[]);
     return{rx:rx,alt:['Penisilin alerjisi bu tedaviyi etkilemez.'],dur:'10 gün',

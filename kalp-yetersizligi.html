@@ -86,7 +86,7 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
   <header>
     <a class="back" href="./">← Vizit</a>
     <h1>Kalp Yetersizliği</h1>
-    <p>Dekompanse KY’de klinik profil, IV loop diüretik dozu ve yanıt kontrolü; taburculukta HFrEF ilaçlarının dozu ve başlama eşikleri</p>
+    <p>Dekompanse KY’de klinik profil, IV loop diüretik dozu ve yanıt kontrolü; taburculukta temel ilaçların dozu ve başlama eşikleri</p>
   </header>
 
   <section class="card">
@@ -98,7 +98,8 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
       <div class="field"><label for="hr">Nabız <span>/dk</span></label><input id="hr" data-hasta="nabiz" type="number" inputmode="decimal" step="any" value="88"></div>
     </div>
     <span class="lbl">Ejeksiyon fraksiyonu</span>
-    <div class="seg"><button type="button" data-g="ef" data-v="r" aria-pressed="true">≤ %40</button><button type="button" data-g="ef" data-v="m" aria-pressed="false">%41–49</button><button type="button" data-g="ef" data-v="p" aria-pressed="false">≥ %50</button></div>
+    <div class="seg"><button type="button" data-g="ef" data-v="r" aria-pressed="true">&lt; %50 (HFrEF)</button><button type="button" data-g="ef" data-v="p" aria-pressed="false">≥ %50 (HFpEF)</button></div>
+    <p class="note">ESC 2026: HFmrEF (%41–49) ayrı grup değil; LVEF &lt; %50 HFrEF olarak tedavi edilir.</p>
   </section>
 
   <section class="card">
@@ -142,7 +143,7 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
       <div class="field"><label for="una">Spot idrar Na, 2. saat <span>mmol/L</span></label><input id="una" data-aralik="0-300 mmol/L" type="number" inputmode="decimal" step="any" value="45"></div>
       <div class="field"><label for="uo">İdrar, ilk 6 saat <span>mL/saat</span></label><input id="uo" data-aralik="0-2000 mL/saat" type="number" inputmode="decimal" step="any" value="80"></div>
     </div>
-    <p class="note">İdrar ilk 6 saatin saatlik ortalamasıdır (ör. 6 saatte 600 mL = 100 mL/saat). Biri bilinmiyorsa boş bırakın.</p>
+    <p class="note">İdrar ilk 6 saatin saatlik ortalamasıdır (ör. 6 saatte 600 mL = 100 mL/saat). Biri bilinmiyorsa boş bırakın. ESC 2026: ilk günlerde diüretiği idrar Na’ya göre ayarlamak düşünülebilir (IIb).</p>
   </section>
 
   <section class="card" aria-live="polite">
@@ -161,11 +162,11 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
       <tbody id="gtb"></tbody>
     </table>
     <ol class="rec" id="rxG"></ol>
-    <p class="note" id="gn">Başlamayın: değer, kılavuzda ilacın kesilmesi ya da kontrendikasyon eşiğinin ötesinde. Dikkat: kılavuzda “dikkatli olun / uzman görüşü alın” eşiği ya da gereken değer girilmemiş. Eşikler ESC 2021 ek tablolarından; ARNI ve MRA’da KÜB başlama koşulları da uygulanır.</p>
+    <p class="note" id="gn">Başlamayın: değer, kılavuzda ilacın kesilmesi ya da kontrendikasyon eşiğinin ötesinde. Dikkat: kılavuzda “dikkatli olun / uzman görüşü alın” eşiği ya da gereken değer girilmemiş. Eşikler ESC 2021 ek tablolarından; ARNI ve MRA’da KÜB başlama koşulları da uygulanır. HFpEF’te MRA için aynı K/eGFR eşikleri kullanılır.</p>
   </section>
 
   <section class="card">
-    <h2>HFrEF: başlangıç ve hedef dozlar</h2>
+    <h2>Başlangıç ve hedef dozlar</h2>
     <table class="t">
       <thead><tr><th>İlaç</th><th>Başlangıç</th><th>Hedef</th></tr></thead>
       <tbody>
@@ -195,7 +196,7 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
       <li>Sakubitril/valsartan: semptomatik hipotansiyon öyküsünde 24/26 mg × 2 ile başlanabilir. ACEi’den geçişte son ACEi dozundan sonra en az 36 saat bekleyin. KÜB: SKB &lt; 100 mmHg ya da K &gt; 5,4 mmol/L ise başlanmaz; SKB 100–110’da ve eGFR &lt; 60’ta 24/26 mg × 2 düşünülür. eGFR &lt; 30’da KÜB dikkatle yarım başlangıç dozuna (24/26 mg × 2) izin verir; bu araç “dikkat” gösterir.</li>
       <li>MRA: K ≤ 5,0 mmol/L ve eGFR ≥ 30 iken başlayın (eplerenon KÜB’ünde K &gt; 5,0 ve eGFR &lt; 30 kontrendike; spironolakton KÜB’ünde başlangıç koşulu K ≤ 5,0 ve kreatinin ≤ 2,5 mg/dL). Spironolakton: böbrek işlevi ya da K nedeniyle dikkat gerekiyorsa 12,5 mg ile başlanabilir.</li>
       <li>Beta bloker: klinik olarak stabil, övolemik hastada düşük dozla başlayın. 2. ya da 3. derece AV blokta (pil yoksa) kullanmayın.</li>
-      <li>SGLT2i başlayınca eGFR’de küçük ve geri dönüşlü düşüş beklenir; ilacı kesme nedeni değildir. Diürezi artırabilir.</li>
+      <li>SGLT2i: dekompanse KY’de hasta stabil olunca hastanede başlayın (ESC 2026 Sınıf I). Başlayınca eGFR’de küçük ve geri dönüşlü düşüş beklenir; ilacı kesme nedeni değildir. Diürezi artırabilir.</li>
     </ul>
   </section>
 
@@ -214,13 +215,14 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
     <h2>Hızlı titrasyon (STRONG-HF)</h2>
     <ul class="chk">
       <li>ESC 2023 (Sınıf I, B): KY yatışından sonra kanıta dayalı ilaçlara taburculuk öncesinde başlayıp ilk 6 haftada sık kontrolle hızla artırın.</li>
+      <li>ESC 2026 (Sınıf I, C): temel ilaçları en az 1–2 haftada bir, belirti, vital bulgu ve laboratuvara göre hedef doza doğru artırın; EF düzelse de en yüksek tolere edilen dozla sürdürün.</li>
       <li>STRONG-HF: taburculuktan önce RAS blokeri, beta bloker ve MRA önerilen dozun yarısına; taburculuktan sonraki 2 hafta içinde tam doza çıkarıldı. Kontroller 1., 2., 3. ve 6. haftada (klinik, K, kreatinin, NT-proBNP).</li>
       <li>Çalışmada SKB &lt; 95 mmHg, K &gt; 5,0 mmol/L ya da eGFR &lt; 30 ise RAS blokeri ve MRA artırılmadı. NT-proBNP taburculuk değerinin %10’undan fazla yükseldiyse beta bloker artırılmadı, diüretik artırıldı.</li>
-      <li>SGLT2i çalışma protokolünde yoktu; ESC 2021/2023’e göre HFrEF’te dört grubun hepsi önerilir.</li>
+      <li>SGLT2i çalışma protokolünde yoktu; ESC 2026’ya göre HFrEF’te dört grubun hepsi temel tedavidir.</li>
     </ul>
   </section>
 
-  <p class="note">Kaynaklar: McDonagh TA ve ark. 2021 ESC kalp yetersizliği kılavuzu, Eur Heart J 2021;42:3599–726 (Tablo 8 başlangıç ve hedef dozlar ve dipnotları; Şekil 13 dipnotları: IV loop diüretikte günlük en yüksek doz furosemid 400–600 mg, ağır böbrek yetersizliğinde 1000 mg’a kadar, kombinasyon tiyazid, metolazon ya da asetazolamid; SKB &gt; 110 mmHg’de IV vazodilatör IIb; SKB &lt; 90 ve hipoperfüzyonda inotrop IIb; kardiyojenik şokta norepinefrin IIb; dirençli ödemde loop + tiyazid IIa) ve çevrimiçi ek tablolar 2–6 (ACEi, beta bloker, MRA, ARNI ve SGLT2i için dikkat ve kesme eşikleri); McDonagh TA ve ark. 2023 ESC odaklı güncelleme, Eur Heart J 2023;44:3627–39 (HFmrEF ve HFpEF’te dapagliflozin ya da empagliflozin Sınıf I, A; yoğun başlatma ve hızlı titrasyon Sınıf I, B); Mullens W ve ark. HFA tutum bildirisi, Eur J Heart Fail 2019;21:137–55 (diüretik almayanda en az 20–40 mg IV; 2. saatte spot idrar Na &lt; 50–70 mmol/L ya da ilk 6 saatte idrar &lt; 100–150 mL/saat yetersiz yanıt; dozu iki katına çıkarma; en yüksek günlük doz 400–600 mg; asetazolamid 500 mg IV; HCTZ 25 mg, aralık 12,5–100 mg); Mebazaa A ve ark. STRONG-HF, Lancet 2022;400:1938–52; Mullens W ve ark. ADVOR, N Engl J Med 2022;387:1185–95 (asetazolamid 500 mg IV günde bir, loop diüretik oral dozun iki katı IV); Trullàs JC ve ark. CLOROTIC, Eur Heart J 2023;44:411–21 (HCTZ ekleme); Nohria A ve ark. J Am Coll Cardiol 2003;41:1797–804 (sıcak/soğuk, ıslak/kuru profiller); sakubitril/valsartan, eplerenon, spironolakton, dapagliflozin ve empagliflozin KÜB’leri (AB/İngiltere; başlama koşulları). Piyasa adları örnek amaçlıdır. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: Køber L, Adamo M ve ark. 2026 ESC kalp yetersizliği kılavuzu, Eur Heart J 2026;47:5346, doi:10.1093/eurheartj/ehag100 (Bölüm 3: HFmrEF kaldırıldı, HFrEF LVEF &lt; %50, HFpEF ≥ %50; Tablo 5 ve 6: MRA EF’den bağımsız Sınıf I, A; belirtili KY, LVEF ≥ %45 ve VKİ ≥ 30’da semaglutid/tirzepatid IIa, B1; dekompanse KY’de stabilizasyon sonrası hastanede SGLT2i Sınıf I, B1; idrar Na’ya göre diüretik IIb, B1; en az 1–2 haftada bir doz artırma ve en yüksek tolere edilen dozla sürdürme Sınıf I, C; HFpEF’te ACEi/ARB/ARNI IIb, C); McDonagh TA ve ark. 2021 ESC kalp yetersizliği kılavuzu, Eur Heart J 2021;42:3599–726 (Tablo 8 başlangıç ve hedef dozlar ve dipnotları; Şekil 13 dipnotları: IV loop diüretikte günlük en yüksek doz furosemid 400–600 mg, ağır böbrek yetersizliğinde 1000 mg’a kadar, kombinasyon tiyazid, metolazon ya da asetazolamid; SKB &gt; 110 mmHg’de IV vazodilatör IIb; SKB &lt; 90 ve hipoperfüzyonda inotrop IIb; kardiyojenik şokta norepinefrin IIb; dirençli ödemde loop + tiyazid IIa) ve çevrimiçi ek tablolar 2–6 (ACEi, beta bloker, MRA, ARNI ve SGLT2i için dikkat ve kesme eşikleri); McDonagh TA ve ark. 2023 ESC odaklı güncelleme, Eur Heart J 2023;44:3627–39 (LVEF &gt; %40’ta dapagliflozin ya da empagliflozin Sınıf I, A; yoğun başlatma ve hızlı titrasyon Sınıf I, B; kalıcı sıvı yükünde asetazolamid ya da HCTZ IIa); Mullens W ve ark. HFA tutum bildirisi, Eur J Heart Fail 2019;21:137–55 (diüretik almayanda en az 20–40 mg IV; 2. saatte spot idrar Na &lt; 50–70 mmol/L ya da ilk 6 saatte idrar &lt; 100–150 mL/saat yetersiz yanıt; dozu iki katına çıkarma; en yüksek günlük doz 400–600 mg; asetazolamid 500 mg IV; HCTZ 25 mg, aralık 12,5–100 mg); Mebazaa A ve ark. STRONG-HF, Lancet 2022;400:1938–52; Mullens W ve ark. ADVOR, N Engl J Med 2022;387:1185–95 (asetazolamid 500 mg IV günde bir, loop diüretik oral dozun iki katı IV); Trullàs JC ve ark. CLOROTIC, Eur Heart J 2023;44:411–21 (HCTZ ekleme); Nohria A ve ark. J Am Coll Cardiol 2003;41:1797–804 (sıcak/soğuk, ıslak/kuru profiller); sakubitril/valsartan, eplerenon, spironolakton, dapagliflozin ve empagliflozin KÜB’leri (AB/İngiltere; başlama koşulları). 2026 kılavuzunda doz tablosu, ilaç başlama/kesme eşikleri ve diüretik dozları doğrulanamadığından bu değerler 2021/2023 kılavuzu, HFA 2019 ve KÜB’e dayanır. Piyasa adları örnek amaçlıdır. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -313,15 +315,15 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
     else{
       pill('rsp',w===2?'Yanıt yetersiz':'Yanıt sınırda',w===2?'var(--high)':'var(--warn)');
       li('rxR',(w===2?'Dozu ':'Dozu artırmayı düşünün: ')+tav+(w===2?' çıkarın':''),'Ardından 2. ve 6. saatte yeniden değerlendirin. Günlük toplam en yüksek doz furosemid 400–600 mg; ağır böbrek yetersizliğinde 1000 mg’a kadar düşünülebilir.');
-      li('rxR','En yüksek dozda yanıt yetersizse: ardışık nefron blokajı','Asetazolamid 500 mg IV günde bir (ADVOR) ya da hidroklorotiyazid 25–100 mg/gün PO (CLOROTIC; böbrek işlevi düştükçe yüksek doz). Loop + tiyazid dirençli ödemde ESC 2021 IIa.');
+      li('rxR','En yüksek dozda yanıt yetersizse: ardışık nefron blokajı','Asetazolamid 500 mg IV günde bir (ADVOR) ya da hidroklorotiyazid 25–100 mg/gün PO (CLOROTIC; böbrek işlevi düştükçe yüksek doz). Kalıcı sıvı yükünde kısa süreli eklenmesi ESC 2023 IIa.');
       li('rxR','Kombinasyonda yakın izlem','K, Na, Mg ve kreatinini sık izleyin; hipokalemi, hiponatremi ve kreatinin artışı sıktır. Yanıt yoksa kardiyoloji ile ultrafiltrasyon/renal replasman düşünün.');
     }
 
     // 4) GDMT
     $('gtb').innerHTML='';$('rxG').innerHTML='';
     var G=[['arni','ARNI'],['raas','ACEi / ARB'],['bb','Beta bloker'],['mra','MRA'],['sglt','SGLT2i']];
-    if(ef!=='r')G=[['sglt','SGLT2i']];
-    var eks=[];if(K===null&&ef==='r')eks.push('K');if(E===null)eks.push('eGFR');if(S===null)eks.push('SKB');if(H===null&&ef==='r')eks.push('nabız');
+    if(ef!=='r')G=[['mra','MRA'],['sglt','SGLT2i']];
+    var eks=[];if(K===null)eks.push('K');if(E===null)eks.push('eGFR');if(S===null)eks.push('SKB');if(H===null&&ef==='r')eks.push('nabız');
     var enk=2,say=[0,0,0];
     G.forEach(function(g){var r=durum(g[0],K,E,S,H);say[r.s]++;
       var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td'),c=document.createElement('td');
@@ -331,14 +333,14 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
     if(ef===null){pill('gp','EF’yi seçin','var(--muted)')}
     else if(ef==='r'){
       pill('gp',say[2]?say[2]+' grupta başlamayın':say[1]?say[1]+' grupta dikkat':'Dört gruba da başlanabilir',say[2]?'var(--high)':say[1]?'var(--warn)':'var(--ok)');
-      li('rxG','HFrEF: dört temel grup','ARNI ya da ACEi (ARNI kullanılamazsa ARB) + beta bloker + MRA + SGLT2i. Taburculuk öncesinde başlayın (ESC 2021 Sınıf I).');
-      li('rxG','Hızlı titrasyon','Taburculukta önerilen dozun yarısı, 2 haftada tam doz; ilk 6 haftada sık kontrol (STRONG-HF, ESC 2023 Sınıf I, B).');
+      li('rxG','HFrEF (LVEF < %50): dört temel grup','ARNI ya da ACEi (ikisi de kullanılamazsa ARB) + beta bloker + MRA (spironolakton ya da eplerenon) + SGLT2i; hepsi Sınıf I (ESC 2026). Taburculuk öncesinde başlayın.');
+      li('rxG','Hızlı titrasyon','Taburculukta önerilen dozun yarısı, 2 haftada tam doz; ilk 6 haftada sık kontrol (STRONG-HF). ESC 2026: en az 1–2 haftada bir artırın (Sınıf I, C).');
+      li('rxG','LVEF %45–49 ve VKİ ≥ 30 ise','Semaglutid ya da tirzepatid düşünülmeli (ESC 2026 IIa); diyabet olsun olmasın.');
     }else{
-      var r2=durum('sglt',K,E,S,H);
-      pill('gp',(ef==='m'?'HFmrEF':'HFpEF')+': SGLT2i '+AD[r2.s].toLowerCase(),RENK[r2.s]);
-      li('rxG','Dapagliflozin ya da empagliflozin 10 mg/gün','ESC 2023 odaklı güncelleme: HFmrEF ve HFpEF’te KY yatışı ya da KV ölüm riskini azaltmak için Sınıf I, A.');
-      li('rxG','Konjesyonda diüretik','Sıvı yükünü diüretikle giderin; eşlik eden hastalıkları (hipertansiyon, AF, obezite) tedavi edin.');
-      if(ef==='m')li('rxG','HFmrEF’te diğer gruplar','ACEi, ARB, ARNI, beta bloker ve MRA düşünülebilir (ESC 2021 IIb).');
+      pill('gp',say[2]?'HFpEF: '+say[2]+' grupta başlamayın':say[1]?'HFpEF: '+say[1]+' grupta dikkat':'HFpEF: iki gruba da başlanabilir',say[2]?'var(--high)':say[1]?'var(--warn)':'var(--ok)');
+      li('rxG','HFpEF: MRA + SGLT2i','MRA (spironolakton ya da finerenon) EF’den bağımsız Sınıf I (ESC 2026). Dapagliflozin ya da empagliflozin 10 mg/gün Sınıf I (ESC 2023).');
+      li('rxG','VKİ ≥ 30 ise semaglutid ya da tirzepatid','Belirtili KY, LVEF ≥ %45 ve VKİ ≥ 30’da diyabet olsun olmasın düşünülmeli (ESC 2026 IIa).');
+      li('rxG','Konjesyonda diüretik','Sıvı yükünü diüretikle giderin; eşlik eden hastalıkları (hipertansiyon, AF) tedavi edin. ACEi, ARB ya da ARNI KY yatışını azaltmak için düşünülebilir (ESC 2026 IIb).');
     }
     if(eks.length)li('rxG','Girilmeyen değer: '+eks.join(', '),'Bu değere bağlı eşikler değerlendirilmedi.');
   }

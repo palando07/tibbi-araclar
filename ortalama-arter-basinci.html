@@ -92,7 +92,7 @@ details p{margin:8px 0 0}
     <p class="advice" id="adv"></p>
     <div class="sub"><span>Nabız basıncı</span><b id="pp">–</b></div>
     <p class="f">OAB = diyastolik + (sistolik − diyastolik) / 3</p>
-    <p class="note">Septik şokta hedef OAB ≥ 65 mmHg'dir (Sepsis Yaşatma Kampanyası 2021). Normal aralık yaklaşık 70–100 mmHg.</p>
+    <p class="note">Septik şokta başlangıç hedefi OAB 65 mmHg; 65 yaş ve üstünde 60–65 mmHg (Surviving Sepsis Campaign 2026). Normal aralık yaklaşık 70–100 mmHg.</p>
   </section>
 </div>
 <script>
@@ -107,8 +107,8 @@ details p{margin:8px 0 0}
   function calc(){
     var s=v('sbp'),d=v('dbp');
     if(s===null||d===null||d>s){$('map').textContent='–';$('pp').textContent='–';pill('pl','');$('adv').textContent='Sistolik ve diyastolik basıncı girin.';return}
-    var m=d+(s-d)/3;$('map').textContent=Math.round(m);$('pp').textContent=Math.round(s-d)+' mmHg';
-    if(m<65){pill('pl','Düşük','var(--high)');$('adv').textContent='OAB 65 mmHg altında: organ perfüzyonu yetersiz olabilir. Sıvı ve gerekirse vazopressör ihtiyacını değerlendirin.'}
+    var m=d+(s-d)/3,cross=[65,70,100].some(function(t){return m<t&&Math.round(m)>=t||m>t&&Math.round(m)<=t});$('map').textContent=cross?f1(m):Math.round(m);$('pp').textContent=Math.round(s-d)+' mmHg';
+    if(m<65){pill('pl','Düşük','var(--high)');$('adv').textContent='OAB 65 mmHg altında: organ perfüzyonu yetersiz olabilir. Sıvı ve gerekirse vazopresör ihtiyacını değerlendirin. 65 yaş ve üstünde septik şokta 60–65 mmHg kabul edilir (SSC 2026).'}
     else if(m<70){pill('pl','Sınırda','var(--warn)');$('adv').textContent='Sınırda düşük; yakın izleyin.'}
     else if(m<=100){pill('pl','Normal','var(--ok)');$('adv').textContent=''}
     else{pill('pl','Yüksek','var(--warn)');$('adv').textContent='OAB yüksek.'}

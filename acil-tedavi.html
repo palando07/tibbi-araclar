@@ -128,7 +128,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
   </section>
 
   <p class="note">Tablo değiştirildiğinde alanlara o tablo için örnek değerler gelir; kendi hastanızın değerlerini girin.</p>
-  <p class="note">Kaynaklar: UK Kidney Association 2026 güncellemesi (hiperkalemi); TEMD Diabetes Mellitus Kılavuzu 2026 ve ADA/EASD/JBDS/AACE/DTS 2024 hiperglisemik kriz uzlaşısı (DKA); ADA Standards of Care 2025 (hipoglisemi); ESE/ESICM/ERA-EDTA 2014 ve Society for Endocrinology 2022 (hiponatremi); TEMD Osteoporoz ve Metabolik Kemik Hastalıkları Kılavuzu 2025 (hiperkalsemi); Endocrine Society (adrenal kriz). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
+  <p class="note">Kaynaklar: UK Kidney Association 2026 güncellemesi (hiperkalemi); TEMD Diabetes Mellitus Kılavuzu 2026 ve ADA/EASD/JBDS/AACE/DTS 2024 hiperglisemik kriz uzlaşısı (DKA); ADA Standards of Care 2026, Bölüm 6 (hipoglisemi); ESE/ESICM/ERA-EDTA 2014 ve Society for Endocrinology 2022 (hiponatremi); TEMD Osteoporoz ve Metabolik Kemik Hastalıkları Kılavuzu 2025 (hiperkalsemi); Endocrine Society (adrenal kriz). Hastanenizin protokolüyle karşılaştırın. Bu araç klinik karar desteği içindir.</p>
 </div>
 <script>
 (function(){
@@ -176,14 +176,14 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     var s=[],G=p.glu;
     if(G!==null&&G>=70)return{s:[['Kan şekeri '+G+' mg/dL: hipoglisemi yok','Belirti varsa tekrar ölçün.']],n:[]};
     var lvl=G===null?'':G<54?' (düzey 2, klinik olarak anlamlı)':' (düzey 1)';
-    if(!p.bil){s.push(['Bilinç açık: 15–20 g hızlı emilen karbonhidrat ağızdan'+lvl,'Ör. 3–4 glukoz tableti, 150–200 mL meyve suyu veya 3 tatlı kaşığı şekerli su.']);
+    if(!p.bil){s.push(['Bilinç açık: 15 g glukoz ağızdan'+lvl,'Tercih glukozdur (ör. 4 g\'lık 4 glukoz tableti); yoksa glukoz içeren herhangi bir karbonhidrat (150 mL meyve suyu veya suda eritilmiş 3 tatlı kaşığı şeker). İlk tedavide yağlı veya proteinli besinlerden kaçının.']);
       s.push(['15 dakika sonra tekrar ölçün','Hâlâ < 70 mg/dL ise aynı dozu tekrarlayın. Düzelince kompleks karbonhidratlı ara öğün veya yemek verin.']);}
-    else{s.push(['Bilinç bozuk veya yutamıyor: %50 dekstroz 50 mL (25 g) IV','Ya da %10 dekstroz 150–250 mL IV. Damar yolu yoksa glukagon 1 mg IM/SC (veya 3 mg intranazal).']);
+    else{s.push(['Bilinç bozuk veya yutamıyor (düzey 3): %50 dekstroz 50 mL (25 g) IV','Ya da %10 dekstroz 150–250 mL IV. Damar yolu yoksa glukagon 1 mg IM/SC (veya 3 mg intranazal).']);
       s.push(['Ardından %10 dekstroz infüzyonu 50–100 mL/saat','Hasta yiyebilene ve kan şekeri stabil olana kadar.']);
       s.push(['Alkolizm veya malnütrisyon şüphesinde tiamin 100 mg IV','Glukozla birlikte veya hemen önce.']);}
     if(p.su)s.push(['Sülfonilüreye bağlı: en az 24 saat (gliklazid/glibenklamidde 72 saate kadar) izlem','Dirençli olgularda oktreotid 50–100 µg SC 6–8 saatte bir. Glukagon tek başına önerilmez.']);
-    s.push(['Nedeni bulun ve tedaviyi düzeltin','Öğün atlama, insülin dozu, böbrek veya karaciğer yetmezliği, sepsis, alkol, adrenal yetmezlik. İnsülin kullanan hastada dozu %10–20 azaltın.']);
-    return{s:s,n:['Kan şekerini 15 dakika sonra, sonra 1 saat boyunca sık, ardından 2–4 saatte bir izleyin.','Gece hipoglisemisinde bazal insülini gözden geçirin.','Hastaya ve yakınına hipoglisemi belirtileri ve 15-15 kuralı anlatılmalı.']}}},
+    s.push(['Nedeni bulun ve tedaviyi düzeltin','Öğün atlama, insülin dozu, böbrek veya karaciğer yetmezliği, sepsis, alkol, adrenal yetmezlik. İnsülin kullanan hastada dozu %10–20 azaltın. Düzey 2 veya 3 hipoglisemi tedavi planının gözden geçirilmesini gerektirir (gerekirse ilacı azaltın ya da değiştirin).']);
+    return{s:s,n:['Kan şekerini 15 dakika sonra, sonra 1 saat boyunca sık, ardından 2–4 saatte bir izleyin.','Gece hipoglisemisinde bazal insülini gözden geçirin.','Hastaya ve yakınına hipoglisemi belirtileri ve 15-15 kuralı anlatılmalı; insülin kullanan veya hipoglisemi riski yüksek hastaya taburculukta glukagon reçete edin.']}}},
   hna:{t:'Semptomatik hiponatremi',f:['na','wt'],o:['ag','ods'],run:function(p){
     var s=[],N=p.na,lim=p.ods?8:10;
     if(N!==null&&N>=135)return{s:[['Sodyum '+N+' mEq/L: hiponatremi yok','']],n:[]};
