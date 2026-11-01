@@ -30,6 +30,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | NEWS2 erken uyarı skoru | `news2.html` |
 | Hakkında ve paylaş (QR, kaynaklar, veri gizliliği) | `hakkinda.html` |
 | Ampirik antibiyotik (10 sık enfeksiyon, risk ve alerjiye göre) | `ampirik-antibiyotik.html` |
+| Antibiyotik süresi (enfeksiyona göre toplam süre, kesme, IV→oral geçiş) | `antibiyotik-suresi.html` |
 | CURB-65 | `curb-65.html` |
 | qSOFA | `qsofa.html` |
 | Glasgow-Blatchford | `glasgow-blatchford.html` |
@@ -54,6 +55,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Nöbet takip listesi: menüde yok, ayrı uygulama (nobet.webmanifest; veriler yalnız cihazda, localStorage) | `nobet-listesi.html` |
 | Birim çevirici (konvansiyonel ↔ SI, mEq ↔ mg) | `birim-cevirici.html` |
 | Normal değerler (86 test, erişkin referans aralıkları) | `normal-degerler.html` |
+| Hipertansiyon tedavisi (KB sınıfı ve hedef, basamaklı tedavi dozları, ESC 2024, AHA/ACC 2025) | `hipertansiyon-tedavisi.html` |
 | Kalp yetersizliği (IV diüretik dozu, yanıt kontrolü, GDMT, ESC 2021/2023) | `kalp-yetersizligi.html` |
 | Lipid tedavisi (risk kategorisi, LDL hedefi, statin–ezetimib–PCSK9, ESC/EAS 2019, ESC 2025) | `lipid-tedavisi.html` |
 | DKA ve HHS (tanı, saatlik sıvı/insülin/K, çözülme, ADA/EASD/JBDS 2024) | `dka-hhs.html` |

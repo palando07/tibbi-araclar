@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hipertansiyon Tedavisi</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartları, sonra sonuç kartları */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 10px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.seg.wrapseg{flex-wrap:wrap}
+.seg.wrapseg button{flex:1 1 30%}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub span{min-width:0}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sub b.w{white-space:normal;text-align:right;font-family:var(--font-body)}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+table.t td.why{font-size:.82rem;color:var(--muted)}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.st{display:inline-block;padding:2px 9px;border-radius:999px;font-weight:700;font-size:.78rem;color:#fff;white-space:nowrap}
+.warnbox{border-left:4px solid var(--high);background:var(--bg);padding:10px 12px;border-radius:6px;font-size:.88rem;margin:0}
+.warnbox a,.advice a,.note a{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body data-ornek-secim="tx">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Hipertansiyon Tedavisi</h1>
+    <p>Ofis KB’ye göre sınıf ve hedef, ilaç kararı, basamaklı tedavi dozları, K, eGFR ve nabıza göre ilaç uyarıları, dirençli hipertansiyon</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="sbp">Ofis sistolik KB <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="decimal" step="any" value="152"></div>
+      <div class="field"><label for="dbp">Ofis diyastolik KB <span>mmHg</span></label><input id="dbp" data-hasta="dbp" type="number" inputmode="decimal" step="any" value="94"></div>
+      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="any" value="58"></div>
+      <div class="field"><label for="hr">Nabız <span>/dk</span></label><input id="hr" data-hasta="nabiz" type="number" inputmode="decimal" step="any" value="72"></div>
+      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="4.6"></div>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" data-hasta="egfr" type="number" inputmode="decimal" step="any" value="52"></div>
+      <div class="field"><label for="risk">10 yıllık KV risk <span>%, PREVENT ya da SCORE2</span></label><input id="risk" data-aralik="0-100 %" type="number" inputmode="decimal" step="any" value="12"></div>
+    </div>
+    <p class="note">KB: doğru teknikle, oturarak, en az iki ölçümün ortalaması; tanıyı ev ya da ayaktan KB ölçümüyle doğrulayın (ESC 2024). Risk yüzdesini PREVENT aracında hesaplayıp buraya girin; bu sayfa riski hesaplamaz. ESC eşiği SCORE2/SCORE2-OP, AHA/ACC eşiği PREVENT için verilmiştir.</p>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="kvh"><span class="txt">Aterosklerotik KV hastalık<small>KAH, MI, inme/GİA, periferik arter hastalığı</small></span></label>
+      <label class="item"><input type="checkbox" id="dm"><span class="txt">Diyabet</span></label>
+      <label class="item"><input type="checkbox" id="alb"><span class="txt">Albüminüri<small>İdrar albümin/kreatinin ≥ 30 mg/g; eGFR &lt; 60 girilirse KBH kabul edilir</small></span></label>
+      <label class="item"><input type="checkbox" id="hod"><span class="txt">Hedef organ hasarı ya da ailesel hiperkolesterolemi<small>Sol ventrikül hipertrofisi, retinopati, arter sertliği</small></span></label>
+      <label class="item"><input type="checkbox" id="ky"><span class="txt">Kalp yetersizliği</span></label>
+      <label class="item"><input type="checkbox" id="kir"><span class="txt">Orta–ağır kırılganlık, belirtili ortostatik hipotansiyon ya da sınırlı yaşam beklentisi<small>Yaşam beklentisi &lt; 3 yıl</small></span></label>
+      <label class="item"><input type="checkbox" id="gebe"><span class="txt">Gebelik ya da gebelik planı</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>1. Sınıf ve hedef</h2>
+    <div class="res"><span class="num" id="kbo">–</span><span class="of">mmHg</span><span class="pill" id="escp"></span></div>
+    <div class="sub"><span>ESC 2024</span><b class="w" id="esc">–</b></div>
+    <div class="sub"><span>AHA/ACC 2025</span><b class="w" id="aha">–</b></div>
+    <p class="warnbox" id="acil" hidden></p>
+    <div class="sub"><span>Hedef</span><b class="w" id="hdf">–</b></div>
+    <div class="sub"><span>Şu anki SKB</span><b class="w" id="hdd">–</b></div>
+    <p class="note">ESC 2024: optimal değil (non-elevated) &lt; 120/70; yükselmiş KB 120–139 / 70–89; hipertansiyon ≥ 140/90 mmHg. AHA/ACC 2025: normal &lt; 120/80; yükselmiş 120–129 / &lt; 80; evre 1 130–139 / 80–89; evre 2 ≥ 140/90 mmHg. SKB ve DKB farklı sınıfa düşerse yüksek olan sınıf alınır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>2. İlaç kararı</h2>
+    <div class="res"><span class="pill" id="krp"></span></div>
+    <ol class="rec" id="kr"></ol>
+  </section>
+
+  <section class="card">
+    <h2>3. Basamaklı tedavi</h2>
+    <span class="lbl">Şu an kullandığı tedavi</span>
+    <div class="seg wrapseg"><button type="button" data-g="tx" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="tx" data-v="1" aria-pressed="false">Tek ilaç</button><button type="button" data-g="tx" data-v="2" aria-pressed="false">İkili</button><button type="button" data-g="tx" data-v="3" aria-pressed="false">Üçlü, tam doz</button><button type="button" data-g="tx" data-v="4" aria-pressed="false">Üçlü + spironolakton</button></div>
+    <p class="note">İkili: ACEi ya da ARB + KKB ya da tiyazid benzeri diüretik. Üçlü: ACEi ya da ARB + KKB + tiyazid benzeri diüretik.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Sonraki adım</h2>
+    <div class="res"><span class="pill" id="bsp"></span></div>
+    <ol class="rec" id="bs"></ol>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>4. K, eGFR, nabız ve yaşa göre ilaç uyarıları</h2>
+    <div class="res"><span class="pill" id="gp"></span></div>
+    <table class="t">
+      <thead><tr><th>İlaç</th><th>Durum</th><th>Neden</th></tr></thead>
+      <tbody id="gtb"></tbody>
+    </table>
+    <p class="note">Başlamayın: değer kontrendikasyon ya da kesme eşiğinin ötesinde. Dikkat: dikkatli olun, düşük dozla başlayın ve sık izleyin ya da gereken değer girilmemiş. Eşikler Kalp Yetersizliği ve Hiperkalemi sayfalarıyla aynıdır.</p>
+  </section>
+
+  <section class="card">
+    <h2>Kreatinin izlemi</h2>
+    <div class="grid">
+      <div class="field"><label for="cr0">Başlamadan önce kreatinin <span>mg/dL</span></label><input id="cr0" data-aralik="0.1-25 mg/dL" type="number" inputmode="decimal" step="any"></div>
+      <div class="field"><label for="cr1">Kontrol kreatinin <span>mg/dL</span></label><input id="cr1" data-hasta="kreatinin" type="number" inputmode="decimal" step="any"></div>
+    </div>
+    <p class="note">ACEi/ARB ya da MRA başladıktan ya da doz arttıktan sonra 2–4 hafta içinde KB, kreatinin ve K bakın; eGFR düşük ya da K yüksekse daha erken (KDIGO 2021). Spironolakton KÜB’ü 1. haftada kontrol önerir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Kreatinin artışı</h2>
+    <div class="res"><span class="num" id="cro">–</span><span class="of">% artış</span><span class="pill" id="crp"></span></div>
+    <p class="advice" id="cra"></p>
+  </section>
+
+  <section class="card">
+    <h2>Başlangıç ve en yüksek dozlar</h2>
+    <table class="t">
+      <thead><tr><th>İlaç</th><th>Başlangıç</th><th>En yüksek</th></tr></thead>
+      <tbody>
+        <tr><td colspan="3"><b>ACE inhibitörü</b></td></tr>
+        <tr><td>Perindopril arjinin</td><td>5 mg × 1 <small>Yaşlı, diüretik alan: 2,5 mg</small></td><td>10 mg × 1 <small>KlKr 30–60: 2,5 mg/gün</small></td></tr>
+        <tr><td>Ramipril</td><td>2,5 mg × 1 <small>Diüretik alan, yaşlı: 1,25 mg</small></td><td>10 mg/gün <small>KlKr &lt; 60: en çok 5 mg</small></td></tr>
+        <tr><td>Lisinopril</td><td>10 mg × 1 <small>Diüretik alan: 2,5–5 mg; KlKr 10–30: 2,5–5 mg</small></td><td>40 mg × 1 <small>Olağan idame 20 mg</small></td></tr>
+        <tr><td colspan="3"><b>ARB</b></td></tr>
+        <tr><td>Valsartan</td><td>80 mg × 1</td><td>320 mg × 1</td></tr>
+        <tr><td>Kandesartan</td><td>8 mg × 1 <small>Böbrek yetersizliği, hacim azlığı: 4 mg</small></td><td>32 mg × 1</td></tr>
+        <tr><td>Olmesartan</td><td>10 mg × 1</td><td>40 mg × 1 <small>KlKr 20–60: en çok 20 mg; &lt; 20 önerilmez</small></td></tr>
+        <tr><td>Telmisartan</td><td>40 mg × 1 <small>20 mg yetebilir; ağır böbrek yetersizliği: 20 mg</small></td><td>80 mg × 1</td></tr>
+        <tr><td colspan="3"><b>Kalsiyum kanal blokeri</b></td></tr>
+        <tr><td>Amlodipin</td><td>5 mg × 1</td><td>10 mg × 1</td></tr>
+        <tr><td colspan="3"><b>Tiyazid / tiyazid benzeri diüretik</b></td></tr>
+        <tr><td>İndapamid <small>Fludex, Flupamid, Indurin</small></td><td>2,5 mg × 1 <small>ya da uzun salımlı 1,5 mg × 1</small></td><td>Aynı <small>Daha yüksek doz KB’yi daha çok düşürmez; KlKr &lt; 30 kontrendike</small></td></tr>
+        <tr><td>Klortalidon</td><td>12,5–25 mg × 1</td><td>50 mg × 1 <small>CLICK: eGFR 15–30’da 12,5 mg’dan 50 mg’a</small></td></tr>
+        <tr><td>Hidroklorotiyazid</td><td>12,5 mg × 1</td><td>25 mg × 1 <small>Doğrulanmadı: tek bileşenli KÜB’e ulaşılamadı</small></td></tr>
+        <tr><td colspan="3"><b>Dirençli hipertansiyon</b></td></tr>
+        <tr><td>Spironolakton <small>Aldactone, Spylacton</small></td><td>25 mg × 1</td><td>50 mg × 1</td></tr>
+        <tr><td>Bisoprolol</td><td>5 mg × 1</td><td>10 mg × 1 <small>KÜB en çok 20 mg; KlKr &lt; 20: en çok 10 mg</small></td></tr>
+        <tr><td>Nebivolol</td><td>5 mg × 1 <small>&gt; 65 yaş, böbrek yetersizliği: 2,5 mg</small></td><td>5 mg × 1 <small>Hipertansiyonda KÜB dozu</small></td></tr>
+        <tr><td>Doksazosin uzun salımlı</td><td>4 mg × 1</td><td>8 mg × 1</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Dozlar KÜB’den (AB/İngiltere); böbrek eşikleri KÜB’de kreatinin klerensine (KlKr, mL/dk) göredir. “Düşük doz” kombinasyon, iki ilacın başlangıç dozlarıdır. ACEi ile ARB birlikte verilmez (KDIGO 2021).</p>
+  </section>
+
+  <section class="card">
+    <h2>Özel durumlar</h2>
+    <ul class="chk">
+      <li><b>KBH ve albüminüri:</b> albüminüride (A2–A3) ACEi ya da ARB en yüksek tolere edilen dozda (KDIGO 2021; diyabette 1B). eGFR &gt; 20 ise SGLT2i önerilir (ESC 2024, Sınıf I). Hedef: KDIGO 2021 standart ölçümle SKB &lt; 120 (tolere edilirse), AHA/ACC 2025 &lt; 130/80. eGFR &lt; 30’da tiyazid yerine kıvrım diüretiği ya da klortalidon.</li>
+      <li><b>Diyabet:</b> hedef &lt; 130/80 (ADA 2026); albüminüride ACEi ya da ARB.</li>
+      <li><b>KAH ve kalp yetersizliği:</b> özgün endikasyon varsa beta bloker ilk basamak ilaçlara eklenir (ESC 2024). KY’de ilaç ve dozlar için <a href="kalp-yetersizligi.html">Kalp Yetersizliği</a> sayfası.</li>
+      <li><b>Gebelik ya da gebelik planı:</b> ACEi, ARB, MRA ve atenolol kullanılmaz; labetalol ya da uzun salımlı nifedipin tercih edilir (AHA/ACC 2025). Gebelik anlaşılınca ACEi hemen kesilir (KÜB).</li>
+      <li><b>≥ 85 yaş ya da kırılgan:</b> önce uzun etkili DHP-KKB ya da RAASi, gerekirse düşük doz diüretik; özgün endikasyon yoksa beta ya da alfa bloker değil (ESC 2024, IIa). Başlamadan önce ortostatik hipotansiyona bakın. İyi tolere edilirse tedavi 85 yaştan sonra da ömür boyu sürer.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Dirençli hipertansiyon ve ikincil nedenler</h2>
+    <ul class="chk">
+      <li><b>Tanım:</b> en az biri diüretik olan üç ilaç en yüksek (tolere edilen) dozda iken ofis KB ≥ 140/90; ev ya da ayaktan ölçümle doğrulanmış ve uyum kontrol edilmiş olmalı. eGFR &lt; 30’da tanıdan önce yeterli dozda kıvrım diüretiği kullanılmalı.</li>
+      <li><b>Yalancı direnç:</b> yanlış ölçüm (manşet boyu), beyaz önlük etkisi, ilaç uyumsuzluğu, yetersiz doz, yüksek tuz ve alkol.</li>
+      <li><b>Primer aldosteronizm:</b> aldosteron ve renin bakın. ESC 2024 doğrulanmış hipertansiyonu olan her erişkinde düşünülmesini önerir (IIa). Dirençli hipertansiyonda ve hipokalemide K düzeyinden bağımsız tarayın.</li>
+      <li><b>Obstrüktif uyku apnesi:</b> horlama, gündüz uykululuğu, obezite (STOP-Bang).</li>
+      <li><b>Renal arter darlığı:</b> ACEi/ARB sonrası kreatinin &gt; %30 artışı, ani akciğer ödemi, tek taraflı küçük böbrek, üfürüm, fibromüsküler displazi kuşkusu (genç kadın).</li>
+      <li><b>İlaçlar ve maddeler:</b> NSAİİ, oral kontraseptif, kortikosteroid, dekonjestan, eritropoetin, kalsinörin inhibitörü, VEGF inhibitörü, amfetamin ve kokain, meyan kökü, alkol.</li>
+      <li><b>Diğer:</b> feokromositoma, Cushing sendromu, tiroid ve paratiroid hastalığı, aort koarktasyonu. 40 yaş altında tanı konduysa ikincil nedenleri tarayın (ESC 2024).</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: McEvoy JW ve ark. 2024 ESC Guidelines for the management of elevated blood pressure and hypertension, Eur Heart J 2024;45:3912–4018, doi:10.1093/eurheartj/ehae178 (kategoriler, 120–129 SKB hedefi ve ALARA, DKB 70–79 IIb; yükselmiş KB’de 3 ay yaşam tarzından sonra ≥ 130/80 ve yüksek riskte ilaç I, A; ≥ 140/90’da hemen ilaç I, A; ≥ 85 yaş, kırılganlık, ortostatik hipotansiyon ve sınırlı yaşam beklentisinde ≥ 140/90’dan itibaren IIa; çoğu hastada düşük doz ikili, tercihen tek hap I; ≥ 85 yaş ve kırılganlıkta tekli tedavi seçeneği; KBH’de eGFR &gt; 20 ise SGLT2i I, A; doğrulanmış hipertansiyonda aldosteron/renin IIa; dirençli hipertansiyonda spironolakton, tolere edilmezse eplerenon, sonra beta bloker ya da alfa bloker; renal denervasyon IIb). ESC 2024 tam metnine yalnız kısmen ulaşılabildi; ilaç bölümü ESC’nin yayımladığı özetlerden (ESC tablo 3–4, Eur Heart J Cardiovasc Pharmacother 2025;11:7, ESC CardioPractice 2025 “What is new in resistant hypertension”) doğrulandı. Jones DW ve ark. 2025 AHA/ACC High Blood Pressure Guideline, Hypertension 2025;82:e212–e316, doi:10.1161/HYP.0000000000000249 (evreler; ≥ 140/90 ya da ≥ 130/80 ile KVH, diyabet, KBH veya PREVENT ≥ %7,5’te ilaç; düşük riskte 3–6 ay yaşam tarzı; hedef &lt; 130/80; evre 2’de iki ilaç, tercihen tek hap; gebelikte labetalol ya da uzun salımlı nifedipin, ACEi/ARB/MRA/atenolol değil). KDIGO 2021 KBH’de kan basıncı kılavuzu, Kidney Int 2021;99(3S):S1–S87 (SKB &lt; 120 2B; RAASi 3.2.1–3.2.3; 2–4 haftada KB, kreatinin ve K; 4 haftada kreatinin artışı %30’u geçmedikçe sürdürme; hiperkalemiyi önce K düşüren önlemlerle yönetme; ACEi + ARB + DRI birlikte değil). ADA Standards of Care in Diabetes—2026, Bölüm 10, Diabetes Care 2026;49(Suppl 1), doi:10.2337/dc26-S010. Türk Hipertansiyon Uzlaşı Raporu 2025 (TİHUD, THBHD, TEMD, TND, TKD, TAHUD, AGD; ACEi/ARB + KKB ya da diüretik ikili, tek tablet; eGFR &lt; 30’da kıvrım diüretiği ya da klortalidon; ACEi/ARB sonrası kreatinin &gt; %30 artışında ikincil neden araştırma; dirençli hipertansiyonda K’den bağımsız aldosteron/renin; eplerenon 50–100 mg). Agarwal R ve ark. CLICK, N Engl J Med 2021;385:2507–19 (eGFR 15–30, klortalidon 12,5–50 mg, 24 saatlik SKB’de plaseboya göre −10,5 mmHg; hipokalemi ve geri dönüşlü kreatinin artışı). Williams B ve ark. PATHWAY-2, Lancet 2015;386:2059–68 (spironolakton 25–50 mg, bisoprolol 5–10 mg, doksazosin uzun salımlı 4–8 mg; eGFR &lt; 45 dışlandı). KÜB/SmPC (emc, İngiltere): Coversyl Arginine, ramipril, lisinopril, valsartan, Amias (kandesartan), olmesartan, Micardis (telmisartan), amlodipin, indapamid 2,5 mg ve 1,5 mg uzun salımlı, Hylaton (klortalidon), Aldactone, bisoprolol 10 mg, Nebilet, Cardura XL. Spironolaktonda K ≤ 4,5 eşiği ESC 2024 tam metninde doğrulanamadı; ESC CardioPractice 2025 yazısından alındı; eGFR 30–45 aralığındaki “dikkat”, PATHWAY-2’nin eGFR &lt; 45’i dışlamasına dayanır. Piyasa adları örnek amaçlıdır. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var ck=function(id){return $(id).checked};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  // Yuvarlanmış gösterim bir eşiğin öbür yanına düşüyorsa bir ondalık daha göster
+  function fe(x,d,es){for(var k=d;k<d+3;k++){var r=Math.round(x*Math.pow(10,k))/Math.pow(10,k),ayni=es.every(function(e){return (r>e)===(x>e)&&(r<e)===(x<e)});if(ayni)return fm(x,k)}return fm(x,d+3)}
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  var RENK=['var(--ok)','var(--warn)','var(--high)'],DUR=['Başlanabilir','Dikkat','Başlamayın'];
+
+  // İlaç uyarıları: ham değerle karşılaştırılır; girilmeyen değer en az Dikkat
+  function durum(g,K,E,H,yasli,gebe){
+    var s=0,n=[];function e(l,t){if(l>s)s=l;n.push(t)}
+    var ger={raas:[K,'K',E,'eGFR'],tiy:[K,'K',E,'eGFR'],spi:[K,'K',E,'eGFR'],bb:[H,'nabız']}[g],eks=[];
+    for(var i=0;i<ger.length;i+=2)if(ger[i]===null)eks.push(ger[i+1]);
+    if(eks.length)e(1,eks.join(', ')+' girilmedi: değerlendirilmedi');
+    if(g==='raas'){
+      if(K!==null){if(K>5.5)e(2,'K '+fe(K,1,[5.5])+' > 5,5');else if(K>5)e(1,'K '+fe(K,1,[5])+' > 5,0: önce K’yi düşürün, sık izleyin')}
+      if(E!==null&&E<30)e(1,'eGFR '+fe(E,0,[30])+' < 30: düşük dozla başlayın, kreatinin ve K’yi erken kontrol edin; KDIGO’ya göre eGFR < 30’da da kullanılır');
+      if(gebe)e(2,'Gebelik/gebelik planı: kontrendike');
+    }else if(g==='tiy'){
+      if(E!==null&&E<30)e(1,'eGFR '+fe(E,0,[30])+' < 30: indapamid ve HCTZ KÜB’de kontrendike, etkisi azalır; klortalidon (CLICK) ya da kıvrım diüretiği');
+      if(K!==null&&K<3.5)e(1,'K '+fe(K,1,[3.5])+' < 3,5: önce hipokalemiyi düzeltin');
+    }else if(g==='spi'){
+      if(K!==null){if(K>5)e(2,'K '+fe(K,1,[5])+' > 5,0');else if(K>4.5)e(1,'K '+fe(K,1,[4.5])+' > 4,5: hiperkalemi riski, sık izleyin')}
+      if(E!==null){if(E<30)e(2,'eGFR '+fe(E,0,[30])+' < 30');else if(E<45)e(1,'eGFR '+fe(E,0,[45])+' < 45: çalışma verisi yok (PATHWAY-2), 1. haftada K ve kreatinin')}
+      if(gebe)e(2,'Gebelik/gebelik planı: MRA kullanılmaz');
+    }else if(g==='bb'){
+      if(H!==null&&H<60)e(1,'Nabız '+fe(H,0,[60])+' < 60: bradikardi; nebivolol KÜB’de başlamadan önce nabız < 60 kontrendike');
+      if(yasli)e(1,'≥ 85 yaş/kırılgan: özgün endikasyon yoksa tercih edilmez');
+    }
+    return {s:s,n:n};
+  }
+
+  function calc(){
+    var S=v('sbp'),D=v('dbp'),A=v('yas'),H=v('hr'),K=v('k'),E=v('egfr'),R=v('risk');
+    var kvh=ck('kvh'),dm=ck('dm'),alb=ck('alb'),hod=ck('hod'),ky=ck('ky'),kir=ck('kir'),gebe=ck('gebe');
+    var kbh=alb||(E!==null&&E<60),y85=A!==null&&A>=85,yasli=y85||kir;
+    var kb=S!==null&&D!==null;
+
+    // 1) Sınıf
+    var esc=null,aha=null;
+    $('acil').hidden=true;
+    if(!kb){$('kbo').textContent='–';pill('escp','SKB ve DKB girin','var(--muted)');$('esc').textContent='–';$('aha').textContent='–'}
+    else{
+      $('kbo').textContent=fm(S,0)+'/'+fm(D,0);
+      esc=(S>=140||D>=90)?2:(S>=120||D>=70)?1:0;
+      aha=(S>=140||D>=90)?3:(S>=130||D>=80)?2:S>=120?1:0;
+      pill('escp',['Optimal değil','Yükselmiş KB','Hipertansiyon'][esc],RENK[esc]);
+      $('esc').textContent=['Optimal değil (non-elevated): < 120/70','Yükselmiş KB: 120–139 / 70–89','Hipertansiyon: ≥ 140/90'][esc];
+      $('aha').textContent=['Normal: < 120/80','Yükselmiş: 120–129 / < 80','Evre 1: 130–139 / 80–89','Evre 2: ≥ 140/90'][aha];
+      if(S>=180||D>=110){$('acil').hidden=false;$('acil').innerHTML='KB ≥ 180/110: akut hedef organ hasarı açısından değerlendirin (göğüs ağrısı, nörolojik bulgu, akciğer ödemi, görme bozukluğu). Hasar varsa <a href="hipertansif-acil.html">Hipertansif Acil</a> sayfası.'}
+    }
+    // Hedef
+    var h=[];
+    if(gebe)h.push('Gebelik: obstetrik ile kişisel hedef');
+    else if(yasli)h.push('ESC 2024: makul olan en düşük (ALARA); 120–129 zorlanmaz');
+    else h.push('ESC 2024: SKB 120–129, DKB 70–79 (tolere edilirse)');
+    if(!gebe){h.push('AHA/ACC 2025: < 130/80');if(kbh)h.push('KBH, KDIGO 2021: SKB < 120 (standart ölçüm, tolere edilirse)');if(dm)h.push('Diyabet, ADA 2026: < 130/80')}
+    if(A===null&&!kir)h.push('Yaş girilmedi: ≥ 85 yaş için gevşek hedef değerlendirilmedi');
+    $('hdf').textContent=h.join(' · ');
+    if(S===null)$('hdd').textContent='SKB girilmedi';
+    else if(gebe||yasli)$('hdd').textContent=fm(S,0)+' mmHg';
+    else $('hdd').textContent=fm(S,0)+' mmHg: '+(S>=130?'hedefin üstünde':S>=120?'ESC hedef aralığında':'120’nin altında; baş dönmesi ve ortostatik belirtiyi sorgulayın');
+
+    // 2) İlaç kararı
+    $('kr').innerHTML='';
+    var ilac=null,tekli=false,riskStr=R===null?null:fe(R,1,[7.5,10]);
+    if(!kb){pill('krp','SKB ve DKB girin','var(--muted)')}
+    else{
+      // ESC
+      if(esc===2){ilac=true;li('kr','ESC 2024: hemen ilaç + yaşam tarzı','Doğrulanmış KB ≥ 140/90 mmHg: riskten bağımsız (I, A).')}
+      else if(esc===1){
+        if(yasli){ilac=false;li('kr','ESC 2024: ilaç önerilmez',(y85?'≥ 85 yaş':'Kırılganlık, ortostatik hipotansiyon ya da sınırlı yaşam beklentisi')+': ilaç ancak ≥ 140/90’dan itibaren düşünülür (IIa).')}
+        else{
+          var yuk=kvh||dm||kbh||hod||(R!==null&&R>=10),ned=[];
+          if(kvh)ned.push('KVH');if(dm)ned.push('diyabet');if(kbh)ned.push('KBH');if(hod)ned.push('hedef organ hasarı/AH');if(R!==null&&R>=10)ned.push('risk %'+riskStr+' ≥ %10');
+          if(yuk){
+            if(S>=130||D>=80){ilac=true;tekli=true;li('kr','ESC 2024: 3 ay yaşam tarzı, KB ≥ 130/80 sürerse ilaç','Yüksek risk ('+ned.join(', ')+') (I, A). Bu grupta tek ilaçla başlamak bir seçenektir.')}
+            else{ilac=false;li('kr','ESC 2024: yaşam tarzı; ilaç gerekmez','Yüksek risk ('+ned.join(', ')+'), KB < 130/80. Bir yıl içinde yeniden ölçün.')}
+          }else if(R===null){li('kr','ESC 2024: 10 yıllık risk girilmedi','Yükselmiş KB’de ilaç kararı riske bağlıdır. Risk ≥ %10 ya da yüksek risk durumu varsa ve 3 ay yaşam tarzından sonra KB ≥ 130/80 ise ilaç.')}
+          else{ilac=false;li('kr','ESC 2024: yalnız yaşam tarzı','Risk %'+riskStr+' < %10 ve yüksek risk durumu yok (I, B). Bir yıl içinde KB ve riski yeniden değerlendirin.')}
+        }
+      }else{ilac=false;li('kr','ESC 2024: ilaç önerilmez','KB < 120/70.')}
+      // AHA/ACC
+      if(aha===3)li('kr','AHA/ACC 2025: ilaç + yaşam tarzı','Evre 2: farklı sınıftan iki ilaç, tercihen tek hapta.');
+      else if(aha===2){
+        var ay=kvh||dm||kbh||(R!==null&&R>=7.5);
+        if(ay)li('kr','AHA/ACC 2025: ilaç + yaşam tarzı','Evre 1 ve '+(kvh?'KVH':dm?'diyabet':kbh?'KBH':'PREVENT %'+riskStr+' ≥ %7,5')+'.');
+        else if(R===null)li('kr','AHA/ACC 2025: 10 yıllık risk girilmedi','Evre 1’de PREVENT ≥ %7,5, KVH, diyabet ya da KBH varsa ilaç; yoksa 3–6 ay yaşam tarzı.');
+        else li('kr','AHA/ACC 2025: 3–6 ay yaşam tarzı','PREVENT %'+riskStr+' < %7,5. KB ≥ 130/80 sürerse ilaç.');
+      }else li('kr','AHA/ACC 2025: yaşam tarzı','İlaç önerilmez.');
+      if(ilac===true)pill('krp',esc===2?'İlaç başlayın':'3 ay yaşam tarzı, sonra ilaç','var(--high)');
+      else if(ilac===false)pill('krp','Şimdilik ilaç yok','var(--ok)');
+      else pill('krp','Risk girilmedi','var(--warn)');
+      li('kr','Yaşam tarzı herkese','Tuz < 5 g/gün, potasyumdan zengin beslenme, düzenli egzersiz, kilo verme, alkolü azaltma, sigarayı bırakma.');
+    }
+
+    // 4) İlaç uyarıları (basamaktan önce: basamak spironolakton durumunu kullanır)
+    $('gtb').innerHTML='';
+    var G=[['raas','ACEi / ARB'],['tiy','Tiyazid / tiyazid benzeri'],['spi','Spironolakton'],['bb','Beta bloker']],say=[0,0,0],sd={};
+    G.forEach(function(g){var r=durum(g[0],K,E,H,yasli,gebe);sd[g[0]]=r.s;say[r.s]++;
+      var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td'),c=document.createElement('td');
+      a.textContent=g[1];var sp=document.createElement('span');sp.className='st';sp.textContent=DUR[r.s];sp.style.background=RENK[r.s];b.appendChild(sp);
+      c.className='why';c.textContent=r.n.length?r.n.join('; '):'Eşik aşılmadı';
+      tr.appendChild(a);tr.appendChild(b);tr.appendChild(c);$('gtb').appendChild(tr)});
+    pill('gp',say[2]?say[2]+' ilaçta başlamayın':say[1]?say[1]+' ilaçta dikkat':'Dört ilaca da başlanabilir',say[2]?'var(--high)':say[1]?'var(--warn)':'var(--ok)');
+
+    // 3) Basamak
+    $('bs').innerHTML='';
+    var tx=segVal('tx'),raas=gebe?'':(kbh||dm?'ACEi ya da ARB (albüminüri/KBH/diyabet: zorunlu bileşen)':'ACEi ya da ARB');
+    if(tx===null){pill('bsp','Mevcut tedaviyi seçin','var(--muted)')}
+    else if(gebe){pill('bsp','Gebelik: uzman','var(--warn)');
+      li('bs','ACEi, ARB, MRA ve atenolol kullanmayın','Labetalol ya da uzun salımlı nifedipin tercih edilir (AHA/ACC 2025). Kullanıyorsa ACEi/ARB’yi kesin; gebelik planlanıyorsa değiştirin. Kadın doğum ile birlikte izleyin.')}
+    else if(tx==='0'){
+      if(ilac===null){pill('bsp',kb?'Önce 10 yıllık riski girin':'SKB ve DKB girin','var(--muted)');li('bs','İlaç kararı verilemedi',kb?'Yükselmiş KB’de ilaç kararı riske bağlıdır; riski girin ya da yüksek risk durumunu işaretleyin.':'Başlangıç tedavisi KB sınıfına göre seçilir.')}
+      else if(ilac===false){pill('bsp','İlaç endikasyonu yok','var(--ok)');li('bs','Yaşam tarzı ve izlem','KB ve riski bir yıl içinde yeniden değerlendirin.')}
+      else if(yasli){pill('bsp','Tek ilaçla başlayın','var(--warn)');
+        li('bs','Uzun etkili DHP-KKB ya da RAASi','Ör. amlodipin 5 mg × 1 ya da ramipril 1,25–2,5 mg × 1 / perindopril arjinin 2,5 mg × 1. Gerekirse düşük doz diüretik ekleyin; beta ve alfa blokerden kaçının (ESC 2024, IIa). Başlamadan önce ortostatik hipotansiyona bakın.')}
+      else if(tekli){pill('bsp','Tek ilaç ya da düşük doz ikili','var(--warn)');
+        li('bs','Yükselmiş KB ve yüksek risk: tek ilaç bir seçenek',raas+', DHP-KKB ya da tiyazid benzeri diüretikten biri, başlangıç dozunda. Hedefe ulaşılmazsa düşük doz ikiliye geçin.')}
+      else{pill('bsp','Düşük doz ikili, tek hap','var(--high)');
+        li('bs','1. basamak: '+raas+' + amlodipin ya da tiyazid benzeri diüretik','Tercihen tek hapta, iki ilacın başlangıç dozunda (ESC 2024, I). Ör. perindopril arjinin 5 mg + amlodipin 5 mg; perindopril arjinin 5 mg + indapamid 1,25 mg; valsartan 80 mg + amlodipin 5 mg; telmisartan 40 mg + amlodipin 5 mg.')}
+      if(ilac===true)li('bs','Kontrol','Her ay KB; hedefe 3 ayda ulaşın. ACEi/ARB başladıysa 2–4 hafta içinde kreatinin ve K.');
+    }else if(tx==='1'){pill('bsp','İkili kombinasyona geçin','var(--warn)');
+      li('bs','2. basamak: '+(raas||'RAASi')+' + KKB ya da tiyazid benzeri diüretik','Tek ilacın dozunu artırmak yerine ikinci sınıfı ekleyin; tercihen tek hap.')}
+    else if(tx==='2'){pill('bsp','Üçlü tedaviye geçin','var(--warn)');
+      li('bs','3. basamak: '+(raas||'RAASi')+' + amlodipin + tiyazid benzeri diüretik','Önce düşük doz üçlü tek hap, sonra en yüksek tolere edilen dozlara (ör. perindopril arjinin 10 mg + amlodipin 10 mg + indapamid 2,5 mg).'+(E!==null&&E<30?' eGFR < 30: indapamid/HCTZ yerine klortalidon 12,5 mg (CLICK) ya da kıvrım diüretiği.':''))}
+    else if(tx==='3'){
+      li('bs','Önce dirençli hipertansiyonu doğrulayın','Ev ya da ayaktan KB, doğru manşet, ilaç uyumu, tuz ve NSAİİ; ikincil nedenleri (aşağıda) tarayın; uzman merkezi düşünün (IIa).');
+      if(sd.spi===2){pill('bsp','Spironolakton uygun değil','var(--high)');
+        li('bs','Spironolakton yerine','K ya da eGFR eşiği aşıldı. Beta bloker (bisoprolol 5 mg → 10 mg) ya da doksazosin uzun salımlı 4 mg → 8 mg. eGFR < 30’da yeterli kıvrım diüretiği ya da klortalidon. Nefroloji/hipertansiyon merkezi.')}
+      else{pill('bsp',sd.spi===1?'Spironolakton: dikkatle':'Spironolakton ekleyin',sd.spi===1?'var(--warn)':'var(--high)');
+        li('bs','4. basamak: spironolakton 25 mg × 1, gerekirse 50 mg','ESC 2024 dirençli hipertansiyonda ilk ek ilaç (PATHWAY-2: plaseboya göre ev SKB −8,7 mmHg). 1. haftada, sonra ilk 3 ay her ay K ve kreatinin.'+(sd.spi===1?' Uyarı tablosuna bakın: K ya da eGFR sınırda.':''))}
+    }else{pill('bsp','Uzman ve ek ilaç','var(--high)');
+      li('bs','Spironolakton tolere edilmezse eplerenon','Eplerenon (Inspra, Epleday) 50–100 mg/gün (Türk Hipertansiyon Uzlaşı 2025).');
+      li('bs','Sonra beta bloker ya da alfa bloker','Bisoprolol 5 mg → 10 mg ya da doksazosin uzun salımlı 4 mg → 8 mg (ESC 2024; PATHWAY-2 dozları).');
+      li('bs','Hipertansiyon merkezi','Uyum (ilaç düzeyi), ikincil nedenler; renal denervasyon düşünülebilir (IIb; eGFR ≥ 40).')}
+    if(tx!==null&&!gebe){
+      if(ky)li('bs','Kalp yetersizliği','İlaç seçimi KY tedavisine göre yapılır: Kalp Yetersizliği sayfası.');
+      if(kvh)li('bs','KAH','Angina ya da MI sonrası beta bloker özgün endikasyondur; ilk basamak ilaçlara eklenir.');
+      if(kbh)li('bs','KBH/albüminüri','RAASi en yüksek tolere edilen dozda; eGFR > 20 ise SGLT2i (ESC 2024, I).');
+    }
+
+    // Kreatinin artışı
+    var c0=v('cr0'),c1=v('cr1');
+    if(c0===null||c1===null||c0<=0){$('cro').textContent='–';pill('crp','','');$('cra').textContent='Başlamadan önceki ve kontrol kreatinini girin.'}
+    else{var p=Math.round((c1-c0)/c0*1e8)/1e6;$('cro').textContent=(p>0?'+':'')+fe(p,0,[0,30]);
+      if(p>30){pill('crp','> %30','var(--high)');$('cra').textContent='Kreatinin 4 hafta içinde %30’dan fazla arttıysa ACEi/ARB’yi gözden geçirin (dozu azaltın ya da kesin), hacim azlığını ve NSAİİ’yi araştırın; renal arter darlığını düşünün (KDIGO 2021, Türk Uzlaşı 2025).'}
+      else{pill('crp','≤ %30','var(--ok)');$('cra').textContent='%30’a kadar artış beklenen hemodinamik etkidir; ACEi/ARB’yi sürdürün ve K’yi izleyin (KDIGO 2021).'}}
+  }
+  seg('tx',calc);
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
