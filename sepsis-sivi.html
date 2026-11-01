@@ -245,7 +245,7 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
         else if(dose>=0.05)pill('ne-p','Olağan aralık','var(--ok)');
         else pill('ne-p','< 0,05: düşük','var(--low)');
       }
-      li(X,'Başlangıç 0,05–0,1 mcg/kg/dk'+(wt>0&&conc?' = '+rate(0.05*wt*60/conc)+' – '+rate(0.1*wt*60/conc):''),'OAB ≥ 65 mmHg hedefine göre titre edin (çoğu protokolde 5–15 dakikada bir; kurum protokolüne bakın). Sıvıyla hedef sağlanamıyorsa veya derin hipotansiyonda sıvıyı beklemeden başlayın.');
+      li(X,'Başlangıç 0,05–0,1 mcg/kg/dk'+(wt>0&&conc?' = '+rate(0.05*wt*60/conc)+' – '+rate(0.1*wt*60/conc):''),'OAB hedefine göre titre edin (başlangıç 65 mmHg; 65 yaş ve üstünde 60–65 mmHg, SSC 2026) (çoğu protokolde 5–15 dakikada bir; kurum protokolüne bakın). Sıvıyla hedef sağlanamıyorsa veya derin hipotansiyonda sıvıyı beklemeden başlayın.');
       if(dose!==null&&dose>=0.25)li(X,'Vazopressin 0,03 U/dk eklemeyi düşünün','SSC 2021: NE’yi daha da artırmak yerine, genellikle NE 0,25–0,5 mcg/kg/dk aralığında. SSC 2026: “artan NE dozunda” ekleyin (sayısal eşik yok; panelin ortanca uygulaması 0,3). Aynı eşik hidrokortizon için de geçerlidir (≥ 4 saat).');
       li(X,'Periferik yoldan başlanabilir','Merkezi kateteri beklemeyin; antekübitale yakın büyük periferik ven, kısa süre ve sık ekstravazasyon kontrolü (SSC 2021 ve 2026). Süre ve doz için güvenli sınır kılavuzda belirtilmez.');
       li(X,'Bitartarat mı baz mı?','Türkiye’deki 4 mg/4 mL ampuller (ör. Stenor, Nefrinor) 8 mg norepinefrin bitartarat = 4 mg norepinefrin baz içerir; KÜB dozları baz üzerindendir. 4 mg/250 mL = 16 mcg/mL baz. Etiketinde “2 mg/mL tartarat” yazan ürün 1 mg/mL baza eşittir; farklı bir ürün kullanıyorsanız etiketi kontrol edin.');

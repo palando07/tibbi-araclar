@@ -134,7 +134,10 @@ details p{margin:8px 0 0}
         el=(Math.min(egfr,60)-60)/-15, eh=(Math.max(egfr,60)-90)/-15, bl=(Math.min(bmi,30)-25)/5, bh=(Math.max(bmi,30)-30)/5;
     var x=[1,a,nh,h,sl,sh,dm,smk,el,eh,bpm,st,bpm*sh,st*nh,a*nh,a*h,a*sh,a*dm,a*smk,a*el];
     var xh=[1,a,sl,sh,dm,smk,bl,bh,el,eh,bpm,bpm*sh,a*sh,a*dm,a*smk,a*bh,a*el];
-    var c=dot(K.cvd[sx],x),r=dot(K.ascvd[sx],x),t;$('ascvd').textContent=f1(r);$('cvd').textContent='%'+f1(c);$('hf').textContent='%'+f1(dot(K.hf[sx],xh));
+    var c=dot(K.cvd[sx],x),r=dot(K.ascvd[sx],x),t;
+    // Yuvarlama sınıf sınırını aşıyorsa (ör. 2,96 → 3,0 ama Düşük) iki ondalık göster
+    var fs=function(y,T){return T.some(function(e){return y<e&&+y.toFixed(1)>=e})?y.toFixed(2).replace('.',','):f1(y)};
+    $('ascvd').textContent=fs(r,[3,5,10]);$('cvd').textContent='%'+fs(c,[7.5]);$('hf').textContent='%'+f1(dot(K.hf[sx],xh));
     if(r<3){pill('pl','Düşük','var(--ok)');t='Sağlıklı yaşam tarzı önerileri. LDL-K 160–189 mg/dL ya da 30 yıllık risk ≥ %10 ise (30–59 yaş) orta yoğunluk statin makuldür.'}
     else if(r<5){pill('pl','Sınırda','var(--warn)');t='Risk artırıcılar değerlendirilip hastayla konuşularak orta yoğunluk statin düşünülebilir. Başlanırsa hedef LDL-K < 100, non-HDL-K < 130 mg/dL.'}
     else if(r<10){pill('pl','Orta','var(--warn)');t='En az orta yoğunluk statin önerilir; aralığın üst ucunda yüksek yoğunluk yararlıdır. Hedef LDL-K < 100, non-HDL-K < 130 mg/dL.'}

@@ -176,7 +176,7 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     var s=[],G=p.glu;
     if(G!==null&&G>=70)return{s:[['Kan şekeri '+G+' mg/dL: hipoglisemi yok','Belirti varsa tekrar ölçün.']],n:[]};
     var lvl=G===null?'':G<54?' (düzey 2, klinik olarak anlamlı)':' (düzey 1)';
-    if(!p.bil){s.push(['Bilinç açık: 15 g glukoz ağızdan'+lvl,'Tercih glukozdur (ör. 4 g\'lık 4 glukoz tableti); yoksa glukoz içeren herhangi bir karbonhidrat (150 mL meyve suyu veya suda eritilmiş 3 tatlı kaşığı şeker). İlk tedavide yağlı veya proteinli besinlerden kaçının.']);
+    if(!p.bil){s.push(['Bilinç açık: 15 g glukoz ağızdan'+lvl,'Tercih glukozdur (ör. 4 g\'lık 4 glukoz tableti); yoksa glukoz içeren herhangi bir karbonhidrat (150 mL meyve suyu veya suda eritilmiş 3–4 çay kaşığı şeker, ≈ 15 g). İlk tedavide yağlı veya proteinli besinlerden kaçının.']);
       s.push(['15 dakika sonra tekrar ölçün','Hâlâ < 70 mg/dL ise aynı dozu tekrarlayın. Düzelince kompleks karbonhidratlı ara öğün veya yemek verin.']);}
     else{s.push(['Bilinç bozuk veya yutamıyor (düzey 3): %50 dekstroz 50 mL (25 g) IV','Ya da %10 dekstroz 150–250 mL IV. Damar yolu yoksa glukagon 1 mg IM/SC (veya 3 mg intranazal).']);
       s.push(['Ardından %10 dekstroz infüzyonu 50–100 mL/saat','Hasta yiyebilene ve kan şekeri stabil olana kadar.']);
