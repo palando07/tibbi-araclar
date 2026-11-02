@@ -109,7 +109,7 @@ ol.rec li ul{margin:4px 0 0;padding-left:1.1em;font-size:.9rem}
     <span class="lbl">Kreatinin klerensi (Cockcroft-Gault, gerçek kilo)</span>
     <div class="res"><span class="num" id="crcl">–</span><span class="of">mL/dk</span><span class="pill" id="crclp"></span></div>
     <p class="f">(140 − yaş) × gerçek kilo × [0,85 kadın] / (72 × kreatinin)</p>
-    <p class="note">DOAK doz eşikleri çalışmalardaki gibi gerçek kiloyla Cockcroft-Gault KlKr’ye göredir; eGFR kullanmayın (EHRA 2021). Eşikler yuvarlanmamış değerle karşılaştırılır.</p>
+    <p class="note">DOAK doz eşikleri çalışmalardaki gibi gerçek kiloyla Cockcroft-Gault KlKr’ye göredir; eGFR kullanmayın (EHRA 2021). Değer bir ondalıkla gösterilir; eşikler yuvarlanmamış değerle karşılaştırılır.</p>
   </section>
 
   <section class="card">
@@ -289,7 +289,7 @@ ol.rec li ul{margin:4px 0 0;padding-left:1.1em;font-size:.9rem}
     var age=v('age'),wt=v('wt'),scr=v('scr'),f=segVal('sex')==='f',end=segVal('end'),d=segVal('ilac'),c=null;
     if(age!==null&&wt!==null&&scr!==null&&scr>0&&wt>0&&age>=18)c=(140-age)*wt*(f?0.85:1)/(72*scr);
     if(c===null){$('crcl').textContent='–';pill('crclp',age!==null&&age<18?'Erişkin değil (yaş < 18)':'Yaş, kilo, kreatinin girin','var(--muted)')}
-    else{$('crcl').textContent=c<0?'0':fm(Math.round(c),0);
+    else{$('crcl').textContent=c<0?'0':fm(c,1);
       c>=60?pill('crclp','≥ 60','var(--ok)'):c>=30?pill('crclp','30–59','var(--warn)'):c>=15?pill('crclp','15–29','var(--high)'):pill('crclp','< 15','var(--high)')}
     $('endn').textContent=end==='vte'?'İlk faz ve idame (ilk 3–6 ay).':end==='uzat'?'En az 6 aylık tedaviden sonra süresiz/uzatılmış önleme.':end==='af'?'Mekanik kapak ve orta-ağır mitral darlık dışındaki AF.':'';
     var ix={};IX.forEach(function(a){ix[a[0]]=ch('ix-'+a[0])});
@@ -309,7 +309,7 @@ ol.rec li ul{margin:4px 0 0;padding-left:1.1em;font-size:.9rem}
 
     // Seçili ilaç
     $('rx').innerHTML='';
-    $('dzc').textContent=c===null?'–':fm(Math.round(c),0)+' mL/dk';
+    $('dzc').textContent=c===null?'–':(c<0?'0':fm(c,1))+' mL/dk';
     if(end===null||d===null){$('dzh').textContent='Doz';$('dz').textContent='–';$('dzw').textContent='–';pill('dzp',end===null?'Endikasyon seçin':'İlaç seçin','var(--muted)');return}
     var R=hesap(d,end,P),s=durum(R);
     $('dzh').textContent='Doz: '+AD[d]+' · '+EN[end];
@@ -322,7 +322,7 @@ ol.rec li ul{margin:4px 0 0;padding-left:1.1em;font-size:.9rem}
     if(R.red.length&&s!==3)li('Dozu azaltan ölçüt',null,R.red);
     if(R.dk.length)li('Dikkat',null,R.dk);
     if(R.uyg&&s>=0&&s!==3)li('Uygulama',R.uyg);
-    if(s===0&&!R.dk.length)li('Azaltma ölçütü yok','Tam doz verin; ölçüt yokken azaltılmış doz önerilmez (ESC 2024).');
+    if(s===0&&!R.dk.length&&end==='af')li('Azaltma ölçütü yok','Tam doz verin; ölçüt yokken azaltılmış doz önerilmez (ESC 2024).');
     if(wt!==null&&wt>=120&&s!==3)li('Kilo ≥ 120 kg','DOAK düzeyi düşebilir (EHRA 2021); AB KÜB’lerinde kiloya göre artırım yok.');
   }
   ['sex','end','ilac','cp'].forEach(function(g){seg(g,calc)});
