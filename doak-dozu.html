@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DOAK Seçimi ve Dozu</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.st{display:inline-block;padding:2px 9px;border-radius:999px;font-weight:700;font-size:.78rem;color:#fff;white-space:nowrap}
+table.t td.why{font-size:.82rem;color:var(--muted)}
+.res .num.dz{font-size:1.45rem;line-height:1.25;font-family:var(--font-body)}
+#dzw{white-space:normal;text-align:right;font-family:var(--font-body)}
+ol.rec li ul{margin:4px 0 0;padding-left:1.1em;font-size:.9rem}
+</style>
+</head>
+<body data-ornek-secim="end ilac cp=0">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>DOAK Seçimi ve Dozu</h1>
+    <p>Nonvalvüler AF ve VTE’de apiksaban, rivaroksaban, edoksaban ve dabigatran dozu: yaş, kilo, Cockcroft-Gault KlKr, etkileşen ilaç ve kontrendikasyonlara göre</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="82"></div>
+      <div class="field"><label for="wt">Kilo <span>kg, gerçek</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="58"></div>
+      <div class="field"><label for="scr">Kreatinin <span>mg/dL</span></label><input id="scr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.3"></div>
+    </div>
+    <div class="field"><span class="lbl">Cinsiyet</span>
+      <div class="seg"><button type="button" data-g="sex" data-v="f" data-hasta-cins="f" aria-pressed="true">Kadın</button><button type="button" data-g="sex" data-v="m" data-hasta-cins="m" aria-pressed="false">Erkek</button></div>
+    </div>
+    <p class="note">Örnek hasta doldurulmuştur: 82 yaşında kadın, 58 kg, kreatinin 1,3 mg/dL, nonvalvüler AF, apiksaban. Akut böbrek hasarında kreatinin sabit olmadığından KlKr güvenilir değildir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">Kreatinin klerensi (Cockcroft-Gault, gerçek kilo)</span>
+    <div class="res"><span class="num" id="crcl">–</span><span class="of">mL/dk</span><span class="pill" id="crclp"></span></div>
+    <p class="f">(140 − yaş) × gerçek kilo × [0,85 kadın] / (72 × kreatinin)</p>
+    <p class="note">DOAK doz eşikleri çalışmalardaki gibi gerçek kiloyla Cockcroft-Gault KlKr’ye göredir; eGFR kullanmayın (EHRA 2021). Eşikler yuvarlanmamış değerle karşılaştırılır.</p>
+  </section>
+
+  <section class="card">
+    <h2>Endikasyon ve ilaç</h2>
+    <span class="lbl">Endikasyon</span>
+    <div class="seg wrapseg"><button type="button" data-g="end" data-v="af" aria-pressed="true">Nonvalvüler AF</button><button type="button" data-g="end" data-v="vte" aria-pressed="false">VTE tedavisi</button><button type="button" data-g="end" data-v="uzat" aria-pressed="false">Uzatılmış VTE önleme</button></div>
+    <p class="note" id="endn"></p>
+    <span class="lbl">İlaç</span>
+    <div class="seg wrapseg"><button type="button" data-g="ilac" data-v="apx" aria-pressed="true">Apiksaban</button><button type="button" data-g="ilac" data-v="riv" aria-pressed="false">Rivaroksaban</button><button type="button" data-g="ilac" data-v="edo" aria-pressed="false">Edoksaban</button><button type="button" data-g="ilac" data-v="dab" aria-pressed="false">Dabigatran</button></div>
+  </section>
+
+  <section class="card">
+    <h2>Kontrendikasyon ve risk</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="kapak"><span class="txt">Mekanik kalp kapağı</span></label>
+      <label class="item"><input type="checkbox" id="md"><span class="txt">Orta-ağır mitral darlık<small>AF’de</small></span></label>
+      <label class="item"><input type="checkbox" id="aps"><span class="txt">Antifosfolipid sendromu<small>tromboz öyküsüyle; özellikle üçlü pozitif</small></span></label>
+      <label class="item"><input type="checkbox" id="geb"><span class="txt">Gebelik ya da emzirme</span></label>
+      <label class="item"><input type="checkbox" id="kan"><span class="txt">Aktif, klinik anlamlı kanama</span></label>
+      <label class="item"><input type="checkbox" id="hd"><span class="txt">Diyalize giriyor</span></label>
+      <label class="item"><input type="checkbox" id="kanr"><span class="txt">Kanama riski yüksek<small>ya da gastrit, özofajit, reflü (dabigatran ve rivaroksaban VTE dozunu etkiler)</small></span></label>
+      <label class="item"><input type="checkbox" id="nuks"><span class="txt">VTE nüks riski yüksek<small>uzatılmış önlemede rivaroksaban 20 mg için</small></span></label>
+    </div>
+    <span class="lbl">Karaciğer (Child-Pugh)</span>
+    <div class="seg"><button type="button" data-g="cp" data-v="0" aria-pressed="true">Yok / A</button><button type="button" data-g="cp" data-v="b" aria-pressed="false">B</button><button type="button" data-g="cp" data-v="c" aria-pressed="false">C</button></div>
+    <p class="note">Koagülopati ve klinik anlamlı kanama riskiyle giden karaciğer hastalığında dört DOAK da kullanılmaz. ALT/AST &gt; 2 × üst sınırda hastalar çalışmalara alınmadı; dikkatli olun.</p>
+  </section>
+
+  <section class="card">
+    <h2>Etkileşen ilaçlar</h2>
+    <div class="items" id="ixl"></div>
+    <p class="note">Liste, KÜB’lerde dozu değiştiren ya da birlikte kullanımı engelleyen ilaçlardır. Tüm etkileşimler için İlaç etkileşimi aracına bakın. NSAİİ, antiagregan ve SSRI kanama riskini artırır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2 id="dzh">Doz</h2>
+    <div class="res"><span class="num dz" id="dz">–</span><span class="pill" id="dzp"></span></div>
+    <div class="sub"><span>KlKr (gerçek kilo)</span><b id="dzc">–</b></div>
+    <div class="sub"><span>Dozu belirleyen</span><b id="dzw">–</b></div>
+    <ol class="rec" id="rx"></ol>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Dört DOAK bu hasta için</h2>
+    <table class="t">
+      <thead><tr><th>İlaç</th><th>Doz</th><th>Durum</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+    <p class="note">Seçili ilaç koyu gösterilir. Piyasa adları örnek amaçlıdır.</p>
+  </section>
+
+  <section class="card">
+    <h2>Seçimde akılda tutun</h2>
+    <ul class="chk">
+      <li>AF’de DOAK, VKA’ya tercih edilir; mekanik kapak ve orta-ağır mitral darlıkta VKA kullanılır (ESC 2024). Azaltılmış doz yalnız ilaca özgü ölçütler varsa verilir; ölçüt yokken düşük doz inme riskini artırır.</li>
+      <li>VTE’de edoksaban ve dabigatran en az 5 gün parenteral antikoagülandan (ör. DMAH) sonra başlanır; apiksaban ve rivaroksaban ilk günden tek başına yüksek başlangıç dozuyla verilir.</li>
+      <li>Uzatılmış önleme: 6 aylık tedaviden sonra apiksaban 2,5 mg 2×1 ya da rivaroksaban 10 mg 1×1 (ESC 2019 PE, CHEST 2021). Edoksaban ve dabigatran tedavi dozuyla sürer.</li>
+      <li>Rivaroksaban 15 ve 20 mg yemekle alınır; diğerleri aç ya da tok alınabilir.</li>
+      <li>KlKr 15–29: AF’de faktör Xa inhibitörleri azaltılmış dozla kullanılabilir (ESC 2026 KBH kılavuzu: eGFR 15–29’da VKA yerine oral Xa inhibitörü düşünülebilir); dabigatran kontrendikedir. KlKr &lt; 15 ve diyalizde AB KÜB’leri DOAK önermez.</li>
+      <li>Kilo ≥ 120 kg DOAK düzeyini düşürebilir, ≤ 60 kg artırabilir (EHRA 2021).</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: AB Kısa Ürün Bilgileri (EMA SmPC): Eliquis (apiksaban; güncelleme 10.04.2026), Xarelto (rivaroksaban; 12.09.2024; 15/20 mg posoloji için İngiltere SmPC/PI, emc), Lixiana (edoksaban; 27.08.2025), Pradaxa (dabigatran; 28.10.2026) — bölüm 4.2 doz ve doz azaltma ölçütleri, 4.3 kontrendikasyonlar, 4.4 mekanik kapak, antifosfolipid sendromu, yüksek KlKr (edoksaban), 4.5 P-gp/CYP3A4 etkileşimleri, 4.6 gebelik; Steffel J ve ark. 2021 EHRA NOAC pratik rehberi, Europace 2021;23:1612–76 (Cockcroft-Gault, Tablo 2 AF doz azaltma ölçütleri, Tablo 5 kilo, etkileşimler, antifosfolipid sendromunda VKA); Van Gelder IC, Rienstra M ve ark. 2024 ESC AF kılavuzu, Eur Heart J 2024;45:3314–414 (DOAC’ın VKA’ya tercihi; mekanik kapak ve mitral darlık istisnası; ilaca özgü ölçüt yoksa tam doz); Damman K ve ark. 2026 ESC/ERA kardiyovasküler hastalık ve KBH kılavuzu, Eur Heart J 2026, doi:10.1093/eurheartj/ehag098 (eGFR &gt; 30’da DOAC tercih; 15–29’da oral Xa inhibitörü düşünülebilir); Konstantinides SV ve ark. 2019 ESC akut PE kılavuzu, Eur Heart J 2020;41:543–603 (gebelikte DOAC önerilmez; uzatılmış fazda azaltılmış doz apiksaban ya da rivaroksaban); Stevens SM ve ark. CHEST 2021 VTE ikinci güncelleme, Chest 2021;160:2247–59 (DOAC ilk seçenek; APS’de varfarin; uzatılmış fazda apiksaban 2,5 mg 2×1 ya da rivaroksaban 10 mg 1×1); ABD Savaysa (edoksaban) etiketi, kutulu uyarı (AF’de KlKr &gt; 95 mL/dk’da kullanılmaz). Türkiye KÜB’leri (TİTCK) ayrıca karşılaştırılamadı; ilacın kendi KÜB’üne bakın. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function ch(id){return $(id).checked}
+
+  // Etkileşen ilaçlar (ilac-etkilesimi.html P-gp/CYP3A4 listesiyle aynı adlar)
+  var IX=[['ver','Verapamil'],['amio','Amiodaron'],['dron','Dronedaron'],['sik','Siklosporin'],['tak','Takrolimus'],['eri','Eritromisin'],['kla','Klaritromisin'],
+    ['keto','Ketokonazol (sistemik)'],['itra','İtrakonazol'],['vori','Vorikonazol ya da posakonazol'],['rito','Ritonavir ya da HIV proteaz inhibitörü','nirmatrelvir-ritonavir dahil'],
+    ['glek','Glekaprevir/pibrentasvir'],['ind','Güçlü indükleyici','rifampisin, karbamazepin, fenitoin, fenobarbital, sarı kantaron']];
+  IX.forEach(function(x){var l=document.createElement('label');l.className='item';l.innerHTML='<input type="checkbox"><span class="txt"></span>';
+    var i=l.querySelector('input');i.id='ix-'+x[0];var t=l.querySelector('.txt');t.textContent=x[1];if(x[2]){var s=document.createElement('small');s.textContent=x[2];t.appendChild(s)}$('ixl').appendChild(l)});
+
+  var AD={apx:'Apiksaban',riv:'Rivaroksaban',edo:'Edoksaban',dab:'Dabigatran'},
+      PA={apx:'Eliquis, Apaclot, Paxiban',riv:'Xarelto, Rivoksar, Venomia, Rovaran',edo:'Lixiana',dab:'Pradaxa'},
+      EN={af:'Nonvalvüler AF',vte:'VTE tedavisi',uzat:'Uzatılmış VTE önleme'};
+
+  // Bir ilaç için doz: ham değerlerle karşılaştırılır; red = dozu azaltan, dk = dikkat, yok = kullanmayın
+  function hesap(d,end,P){
+    var R={doz:null,red:[],dk:[],yok:[],uyg:''},c=P.c,x=P.ix;
+    function y(t){R.yok.push(t)}function k(t){R.dk.push(t)}function r(t){R.red.push(t)}
+    var cs=c===null?'':' ('+fm(c)+' mL/dk)';
+    // Genel kontrendikasyonlar
+    if(P.kapak)y(d==='dab'?'Mekanik kalp kapağı (KÜB: kontrendike)':'Mekanik kalp kapağı (KÜB: önerilmez)');
+    if(P.md&&end==='af')y('Orta-ağır mitral darlık: VKA kullanın (ESC 2024)');
+    if(P.aps)y('Antifosfolipid sendromu (tromboz öyküsü): KÜB’de önerilmez, VKA kullanın');
+    if(P.geb)y(d==='apx'||d==='dab'?'Gebelik ya da emzirme: kaçının (KÜB), DMAH tercih edin':'Gebelik ya da emzirme (KÜB: kontrendike)');
+    if(P.kan)y('Aktif, klinik anlamlı kanama (KÜB: kontrendike)');
+    if(P.hd)y('Diyaliz: AB KÜB’ünde önerilmez');
+    if(P.cp==='c')y(d==='riv'?'Child-Pugh C (KÜB: kontrendike)':d==='dab'?'Child-Pugh C: sağkalımı etkileyecek karaciğer hastalığında kontrendike (KÜB)':'Child-Pugh C, ağır karaciğer yetmezliği (KÜB: önerilmez)');
+    else if(P.cp==='b'){if(d==='riv')y('Child-Pugh B siroz (KÜB: kontrendike)');else k('Child-Pugh B: dikkatle kullanın');}
+    // Böbrek alt sınırı
+    if(c!==null){if(d==='dab'){if(c<30)y('KlKr < 30'+cs+' (KÜB: kontrendike)')}else if(c<15)y('KlKr < 15'+cs+' (KÜB: önerilmez)')}
+    // Etkileşimler
+    var guclu=['keto','itra','vori','rito'].filter(function(a){return x[a]});
+    if(d==='apx'||d==='riv'){
+      if(guclu.length)y('Güçlü CYP3A4 + P-gp inhibitörü (azol antifungal, HIV proteaz inhibitörü): önerilmez (KÜB)');
+      if(x.ind){if(d==='riv')y('Güçlü indükleyici: kaçının, tromboz açısından yakın izlenmiyorsa (KÜB)');else if(end==='vte')y('Güçlü indükleyici: VTE tedavisinde kullanılmaz, etkinlik azalır (KÜB)');else k('Güçlü indükleyici: apiksaban düzeyi ~%50 düşer; dikkatle (KÜB)')}
+      if(x.dron){if(d==='riv')y('Dronedaron: birlikte kullanmaktan kaçının (KÜB)');else k('Dronedaron: dikkatle (EHRA 2021)')}
+      if(x.kla||x.eri)k('Klaritromisin/eritromisin: doz değişmez; yaşlıda ve böbrek yetmezliğinde kanama izlemi');
+    }
+    if(d==='edo'){
+      if(x.ind)k('Güçlü indükleyici (P-gp): dikkatle (KÜB)');
+      if(x.itra||x.vori||x.rito||x.kla||x.tak)k('Diğer P-gp/CYP3A4 inhibitörü: KÜB’de doz önerisi yok; dikkatle');
+    }
+    if(d==='dab'){
+      ['keto','itra','sik','dron','glek'].forEach(function(a){if(x[a])y({keto:'Ketokonazol',itra:'İtrakonazol',sik:'Siklosporin',dron:'Dronedaron',glek:'Glekaprevir/pibrentasvir'}[a]+' (KÜB: kontrendike)')});
+      if(x.tak)y('Takrolimus (KÜB: önerilmez)');if(x.rito)y('HIV proteaz inhibitörü (KÜB: önerilmez)');
+      if(x.ind)y('Güçlü P-gp indükleyici: kaçının (KÜB)');
+      if(x.amio||x.kla||x.vori||x.eri)k('Amiodaron, klaritromisin, posakonazol ya da eritromisin: dabigatran düzeyi artar; dikkatle');
+    }
+    // Doz için değerler gerekli
+    if(c===null||P.age===null||P.wt===null||P.scr===null)return R;
+    var on5='En az 5 gün parenteral antikoagülandan sonra ';
+    if(d==='apx'){
+      if(end==='af'){
+        var n=[];if(P.age>=80)n.push('yaş ≥ 80');if(P.wt<=60)n.push('kilo ≤ 60 kg');if(P.scr>=1.5)n.push('kreatinin ≥ 1,5 mg/dL');
+        if(n.length>=2)r('3 ölçütten '+n.length+'’si: '+n.join(', '));
+        if(c<30)r('KlKr 15–29'+cs);
+        R.doz=R.red.length?'2,5 mg 2×1':'5 mg 2×1';
+        if(!R.red.length&&n.length===1)R.uyg='Tek ölçüt ('+n[0]+') dozu azaltmaz: en az 2 ölçüt gerekir.';
+      }else{
+        R.doz=end==='vte'?'10 mg 2×1 7 gün, sonra 5 mg 2×1':'2,5 mg 2×1';
+        if(end==='uzat')R.uyg='En az 6 ay tedavi dozundan sonra. ';
+        R.uyg+='VTE’de böbrek ya da yaşa göre doz azaltılmaz.';
+        if(c<30)k('KlKr 15–29'+cs+': dikkatle (KÜB)');
+      }
+    }
+    if(d==='riv'){
+      if(c<30)k('KlKr 15–29'+cs+': sınırlı veri, dikkatle (KÜB)');
+      if(end==='af'){if(c<50)r('KlKr < 50'+cs);R.doz=R.red.length?'15 mg 1×1':'20 mg 1×1';R.uyg='Yemekle alın.'}
+      else if(end==='vte'){
+        if(c<50&&P.kanr){r('KlKr < 50 ve kanama riski yüksek: 22. günden sonra 15 mg');R.doz='15 mg 2×1 21 gün, sonra 15 mg 1×1'}
+        else{R.doz='15 mg 2×1 21 gün, sonra 20 mg 1×1';if(c<50)k('KlKr < 50'+cs+': kanama riski nüks riskinden yüksekse 22. günden sonra 15 mg 1×1 düşünülmeli (KÜB)')}
+        R.uyg='Yemekle alın. İlk 21 günde böbrek işlevine göre doz azaltılmaz.';
+      }else{
+        if(P.nuks){if(c<50&&P.kanr){r('KlKr < 50 ve kanama riski yüksek');R.doz='15 mg 1×1'}else{R.doz='20 mg 1×1';if(c<50)k('KlKr < 50'+cs+': kanama riski nüks riskinden yüksekse 15 mg 1×1 düşünülmeli (KÜB)')}}
+        else R.doz='10 mg 1×1';
+        R.uyg='En az 6 ay tedaviden sonra. '+(P.nuks?'Nüks riski yüksek olduğu için 20 mg. Yemekle alın.':'10 mg’da böbrek işlevine göre doz değişmez; nüks riski yüksekse 20 mg 1×1 düşünülür.');
+      }
+    }
+    if(d==='edo'){
+      if(c<=50)r('KlKr 15–50'+cs);if(P.wt<=60)r('kilo ≤ 60 kg');
+      ['sik','dron','eri','keto'].forEach(function(a){if(x[a])r({sik:'siklosporin',dron:'dronedaron',eri:'eritromisin',keto:'ketokonazol'}[a])});
+      R.doz=(R.red.length?'30':'60')+' mg 1×1';
+      if(end==='af'&&c>95)k('KlKr > 95'+cs+': AB KÜB’ü yalnız tromboembolik ve kanama riski dikkatle değerlendirildikten sonra kullanılmasını söyler (KlKr arttıkça varfarine göre etkinlik azalıyor); ABD etiketinde bu hastada kullanılmaz, başka DOAK seçin');
+      R.uyg=(end==='af'?'':(end==='uzat'?'Tedavi dozuyla sürer. ':on5+'başlanır. '))+'Bir ölçüt yeterli. Amiodaron, kinidin ve verapamille doz azaltılmaz.';
+    }
+    if(d==='dab'){
+      if(P.age>=80)r('yaş ≥ 80');if(x.ver)r('verapamil');
+      if(!R.red.length){if(P.age>=75)k('Yaş 75–79: 110 mg 2×1 bireysel risk değerlendirmesiyle düşünülebilir');
+        if(c<=50)k('KlKr 30–50'+cs+': kanama riski yüksekse 110 mg 2×1 düşünülmeli');
+        if(P.kanr)k('Kanama riski yüksek / gastrit, özofajit, reflü: 110 mg 2×1 düşünülebilir')}
+      R.doz=(R.red.length?'110':'150')+' mg 2×1';
+      R.uyg=(end==='vte'?on5+'başlanır. ':end==='uzat'?'Tedavi dozuyla sürer. ':'')+'Kapsül açılmaz, çiğnenmez.';
+    }
+    return R;
+  }
+  function durum(R){return R.yok.length?3:R.doz===null?-1:R.red.length?1:R.dk.length?2:0}
+  var RENK={'-1':'var(--muted)',0:'var(--ok)',1:'var(--warn)',2:'var(--warn)',3:'var(--high)'},
+      DAD={'-1':'Değer eksik',0:'Standart doz',1:'Azaltılmış doz',2:'Standart doz, dikkat',3:'Kullanmayın'};
+  function li(b,a,arr){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);
+    if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}
+    if(arr){var u=document.createElement('ul');arr.forEach(function(t){var i=document.createElement('li');i.textContent=t;u.appendChild(i)});l.appendChild(u)}
+    $('rx').appendChild(l)}
+
+  function calc(){
+    var age=v('age'),wt=v('wt'),scr=v('scr'),f=segVal('sex')==='f',end=segVal('end'),d=segVal('ilac'),c=null;
+    if(age!==null&&wt!==null&&scr!==null&&scr>0&&wt>0&&age>=18)c=(140-age)*wt*(f?0.85:1)/(72*scr);
+    if(c===null){$('crcl').textContent='–';pill('crclp',age!==null&&age<18?'Erişkin değil (yaş < 18)':'Yaş, kilo, kreatinin girin','var(--muted)')}
+    else{$('crcl').textContent=c<0?'0':fm(Math.round(c),0);
+      c>=60?pill('crclp','≥ 60','var(--ok)'):c>=30?pill('crclp','30–59','var(--warn)'):c>=15?pill('crclp','15–29','var(--high)'):pill('crclp','< 15','var(--high)')}
+    $('endn').textContent=end==='vte'?'İlk faz ve idame (ilk 3–6 ay).':end==='uzat'?'En az 6 aylık tedaviden sonra süresiz/uzatılmış önleme.':end==='af'?'Mekanik kapak ve orta-ağır mitral darlık dışındaki AF.':'';
+    var ix={};IX.forEach(function(a){ix[a[0]]=ch('ix-'+a[0])});
+    var P={age:age,wt:wt,scr:scr,c:c,ix:ix,kapak:ch('kapak'),md:ch('md'),aps:ch('aps'),geb:ch('geb'),kan:ch('kan'),hd:ch('hd'),kanr:ch('kanr'),nuks:ch('nuks'),cp:segVal('cp')};
+
+    // Tablo
+    $('tb').innerHTML='';
+    ['apx','riv','edo','dab'].forEach(function(k){
+      var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td'),e=document.createElement('td');
+      a.textContent=AD[k];var sm=document.createElement('small');sm.textContent=PA[k];a.appendChild(sm);
+      if(end===null){b.textContent='Endikasyon seçin';e.textContent='–'}
+      else{var R=hesap(k,end,P),s=durum(R);b.textContent=s===3?'–':R.doz||'–';
+        var sp=document.createElement('span');sp.className='st';sp.textContent=DAD[s];sp.style.background=RENK[s];e.appendChild(sp);
+        var w=R.yok.concat(R.red).slice(0,1);if(w.length){var q=document.createElement('small');q.textContent=w[0];b.appendChild(q)}}
+      if(k===d)tr.className='cur';
+      tr.appendChild(a);tr.appendChild(b);tr.appendChild(e);$('tb').appendChild(tr)});
+
+    // Seçili ilaç
+    $('rx').innerHTML='';
+    $('dzc').textContent=c===null?'–':fm(Math.round(c),0)+' mL/dk';
+    if(end===null||d===null){$('dzh').textContent='Doz';$('dz').textContent='–';$('dzw').textContent='–';pill('dzp',end===null?'Endikasyon seçin':'İlaç seçin','var(--muted)');return}
+    var R=hesap(d,end,P),s=durum(R);
+    $('dzh').textContent='Doz: '+AD[d]+' · '+EN[end];
+    pill('dzp',DAD[s],RENK[s]);
+    if(s===3){$('dz').textContent=AD[d]+': kullanmayın';$('dzw').textContent='Kontrendikasyon / önerilmez'}
+    else if(s===-1){$('dz').textContent='–';$('dzw').textContent='Yaş (≥ 18), kilo ve kreatinin girin'}
+    else{$('dz').textContent=AD[d]+' '+R.doz;$('dzw').textContent=R.red.length?(R.red.length>1?R.red.length+' ölçüt':R.red[0].replace(/ \(.*\)$/,'')):'Azaltma ölçütü yok'}
+    if(R.yok.length)li('Kullanmayın','Bu ilacı bu hastada kullanmayın; uygun başka bir antikoagülan seçin.',R.yok);
+    if(s===-1)li('Doz hesaplanmadı','Yaş, kilo ya da kreatinin eksik: dozu azaltan ölçütler değerlendirilemedi. Boş kutuyu doldurun.');
+    if(R.red.length&&s!==3)li('Dozu azaltan ölçüt',null,R.red);
+    if(R.dk.length)li('Dikkat',null,R.dk);
+    if(R.uyg&&s>=0&&s!==3)li('Uygulama',R.uyg);
+    if(s===0&&!R.dk.length)li('Azaltma ölçütü yok','Tam doz verin; ölçüt yokken azaltılmış doz önerilmez (ESC 2024).');
+    if(wt!==null&&wt>=120&&s!==3)li('Kilo ≥ 120 kg','DOAK düzeyi düşebilir (EHRA 2021); AB KÜB’lerinde kiloya göre artırım yok.');
+  }
+  ['sex','end','ilac','cp'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

@@ -24,6 +24,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Pankreatit skorları (BISAP, Ranson, Revize Atlanta) | `pankreatit.html` |
 | Opioid dönüşümü (morfin eşdeğeri) | `opioid-donusumu.html` |
 | VTE profilaksisi (Padua, IMPROVE) | `vte-profilaksisi.html` |
+| DOAK seçimi ve dozu (AF/VTE, yaş, kilo, KlKr, etkileşim) | `doak-dozu.html` |
 | Antikoagülan kesme ve köprüleme | `antikoagulan-kesme.html` |
 | Varfarin ve INR yönetimi | `varfarin-inr.html` |
 | IV demir dozu (Ganzoni) | `iv-demir.html` |
@@ -63,6 +64,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Trombositopeni yaklaşımı (PLASMIC, ISTH DİK, işlem eşikleri) | `trombositopeni.html` |
 | Hiperkalemi yaklaşımı (acil tedavi, neden ayrımı, kronik yönetim, UKKA 2026) | `hiperkalemi.html` |
 | Hipokalemi yaklaşımı (neden ayrımı) | `hipokalemi.html` |
+| Hiperkalsemi (şiddet, tedavi dozları, neden ayrımı) | `hiperkalsemi.html` |
 | İdame sıvı ve refeeding riski (NICE CG174/CG32, ASPEN) | `idame-sivi.html` |
 | PESI ve sPESI (pulmoner emboli, ESC 2019 risk sınıfı) | `pesi.html` |
 | 4T skoru (heparin ilişkili trombositopeni, ASH 2018) | `hit-4t.html` |
