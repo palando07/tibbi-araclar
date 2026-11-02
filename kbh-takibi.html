@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KBH Takibi</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartları (evre ve ısı haritası, KFRE, sevk, ilaçlar, kontrol listesi) */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --h-g:#2e8b57; --h-y:#d9a21b; --h-o:#e07b24; --h-r:#c0392b;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 10px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub span{min-width:0}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sub b.w{white-space:normal;text-align:right;font-family:var(--font-body)}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td.why{font-size:.82rem;color:var(--muted)}
+.st{display:inline-block;padding:2px 9px;border-radius:999px;font-weight:700;font-size:.78rem;color:#fff;white-space:nowrap}
+/* Isı haritası: 6 G satırı × 3 A sütunu; hücrede yıllık kontrol sayısı */
+.hm{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:3px;font:600 .8rem var(--font-num)}
+.hm span{display:flex;align-items:center;justify-content:center;min-height:30px;border-radius:5px}
+.hm .h{color:var(--muted);background:transparent;font-weight:600;padding:0 6px}
+.hm .c{color:#fff;opacity:.38}
+.hm .c.on{opacity:1;outline:3px solid var(--fg);outline-offset:-3px}
+.advice a,.note a,ul.chk a{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body data-ornek-secim="dm">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>KBH Takibi</h1>
+    <p>eGFR ve ACR ile KDIGO G/A evresi ve risk rengi, yıllık kontrol sayısı, KFRE 2 ve 5 yıllık böbrek yetmezliği riski, nefroloji sevki, RAS blokeri, SGLT2i, finerenon, statin, KB hedefi ve kontrol listesi</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="any" value="64"></div>
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" data-hasta="egfr" type="number" inputmode="decimal" step="any" value="38"></div>
+      <div class="field"><label for="acr">İdrar ACR <span>mg/g</span></label><input id="acr" data-aralik="0-10000 mg/g" type="number" inputmode="decimal" step="any" value="450"></div>
+      <div class="field"><label for="cr">Kreatinin <span>mg/dL, eGFR boşsa</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any"></div>
+    </div>
+    <div class="field">
+      <span class="lbl" id="sexlbl">Cinsiyet</span>
+      <div class="seg" role="group" aria-labelledby="sexlbl">
+        <button type="button" data-g="sex" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button>
+        <button type="button" data-g="sex" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button>
+      </div>
+    </div>
+    <div class="field">
+      <span class="lbl" id="dmlbl">Diyabet</span>
+      <div class="seg" role="group" aria-labelledby="dmlbl">
+        <button type="button" data-g="dm" data-v="0" aria-pressed="false">Yok</button>
+        <button type="button" data-g="dm" data-v="2" aria-pressed="true">Tip 2</button>
+        <button type="button" data-g="dm" data-v="1" aria-pressed="false">Tip 1</button>
+      </div>
+    </div>
+    <p class="note">Değerler örnek olarak doldurulmuştur. ACR mg/mmol ise × 8,84 ile mg/g’a çevirin (30 mg/g = 3 mg/mmol). KBH tanısı için bulgu 3 aydan uzun sürmeli; ACR’yi ilk sabah idrarında, en az iki ölçümle doğrulayın. eGFR’yi kreatininden <a href="egfr.html">eGFR</a> sayfasındaki CKD-EPI 2021 ile hesaplar.</p>
+  </section>
+
+  <section class="card">
+    <h2>Laboratuvar ve klinik</h2>
+    <div class="grid">
+      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="4.6"></div>
+      <div class="field"><label for="sbp">Ofis sistolik KB <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="decimal" step="any" value="138"></div>
+      <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="11.8"></div>
+      <div class="field"><label for="hco3">Bikarbonat <span>mmol/L</span></label><input id="hco3" data-aralik="1-60 mmol/L" type="number" inputmode="decimal" step="any" value="21"></div>
+      <div class="field"><label for="egfr0">Önceki eGFR <span>3–12 ay önce, isteğe bağlı</span></label><input id="egfr0" data-aralik="1-200 mL/dk/1,73 m²" type="number" inputmode="decimal" step="any"></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="ras" checked><span class="txt">ACEi ya da ARB en yüksek tolere edilen dozda</span></label>
+      <label class="item"><input type="checkbox" id="ky"><span class="txt">Kalp yetersizliği</span></label>
+      <label class="item"><input type="checkbox" id="kvh"><span class="txt">Koroner hastalık ya da geçirilmiş iskemik inme</span></label>
+      <label class="item"><input type="checkbox" id="kir"><span class="txt">Kırılgan, düşme riski yüksek ya da belirtili ortostatik hipotansiyon</span></label>
+      <label class="item"><input type="checkbox" id="hem"><span class="txt">Açıklanamayan hematüri ya da eritrosit silendiri<small>Kalıcı, &gt; 20 eritrosit/BBA</small></span></label>
+      <label class="item"><input type="checkbox" id="dir"><span class="txt">4 ya da daha çok ilaca dirençli hipertansiyon</span></label>
+      <label class="item"><input type="checkbox" id="ned"><span class="txt">Nedeni belirsiz KBH, kalıtsal böbrek hastalığı ya da tekrarlayan yaygın taş</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>1. Evre ve risk</h2>
+    <div class="res"><span class="num" id="evre">–</span><span class="pill" id="riskp"></span></div>
+    <div class="sub"><span>eGFR</span><b class="w" id="go">–</b></div>
+    <div class="sub"><span>Albüminüri</span><b class="w" id="ao">–</b></div>
+    <div class="sub"><span>eGFR ve ACR kontrolü</span><b class="w" id="sik">–</b></div>
+    <p class="advice" id="tani"></p>
+    <div class="hm" id="hm" aria-label="KDIGO ısı haritası; hücrede yılda kontrol sayısı"></div>
+    <p class="note">Renk: yeşil düşük, sarı orta, turuncu yüksek, kırmızı çok yüksek risk (KDIGO 2024). Hücredeki sayı yılda kaç kez eGFR ve ACR bakılacağıdır; uzman görüşüdür, tedaviyi değiştirecekse daha sık bakın. Tekrar ölçümde eGFR’de %20’den büyük değişiklik gerçek kabul edilir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>2. KFRE: böbrek yetmezliği riski</h2>
+    <div class="sub"><span>2 yıllık risk</span><b id="k2">–</b></div>
+    <div class="sub"><span>5 yıllık risk</span><b id="k5">–</b></div>
+    <p class="advice" id="kfa"></p>
+    <p class="note">4 değişkenli KFRE (yaş, cinsiyet, eGFR, ACR), Kuzey Amerika dışı kalibrasyon (Tangri 2016). Diyaliz ya da nakil gerektiren böbrek yetmezliği riskidir. Yalnız G3–G5’te (eGFR &lt; 60) geçerlidir; diyaliz ya da nakil hastasında kullanılmaz.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>3. Nefroloji sevki</h2>
+    <div class="res"><span class="pill" id="sp"></span></div>
+    <ol class="rec" id="sv"></ol>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>4. İlaç kararları</h2>
+    <table class="t">
+      <thead><tr><th>İlaç</th><th>Karar</th><th>Neden</th></tr></thead>
+      <tbody id="itb"></tbody>
+    </table>
+    <p class="note">Önerilir: KDIGO önerisi karşılandı. Dikkat: koşul sınırda ya da gereken değer girilmedi. Uygun değil: eşik dışında. RAS blokeri ya da finerenon başladıktan ya da doz arttıktan sonra 2–4 hafta içinde kreatinin ve K; kreatinin 4 haftada %30’dan az arttıysa sürdürün. SGLT2i başlarken beklenen küçük eGFR düşüşü kesme nedeni değildir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>5. Kan basıncı hedefi</h2>
+    <div class="sub"><span>Hedef</span><b class="w" id="kbh">–</b></div>
+    <div class="sub"><span>Şu anki SKB</span><b class="w" id="kbs">–</b></div>
+    <p class="note">Standart ofis ölçümü (5 dakika dinlenme, otomatik cihaz, birkaç ölçüm ortalaması). İlaç seçimi ve dozlar için <a href="hipertansiyon-tedavisi.html">Hipertansiyon Tedavisi</a> sayfası.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>6. Kontrol listesi</h2>
+    <ol class="rec" id="kl"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Nefrotoksik ilaçlardan kaçınma</h2>
+    <ul class="chk">
+      <li><b>NSAİİ:</b> düzenli kullanmayın; özellikle RAS blokeri ve diüretikle birlikte AKI riski artar. Gut atağında düşük doz kolşisin ya da kortikosteroid NSAİİ’ye tercih edilir (KDIGO 2024).</li>
+      <li><b>Doz:</b> böbrekten atılan ilaçlarda eGFR’ye göre doz ayarı: <a href="bobrek-ilac-dozu.html">Böbrekte İlaç Dozu</a>. Metformin eGFR eşikleri: <a href="diyabet-tedavi.html">Diyabet Tedavisi</a>.</li>
+      <li><b>Diğer:</b> lityum, aminoglikozid, amfoterisin, kalsinörin inhibitörü gibi ilaçlarda düzey ve eGFR izlemi; reçetesiz ilaç, bitkisel ürün ve takviyeleri sorun.</li>
+      <li><b>Kontrast:</b> eGFR &lt; 30’da risk değerlendirmesi: <a href="kontrast-nefropati.html">Kontrast İlişkili AKI</a>.</li>
+      <li><b>Hasta gün kuralları:</b> kusma, ishal, ateşte ya da ameliyattan 48–72 saat önce metformin, ACEi/ARB, SGLT2i ve diüretiğe geçici ara; ne zaman yeniden başlanacağını yazın: <a href="akut-bobrek-hasari.html">Akut Böbrek Hasarı</a>.</li>
+    </ul>
+  </section>
+
+  <p class="note">Kaynaklar: KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease, Kidney Int 2024;105(4S):S117–S314, doi:10.1016/j.kint.2023.10.018, ve yönetici özeti Kidney Int 2024;105:684–701 (G ve A evreleri; ısı haritası renkleri; kontrol sıklığı Şekil 13; en az yılda bir eGFR ve ACR, PP 2.1.1–2.1.3; KFRE G3–G5’te 1A, 5 yıllık %3–5 sevk, 2 yıllık &gt; %10 multidisipliner bakım, &gt; %40 KRT hazırlığı, PP 2.2.1–2.2.4; sevk ölçütleri Şekil 48: eGFR &lt; 30, ACR ≥ 300 mg/g, ACR &gt; 700 mg/g, kalıcı eGFR düşüşü &gt; %20 ya da hemodinamik ilaç başlarken &gt; %30, hematüri, eritrosit silendiri, ≥ 4 ilaca dirençli hipertansiyon, kalıcı K bozukluğu, asidoz, anemi, kemik hastalığı; RASi 3.6.1–3.6.7; SGLT2i 3.7.1–3.7.3; nsMRA 3.8.1 ve Şekil 26: K ≤ 4,8 başla, eGFR 25–59’da 10 mg, ≥ 60’ta 20 mg, 1. ayda ve sonra 4 ayda bir K, &gt; 5,5’te ara ver, ≤ 5,0’da yeniden başla; SKB &lt; 120, 3.4.1; HCO₃ &lt; 18, PP 3.10.1; statin 3.15.1.1–3.15.1.3; ilaç yönetimi PP 4.1.1–4.3.3). KDIGO 2021 KBH’de kan basıncı kılavuzu, Kidney Int 2021;99(3S):S1–S87. KDIGO 2022 Diyabet ve KBH kılavuzu, Kidney Int 2022;102(5S):S1–S127 (SGLT2i eGFR ≥ 20; finerenon eGFR ≥ 25, K normal, ACR ≥ 30 mg/g; metformin eşikleri). ADA/KDIGO uzlaşı raporu, Diabetes Care 2022;45:3075–90, doi:10.2337/dci22-0027. Tangri N ve ark. JAMA 2011;305:1553–9 (KFRE geliştirme) ve Tangri N ve ark. JAMA 2016;315:164–74, doi:10.1001/jama.2015.18202 (4 değişkenli KFRE: −0,2201 × (yaş/10 − 7,036) + 0,2467 × (erkek − 0,5642) − 0,5567 × (eGFR/5 − 7,222) + 0,4510 × (ln ACR − 5,137); temel sağkalım Kuzey Amerika dışı 2 yıl 0,9832, 5 yıl 0,9365; Kuzey Amerika 0,9750 ve 0,9240; ACR mg/g). KDIGO 2017 KBH-MKD güncellemesi, Kidney Int Suppl 2017;7:1–59 (Ca, P, PTH ve ALP G3a’dan; sıklık 3.1.2). KDIGO 2012 KBH kılavuzu, Kidney Int Suppl 2013;3:1–150 (aşılar 4.5). Damman K ve ark. 2026 ESC Guidelines for the management of cardiovascular disease and chronic kidney disease (ERA ile), Eur Heart J 2026, doi:10.1093/eurheartj/ehag098 (KVH’de eGFR ve ACR taraması; çoğu KBH’de ACEi/ARB ve SGLT2i, eGFR ≥ 20’de başla; tip 2 diyabet ve albüminüride finerenon ve semaglutid; diyaliz dışı KBH’de statin ± ezetimib; RAAS blokajından 1–4 hafta sonra K ve eGFR). ADA Standards of Care in Diabetes—2026, Bölüm 11, Diabetes Care 2026;49(Suppl 1), doi:10.2337/dc26-S011. KDIGO 2027 KBH odaklı güncelleme kamu görüşü taslağı (Ekim 2026): kesinleşmedi, bu sayfadaki kararlara katılmadı. Piyasa adları örnek amaçlıdır. Bu araç klinik karar desteği içindir; AKI’de, gebelikte ve diyaliz ya da nakil hastasında geçerli değildir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var ck=function(id){return $(id).checked};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  // Yuvarlanmış gösterim bir eşiğin öbür yanına düşüyorsa bir ondalık daha göster
+  function fe(x,d,es){for(var k=d;k<d+3;k++){var r=Math.round(x*Math.pow(10,k))/Math.pow(10,k),ayni=es.every(function(e){return (r>e)===(x>e)&&(r<e)===(x<e)});if(ayni)return fm(x,k)}return fm(x,d+3)}
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.addEventListener('click',function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()})})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a,html){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';if(html)p.innerHTML=a;else p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  var RENK={ok:'var(--ok)',warn:'var(--warn)',high:'var(--high)',mut:'var(--muted)'};
+
+  // eGFR: egfr.html ile aynı CKD-EPI 2021 ve aynı G sınırları
+  function ckdepi(scr,age,female){var k=female?0.7:0.9,a=female?-0.241:-0.302,r=scr/k;
+    return 142*Math.pow(Math.min(r,1),a)*Math.pow(Math.max(r,1),-1.2)*Math.pow(0.9938,age)*(female?1.012:1)}
+  var GS=['G1','G2','G3a','G3b','G4','G5'],AS=['A1','A2','A3'];
+  function gIdx(g){return g>=90?0:g>=60?1:g>=45?2:g>=30?3:g>=15?4:5}
+  function aIdx(a){return a<30?0:a<=300?1:2}
+  var GT=['Normal ya da yüksek (≥ 90)','Hafif azalmış (60–89)','Hafif-orta azalmış (45–59)','Orta-ağır azalmış (30–44)','Ağır azalmış (15–29)','Böbrek yetmezliği (< 15)'];
+  var AT=['Normal ya da hafif artmış (< 30 mg/g)','Orta derecede artmış (30–300 mg/g)','Ağır derecede artmış (> 300 mg/g)'];
+  // KDIGO ısı haritası: 0 yeşil, 1 sarı, 2 turuncu, 3 kırmızı
+  var HM=[[0,1,2],[0,1,2],[1,2,3],[2,3,3],[3,3,3],[3,3,3]];
+  var HC=['var(--h-g)','var(--h-y)','var(--h-o)','var(--h-r)'],HN=['Düşük risk','Orta risk','Yüksek risk','Çok yüksek risk'];
+  // Yılda eGFR + ACR kontrol sayısı (KDIGO; G1–G2 A1: KBH varsa 1)
+  var SK=[['1*','1','2'],['1*','1','2'],['1','2','3'],['2','3','3'],['3','3','4+'],['4+','4+','4+']];
+
+  // Isı haritasını bir kez çiz
+  (function(){var h=$('hm');function c(t,cls,bg){var s=document.createElement('span');s.className=cls;s.textContent=t;if(bg)s.style.background=bg;h.appendChild(s);return s}
+    c('','h');AS.forEach(function(a){c(a,'h')});
+    GS.forEach(function(g,i){c(g,'h');for(var j=0;j<3;j++){var s=c(SK[i][j],'c',HC[HM[i][j]]);s.id='hm'+i+j}})})();
+
+  // KFRE 4 değişkenli (Tangri 2011/2016), Kuzey Amerika dışı temel sağkalım
+  function kfre(age,male,egfr,acr,s0){var b=-0.2201*(age/10-7.036)+0.2467*((male?1:0)-0.5642)-0.5567*(egfr/5-7.222)+0.4510*(Math.log(acr)-5.137);return 100*(1-Math.pow(s0,Math.exp(b)))}
+
+  function calc(){
+    var A=v('yas'),E=v('egfr'),R=v('acr'),C=v('cr'),K=v('k'),S=v('sbp'),H=v('hb'),B=v('hco3'),E0=v('egfr0');
+    var sex=segVal('sex'),dm=segVal('dm'),ras=ck('ras'),ky=ck('ky'),kvh=ck('kvh'),kir=ck('kir');
+    var Ekayn='';
+    if(E===null&&C!==null&&C>0&&A!==null&&A>=18&&sex){E=ckdepi(C,A,sex==='f');Ekayn='kreatininden CKD-EPI 2021'}
+    if(E!==null&&E<=0)E=null;if(R!==null&&R<0)R=null;
+    var gi=E===null?null:gIdx(E),ai=R===null?null:aIdx(R);
+
+    // 1) Evre
+    for(var i=0;i<6;i++)for(var j=0;j<3;j++)$('hm'+i+j).classList.remove('on');
+    $('go').textContent=E===null?(C!==null?'Kreatininle birlikte yaş ve cinsiyet gerekir':'eGFR girin'):fm(E,0)+' · '+GS[gi]+': '+GT[gi]+(Ekayn?' · '+Ekayn:'');
+    $('ao').textContent=R===null?'ACR girin':fm(R,0)+' mg/g · '+AS[ai]+': '+AT[ai];
+    $('tani').textContent='';
+    if(gi===null||ai===null){$('evre').textContent=gi!==null?GS[gi]+' A?':ai!==null?'G? '+AS[ai]:'–';pill('riskp',gi===null&&ai===null?'eGFR ve ACR girin':gi===null?'eGFR girin':'ACR girin',RENK.mut);$('sik').textContent='–'}
+    else{
+      $('evre').textContent=GS[gi]+' '+AS[ai];var hr=HM[gi][ai];pill('riskp',HN[hr],HC[hr]);$('hm'+gi+ai).classList.add('on');
+      var sk=SK[gi][ai];$('sik').textContent=sk==='1*'?'KBH varsa yılda 1 kez':'Yılda '+sk+' kez';
+      if(gi<=1&&ai===0)$('tani').textContent='eGFR ≥ 60 ve ACR < 30: başka böbrek hasarı bulgusu (hematüri, yapısal bozukluk, nakil öyküsü) yoksa KBH değildir; risk etmeni varsa yılda bir tarayın.';
+      else $('tani').textContent='Bulgu 3 aydan uzun sürdüyse KBH '+GS[gi]+' '+AS[ai]+'. Nedeni araştırın (idrar sedimenti, böbrek USG, gerekirse seroloji).';
+    }
+
+    // 2) KFRE
+    $('kfa').textContent='';
+    var k2=null,k5=null,eks=[];
+    if(A===null)eks.push('yaş');if(!sex)eks.push('cinsiyet');if(E===null)eks.push('eGFR');if(R===null||R<=0)eks.push(R===0?'ACR > 0':'ACR');
+    if(eks.length){$('k2').textContent='–';$('k5').textContent='–';$('kfa').textContent=eks.join(', ')+' girilmedi: risk hesaplanmadı.'}
+    else if(E>=60){$('k2').textContent='–';$('k5').textContent='–';$('kfa').textContent='eGFR '+fe(E,0,[60])+' ≥ 60: KFRE G1–G2’de geçerli değil. Bu grupta ACR ≥ 300 mg/g yüksek risk göstergesidir.'}
+    else if(A<18){$('k2').textContent='–';$('k5').textContent='–';$('kfa').textContent='KFRE erişkinler içindir.'}
+    else{k2=kfre(A,sex==='m',E,R,0.9832);k5=kfre(A,sex==='m',E,R,0.9365);
+      $('k2').textContent='%'+fe(k2,1,[10,40]);$('k5').textContent='%'+fe(k5,1,[3,5]);
+      var t=[];
+      if(k2>40)t.push('2 yıllık risk > %40: diyaliz yöntemleri eğitimi, damar yolu (AV fistül) ya da periton kateteri hazırlığı ve nakil sevki.');
+      else if(k2>10)t.push('2 yıllık risk > %10: multidisipliner KBH bakımı (nefroloji, diyetisyen, eğitim).');
+      if(k5>=5)t.push('5 yıllık risk ≥ %5: nefroloji sevki önerilir.');else if(k5>=3)t.push('5 yıllık risk %3–5: nefroloji sevkini düşünün.');else t.push('5 yıllık risk < %3: risk tek başına sevk gerektirmiyor.');
+      $('kfa').textContent=t.join(' ')}
+
+    // 3) Sevk
+    $('sv').innerHTML='';var sv=0,dus=null;
+    if(E!==null&&E<30){sv=2;li('sv','eGFR '+fe(E,0,[30])+' < 30','KDIGO 2024 Şekil 48.')}
+    if(R!==null&&R>700){sv=2;li('sv','ACR '+fe(R,0,[700])+' > 700 mg/g','Tutarlı bulgudaysa; nefrotik düzey proteinüri ve glomerüler hastalık açısından.')}
+    else if(R!==null&&R>=300){sv=2;li('sv','ACR '+fe(R,0,[300])+' ≥ 300 mg/g','Tutarlı bulguysa anlamlı albüminüri (KDIGO 2024 Şekil 48).')}
+    if(k5!==null&&k5>=3){sv=Math.max(sv,k5>=5?2:1);li('sv','KFRE 5 yıllık risk %'+fe(k5,1,[3,5]),'Eşik %3–5 (KDIGO 2024 PP 2.2.1).')}
+    if(E!==null&&E0!==null&&E0>0){dus=(E0-E)/E0*100;
+      if(dus>20){sv=2;li('sv','eGFR %'+fe(dus,0,[20,30])+' düştü (önceki '+fm(E0,0)+')','Kalıcıysa > %20 düşüş sevk ölçütüdür; RAS blokeri ya da SGLT2i yeni başladıysa eşik %30. Önce AKI, hacim azlığı ve NSAİİ’yi dışlayın.')}}
+    if(ck('hem')){sv=2;li('sv','Açıklanamayan hematüri ya da eritrosit silendiri','Glomerülonefrit açısından; albüminüriyle birlikteyse daha acil.')}
+    if(ck('dir')){sv=2;li('sv','≥ 4 ilaca dirençli hipertansiyon','KDIGO 2024 Şekil 48.')}
+    if(ck('ned')){sv=2;li('sv','Nedeni belirsiz KBH, kalıtsal hastalık ya da tekrarlayan taş','Tanı ve genetik değerlendirme için.')}
+    if(K!==null&&(K>5.5||K<3.5)){sv=Math.max(sv,1);li('sv','K '+fe(K,1,[3.5,5.5])+' mmol/L','Kalıcı K bozukluğu sevk ölçütüdür. '+(K>5.5?'Tedavi için Hiperkalemi sayfası.':''))}
+    if(B!==null&&B<18){sv=Math.max(sv,1);li('sv','HCO₃ '+fe(B,0,[18])+' < 18 mmol/L','Kalıcı metabolik asidoz sevk ölçütüdür.')}
+    if(sv===2)pill('sp','Nefrolojiye sevk edin','var(--high)');
+    else if(sv===1)pill('sp','Sevki düşünün','var(--warn)');
+    else{var eksS=[];if(E===null)eksS.push('eGFR');if(R===null)eksS.push('ACR');if(k5===null&&E!==null&&E<60)eksS.push('KFRE');
+      if(eksS.length){pill('sp',eksS.join(', ')+' eksik: değerlendirilmedi',RENK.mut);li('sv','Eksik değer','eGFR, ACR ve (eGFR < 60 ise) KFRE olmadan sevk ölçütleri tam değerlendirilemez.')}
+      else{pill('sp','Sevk ölçütü yok','var(--ok)');li('sv','Birinci basamak ya da dahiliyede izlem','Kontrol sıklığı yukarıda. Ölçütlerden biri gelişirse sevk edin.')}}
+
+    // 4) İlaçlar
+    $('itb').innerHTML='';
+    function row(ad,dur,neden){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td'),c=document.createElement('td');
+      a.textContent=ad;var sp=document.createElement('span');sp.className='st';sp.textContent={ok:'Önerilir',warn:'Dikkat',high:'Uygun değil',mut:'Gerekmez'}[dur];sp.style.background=RENK[dur];b.appendChild(sp);
+      c.className='why';c.textContent=neden;tr.appendChild(a);tr.appendChild(b);tr.appendChild(c);$('itb').appendChild(tr)}
+    // RAS blokeri (KDIGO 2024 3.6)
+    (function(){var d,n=[];
+      if(R===null||dm===null){d='warn';n.push((R===null?'ACR':'')+(R===null&&dm===null?' ve ':'')+(dm===null?'diyabet durumu':'')+' girilmedi: endikasyon değerlendirilmedi')}
+      else if(ai===0){d='mut';n.push('ACR < 30: KBH için gerekmez; hipertansiyon varsa Hipertansiyon Tedavisi sayfası')}
+      else if(dm!=='0'){d='ok';n.push('Diyabet ve '+AS[ai]+': ACEi ya da ARB en yüksek tolere edilen dozda (1B)')}
+      else if(ai===2){d='ok';n.push('Diyabetsiz A3: ACEi ya da ARB (1B)')}
+      else{d='ok';n.push('Diyabetsiz A2: ACEi ya da ARB önerilebilir (2C)')}
+      if(d!=='mut'){
+        if(K===null){if(d==='ok')d='warn';n.push('K girilmedi')}
+        else if(K>5.5){d='high';n.push('K '+fe(K,1,[5.5])+' > 5,5: önce K’yi düşürün (Hiperkalemi sayfası)')}
+        else if(K>5){if(d==='ok')d='warn';n.push('K '+fe(K,1,[5])+' > 5,0: K düşüren önlemler, sık izlem')}
+        if(E!==null&&E<30)n.push('eGFR < 30’da da sürdürülür; eGFR < 15’te belirtili hipotansiyon, kontrolsüz hiperkalemi ya da üremi varsa azaltın ya da kesin');
+        n.push('ACEi + ARB birlikte verilmez')}
+      row('ACEi / ARB',d,n.join('; '))})();
+    // SGLT2i (KDIGO 2024 3.7)
+    (function(){var d,n=[];
+      if(E===null){row('SGLT2i','warn','eGFR girilmedi');return}
+      if(E<20){row('SGLT2i','high','eGFR '+fe(E,0,[20])+' < 20: yeni başlanmaz; kullanıyorsa diyaliz ya da nakle kadar sürdürülebilir');return}
+      if(dm==='2'){d='ok';n.push('Tip 2 diyabet ve KBH, eGFR ≥ 20 (1A)')}
+      else if(ky){d='ok';n.push('Kalp yetersizliği, albüminüriden bağımsız (1A)')}
+      else if(R!==null&&R>=200){d='ok';n.push('ACR '+fe(R,0,[200])+' ≥ 200 mg/g, eGFR ≥ 20 (1A)')}
+      else if(E<=45){d='ok';n.push(R===null?'eGFR 20–45: ACR’den bağımsız önerilir (ACR < 200: 2B, ≥ 200: 1A)':'eGFR 20–45, ACR < 200: önerilebilir (2B)')}
+      else if(R===null){d='warn';n.push('ACR girilmedi: eGFR > 45’te ACR ≥ 200 ise önerilir')}
+      else if(gi<=1&&ai===0){d='mut';n.push('KBH ölçütü yok')}
+      else{d='mut';n.push('eGFR > 45 ve ACR < 200, diyabet ve KY yok: KDIGO 2024’te öneri yok')}
+      if(dm===null&&d!=='ok'){d='warn';n.push('diyabet durumu seçilmedi')}
+      if(dm==='1')n.push('Tip 1 diyabette ketoasidoz riski: KDIGO önerisi tip 2 içindir');
+      if(d==='ok')n.push('Dapagliflozin (Forziga) 10 mg ya da empagliflozin (Jardiance) 10 mg × 1; uzun açlık, büyük ameliyat ve ağır hastalıkta ara verin');
+      row('SGLT2i',d,n.join('; '))})();
+    // Finerenon (KDIGO 2024 3.8.1, Şekil 26)
+    (function(){var n=[];
+      if(dm===null){row('Finerenon','warn','Diyabet durumu seçilmedi');return}
+      if(dm!=='2'){row('Finerenon','mut',(dm==='1'?'Tip 1 diyabet':'Diyabet yok')+': KDIGO 2024 önerisi tip 2 diyabet içindir');return}
+      if(R===null){row('Finerenon','warn','ACR girilmedi');return}
+      if(R<30){row('Finerenon','mut','ACR < 30: albüminüri yok');return}
+      if(E===null){row('Finerenon','warn','eGFR girilmedi');return}
+      if(E<25){row('Finerenon','high','eGFR '+fe(E,0,[25])+' < 25: başlanmaz');return}
+      var d='ok';n.push('Tip 2 diyabet, eGFR ≥ 25, ACR ≥ 30 (2A)');
+      if(!ras){d='warn';n.push('önce ACEi/ARB en yüksek tolere edilen doza çıkın')}
+      if(K===null){d='warn';n.push('K girilmedi')}
+      else if(K>5){d='high';n.push('K '+fe(K,1,[5])+' > 5,0: başlamayın')}
+      else if(K>4.8){if(d==='ok')d='warn';n.push('K '+fe(K,1,[4.8])+' > 4,8: KDIGO başlama eşiği K ≤ 4,8 (KÜB ≤ 5,0); ilk 4 haftada ek K kontrolü')}
+      n.push('Doz: '+(E<60?'eGFR 25–59: 10 mg × 1, 1. ayda K ≤ 4,8 ise 20 mg':'eGFR ≥ 60: 20 mg × 1')+'; K 1. ayda, sonra 4 ayda bir; K > 5,5’te ara verin, ≤ 5,0’da 10 mg ile yeniden');
+      n.push('Kerendia; spironolakton ya da eplerenonla birlikte verilmez');
+      row('Finerenon',d,n.join('; '))})();
+    // Statin (KDIGO 2024 3.15.1)
+    (function(){
+      if(A===null){row('Statin','warn','Yaş girilmedi');return}
+      if(E===null){row('Statin','warn','eGFR girilmedi');return}
+      if(E>=60&&R===null){row('Statin','warn','eGFR ≥ 60 ve ACR girilmedi: KBH ölçütü değerlendirilmedi');return}
+      var kbh=E<60||(R!==null&&R>=30);
+      if(!kbh){row('Statin','mut','KBH ölçütü yok (eGFR ≥ 60, ACR < 30): genel KV risk için Lipid Tedavisi sayfası');return}
+      if(A>=50){row('Statin','ok',E<60?'≥ 50 yaş, eGFR < 60: statin ya da statin + ezetimib (1A); hedef LDL için Lipid Tedavisi sayfası':'≥ 50 yaş, eGFR ≥ 60: statin (1B)');return}
+      if(dm!==null&&dm!=='0'||kvh){row('Statin','ok','18–49 yaş ve '+(kvh?'koroner hastalık/iskemik inme':'diyabet')+': statin önerilebilir (2A)');return}
+      row('Statin',dm===null?'warn':'mut','18–49 yaş: koroner hastalık, diyabet, iskemik inme ya da 10 yıllık koroner risk > %10 ise statin (2A)'+(dm===null?'; diyabet durumu seçilmedi':''))})();
+
+    // 5) KB hedefi
+    var hd=[];
+    if(kir)hd.push('Kırılgan/düşme riski: daha az yoğun hedef, kişiye göre');
+    else hd.push('KDIGO: SKB < 120 (standart ölçüm, tolere edilirse; 2B)');
+    if(dm!==null&&dm!=='0')hd.push('Diyabet, ADA 2026: < 130/80');
+    $('kbh').textContent=hd.join(' · ');
+    if(S===null)$('kbs').textContent='SKB girilmedi';
+    else if(kir)$('kbs').textContent=fm(S,0)+' mmHg';
+    else $('kbs').textContent=fm(S,0)+' mmHg: '+(S>=120?'hedefin üstünde; tolere ediliyorsa tedaviyi artırın':'hedefte; baş dönmesi ve ortostatik belirtiyi sorgulayın');
+
+    // 6) Kontrol listesi
+    $('kl').innerHTML='';
+    var g3=gi!==null&&gi>=2;
+    // Hb: Anemi sayfasıyla aynı tanım (Hb < 13 erkek, < 12 kadın)
+    if(H===null)li('kl','Hemoglobin','Girilmedi. KBH G3 ve sonrasında düzenli bakın.');
+    else if(!sex)li('kl','Hemoglobin '+fm(H,1)+' g/dL','Cinsiyet seçilmedi: anemi eşiği (erkek < 13, kadın < 12) değerlendirilmedi.');
+    else{var esk=sex==='m'?13:12;
+      if(H<esk)li('kl','Hemoglobin '+fe(H,1,[esk])+' < '+esk+' g/dL: anemi','Demir (ferritin, TSAT), B12 ve folat bakın: <a href="anemi.html">Anemi</a>; IV demir dozu: <a href="iv-demir.html">IV Demir</a>.',true);
+      else li('kl','Hemoglobin '+fm(H,1)+' g/dL: anemi yok',g3?'KBH G3 ve sonrasında düzenli tekrarlayın.':'')}
+    if(K===null)li('kl','Potasyum','Girilmedi. RAS blokeri ya da MRA kullanan her hastada izleyin.');
+    else if(K>5.5)li('kl','K '+fe(K,1,[5.5])+' > 5,5 mmol/L','Tedavi ve RAASi kararı: <a href="hiperkalemi.html">Hiperkalemi</a>.',true);
+    else if(K>5)li('kl','K '+fe(K,1,[5])+' > 5,0 mmol/L','Diyet K’si, K artıran ilaçlar ve asidoz; sık izlem. RAASi kesmeden önce K düşüren önlemler: <a href="hiperkalemi.html">Hiperkalemi</a>.',true);
+    else if(K<3.5)li('kl','K '+fe(K,1,[3.5])+' < 3,5 mmol/L','Diüretik dozunu gözden geçirin.');
+    else li('kl','K '+fm(K,1)+' mmol/L: normal');
+    if(B===null)li('kl','Bikarbonat','Girilmedi. KBH G3 ve sonrasında bakın.');
+    else if(B<18)li('kl','HCO₃ '+fe(B,0,[18])+' < 18 mmol/L','Asidoz tedavisi düşünülmeli (ağızdan bikarbonat ± diyet; KDIGO 2024 PP 3.10.1). Aşırı düzeltmeyin.');
+    else if(B<22)li('kl','HCO₃ '+fe(B,0,[22])+' mmol/L (18–21)','KDIGO 2024 tedavi eşiği < 18; UKKA < 22’de ağızdan bikarbonat önerir (Hiperkalemi sayfasıyla aynı). Hipervolemi ve KB’yi izleyin.');
+    else li('kl','HCO₃ '+fm(B,0)+' mmol/L: asidoz yok');
+    if(gi===null)li('kl','Ca, P, PTH, ALP','eGFR girilmedi.');
+    else if(gi<=1)li('kl','Ca, P, PTH, ALP','G1–G2: rutin izlem gerekmez; KBH-MKD izlemi G3a’dan başlar.');
+    else li('kl','Ca, P, PTH, ALP',{2:'G3a: Ca ve P 6–12 ayda bir; PTH başlangıç değeri ve ilerlemeye göre; 25(OH)D bakılabilir.',3:'G3b: Ca ve P 6–12 ayda bir; PTH başlangıç değeri ve ilerlemeye göre; 25(OH)D bakılabilir.',4:'G4: Ca ve P 3–6 ayda bir; PTH 6–12 ayda bir; ALP yılda bir.',5:'G5: Ca ve P 1–3 ayda bir; PTH 3–6 ayda bir; ALP yılda bir. Nefroloji ile.'}[gi]+' Hiperkalsemiden kaçının; yüksek fosforu normale doğru düşürün (KDIGO 2017).');
+    li('kl','Aşılar','Yıllık inaktive grip aşısı; pnömokok aşısı; ilerleyici KBH’de (özellikle eGFR < 30) hepatit B aşısı ve sonrasında anti-HBs (KDIGO 2012).');
+    li('kl','Yaşam tarzı','Sigarayı bırakma, sodyum < 2 g/gün (tuz < 5 g), haftada en az 150 dakika orta yoğunlukta egzersiz; G3–G5’te protein 0,8 g/kg/gün, > 1,3 g/kg/gün’den kaçının (KDIGO 2024).');
+  }
+  seg('sex',calc);seg('dm',calc);
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

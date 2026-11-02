@@ -5,6 +5,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Araç | Dosya |
 |---|---|
 | eGFR (CKD-EPI 2021, KDIGO G evresi) | `egfr.html` |
+| KBH takibi (G/A evresi, KFRE, sevk, ilaç kararları, KDIGO 2024) | `kbh-takibi.html` |
 | AF risk skorları (CHA₂DS₂-VASc / CHA₂DS₂-VA, HAS-BLED) | `af-skor.html` |
 | Elektrolit hesaplamaları (düzeltilmiş Ca, anyon açığı, düzeltilmiş Na) | `elektrolit.html` |
 | Elektrolit replasmanı (K, Mg, P, Ca eksikliğinde doz ve hız) | `elektrolit-replasmani.html` |
