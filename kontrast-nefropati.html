@@ -120,7 +120,7 @@ table.t td,table.t th{overflow-wrap:break-word}
     <div class="seg wrapseg" role="group" aria-labelledby="rtlbl"><button type="button" data-g="rt" data-v="iv" aria-pressed="false">IV (BT)</button><button type="button" data-g="rt" data-v="ia2" aria-pressed="true">İA, ikinci geçiş</button><button type="button" data-g="rt" data-v="ia1" aria-pressed="false">İA, ilk geçiş</button></div>
     <p class="note">ESUR: <b>ilk geçiş</b> kontrastın böbreğe seyreltilmeden ulaştığı enjeksiyonlardır (sol kalp, torasik ve suprarenal abdominal aorta, renal arterler). <b>İkinci geçiş</b>: sağ kalp, pulmoner arter, karotis, subklavyen, koroner, mezenterik veya infrarenal arterler.</p>
     <div class="grid">
-      <div class="field"><label for="cv">Kontrast hacmi <span>mL (planlanan/verilen)</span></label><input data-aralik="1-1000 mL" id="cv" type="number" inputmode="decimal" step="any" value="180"></div>
+      <div class="field"><label for="cv">Kontrast hacmi <span>mL, biliniyorsa</span></label><input data-aralik="1-1000 mL" id="cv" type="number" inputmode="decimal" step="any" value=""></div>
     </div>
     <div class="items">
       <label class="item"><input type="checkbox" id="aki"><span class="txt">Bilinen veya şüpheli AKI<small>kontrasttan önce kreatinin yükseliyor</small></span></label>
@@ -317,7 +317,7 @@ table.t td,table.t th{overflow-wrap:break-word}
     if(anemia===null){miss.push('Hb/Hct');$('m-an').textContent='veri yok'}else{s+=anemia?3:0;$('m-an').textContent=(anemia?3:0)+' puan · '+anSrc}
     // Seçilmemiş diyabet/başvuru tipi 0 puan sayılmaz: eksik veri olarak gösterilir
     if(dmS===null){miss.push('diyabet');$('m-dm').textContent='seçilmedi'}else{s+=dm?3:0;$('m-dm').textContent=(dm?3:0)+' puan'}
-    if(cv===null){miss.push('kontrast hacmi');$('m-cv').textContent='veri yok'}else{var pc=Math.floor(cv/100+1e-9);s+=pc;$('m-cv').textContent=pc+' puan · '+fm(cv,0)+' mL'}
+    if(cv===null){miss.push('kontrast hacmi');$('m-cv').textContent='bilinmiyor'}else{var pc=Math.floor(cv/100+1e-9);s+=pc;$('m-cv').textContent=pc+' puan · '+fm(cv,0)+' mL'}
     if(mr==='e'){$('m-rl').textContent='eGFR (40–60: 2, 20–40: 4, < 20: 6)';
       if(eg===null){miss.push('eGFR');$('m-rn').textContent='veri yok'}
       else{var pe=eg<20?6:eg<40?4:eg<60?2:0;s+=pe;$('m-rn').textContent=pe+' puan · eGFR '+f1(eg)}}
@@ -327,7 +327,7 @@ table.t td,table.t th{overflow-wrap:break-word}
     var grp=s<=5?0:s<=10?1:s<=15?2:3,GN=['Düşük risk','Orta risk','Yüksek risk','Çok yüksek risk'],GC=['var(--ok)','var(--warn)','var(--high)','var(--high)'];
     var CIN=['%7,5','%14,0','%26,1','%57,3'],DIA=['%0,04','%0,12','%1,09','%12,6'];
     if(miss.length&&grp<3){$('ms').textContent='≥ '+s;pill('msp','Eksik veri: '+miss.join(', '),MUTED);curRow('mt',-1);
-      $('msa').textContent='Skor eksik verilerle en az '+s+' puan'+(grp>0?' (en az '+GN[grp].toLocaleLowerCase('tr')+')':'')+'; risk grubu için eksik alanları girin.'}
+      $('msa').textContent='Skor eksik verilerle en az '+s+' puan'+(grp>0?' (en az '+GN[grp].toLocaleLowerCase('tr')+')':'')+'; risk grubu için eksik alanları girin.'+(cv===null?' Kontrast hacmi işlemden önce bilinmez: işlem öncesi risk için aşağıdaki Mehran-2 skorunu kullanın (kontrast hacmi istemez).':'')}
     else{$('ms').textContent=(miss.length?'≥ ':'')+s;pill('msp',GN[grp],GC[grp]);curRow('mt',grp);
       $('msa').textContent='Tahmini CIN riski '+CIN[grp]+', diyaliz gerektiren böbrek yetmezliği riski '+DIA[grp]+' (Mehran 2004 türetme kohortu).'+(miss.length?' Eksik veri var ama skor zaten ≥ 16.':'')}
 
