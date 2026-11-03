@@ -145,14 +145,16 @@
   // Her biri {els: ilgili öğeler, isaret: işaret sınıfı alan öğe, ad: bantta görünen ad, v: sayı kutusunun örnek değeri}.
   // İşaretli örnek kaldıkça bant durur (kalanları sayar) ve Nota ekle uyarır; ilk girişte öbür örnekler sessizce sonuçta kalmaz.
   var ornekler = [], ornekVardi = false, bantGuncelle = function(){};
-  function kalanOrnek(){ return ornekler.filter(function(o){ return o.isaret.offsetParent !== null || o.els[0].offsetParent !== null; }); }
+  // Gizli bölümdeki (sekme, kapalı seçenek) örnek sayılmaz; yalnız kendi satırı gizlenen seçim (ör. ilaç listesi aramada süzülünce) sayılır
+  function kalanOrnek(){ return ornekler.filter(function(o){ var i = o.isaret;
+    return i.offsetParent !== null || o.els[0].offsetParent !== null || (i.hidden && i.parentElement && i.parentElement.offsetParent !== null); }); }
   function ornekBirak(o){ o.isaret.classList.remove('ornek-k'); ornekler.splice(ornekler.indexOf(o), 1); }
   function ornekDokun(t){
     var b = t.closest && t.closest('button');
     ornekler.slice().forEach(function(o){ if (o.els.indexOf(t) >= 0 || (b && o.els.indexOf(b) >= 0)) ornekBirak(o); });
   }
   // Başka bir kutudan otomatik dolan kutu (ör. üre yazınca BUN) artık örnek değildir
-  function ornekDegisen(){ ornekler.slice().forEach(function(o){ if (o.v != null && o.els[0].value !== o.v) ornekBirak(o); }); }
+  function ornekDegisen(){ ornekler.slice().forEach(function(o){ var e = o.els[0]; if ((o.v != null && e.value !== o.v) || (!o.cins && e.type === 'checkbox' && !e.checked)) ornekBirak(o); }); }
   function dokun(t){
     if (t && ornekler.length) { ornekDokun(t); setTimeout(function(){ ornekDegisen(); ornekBitti(); bantGuncelle(); }, 0); }
     dokunuldu = true; ornekBitti();
@@ -161,7 +163,7 @@
   function ornekBitti(){ var d = ornekVardi ? 2 : 1; if (gizlenen < d && !kalanOrnek().length) { gizlenen = d; ornekGizle(ornekVardi); } }
   function disButon(t){ return t.closest && t.closest('.cbtns, .gb, .ornek, .sonuca, .ilgili, .icindekiler, .hpanel, header, a.back, details > summary'); }
   ['input', 'change'].forEach(function(ev){ document.addEventListener(ev, function(e){ if (e.isTrusted && !disButon(e.target)) dokun(e.target); }, true); });
-  document.addEventListener('click', function(e){ if (e.isTrusted && e.target.closest && e.target.closest('button, label, input') && !disButon(e.target)) dokun(e.target); }, true);
+  document.addEventListener('click', function(e){ if (e.isTrusted && e.target.closest && e.target.closest('button, label, input, select') && !disButon(e.target)) dokun(e.target); }, true);
   // Olası olmayan değer ya da geçersiz sonuç varken Kopyala ve Nota ekle çalışmaz.
   function engel(card, btn, asil){
     denetle();
@@ -282,7 +284,7 @@
   }
   // Seçim maddesinin kısa adı: "Yaş ≥ 65", HEART'ta "Yaş: ≥ 65"
   function secimAd(el){
-    var l = el.closest('label'), t = l && l.querySelector('.txt'), a = t ? txt(t.firstChild && t.firstChild.nodeType === 3 ? t.firstChild : t) : etiketAd(el);
+    var l = el.closest('label'), t = l && l.querySelector('.txt'), a = t ? txt(t.firstChild && (t.firstChild.nodeType === 3 || t.firstChild.tagName === 'B') ? t.firstChild : t) : etiketAd(el);
     return (el.type === 'radio' ? grupAd(el) + ': ' : '') + a.trim().slice(0, 40);
   }
   // Örneklerle açılan sayfada örnek taşıyan kutu ve seçimleri toplar ve işaretler (hasta kaydı yüklenmediyse)
@@ -301,6 +303,15 @@
       var p = t.split('='), bs = Array.prototype.slice.call(document.querySelectorAll('button[data-g="' + p[0] + '"]')), b = bs.filter(function(x){ return x.getAttribute('aria-pressed') === 'true'; })[0];
       if (b && (p[1] == null || b.getAttribute('data-v') !== p[1])) ornekler.push({els: bs, isaret: b.parentNode, ad: grupAd(b)});
     });
+    // Örnek cinsiyet (data-hasta-cins): silinemez (nötr değeri yok), ama dokunulana kadar örnek sayılır; Örnekleri sil sonrası da uyarı sürer
+    var cg = {};
+    document.querySelectorAll('button[data-hasta-cins]').forEach(function(b){
+      var g = b.getAttribute('data-g');
+      if (!g || cg[g] || b.getAttribute('aria-pressed') !== 'true' || !gecerli(b) || korunur(b) || SECIM.some(function(t){ return t.split('=')[0] === g; })) return; cg[g] = 1;
+      ornekler.push({els: Array.prototype.slice.call(document.querySelectorAll('button[data-g="' + g + '"]')), isaret: b.parentNode, ad: 'Cinsiyet', cins: true});
+    });
+    document.querySelectorAll('input[type=checkbox][data-hasta-cins]').forEach(function(el){
+      if (el.checked && !el.disabled && gecerli(el) && !korunur(el)) ornekler.push({els: [el], isaret: el.closest('label') || el, ad: secimAd(el), cins: true}); });
     ornekler.forEach(function(o){ o.isaret.classList.add('ornek-k'); });
     ornekVardi = ornekler.length > 0;
   }
@@ -409,6 +420,7 @@
     function ornekSil(){
       ornekler.slice().forEach(function(o){
         var el = o.els[0];
+        if (o.cins) return;
         if (el.tagName === 'BUTTON') { var g = el.getAttribute('data-g'), n = (SECIM.filter(function(t){ return t.split('=')[0] === g; })[0] || '').split('=')[1];
           o.els.forEach(function(b){ b.setAttribute('aria-pressed', n != null && b.getAttribute('data-v') === n ? 'true' : 'false'); }); }
         else if (el.tagName === 'SELECT') { if (!el.querySelector('option[value=""]')) { var op = document.createElement('option'); op.value = ''; op.textContent = '— Seçin —'; el.insertBefore(op, el.firstChild); } el.value = ''; tetikle(el); }
@@ -417,7 +429,8 @@
         ornekBirak(o);
       });
       var t = girdiler.filter(function(el){ return el.value !== ''; })[0] || girdiler[0]; if (t) tetikle(t);
-      dokunuldu = true; ornekBitti(); bant.remove();
+      dokunuldu = true; ornekBitti();
+      if (kalanOrnek().length) { yazi.textContent = 'Cinsiyet seçimi örnektir; hastaya göre seçin.'; dug.remove(); } else bant.remove();
     }
 
     function cinsKaydet(deger){ var v = oku(); v.cins = deger; yaz(v); }
@@ -969,7 +982,8 @@
       });
       panel.querySelectorAll('button.c').forEach(function(b){ b.onclick = function(){
         var v = oku(); if (v.cins === b.dataset.c) delete v.cins; else v.cins = b.dataset.c; yaz(v);
-        if (v.cins) document.querySelectorAll('button[data-hasta-cins="' + v.cins + '"]').forEach(function(x){ if (gecerli(x) && x.getAttribute('aria-pressed') !== 'true') x.click(); });
+        if (v.cins) document.querySelectorAll('button[data-hasta-cins="' + v.cins + '"]').forEach(function(x){ if (gecerli(x) && x.getAttribute('aria-pressed') !== 'true') x.click(); ornekDokun(x); });
+        ornekBitti(); bantGuncelle();
         ciz(); }; });
       panel.querySelector('[data-i=kop]').onclick = function(){
         var b = this; if (window.vizitOlasiVar(panel)) { b.textContent = 'Değeri kontrol edin'; setTimeout(function(){ b.textContent = 'Kopyala'; }, 2500); return; }
