@@ -280,8 +280,8 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
     if(B!==null&&B<18){sv=Math.max(sv,1);li('sv','HCO₃ '+fe(B,0,[18])+' < 18 mmol/L','Kalıcı metabolik asidoz sevk ölçütüdür.')}
     if(sv===2)pill('sp','Nefrolojiye sevk edin','var(--high)');
     else if(sv===1)pill('sp','Sevki düşünün','var(--warn)');
-    else{var eksS=[];if(E===null)eksS.push('eGFR');if(R===null)eksS.push('ACR');if(k5===null&&E!==null&&E<60)eksS.push('KFRE');
-      if(eksS.length){pill('sp',eksS.join(', ')+' eksik: değerlendirilmedi',RENK.mut);li('sv','Eksik değer','eGFR, ACR ve (eGFR < 60 ise) KFRE olmadan sevk ölçütleri tam değerlendirilemez.')}
+    else{var eksS=[];if(E===null)eksS.push('eGFR');if(R===null)eksS.push('ACR');if(k5===null&&E!==null&&E<60)eksS.push('KFRE');if(K===null)eksS.push('K');if(B===null)eksS.push('HCO₃');
+      if(eksS.length){pill('sp',eksS.join(', ')+' eksik: değerlendirilmedi',RENK.mut);li('sv','Eksik değer','eGFR, ACR, K, HCO₃ ve (eGFR < 60 ise) KFRE olmadan sevk ölçütleri tam değerlendirilemez.')}
       else{pill('sp','Sevk ölçütü yok','var(--ok)');li('sv','Birinci basamak ya da dahiliyede izlem','Kontrol sıklığı yukarıda. Ölçütlerden biri gelişirse sevk edin.')}}
 
     // 4) İlaçlar
