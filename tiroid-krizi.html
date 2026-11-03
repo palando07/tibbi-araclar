@@ -274,19 +274,27 @@ table.t.dz td:first-child{width:34%}
     $('bh').textContent=s4===null?'nabız girilmedi':fm(hr,0)+'/dk → '+pt(s4);
     var eksA=s2===null||s3===null||s5===null||segVal('af')===null||segVal('pre')===null;
     var bw=(s1||0)+(s2||0)+(s3||0)+(s4||0)+(s5||0)+s6+s7;
-    $('bw').textContent=eksA?'–':bw;
+    // Boş sıcaklık/nabız 0 puan sayılmaz: en çok puanla (30/25) üst sınır; sınıf ancak alt ve üst sınırda aynıysa verilir
+    var vMiss=[];if(s1===null)vMiss.push('sıcaklık');if(s4===null)vMiss.push('nabız');
+    var bwHi=bw+(s1===null?30:0)+(s4===null?25:0),BL=function(x){return x>=45?2:x>=25?1:0};
+    var eksV=!eksA&&vMiss.length>0&&BL(bw)!==BL(bwHi);
+    $('bw').textContent=eksA||eksV?'–':(vMiss.length?'≥ ':'')+bw;
     [s1,s2,s3,s4,s5,s6,s7].forEach(function(x,i){$('c'+(i+1)).textContent=x===null?'–':pt(x)});
-    var lvl=eksA?-1:bw>=45?2:bw>=25?1:0;
-    pill('bwp',lvl===-1?'Eksik: bütün maddeleri seçin':lvl===2?'≥ 45: tiroid krizi':lvl===1?'25–44: yaklaşan kriz':'< 25: kriz olası değil',lvl===-1?'var(--muted)':lvl===2?'var(--high)':lvl===1?'var(--warn)':'var(--ok)');
+    var lvl=eksA||eksV?-1:BL(bw);
+    pill('bwp',eksV?'Eksik veri: '+vMiss.join(', '):lvl===-1?'Eksik: bütün maddeleri seçin':lvl===2?'≥ 45: tiroid krizi':lvl===1?'25–44: yaklaşan kriz':'< 25: kriz olası değil',lvl===-1?'var(--muted)':lvl===2?'var(--high)':lvl===1?'var(--warn)':'var(--ok)');
     // JTA 2012
     var ft=segVal('ft')==='1',cns=s2>=10,fev=t!==null&&t>=38,tac=hr!==null&&hr>=130,hf=s5>=15,gih=s3>=10;
     var n=(fev?1:0)+(tac?1:0)+(hf?1:0)+(gih?1:0);
     var pat1=(cns&&n>=1)||(!cns&&n>=3),jt;
     if(ft&&pat1)jt='TS1 (kesin)';else if(ft&&n===2)jt='TS2 (şüpheli)';else if(!ft&&pat1)jt='TS2 (sT3/sT4 yok)';else jt='karşılanmadı';
     if(eksA)jt='eksik (madde seçilmedi)';
+    else if(vMiss.length){var jx=function(f,ta){var n2=(f?1:0)+(ta?1:0)+(hf?1:0)+(gih?1:0),p1=(cns&&n2>=1)||(!cns&&n2>=3);return ft&&p1?'TS1 (kesin)':ft&&n2===2?'TS2 (şüpheli)':!ft&&p1?'TS2 (sT3/sT4 yok)':'karşılanmadı'};
+      var fa=s1===null?[false,true]:[fev],ta2=s4===null?[false,true]:[tac],js=[];fa.forEach(function(a){ta2.forEach(function(b){js.push(jx(a,b))})});
+      if(js.some(function(x){return x!==js[0]}))jt='eksik ('+vMiss.join(', ')+' girilmedi)'}
     $('jta').textContent=jt;
     $('rxB').innerHTML='';
-    if(lvl===-1)li('rxB','BWPS eksik','Puanlanmamış madde var; skor yorumlanmaz.');
+    if(eksV)li('rxB','Eksik veri: '+vMiss.join(', '),'En az '+bw+', en çok '+bwHi+' puan. Girilmeyen sıcaklık/nabız 0 sayılmaz; sınıf için girin.');
+    else if(lvl===-1)li('rxB','BWPS eksik','Puanlanmamış madde var; skor yorumlanmaz.');
     else if(lvl===2)li('rxB','Tiroid krizi: yoğun bakımda acil tedavi','TEMD: kriz şüphesinde tedaviye ivedilikle, mümkünse yoğun bakımda başlanır. Laboratuvar sonucunu beklemeyin.');
     else if(lvl===1)li('rxB','Yaklaşan kriz (kriz tehdidi)','TEMD: kriz tehdidi taşıyan hastada da destek tedavisi (sıvı, kortikosteroid, sedatif) ve altta yatan hastalığın tedavisi. ATA 2016: 25–44 puanda agresif tedavi kararı klinik yargıya dayanır.');
     else li('rxB','BWPS < 25','Tiroid krizi olası değil; tirotoksikozu ve diğer ateş/taşikardi nedenlerini değerlendirin.');
@@ -326,11 +334,15 @@ table.t.dz td:first-child{width:34%}
     $('mgl').textContent=glu===null?'glukoz girilmedi':(hgl?'evet → 10 puan':'hayır → 0');
     var eksB=m2===null||m3===null||segVal('mp')===null;
     var cv=(mh||0)+kc,mx=(m1||0)+(m2||0)+(m3||0)+m4+cv+mc;
-    $('mx').textContent=eksB?'–':mx;
+    // Boş sıcaklık, nabız, Na, glukoz 0 puan sayılmaz: en çok puanla üst sınır; sınıf ancak iki uçta aynıysa verilir
+    var bMiss=[],mxHi=mx,ML=function(x){return x>=60?3:x>=45?2:x>=25?1:0};
+    if(m1===null){bMiss.push('sıcaklık');mxHi+=20}if(mh===null){bMiss.push('nabız');mxHi+=30}if(na===null){bMiss.push('Na');mxHi+=10}if(glu===null){bMiss.push('glukoz');mxHi+=10}
+    var eksBV=!eksB&&bMiss.length>0&&ML(mx)!==ML(mxHi);
+    $('mx').textContent=eksB||eksBV?'–':(bMiss.length?'≥ ':'')+mx;
     $('d1').textContent=m1===null?'–':pt(m1);$('d2').textContent=m2===null?'–':pt(m2);$('d3').textContent=m3===null?'–':pt(m3);$('d4').textContent=pt(m4);$('d5').textContent=pt(cv);$('d6').textContent=pt(mc);
-    var ml=eksB?-1:mx>=60?3:mx>=45?2:mx>=25?1:0;
-    pill('mxp',ml===-1?'Eksik: bütün maddeleri seçin':ml===3?'≥ 60: yüksek olasılık':ml===2?'45–59: risk':ml===1?'25–44: risk (yalnız orijinal skor)':'< 25: olası değil',ml===-1?'var(--muted)':ml===3?'var(--high)':ml>=1?'var(--warn)':'var(--ok)');
-    $('mxa').textContent=ml===-1?'Puanlanmamış madde var; skor yorumlanmaz.':ml===3?'Miksödem koması için tanısal düzeyde. Tiroid testlerini beklemeden tedaviye başlayın.':ml===2?'Miksödem koması riski (hem TEMD hem orijinal). Klinik şüphe varsa tedaviyi geciktirmeyin.':ml===1?'Orijinal Popoveniuc skorunda risk aralığı (25–59); TEMD metni bu aralığı 45’ten başlatır. Klinik tabloyla birlikte değerlendirin.':'Miksödem koması olası değil; diğer koma nedenlerini araştırın.';
+    var ml=eksB||eksBV?-1:ML(mx);
+    pill('mxp',eksBV?'Eksik veri: '+bMiss.join(', '):ml===-1?'Eksik: bütün maddeleri seçin':ml===3?'≥ 60: yüksek olasılık':ml===2?'45–59: risk':ml===1?'25–44: risk (yalnız orijinal skor)':'< 25: olası değil',ml===-1?'var(--muted)':ml===3?'var(--high)':ml>=1?'var(--warn)':'var(--ok)');
+    $('mxa').textContent=eksBV?'En az '+mx+', en çok '+mxHi+' puan. Girilmeyen değer 0 sayılmaz; sınıf için '+bMiss.join(', ')+' girin.':ml===-1?'Puanlanmamış madde var; skor yorumlanmaz.':ml===3?'Miksödem koması için tanısal düzeyde. Tiroid testlerini beklemeden tedaviye başlayın.':ml===2?'Miksödem koması riski (hem TEMD hem orijinal). Klinik şüphe varsa tedaviyi geciktirmeyin.':ml===1?'Orijinal Popoveniuc skorunda risk aralığı (25–59); TEMD metni bu aralığı 45’ten başlatır. Klinik tabloyla birlikte değerlendirin.':'Miksödem koması olası değil; diğer koma nedenlerini araştırın.';
 
     // ---------- B) Tedavi ----------
     $('tB').innerHTML='';$('rxM').innerHTML='';

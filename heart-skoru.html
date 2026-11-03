@@ -90,9 +90,9 @@ details p{margin:8px 0 0}
       <label class="item"><input type="radio" name="e" value="2"><span class="txt">Belirgin ST depresyonu</span><span class="pts">2</span></label>
     </div></div>
     <div class="field"><span class="lbl">Yaş (Age)</span><div class="items">
-      <label class="item"><input type="radio" name="a" value="0"><span class="txt">&lt; 45</span><span class="pts">0</span></label>
-      <label class="item"><input type="radio" name="a" value="1" checked><span class="txt">45–64</span><span class="pts">1</span></label>
-      <label class="item"><input type="radio" name="a" value="2"><span class="txt">≥ 65</span><span class="pts">2</span></label>
+      <label class="item"><input type="radio" name="a" value="0" data-hasta-isaret="yas<45"><span class="txt">&lt; 45</span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="a" value="1" data-hasta-isaret="yas>=45&amp;yas<65" checked><span class="txt">45–64</span><span class="pts">1</span></label>
+      <label class="item"><input type="radio" name="a" value="2" data-hasta-isaret="yas>=65"><span class="txt">≥ 65</span><span class="pts">2</span></label>
     </div></div>
     <div class="field"><span class="lbl">Risk faktörleri</span><div class="items">
       <label class="item"><input type="radio" name="r" value="0"><span class="txt">Yok</span><span class="pts">0</span></label>
@@ -124,9 +124,15 @@ details p{margin:8px 0 0}
   function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
   function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
 
-  function rv(n){return +document.querySelector('input[name='+n+']:checked').value}
+  function rv(n){var e=document.querySelector('input[name='+n+']:checked');return e?+e.value:null}
+  var AD={h:'öykü',e:'EKG',a:'yaş',r:'risk faktörleri',t:'troponin'};
+  function sinif(x){return x<=3?0:x<=6?1:2}
   function calc(){
-    var s=rv('h')+rv('e')+rv('a')+rv('r')+rv('t');$('sc').textContent=s;
+    // Seçilmemiş madde 0 sayılmaz: en kötü durumda (2 puan) bile sınıf değişmiyorsa sınıf verilir, yoksa "Eksik veri"
+    var s=0,miss=[];['h','e','a','r','t'].forEach(function(n){var x=rv(n);if(x===null)miss.push(AD[n]);else s+=x});
+    $('sc').textContent=(miss.length?'≥ ':'')+s;
+    if(miss.length&&sinif(s)!==sinif(s+2*miss.length)){pill('pl','Eksik veri: '+miss.join(', '),'var(--muted)');$('mace').textContent='–';
+      $('adv').textContent='En az '+s+' puan. Risk sınıfı için tüm maddeleri seçin.';return}
     if(s<=3){pill('pl','Düşük risk','var(--ok)');$('mace').textContent='%0,9–1,7';$('adv').textContent='Seri troponin negatifse erken taburculuk ve ayaktan değerlendirme düşünülebilir.'}
     else if(s<=6){pill('pl','Orta risk','var(--warn)');$('mace').textContent='%12–16,6';$('adv').textContent='Gözlem, seri troponin ve kardiyoloji değerlendirmesi / ileri tetkik önerilir.'}
     else{pill('pl','Yüksek risk','var(--high)');$('mace').textContent='%50–65';$('adv').textContent='Erken invaziv strateji açısından kardiyoloji ile değerlendirin.'}

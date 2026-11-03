@@ -133,9 +133,15 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
   var $=function(id){return document.getElementById(id)};
   function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
   function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
-  function rv(n){var e=document.querySelector('input[name='+n+']:checked');return e?+e.value:0}
+  function rv(n){var e=document.querySelector('input[name='+n+']:checked');return e?+e.value:null}
+  var MX={a1:4,a2:2,a3:2,a4:4},AD={a1:'uyanıklık',a2:'AMT4',a3:'dikkat',a4:'akut değişiklik'};
+  function sinif(x){return x>=4?2:x>=1?1:0}
   function calc(){
-    var s=rv('a1')+rv('a2')+rv('a3')+rv('a4');$('sc').textContent=s;$('rx').innerHTML='';
+    // Seçilmemiş madde 0 sayılmaz: en kötü puanla bile sınıf değişmiyorsa sınıf verilir, yoksa "Eksik veri"
+    var s=0,hi=0,miss=[];['a1','a2','a3','a4'].forEach(function(n){var x=rv(n);if(x===null){miss.push(AD[n]);hi+=MX[n]}else{s+=x;hi+=x}});
+    $('sc').textContent=(miss.length?'≥ ':'')+s;$('rx').innerHTML='';
+    if(miss.length&&sinif(s)!==sinif(hi)){pill('pl','Eksik veri: '+miss.join(', '),'var(--muted)');
+      $('adv').textContent='En az '+s+' puan. Sonuç için tüm maddeleri seçin.';return}
     if(s>=4){
       pill('pl','Olası deliryum','var(--high)');
       $('adv').textContent='Olası deliryum ± bilişsel bozukluk. Klinik değerlendirmeyle tanıyı doğrulayın ve altta yatan neden(ler)i hemen araştırın.';

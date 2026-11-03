@@ -129,10 +129,22 @@ table.t th.n{text-align:right}
   function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
   function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
 
-  function val(n){return document.querySelector('input[name='+n+']:checked').value}
+  function val(n){var x=document.querySelector('input[name='+n+']:checked');return x?x.value:null}
+  function sinif(x){return x<=8?0:x<=12?1:2}
   function calc(){
-    var e=+val('e'),vv=val('vv'),m=+val('m');
-    $('cmp').textContent='E'+e+' V'+vv+' M'+m;
+    var e0=val('e'),vv=val('vv'),m0=val('m'),e=+e0,m=+m0;
+    $('cmp').textContent='E'+(e0||'?')+' V'+(vv||'?')+' M'+(m0||'?');
+    // Seçilmemiş bileşen: en düşük (1) ve en yüksek puanla aralık; sınıf ancak ikisinde de aynıysa verilir
+    if(e0===null||vv===null||m0===null){
+      var miss=[],lo=0,hi=0;
+      if(e0===null){miss.push('göz');lo+=1;hi+=4}else{lo+=e;hi+=e}
+      if(vv===null){miss.push('sözel');lo+=1;hi+=5}else if(vv!=='T'){lo+=+vv;hi+=+vv}
+      if(m0===null){miss.push('motor');lo+=1;hi+=6}else{lo+=m;hi+=m}
+      $('of').textContent=vv==='T'?'/ 10T':'/ 15';
+      if(vv==='T'||sinif(lo)!==sinif(hi)){$('sc').textContent='–';pill('pl','Eksik veri: '+miss.join(', '),'var(--muted)');
+        $('adv').textContent=vv==='T'?'Seçilmemiş bileşen var.':'Puan '+lo+'–'+hi+' arasında. Sınıf için tüm bileşenleri seçin.';return}
+      $('sc').textContent=lo+'–'+hi;var c=sinif(lo);
+      pill('pl',['Ağır','Orta','Hafif'][c],['var(--high)','var(--warn)','var(--ok)'][c]);$('adv').textContent='Seçilmemiş bileşen var; puan '+lo+'–'+hi+' arasında.';return}
     if(vv==='T'){$('sc').textContent=(e+m)+'T';$('of').textContent='/ 10T';pill('pl','Sözel değerlendirilemedi','var(--muted)');
       $('adv').textContent='Entübe hastada skor göz ve motor puanların toplamı ile "T" olarak yazılır (ör. '+(e+m)+'T).';return}
     var s=e+(+vv)+m;$('sc').textContent=s;$('of').textContent='/ 15';

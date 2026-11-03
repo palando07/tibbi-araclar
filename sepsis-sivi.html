@@ -281,13 +281,13 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
     // OAB
     var map=s!==null&&d!==null&&s>0&&d>0?(s+2*d)/3:null,old=age!==null&&age>=65,lo=old?60:65;
     $('mapt').textContent=old?'60–65 mmHg (≥ 65 yaş, SSC 2026)':'≥ 65 mmHg';
-    if(map===null){$('map').textContent='–';pill('mapp','','')}
+    if(map===null){$('map').textContent='–';pill('mapp','Eksik veri: '+(s===null&&d===null?'sistolik, diyastolik':s===null?'sistolik':'diyastolik'),'var(--muted)')}
     else{$('map').textContent=fm(map,map<lo&&Math.round(map)>=lo?1:0);
       if(map<lo)pill('mapp','Hedefin altında','var(--high)');
       else if(map<65)pill('mapp','Hedef aralıkta','var(--ok)');
       else pill('mapp','Hedefe ulaşıldı','var(--ok)')}
     // Laktat
-    if(lac===null){$('lacn').textContent='–';pill('lacp','','')}
+    if(lac===null){$('lacn').textContent='–';pill('lacp','Eksik veri: laktat','var(--muted)')}
     else{$('lacn').textContent=fm(lac,1);
       if(lac>=4)pill('lacp','≥ 4: yüksek risk','var(--high)');
       else if(lac>=2)pill('lacp','≥ 2: hipoperfüzyon','var(--warn)');
@@ -295,6 +295,7 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
     var hypo=map!==null&&map<lo,hl=lac!==null&&lac>=2;
     // Öneriler
     if(hypo||hl)li('rxF','Sepsise bağlı hipoperfüzyon'+(hypo&&hl?' (hipotansiyon + laktat)':hypo?' (hipotansiyon)':' (laktat ≥ 2)'),'İlk 3 saatte en az 30 mL/kg kristaloid'+(wt>0?' = '+fm(30*wt,0)+' mL':'')+'; 0,9% NaCl yerine dengeli kristaloid (Ringer laktat, Plasma-Lyte) önerilir (SSC 2021, 2026).');
+    else if(map===null||lac===null)li('rxF',(map===null&&lac===null?'OAB ve laktat':map===null?'OAB':'Laktat')+' girilmedi: hipoperfüzyon değerlendirilemedi',(map===null?'OAB için sistolik ve diyastolik TA gerekir. ':'')+'Girilmeyen değer normal sayılmaz; 30 mL/kg kararı için hipotansiyon ve laktatı değerlendirin.');
     else li('rxF','Hipotansiyon ve laktat yüksekliği yok','30 mL/kg hacim sepsise bağlı hipoperfüzyon veya şok içindir; hacmi klinik duruma göre bireyselleştirin.');
     li('rxF','Kalp ya da böbrek yetmezliğinde dikkat'+(hf?' (bu hastada var)':''),'Hacmi tek seferde değil, 250–500 mL bolus'+(wt>0?' ('+fm(250/wt,1)+'–'+fm(500/wt,1)+' mL/kg)':'')+' olarak verin ve her bolustan sonra yanıtı değerlendirin: OAB, kalp hızı, kapiller dolum, idrar, laktat; akciğer raller/oksijen ihtiyacı ve dinamik ölçümler (pasif bacak kaldırma, atım hacmi değişimi, nabız basıncı değişimi). Sıvı yanıtı yoksa veya yüklenme bulgusu varsa durun ve vazopresörü erken başlatın.');
     if(hypo)li('rxF','OAB '+fm(map,0)+' mmHg: hedefin altında','Sıvıya rağmen OAB < '+lo+' mmHg ise norepinefrin başlayın (aşağıda). Derin hipotansiyonda (ör. DKB < 40 mmHg) sıvı sürerken başlanabilir.'+(old?' ≥ 65 yaşta SSC 2026, 60–65 mmHg aralığını yüksek hedeflere tercih eder.':''));

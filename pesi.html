@@ -192,46 +192,57 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
     $('spn').hidden=showP;
     $('p-ca').textContent=showP?'+30':'+1';$('p-hf').textContent=$('p-cld').textContent=showP?'+10':'+1';
 
-    // PESI
-    var pesi=null,cls=null,parts=[];
+    // PESI: boş vital bulgu 0 puan sayılmaz. En az (boşlar 0) ve en çok (boşlar tam puan) hesaplanır; sınıf ancak ikisinde aynıysa verilir.
+    var CLS=function(x){return x<=65?1:x<=85?2:x<=105?3:x<=125?4:5},MUTED='var(--muted)';
+    var VT=[[hr,'nabız',function(x){return x>=110},20,'nabız≥110',1],[sbp,'SKB',function(x){return x<100},30,'SKB<100',1],[rr,'SS',function(x){return x>=30},20,'SS≥30',0],
+      [t,'ateş',function(x){return x<36},20,'ateş<36',0],[sat,'SaO₂',function(x){return x<90},20,'SaO₂<90',1]];
+    var pesi=null,pmax=null,cls=null,parts=[],pMiss=[];
     if(age!==null){
       pesi=age;parts.push('yaş '+age);
       function add(c,p,n){if(c){pesi+=p;parts.push(n+' '+p)}}
-      add(male,10,'erkek');add(ca,30,'kanser');add(hf,10,'KY');add(cld,10,'akciğer');
-      add(hr!==null&&hr>=110,20,'nabız≥110');add(sbp!==null&&sbp<100,30,'SKB<100');add(rr!==null&&rr>=30,20,'SS≥30');
-      add(t!==null&&t<36,20,'ateş<36');add(ams,60,'bilinç');add(sat!==null&&sat<90,20,'SaO₂<90');
-      cls=pesi<=65?1:pesi<=85?2:pesi<=105?3:pesi<=125?4:5;
+      add(male,10,'erkek');add(ca,30,'kanser');add(hf,10,'KY');add(cld,10,'akciğer');add(ams,60,'bilinç');
+      pmax=0;VT.forEach(function(x){if(x[0]===null){pMiss.push(x[1]);pmax+=x[3]}else add(x[2](x[0]),x[3],x[4])});
+      pmax+=pesi;
+      cls=CLS(pesi)===CLS(pmax)?CLS(pesi):null;
     }
-    $('ps').textContent=pesi===null?'–':String(Math.round(pesi*10)/10).replace('.',',');
-    if(cls){pill('pc','Sınıf '+CL[cls],CC[cls]);$('pm').textContent=MR[cls]}else{pill('pc','','');$('pm').textContent='–'}
-    $('pf').textContent=pesi===null?'Yaşı girin.':parts.join(' + ')+' = '+$('ps').textContent;
+    $('ps').textContent=pesi===null?'–':(pMiss.length?'≥ ':'')+String(Math.round(pesi*10)/10).replace('.',',');
+    if(cls){pill('pc','Sınıf '+CL[cls],CC[cls]);$('pm').textContent=MR[cls]}
+    else if(pesi!==null){pill('pc','Eksik veri: '+pMiss.join(', '),MUTED);$('pm').textContent='–'}
+    else{pill('pc','','');$('pm').textContent='–'}
+    $('pf').textContent=pesi===null?'Yaşı girin.':parts.join(' + ')+' = '+String(Math.round(pesi*10)/10).replace('.',',')+(pMiss.length?' · girilmedi: '+pMiss.join(', ')+' → en çok '+String(Math.round(pmax*10)/10).replace('.',','):'');
     document.querySelectorAll('#ptb tr').forEach(function(r){r.className=+r.dataset.c===cls?'cur':''});
 
-    // sPESI
-    var s=0,sp=[];
+    // sPESI: boş vital bulgu "yok" sayılmaz; ≥ 1 madde varsa yüksek risk kesindir, yoksa eksik madde varken düşük risk denmez
+    var s=0,sp=[],sMiss=[];
     function a1(c,n){if(c){s++;sp.push(n)}}
     a1(age!==null&&age>80,'yaş > 80');a1(ca,'kanser');a1(hf||cld,'kronik kardiyopulmoner hastalık');
-    a1(hr!==null&&hr>=110,'nabız ≥ 110');a1(sbp!==null&&sbp<100,'SKB < 100');a1(sat!==null&&sat<90,'SaO₂ < %90');
-    $('ss').textContent=age===null?'–':String(s);
+    VT.forEach(function(x){if(!x[5])return;if(x[0]===null)sMiss.push(x[1]);else a1(x[2](x[0]),x[1]==='nabız'?'nabız ≥ 110':x[1]==='SKB'?'SKB < 100':'SaO₂ < %90')});
+    $('ss').textContent=age===null?'–':(sMiss.length?'≥ ':'')+String(s);
     if(age===null){pill('sc','','');$('sm').textContent='–'}
+    else if(s===0&&sMiss.length){pill('sc','Eksik veri: '+sMiss.join(', '),MUTED);$('sm').textContent='–'}
     else if(s===0){pill('sc','Düşük risk','var(--ok)');$('sm').textContent='%1,0–1,1'}else{pill('sc','Yüksek risk (≥ 1)','var(--high)');$('sm').textContent='%8,9–10,9'}
-    $('sf').textContent=age===null?'Yaşı girin.':s?sp.join(' · '):'Hiçbir madde yok';
+    $('sf').textContent=age===null?'Yaşı girin.':(s?sp.join(' · '):sMiss.length?'Girilen maddelerde puan yok':'Hiçbir madde yok')+(sMiss.length?' · girilmedi: '+sMiss.join(', '):'');
 
-    // ESC 2019
+    // ESC 2019: klinik skor bilinmiyorsa (eksik vital bulgu) risk, skorun iki olası sonucunda da aynıysa verilir
     var hd=segVal('hd')==='1',rv=segVal('rv'),tn=segVal('tn');
-    var pHigh=cls!==null&&cls>=3,sHigh=s>=1,clin;
-    clin=mod==='pesi'?pHigh:mod==='spesi'?sHigh:(pHigh||sHigh);
-    var clinKnown=age!==null;
-    $('eq').textContent=!clinKnown?'–':mod==='both'?('PESI '+(cls?CL[cls]:'–')+' · sPESI '+s+(pHigh!==sHigh&&cls?' (uyumsuz)':'')+' → '+(clin?'yüksek':'düşük')):(clin?'yüksek':'düşük');
+    var pHigh=pesi===null?null:cls!==null?cls>=3:CLS(pesi)>=3?true:CLS(pmax)<3?false:null;
+    var sHigh=age===null?null:s>=1?true:sMiss.length?null:false,clin;
+    var or3=function(a,b){return a===true||b===true?true:a===false&&b===false?false:null};
+    clin=mod==='pesi'?pHigh:mod==='spesi'?sHigh:or3(pHigh,sHigh);
+    var clinKnown=age!==null,eMiss=(mod==='spesi'?[]:pMiss).concat(mod==='pesi'?[]:sMiss).filter(function(x,i,d){return d.indexOf(x)===i});
+    $('eq').textContent=!clinKnown?'–':mod==='both'?('PESI '+(cls?CL[cls]:'–')+' · sPESI '+(sHigh===null?'≥ 0':s)+(pHigh!==null&&sHigh!==null&&pHigh!==sHigh?' (uyumsuz)':'')+' → '+(clin===null?'eksik veri':clin?'yüksek':'düşük')):(clin===null?'eksik veri':clin?'yüksek':'düşük');
     var yz={u:'bakılmadı','0':'yok','1':'var'},tz={u:'bakılmadı','0':'normal','1':'yüksek'};
     $('er').textContent='RV '+yz[rv]+' · troponin '+tz[tn];
     var risk,col;$('rx').innerHTML='';
+    function rk(c){return c?((rv==='1'&&tn==='1')?'ih':'il'):((rv==='1'||tn==='1')?'il':'l')}
     if(hd){risk='h'}
     else if(!clinKnown){risk=null}
-    else if(clin){risk=(rv==='1'&&tn==='1')?'ih':'il'}
-    else{risk=(rv==='1'||tn==='1')?'il':'l'}
+    else if(clin===null){risk=rk(true)===rk(false)?rk(true):'eksik'}
+    else{risk=rk(clin)}
     document.querySelectorAll('#etb tr').forEach(function(r){r.className=r.dataset.r===risk?'cur':''});
-    if(risk===null){pill('ep','','');li('Yaşı girin','PESI/sPESI hesaplanmadan ESC risk sınıfı belirlenemez. Hemodinamik instabilite varsa hasta skordan bağımsız olarak yüksek risklidir.');}
+    if(risk==='eksik'){pill('ep','Eksik veri: '+eMiss.join(', '),MUTED);
+      li('Eksik veri: '+eMiss.join(', '),'Bu değerler girilmeden klinik skor ve ESC risk sınıfı belirlenemez; boş bırakılan bulgu normal sayılmaz. Erken taburculuk ve ayaktan tedavi kararı için tüm maddeleri girin. Hemodinamik instabilite varsa hasta skordan bağımsız olarak yüksek risklidir.');}
+    else if(risk===null){pill('ep','','');li('Yaşı girin','PESI/sPESI hesaplanmadan ESC risk sınıfı belirlenemez. Hemodinamik instabilite varsa hasta skordan bağımsız olarak yüksek risklidir.');}
     else if(risk==='h'){pill('ep','Yüksek risk','var(--high)');
       li('Sistemik trombolitik tedavi (I B)','Hemodinamik instabilitede reperfüzyon; antikoagülasyona fraksiyone olmayan heparinle (yükleme dozu dahil) başlayın.');
       li('Tromboliz kontrendike veya başarısızsa','Cerrahi pulmoner embolektomi (I C); alternatif olarak perkütan kateter yönlendirmeli tedavi (IIa C).');
@@ -242,7 +253,8 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
       li('Rutin primer sistemik tromboliz önerilmez (III B)','Kanama riski faydayı aşar.');}
     else if(risk==='il'){pill('ep','Orta-düşük risk','var(--warn)');
       li('Antikoagülasyon, hastanede izlem','Rutin primer tromboliz önerilmez (III B). Uygunsa DOAK tercih edilir.');
-      if(!clin)li('Klinik skor düşük ama RV veya troponin anormal','ESC 2019 bu hastayı orta risk grubuna alır; erken taburculuk için uygun değildir.');
+      if(clin===null)li('Eksik veri: '+eMiss.join(', '),'Klinik skor eksik. RV veya troponin anormal olduğu için risk en az orta-düşük; klinik skor yüksek çıkar ve RV ile troponinin ikisi de anormalse orta-yüksek risk olur.');
+      else if(!clin)li('Klinik skor düşük ama RV veya troponin anormal','ESC 2019 bu hastayı orta risk grubuna alır; erken taburculuk için uygun değildir.');
       else if(rv==='u'||tn==='u')li('RV veya troponin değerlendirmesi eksik','İkisi de pozitif çıkarsa hasta orta-yüksek risktir; değerlendirmeyi tamamlayın.');}
     else{pill('ep','Düşük risk','var(--ok)');
       li('Erken taburculuk ve ayaktan tedavi düşünülmeli (IIa A)','Eşlik eden ciddi hastalık yoksa ve uygun ayaktan bakım/antikoagülasyon sağlanabiliyorsa. DOAK tercih edilir.');
