@@ -198,7 +198,7 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
       '<div class="grid" id="'+x.p+'-cx" hidden><div class="field"><label for="'+x.p+'-a">Miktar <span>'+(x.au==='U'?'ünite':'mg')+'</span></label><input id="'+x.p+'-a" data-sabit data-aralik="'+x.ar[0]+'" type="number" inputmode="decimal" step="any" value="'+x.c[0][0]+'"></div>'+
       '<div class="field"><label for="'+x.p+'-v">Toplam hacim <span>mL</span></label><input id="'+x.p+'-v" data-sabit data-aralik="1-1000 mL" type="number" inputmode="decimal" step="any" value="'+x.c[0][1]+'"></div></div>'+
       '<div class="seg"><button type="button" data-g="'+x.p+'y" data-v="d" aria-pressed="true">Dozdan hıza</button><button type="button" data-g="'+x.p+'y" data-v="r" aria-pressed="false">Hızdan doza</button></div>'+
-      '<div class="grid"><div class="field" id="'+x.p+'-wd"><label for="'+x.p+'-d">Doz <span>'+x.u+'</span></label><input id="'+x.p+'-d" data-aralik="'+x.ar[1]+'" type="number" inputmode="decimal" step="any" value="'+x.d+'"></div>'+
+      '<div class="grid"><div class="field" id="'+x.p+'-wd"><label for="'+x.p+'-d">'+x.n+' dozu <span>'+x.u+'</span></label><input id="'+x.p+'-d" data-aralik="'+x.ar[1]+'" type="number" inputmode="decimal" step="any" value="'+x.d+'"></div>'+
       '<div class="field" id="'+x.p+'-wr" hidden><label for="'+x.p+'-r">Hız <span>mL/saat</span></label><input id="'+x.p+'-r" data-aralik="0-1000 mL/saat" type="number" inputmode="decimal" step="any" value="'+x.r+'"></div></div></section>'+
       '<section class="card" aria-live="polite"><h2>'+x.n+' hızı</h2>'+
       '<div class="res"><span class="num" id="'+x.p+'-o">–</span><span class="of" id="'+x.p+'-ou"></span><span class="pill" id="'+x.p+'-p"></span></div>'+

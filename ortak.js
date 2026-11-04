@@ -204,7 +204,9 @@
     var btn = document.createElement('button');
     btn.type = 'button'; btn.className = 'copy'; btn.textContent = 'Kopyala';
     btn.setAttribute('aria-label', 'Sonucu kopyala');
-    btn.addEventListener('click', function(){ if (!engel(card, btn, 'Kopyala')) copy(summary(card), btn); });
+    btn.addEventListener('click', function(){ if (engel(card, btn, 'Kopyala')) return;
+      if ((!dokunuldu || kalanOrnek().length) && btn.getAttribute('data-uyari') !== '1') { btn.setAttribute('data-uyari', '1'); btn.textContent = 'Örnek değerler! Yine de kopyala'; setTimeout(function(){ btn.removeAttribute('data-uyari'); btn.textContent = 'Kopyala'; }, 4000); return; }
+      btn.removeAttribute('data-uyari'); copy(summary(card), btn); });
     var nb = document.createElement('button');
     nb.type = 'button'; nb.className = 'copy'; nb.textContent = 'Nota ekle';
     nb.setAttribute('aria-label', 'Sonucu hasta notuna ekle');
