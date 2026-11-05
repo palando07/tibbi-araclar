@@ -226,7 +226,11 @@ ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;fo
         if(!uIns)opt.push('bazal insülin');
         li(rec,'HbA1c hedefe ulaşmadıysa tedaviyi yoğunlaştırın',(cost?'Maliyet önemliyse sülfonilüre (gliklazid), pioglitazon veya insan insülini uygun seçeneklerdir. ':'')+'Seçenekler: '+opt.join(', ')+'. Her ekleme sonrası 3 ayda HbA1c ile değerlendirin.');
       }
-      if(gap<=0&&!(hf||ckd||ascvd||hrisk||obese||masld))li(rec,'Mevcut tedaviyi sürdürün','HbA1c hedefte. 3–6 ayda bir HbA1c ile izleyin.');
+      // Girilmeyen idrar ACR ya da VKİ "yok" sayılmaz: öneriyi değiştirebilecekleri yazılır, "Mevcut tedaviyi sürdürün" denmez
+      var uacrYok=uacr===null&&!ckd,bmiYok=bmi===null;
+      if(uacrYok)li(rec,'İdrar albümin/kreatinin oranı girilmedi','Albüminüri (≥ 30 mg/g) eGFR ≥ 60 olsa da KBH demektir: SGLT2i ve böbrek yararı kanıtlanmış GLP-1 RA önerilir. Değeri girin; girilmeyen değer “yok” sayılmaz.');
+      if(bmiYok&&!mtc)li(rec,'VKİ girilmedi','VKİ ≥ 30 ise kilo yönetimi için semaglutid veya tirzepatid öncelikli. Değeri girin; girilmeyen değer “yok” sayılmaz.');
+      if(gap<=0&&!(hf||ckd||ascvd||hrisk||obese||masld)&&!uacrYok&&!(bmiYok&&!mtc))li(rec,'Mevcut tedaviyi sürdürün','HbA1c hedefte. 3–6 ayda bir HbA1c ile izleyin.');
     }
 
     // 3) İlaç sınıfları

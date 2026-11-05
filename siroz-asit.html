@@ -340,17 +340,22 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     $('rxP').innerHTML='';
     var psbp=segVal('psbp')==='1',gib=segVal('gib')==='1';
     var low=tp===null?null:tp<1.5;
+    // Girilmeyen değer "hayır" sayılmaz: böbrek ölçütü biri doğruysa evet, ancak üçü de girilip hiçbiri doğru değilse hayır; karaciğer ölçütü (Child-Pugh ≥ 9 ve bilirubin ≥ 3) biri girilip karşılanmıyorsa hayır
     var ren=(cr!==null&&cr>=1.2)||(bun!==null&&bun>=25)||(na!==null&&na<=130);
-    var renK=cr===null&&bun===null&&na===null?null:ren;
-    var liv=ctp===null||bil===null?null:(ctp>=9&&bil>=3);
-    $('plo').textContent=yn(low);$('pre').textContent=yn(renK);$('pli').textContent=yn(liv);
-    var prim=low&&(ren||liv);
+    var renK=ren?true:(cr!==null&&bun!==null&&na!==null)?false:null;
+    var liv=(ctp!==null&&ctp<9)||(bil!==null&&bil<3)?false:(ctp===null||bil===null)?null:true;
+    var renE=['kreatinin','BUN','Na'].filter(function(x,i){return [cr,bun,na][i]===null}),livE=['Child-Pugh','bilirubin'].filter(function(x,i){return [ctp,bil][i]===null});
+    $('plo').textContent=yn(low);$('pre').textContent=renK===null&&renE.length<3?'eksik: '+renE.join(', '):yn(renK);$('pli').textContent=liv===null&&livE.length<2?'eksik: '+livE.join(', '):yn(liv);
+    var prim=low&&(renK||liv);
+    var primK=low===false?false:prim?true:(low===true&&renK===false&&liv===false)?false:null;
     if(psbp)pill('prp','İkincil profilaksi endike','var(--high)');
     else if(prim)pill('prp','Birincil profilaksi düşünülmeli','var(--warn)');
+    else if(primK===null)pill('prp',low===null?'Asit proteini girilmedi':'Değerlendirilemedi: eksik veri','var(--muted)');
     else pill('prp','Birincil profilaksi ölçütü yok','var(--ok)');
     if(psbp)li('rxP','İkincil profilaksi: uzun süreli, her gün','Norfloksasin 400 mg/gün PO; alternatif siprofloksasin 500 mg/gün PO.');
     else if(prim)li('rxP','Birincil profilaksi (seçilmiş hastada)','Asit protein < 1,5 g/dL ve böbrek işlev bozukluğu veya ileri karaciğer yetmezliği. Norfloksasin 400 mg/gün PO veya TMP-SMX (AASLD 2009).');
     else if(low===null)li('rxP','Asit total proteini girilmedi','Birincil profilaksi kararı için asit proteini gerekir: < 1,5 g/dL ve ek ölçütlerden biri birlikte olmalı.');
+    else if(primK===null)li('rxP','Ek ölçüt için eksik veri: '+(renK===false?[]:renE).concat(liv===false?[]:livE).join(', '),'Asit proteini < 1,5 g/dL; böbrek işlev bozukluğu (Kr ≥ 1,2, BUN ≥ 25 ya da Na ≤ 130) veya ileri karaciğer yetmezliği (Child-Pugh ≥ 9 ve bilirubin ≥ 3) birlikte olmalı. Girilmeyen değer “yok” sayılmaz; değerleri girin.');
     else li('rxP','Profilaksi gerekmiyor','Asit proteini < 1,5 g/dL ve ek ölçütlerden biri birlikte olmalı.');
     if(gib)li('rxP','Üst GİS kanaması: seftriakson 1 g IV 24 saatte bir','En çok 7 gün; asit protein düzeyinden bağımsız.');
 

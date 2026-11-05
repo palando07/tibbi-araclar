@@ -433,7 +433,7 @@ ol.rec li b .tag{margin-left:4px}
     if(sc!==null&&!tm){sc=null;scsT='artış süresini seçin'}
     if(sc!==null&&tm==='u'){tah=stageCr(b,c,'7',ot);tahT=tah?'Evre '+tah+' ('+ot.trig+'), süre bilinmiyor':'bazalin 1,5 katının altında';sc=null;scsT='süre bilinmiyor: kesin değil'}
     if(b===null&&c!==null&&c>0){scsT='bazal kreatinin yok';bt=bazalTah();
-      if(bt!==null){tah=stageCr(bt,c,'7',ot);tahT=(tah?'Evre '+tah+' ('+ot.trig+')':'ölçüt yok')+' · tahmini bazal '+f2(bt)+' mg/dL'}}
+      if(bt!==null&&tm!=='x'){tah=stageCr(bt,c,'7',ot);tahT=(tah?'Evre '+tah+' ('+ot.trig+')':'ölçüt yok')+' · tahmini bazal '+f2(bt)+' mg/dL'}}
     $('r-tah').hidden=tah===null;$('tah').textContent=tahT||'–';
     $('dlt').textContent=oc.d===undefined?'–':(oc.d>=0?'+':'')+f2(oc.d)+' mg/dL';
     $('rat').textContent=oc.r===undefined?'–':f2(oc.r)+' kat';
