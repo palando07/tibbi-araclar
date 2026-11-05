@@ -146,7 +146,7 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
   <section class="card">
     <h2>Saatlik kontrol: önceki ölçüm</h2>
     <div class="grid">
-      <div class="field"><label for="sa">Kaç saat önce <span>saat</span></label><input id="sa" data-sabit data-aralik="0.25-24 saat" type="number" inputmode="decimal" step="any" value="1"></div>
+      <div class="field"><label for="sa">Kaç saat önce <span>saat</span></label><input id="sa" data-aralik="0.25-24 saat" type="number" inputmode="decimal" step="any" value="1"></div>
       <div class="field"><label for="pglu">Önceki glukoz <span>mg/dL</span></label><input id="pglu" data-aralik="10-3000 mg/dL" type="number" inputmode="decimal" step="any" value="560"></div>
       <div class="field"><label for="pbhb">Önceki keton <span>mmol/L</span></label><input id="pbhb" data-aralik="0-15 mmol/L" type="number" inputmode="decimal" step="any" value="5.9"></div>
       <div class="field"><label for="phco3">Önceki HCO₃ <span>mmol/L</span></label><input id="phco3" data-aralik="1-60 mmol/L" type="number" inputmode="decimal" step="any" value="7"></div>
@@ -353,7 +353,10 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
     sinif('Glukoz',d(gk,'mg/dL','düşüş'),gt,gd);
     var od=ok_===null?null:(ok_>8||ok_<3)?2:0;sinif('Efektif osmolalite',d(ok_,'mOsm/kg','düşüş'),'3–8 düşüş'+(od===null?'':ok_>8?' · hızlı':ok_<3?' · yavaş':' · uygun'),hed||hipo===true?od:null);
     var nd=nk===null?null:nk*24>10?2:0;sinif('Na',d(nk,'mmol/L','düşüş'),'24 saatte ≤ 10 düşüş'+(nd===null?'':nd===2?' · hızlı':' · uygun'),hed||hipo===true?nd:null);
-    if(!say)pill('hp','Önceki değer girilmedi','var(--muted)');
+    // Önceki değer var ama saati yoksa hız hesaplanmaz (1 saat varsayılmaz)
+    var saYok=!(sa>0)&&(pg!==null||pb!==null||ph3!==null||pn!==null);
+    if(saYok)pill('hp','Kaç saat önce?','var(--muted)');
+    else if(!say)pill('hp','Önceki değer girilmedi','var(--muted)');
     else if(kot)pill('hp',kot+' değer hedef dışında','var(--high)');
     else pill('hp','Hedefte','var(--ok)');
     var cr=(ins01||!mod)?(dusuk?u05:u1):u05;
@@ -364,8 +367,9 @@ table.t td.why{font-size:.82rem;color:var(--muted)}
     if(ok_!==null&&ok_>8&&(hed||hipo===true))li('rxH','Osmolalite hızlı düşüyor (> 8 mOsm/kg/saat)','Sıvı ve/veya insülin hızını azaltın.');
     if(ok_!==null&&ok_<3&&hed)li('rxH','Osmolalite yavaş düşüyor','Sıvı dengesini gözden geçirin; yeterli sıvı ve insüline karşın düşmüyorsa %0,45 NaCl düşünülebilir.');
     if(nd===2&&(hed||hipo===true))li('rxH','Na hızlı düşüyor','Bu hızla 24 saatte 10 mmol/L’den fazla düşer; sıvıyı ve insülini gözden geçirin.');
-    if(!say)li('rxH','Önceki ölçümü girin','Keton, HCO₃, glukoz ve Na’nın saatlik değişimi hesaplanır.');
-    $('cHiz').setAttribute('data-not','Saatlik: '+(say?(kot?kot+' değer hedef dışında':'hedefte'):'önceki değer yok')+(gk!==null?' · glukoz '+fm(gk,0)+' mg/dL/saat':'')+(bk!==null?' · keton '+fm(bk)+'/saat':''));
+    if(saYok)li('rxH','Önceki ölçüm kaç saat önce yapıldı?','Saatlik değişim için “Kaç saat önce” kutusunu doldurun; saat girilmeden hız hesaplanmaz.');
+    else if(!say)li('rxH','Önceki ölçümü girin','Keton, HCO₃, glukoz ve Na’nın saatlik değişimi hesaplanır.');
+    $('cHiz').setAttribute('data-not','Saatlik: '+(saYok?'önceki ölçümün saati girilmedi':say?(kot?kot+' değer hedef dışında':'hedefte'):'önceki değer yok')+(gk!==null?' · glukoz '+fm(gk,0)+' mg/dL/saat':'')+(bk!==null?' · keton '+fm(bk)+'/saat':''));
 
     // 3) Çözülme
     $('rxC').innerHTML='';

@@ -336,14 +336,19 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     if(icu)pill('kyer','Yoğun bakım','var(--high)');
     else if(icuAuto)pill('kyer','YBÜ değerlendirmesi','var(--high)');
     else if(hosp||niv||sev===3)pill('kyer','Hastane yatışı','var(--warn)');
+    // Roma ölçütlerinin yarısından fazlası ya da kan gazı eksikken "ayaktan" denmez (girilmeyen değer normal sayılmaz)
+    else if(k<3||!abg)pill('kyer','Değerlendirilemedi: eksik veri','var(--muted)');
     else pill('kyer','Ayaktan tedavi düşünülebilir','var(--ok)');
+    var yerEksik=!icu&&!icuAuto&&!hosp&&!niv&&sev!==3&&(k<3||!abg);
     if(niv)li('rxY','NIV endikasyonu: pH '+f2(ph)+' ≤ 7,35 ve PaCO₂ '+fm(pc,0)+' ≥ 45 mmHg','NIV ilk tercih ventilasyon yöntemidir: entübasyon, komplikasyon, yatış süresi ve mortaliteyi azaltır. Uygun izlem yapılabilen birimde başlatın, 1–2 saatte kan gazını tekrarlayın. NIV başarısız olursa invaziv ventilasyon. En az 4 saat desteksiz soluyabilen hastada NIV doğrudan kesilebilir. Ayrıca şiddetli dispne ve solunum kası yorgunluğu bulgusu ya da oksijene rağmen süren hipoksemi de NIV nedenidir (GOLD).');
     else if(ph!==null&&pc!==null)li('rxY','Kan gazında NIV ölçütü yok','Şiddetli dispne, solunum kası yorgunluğu (yardımcı kas, paradoks solunum) veya oksijene rağmen süren hipoksemi varsa yine NIV düşünün.');
     if(icuAuto){var r=[];if(ph!==null&&ph<7.25)r.push('pH '+f2(ph)+' < 7,25');if(po!==null&&po<40)r.push('PaO₂ '+fm(po,0)+' < 40 mmHg');
       li('rxY','YBÜ ölçütü: '+r.join(', '),'O₂ ve NIV’e rağmen süren ya da kötüleşen hipoksemi/asidoz yoğun bakım endikasyonudur; entübasyon hazırlığı ve tedavi sınırları (hasta tercihi, ileri yaşam planı) konuşulmalı.');}
     if(icu)li('rxY','Yoğun bakım ölçütü işaretlendi','İnvaziv ventilasyon kararında altta yatan nedenin geri dönüşlülüğü, hastanın istekleri ve yoğun bakım olanağı göz önüne alınır.');
     if(hosp&&!icu&&!icuAuto)li('rxY','GOLD yatış ölçütü var','Hastane servisinde veya acil gözlem biriminde tedavi; hipoksemide kontrollü oksijen.');
-    if(!hosp&&!icu&&!icuAuto&&!niv&&sev!==3)li('rxY','Yatış ölçütü işaretlenmedi','Ayaktan: SABA ± SAMA, prednizolon 40 mg × 5 gün, endikasyon varsa antibiyotik; 1 ay içinde kontrol. Kötüleşirse başvurmasını söyleyin.');
+    if(yerEksik){var ke=['dispne VAS','solunum sayısı','nabız','SpO₂','CRP'].filter(function(x,i){return c[i]===null});
+      li('rxY','Tedavi yeri için eksik veri: '+ke.concat(abg?[]:['kan gazı (pH, PaCO₂)']).join(', '),'Girilmeyen değer normal sayılmaz. Değerleri girin ve yatış ölçütlerini değerlendirin; o zamana dek ayaktan tedavi kararı verilmez.')}
+    else if(!hosp&&!icu&&!icuAuto&&!niv&&sev!==3)li('rxY','Yatış ölçütü işaretlenmedi','Ayaktan: SABA ± SAMA, prednizolon 40 mg × 5 gün, endikasyon varsa antibiyotik; 1 ay içinde kontrol. Kötüleşirse başvurmasını söyleyin.');
     li('rxY','Oksijen: hedef SpO₂ %88–92','Venturi maske (%24–28) burun kanülünden daha kontrollüdür. Oksijen başladıktan veya değiştirildikten sonra kan gazını tekrarlayın.');
 
     // Antibiyotik
@@ -356,11 +361,13 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     $('abc').textContent=crp===null?'girilmedi':fm(crp)+' mg/L'+(crp<20?' (< 20)':crp<=40?' (20–40)':' (> 40)');
     $('rxA').innerHTML='';
     if(ind)pill('abp',(!mv&&crp!==null&&crp<20)?'Belirtiye göre endike, CRP düşük':'Antibiyotik endike',(!mv&&crp!==null&&crp<20)?'var(--warn)':'var(--high)');
+    else if(nc===0&&!mn)pill('abp','Ana belirti işaretlenmedi','var(--muted)');
     else if(nc===0)pill('abp','Antibiyotik gerekmez','var(--ok)');
     else pill('abp','Antibiyotik önerilmez','var(--ok)');
     if(mv)li('rxA','Mekanik ventilasyon (NIV veya invaziv)','Antibiyotik mortaliteyi ve nozokomiyal pnömoniyi azaltır; balgam/aspirat kültürü alın.');
     else if(ind)li('rxA','Balgam pürülansı + '+(nc-1)+' diğer ana belirti','Anthonisen tip 1 veya pürülansın dahil olduğu tip 2: antibiyotik önerilir. GOLD 2023 metni: balgam miktarı ve pürülansı birlikte artmış hastalar.');
     else if(nc>0&&!pur)li('rxA','Balgam pürülansı yok','Pürülan olmayan alevlenmede antibiyotiğin yararı gösterilmemiştir.');
+    else if(nc===0&&!mn)li('rxA','Dispne, balgam miktarı ve pürülansını değerlendirin','Hiçbir madde işaretli değil. Ana belirtilerin hiçbiri yoksa antibiyotik gerekmez; işaretsiz madde “yok” sayılır, değerlendirdikten sonra karar verin.');
     else if(pur&&nc===1)li('rxA','Yalnız balgam pürülansı','Tek ana belirtiyle antibiyotik genellikle gerekmez; klinik ve CRP ile değerlendirin.');
     if(crp!==null){
       if(crp<20)li('rxA','CRP < 20 mg/L','PACE çalışmasının rehberinde antibiyotiğin büyük olasılıkla yararsız olduğu aralık; CRP rehberli yaklaşım antibiyotik kullanımını zarar olmadan azalttı (birinci basamak).');

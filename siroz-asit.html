@@ -93,12 +93,13 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
       <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
       <div class="field"><label for="salb">Serum albümin <span>g/dL</span></label><input id="salb" data-hasta="alb" type="number" inputmode="decimal" step="any" value="2.8"></div>
       <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.3"></div>
+      <div class="field"><label for="ure">Üre <span>mg/dL</span></label><input id="ure" data-hasta="ure" type="number" inputmode="decimal" step="any" value="68"></div>
       <div class="field"><label for="bun">BUN <span>mg/dL</span></label><input data-aralik="1-300 mg/dL" id="bun" type="number" inputmode="decimal" step="any" value="32"></div>
       <div class="field"><label for="bil">Total bilirubin <span>mg/dL</span></label><input id="bil" data-hasta="bil" type="number" inputmode="decimal" step="any" value="3.4"></div>
       <div class="field"><label for="na">Sodyum <span>mmol/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="131"></div>
       <div class="field"><label for="ctp">Child-Pugh puanı <span>5–15</span></label><input data-aralik="5-15" id="ctp" type="number" inputmode="decimal" step="1" value="10"></div>
     </div>
-    <p class="note">BUN yerine üre biliniyorsa: BUN = üre ÷ 2,14.</p>
+    <p class="note">Üre ya da BUN yazın; öbürü çevrilir (BUN = üre ÷ 2,14). Child-Pugh puanını <a href="child-pugh.html">Child-Pugh aracında</a> hesaplayabilirsiniz.</p>
   </section>
 
   <section class="card">
@@ -388,6 +389,10 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     }
   }
   ['pm','cx','sy','acq','psbp','gib'].forEach(function(g){seg(g,calc)});
+  // Üre ↔ BUN: biri yazılınca öbürü çevrilir (pankreatit sayfasındaki gibi)
+  $('ure').addEventListener('input',function(){var u=v('ure');$('bun').value=u===null?'':Math.round(u/2.14*10)/10});
+  // BUN'dan üreye yalnız kullanıcı yazınca çevrilir: örnekler silinirken boşalan BUN kayıttan gelen üreyi silmesin
+  $('bun').addEventListener('input',function(e){if(!e.isTrusted)return;var b=v('bun');$('ure').value=b===null?'':Math.round(b*2.14)});
   document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
 
 })();

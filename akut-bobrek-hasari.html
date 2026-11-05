@@ -102,7 +102,7 @@ ol.rec li b .tag{margin-left:4px}
       <div class="field"><label for="ccr">Güncel kreatinin <span>mg/dL</span></label><input id="ccr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.6"></div>
     </div>
     <span class="lbl">Artışın gerçekleştiği süre</span>
-    <div class="seg wrapseg"><button type="button" data-g="tm" data-v="48" aria-pressed="true">48 saat içinde</button><button type="button" data-g="tm" data-v="7" aria-pressed="false">7 gün içinde</button><button type="button" data-g="tm" data-v="x" aria-pressed="false">7 günden uzun</button></div>
+    <div class="seg wrapseg"><button type="button" data-g="tm" data-v="48" aria-pressed="true">48 saat içinde</button><button type="button" data-g="tm" data-v="7" aria-pressed="false">7 gün içinde</button><button type="button" data-g="tm" data-v="x" aria-pressed="false">7 günden uzun</button><button type="button" data-g="tm" data-v="u" aria-pressed="false">Bilinmiyor</button></div>
     <span class="lbl">Böbrek replasman tedavisi (RRT)</span>
     <div class="seg"><button type="button" data-g="rrt" data-v="0" aria-pressed="true">Başlanmadı</button><button type="button" data-g="rrt" data-v="1" aria-pressed="false">Başlandı</button></div>
     <p class="note">“7 gün içinde”: 1,5 kat ölçütü için artışın son 7 günde olduğu bilinen veya varsayılan durum. µmol/L ÷ 88,4 = mg/dL.</p>
@@ -125,6 +125,7 @@ ol.rec li b .tag{margin-left:4px}
     <div class="sub"><span>Kreatinin artışı</span><b id="dlt">–</b></div>
     <div class="sub"><span>Bazale oran</span><b id="rat">–</b></div>
     <div class="sub"><span>Kreatinine göre evre</span><b class="wr" id="scs">–</b></div>
+    <div class="sub" id="r-tah" hidden><span>Tahmini (kesin değil)</span><b class="wr" id="tah">–</b></div>
     <div class="sub"><span>İdrar çıkışı</span><b class="wr" id="uor">–</b></div>
     <div class="sub"><span>İdrar çıkışına göre evre</span><b class="wr" id="uos">–</b></div>
     <ol class="rec" id="rxK"></ol>
@@ -142,7 +143,7 @@ ol.rec li b .tag{margin-left:4px}
   <section class="card">
     <h2>İdrar indeksleri</h2>
     <div class="grid">
-      <div class="field"><label for="sna">Serum Na <span>mmol/L</span></label><input id="sna" type="number" inputmode="decimal" step="any" value="138"></div>
+      <div class="field"><label for="sna">Serum Na <span>mmol/L</span></label><input id="sna" data-hasta="na" type="number" inputmode="decimal" step="any" value="138"></div>
       <div class="field"><label for="una">İdrar Na <span>mmol/L</span></label><input id="una" type="number" inputmode="decimal" step="any" value="15"></div>
       <div class="field"><label for="ucr">İdrar kreatinin <span>mg/dL</span></label><input data-aralik="1-1000 mg/dL" id="ucr" type="number" inputmode="decimal" step="any" value="120"></div>
       <div class="field"><label for="uos2">İdrar ozmolalitesi <span>mOsm/kg</span></label><input id="uos2" type="number" inputmode="decimal" step="any" value="620"></div>
@@ -150,7 +151,7 @@ ol.rec li b .tag{margin-left:4px}
     <span class="lbl">Üre birimi</span>
     <div class="seg"><button type="button" data-g="un" data-v="ure" aria-pressed="true">Üre (mg/dL)</button><button type="button" data-g="un" data-v="bun" aria-pressed="false">BUN (mg/dL)</button></div>
     <div class="grid">
-      <div class="field"><label for="sur" id="lsur">Serum üre <span>mg/dL</span></label><input data-aralik="2-1000 mg/dL|[data-g=un][data-v=bun][aria-pressed=true]:1-470 mg/dL" id="sur" type="number" inputmode="decimal" step="any" value="90"></div>
+      <div class="field"><label for="sur" id="lsur">Serum üre <span>mg/dL</span></label><input data-aralik="2-1000 mg/dL|[data-g=un][data-v=bun][aria-pressed=true]:1-470 mg/dL" id="sur" data-hasta="ure" data-hasta-kosul='[data-g="un"][data-v="ure"][aria-pressed="true"]' type="number" inputmode="decimal" step="any" value="90"></div>
       <div class="field"><label for="uur" id="luur">İdrar üre <span>mg/dL</span></label><input data-aralik="10-3000 mg/dL|[data-g=un][data-v=bun][aria-pressed=true]:5-1400 mg/dL" id="uur" type="number" inputmode="decimal" step="any" value="1200"></div>
     </div>
     <span class="lbl">Son 24 saatte diüretik</span>
@@ -419,29 +420,41 @@ ol.rec li b .tag{margin-left:4px}
     return 0;
   }
   var stCol=[C.ok,C.warn,C.high,C.acc];
+  // Bazal bilinmiyorsa KDIGO 2012'nin önerdiği geri hesaplama: KBH yoksa GFR 75 mL/dk/1,73 m² varsayılarak MDRD'den bazal kreatinin (yalnız tahmin)
+  function bazalTah(){var y=v('yas'),f=segVal('cins')==='f';if(y===null||y<18||y>120)return null;return Math.pow(75/(186*Math.pow(y,-0.203)*(f?0.742:1)),-1/1.154)}
 
   function calc(){
     var b=v('bcr'),c=v('ccr'),tm=segVal('tm'),rrt=segVal('rrt')==='1';
     var oc={},ou={};
     var sc=stageCr(b,c,tm,oc),su=stageUO(v('wt'),v('uo'),v('hr'),ou);
     $('rxK').innerHTML='';
+    // Süre seçilmedi ya da bilinmiyor, bazal bilinmiyor: kreatinin evresi kesin verilmez; yalnız açıkça "tahmini" gösterilir
+    var scsT='veri yok',tah=null,tahT='',ot={},bt=null;
+    if(sc!==null&&!tm){sc=null;scsT='artış süresini seçin'}
+    if(sc!==null&&tm==='u'){tah=stageCr(b,c,'7',ot);tahT=tah?'Evre '+tah+' ('+ot.trig+'), süre bilinmiyor':'bazalin 1,5 katının altında';sc=null;scsT='süre bilinmiyor: kesin değil'}
+    if(b===null&&c!==null&&c>0){scsT='bazal kreatinin yok';bt=bazalTah();
+      if(bt!==null){tah=stageCr(bt,c,'7',ot);tahT=(tah?'Evre '+tah+' ('+ot.trig+')':'ölçüt yok')+' · tahmini bazal '+f2(bt)+' mg/dL'}}
+    $('r-tah').hidden=tah===null;$('tah').textContent=tahT||'–';
     $('dlt').textContent=oc.d===undefined?'–':(oc.d>=0?'+':'')+f2(oc.d)+' mg/dL';
     $('rat').textContent=oc.r===undefined?'–':f2(oc.r)+' kat';
-    $('scs').textContent=sc===null?'veri yok':sc?'Evre '+sc+' ('+oc.trig+')':'ölçüt yok';
+    $('scs').textContent=sc===null?scsT:sc?'Evre '+sc+' ('+oc.trig+')':'ölçüt yok';
     $('uor').textContent=ou.r===undefined?'girilmedi':f2(ou.r)+' mL/kg/saat ('+fm(ou.h)+' saat)';
     $('uos').textContent=su===null?'veri yok':su?'Evre '+su+' ('+ou.trig+')':(ou.short?'süre < 6 saat':'ölçüt yok');
     var st=Math.max(sc||0,su||0),trg=[];
     if(rrt){st=3;trg.push('RRT başlandı')}
     if(sc&&sc===st)trg.push('kreatinin: '+oc.trig);
     if(su&&su===st)trg.push('idrar: '+ou.trig);
-    var known=sc!==null||su!==null||rrt;
+    var known=sc!==null||su!==null||rrt||tah!==null;
     // AKI yok yalnız kreatinin verisi var ve anlamlı değişim yokken yeşil; aksi halde sarı (dışlanamaz)
     var crChg=oc.d!==undefined&&(Math.abs(oc.d)>=0.3||oc.r>=1.5||oc.r<=1/1.5);
     var stColor=st?stCol[st]:(sc===null||crChg?C.warn:C.ok);
     if(!known){$('stn').textContent='–';pill('stp','','');$('trg').textContent='–'}
+    else if(!st&&tah!==null){$('stn').textContent=tah?'Evre '+tah:'–';pill('stp',tah?'Tahmini: kesin değil':'Tahmini ölçüt yok: AKI dışlanamaz',C.warn);$('trg').textContent=tah?'kreatinin (tahmini): '+ot.trig:'–'}
     else{$('stn').textContent=st?'Evre '+st:(sc===null?'Kr yok':'AKI yok');
-      pill('stp',st?'KDIGO AKI':sc===null?'Kreatinin girilmedi: AKI dışlanamaz':crChg?'Ölçüt yok, ancak kreatinin değişmiş':'Ölçüt karşılanmadı',stColor);
+      pill('stp',st?'KDIGO AKI':sc===null?(scsT==='veri yok'?'Kreatinin girilmedi':scsT.charAt(0).toLocaleUpperCase('tr')+scsT.slice(1))+': AKI dışlanamaz':crChg?'Ölçüt yok, ancak kreatinin değişmiş':'Ölçüt karşılanmadı',stColor);
       $('trg').textContent=st?trg.join(' · '):'–'}
+    if(b===null&&c!==null&&c>0)li('rxK','Bazal kreatinin bilinmiyor','Son 3–12 ayın stabil değeri yoksa bu yatıştaki en düşük kreatinini bazal olarak girin ve kreatinini 24–48 saatte tekrarlayın: 48 saatte ≥ 0,3 mg/dL artış evre 1 AKI’dir (önceki değeri bazal, süreyi “48 saat içinde” seçin). İdrar çıkışını da girin.'+(bt!==null?' Tahmini bazal ('+f2(bt)+' mg/dL) KBH yokken GFR 75 varsayımıyla geri hesaplamadır (KDIGO 2012); yalnız yön gösterir, KBH’de evreyi olduğundan yüksek gösterir.':' Yaş girilirse tahmini bazal (KDIGO geri hesaplama) gösterilir.'));
+    if(tm==='u'&&b!==null&&c!==null)li('rxK','Artış süresi bilinmiyor','Bazale oran '+(oc.r!==undefined?f2(oc.r)+' kat':'–')+'. Süre bilinmeden KDIGO evresi kesin değildir: 7 günden uzun sürede artış akut böbrek hastalığı ya da KBH olabilir. Kreatinini 24–48 saatte tekrarlayın; 48 saatte ≥ 0,3 mg/dL artış evre 1 AKI’dir.');
     if(!st&&oc.d!==undefined&&oc.d<=-0.3)li('rxK','Kreatinin düşüyor','Yüksek ilk değer düzelmekte olan bir AKI olabilir; bazal kabul edilen değeri gözden geçirin (düşük değer bazal alınırsa AKI ölçütleri karşılanabilir).');
     ['r1','r2','r3'].forEach(function(id,i){$(id).className=st===i+1?'cur':''});
     if(tm==='x'&&sc===0)li('rxK','Artış 7 günden uzun sürede','KDIGO AKI kreatinin ölçütleri 48 saat (≥ 0,3 mg/dL) ve 7 gün (≥ 1,5 kat) ile sınırlıdır; daha yavaş kayıp akut böbrek hastalığı veya KBH açısından değerlendirilmelidir.');
@@ -507,7 +520,7 @@ ol.rec li b .tag{margin-left:4px}
     // --- Yönetim ---
     $('rxM').innerHTML='';
     var w=v('wt');
-    pill('mgp',known?(st?'Evre '+st+' için adımlar':'Yüksek risk / AKI yok'):'',known?stColor:'');
+    pill('mgp',known?(st?'Evre '+st+' için adımlar':tah?'Tahmini evre '+tah+': kreatinini tekrarlayın':'Yüksek risk / AKI yok'):'',known?(!st&&tah!==null?C.warn:stColor):'');
     li('rxM','Mümkünse tüm nefrotoksik ajanları kesin','Hastanın ilaçları için aşağıdaki “Nefrotoksik ilaçlar” listesini kullanın. NSAİİ, aminoglikozit, iyotlu kontrast vb. Aminoglikozit: daha az nefrotoksik alternatif yoksa (3.8.1); normal böbrek işlevinde günde tek doz (3.8.2); çoklu dozda > 24 saat, tek dozda > 48 saat kullanımda düzey izlemi (3.8.3–3.8.4). Amfoterisin B gerekiyorsa lipid formülasyonu (3.8.6); eşdeğer etkinlikte azol veya ekinokandin tercih edilir (3.8.7).');
     li('rxM','Volüm durumu ve perfüzyon basıncını sağlayın','Fonksiyonel hemodinamik izlemi düşünün. Hemorajik şok yoksa kolloid yerine izotonik kristalloid (3.1.1); vazomotor şokta sıvıyla birlikte vazopressör (3.1.2). Volüm yükü dışında AKI’yi önlemek veya tedavi etmek için diüretik kullanmayın (3.4.1–3.4.2); düşük doz dopamin yok (3.5.1).');
     li('rxM','Serum kreatinini ve idrar çıkışını izleyin','Evrelemeyi tekrarlayın (2.3.2).');

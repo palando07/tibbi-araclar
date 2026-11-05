@@ -40,6 +40,7 @@
     '.field label.item{font:inherit;letter-spacing:normal;color:inherit;text-transform:none}' +
     'input.olasi-g{border-color:var(--high,#d24b32)!important;box-shadow:0 0 0 2px var(--high,#d24b32)}' +
     '.olasi-m{margin:3px 0 0;padding:4px 8px;border:1px solid var(--high,#d24b32);border-radius:8px;background:var(--surface);font-size:.78rem;line-height:1.3;font-weight:600;color:color-mix(in srgb,var(--high,#d24b32) 70%,var(--fg))}' +
+    '.hesap-not{display:block;margin-top:3px;font-size:.75rem;line-height:1.3;color:var(--muted)}' +
     '.olasi-s{margin:0 0 4px;padding:8px 12px;border-radius:10px;border-left:4px solid var(--high,#d24b32);background:color-mix(in srgb,var(--high,#d24b32) 12%,var(--surface));color:var(--fg);font-size:.88rem;font-weight:600;line-height:1.4}';
   document.head.appendChild(css);
 
@@ -74,6 +75,13 @@
     if (v.egfrk != null && (v.egfr == null || v.egfrk !== egfrKaynak(v))) { if (v.egfr != null) delete v.egfr; delete v.egfrk; }
     return v; }
   function egfrKaynak(v){ return [parseFloat(v.kreatinin), parseFloat(v.yas), v.cins].join('|'); }
+  // CKD-EPI 2021, egfr.html ile aynı formül (kreatinin mg/dL, erişkin); hesaplanamıyorsa null
+  function ckdEpi(cr, yas, kadin){
+    cr = parseFloat(cr); yas = parseFloat(yas); if (!(cr > 0) || !(yas >= 18 && yas <= 120)) return null;
+    var k = kadin ? 0.7 : 0.9, a = kadin ? -0.241 : -0.302, r = cr / k;
+    return 142 * Math.pow(Math.min(r, 1), a) * Math.pow(Math.max(r, 1), -1.2) * Math.pow(0.9938, yas) * (kadin ? 1.012 : 1);
+  }
+  window.vizitCkdEpi = ckdEpi;
   window.vizitTemizKayit = temizKayit;
 
 
@@ -155,6 +163,8 @@
   }
   // Başka bir kutudan otomatik dolan kutu (ör. üre yazınca BUN) artık örnek değildir
   function ornekDegisen(){ ornekler.slice().forEach(function(o){ var e = o.els[0]; if ((o.v != null && e.value !== o.v) || (!o.cins && e.type === 'checkbox' && !e.checked)) ornekBirak(o); }); }
+  // Sayfa kutudaki örneği yalnız birim çevirisiyle değiştirdiyse (vizit-cevir olayı) değer hâlâ örnektir
+  document.addEventListener('vizit-cevir', function(e){ ornekler.forEach(function(o){ if (o.els[0] === e.target && o.v != null) o.v = e.target.value; }); }, true);
   function dokun(t){
     if (t && ornekler.length) { ornekDokun(t); setTimeout(function(){ ornekDegisen(); ornekBitti(); bantGuncelle(); }, 0); }
     dokunuldu = true; ornekBitti();
@@ -284,6 +294,70 @@
     });
     return {d: d ? true : bilinmez ? null : false, k: k};
   }
+  function trS(x){ return String(x).replace('.', ','); }
+  // Kayıttan türetilen değerler (data-hasta-isaret koşullarında da kullanılır): VKİ = kilo / boy²
+  function vkiHesap(v){ var k = parseFloat(v.kilo), b = parseFloat(v.boy); return k > 0 && b > 0 ? Math.round(k / Math.pow(b / 100, 2) * 10) / 10 : null; }
+  function turet(v){ var w = {}; Object.keys(v).forEach(function(k){ w[k] = v[k]; }); if (w.vki == null) { var x = vkiHesap(v); if (x !== null) w.vki = String(x); } return w; }
+  // Kayıttan hesaplanıp kutuya konan değerler: eGFR (data-hasta="egfr", kayıtta eGFR yokken), VKİ ve CrCl (data-hasta-hesap="vki" | "crcl").
+  // Yalnız kayıttaki değerlerden hesaplanır (sayfadaki örnek değerlerden değil); kutunun altında kaynağı yazar. Kullanıcı kutuya yazınca hesap o kutuda durur.
+  // Hesaplanan değer kayda yazılmaz: kayıttaki eGFR yalnız egfr sayfasının ya da kullanıcının değeridir (egfrk geri yazma kuralı değişmez).
+  var HESAP = {
+    egfr: {ad: 'eGFR', f: function(v){ if (v.egfr != null || v.kreatinin == null || v.yas == null || !v.cins) return null; var g = ckdEpi(v.kreatinin, v.yas, v.cins === 'f'); return g === null ? null : String(Math.round(g)); },
+      not: function(v){ return 'Kreatininden hesaplandı (CKD-EPI 2021: kreatinin ' + trS(v.kreatinin) + ', ' + trS(v.yas) + ' yaş, ' + (v.cins === 'm' ? 'erkek' : 'kadın') + '). Değiştirebilirsiniz.'; }},
+    vki: {ad: 'VKİ', f: function(v){ var x = vkiHesap(v); return x === null ? null : String(x); },
+      not: function(v){ return 'Kilo ve boydan hesaplandı (' + trS(v.kilo) + ' kg, ' + trS(v.boy) + ' cm). Değiştirebilirsiniz.'; }},
+    crcl: {ad: 'CrCl', f: function(v){ var y = parseFloat(v.yas), w = parseFloat(v.kilo), c = parseFloat(v.kreatinin);
+        if (!(y >= 18) || !(w > 0) || !(c > 0) || !v.cins) return null; var x = (140 - y) * w * (v.cins === 'f' ? 0.85 : 1) / (72 * c); return x > 0 ? String(Math.round(x * 10) / 10) : null; },
+      not: function(v){ return 'Kayıttan hesaplandı (Cockcroft-Gault, gerçek kilo ' + trS(v.kilo) + ' kg, kreatinin ' + trS(v.kreatinin) + ', ' + trS(v.yas) + ' yaş, ' + (v.cins === 'm' ? 'erkek' : 'kadın') + '). Değiştirebilirsiniz.'; }}
+  };
+  function hesapNot(el, t){
+    var n = el._hesapNot;
+    if (!n && t) { n = el._hesapNot = document.createElement('small'); n.className = 'hesap-not'; el.parentNode.appendChild(n); }
+    if (n) { n.textContent = t || ''; n.hidden = !t; }
+  }
+  function hesapBirak(el){ el._hesap = null; hesapNot(el, ''); }
+  // Kayıttan hesaplananları kutulara yazar; dolan kutuların bant yazısını döndürür
+  function hesapUygula(v){
+    var dolan = [];
+    document.querySelectorAll('input[data-hasta="egfr"], input[data-hasta-hesap]').forEach(function(el){
+      var a = el.getAttribute('data-hasta-hesap') || 'egfr', H = HESAP[a];
+      if (!H || el._hesapElle || el.hasAttribute('data-hesap-yok') || !gecerli(el) || (a === 'egfr' && v.egfr != null)) return;
+      var d = H.f(v);
+      if (d !== null) {
+        if (el.value !== '' && el._hesap == null && kaynak.indexOf(el) >= 0) return; // kullanıcının ya da kaydın değeri
+        el._hesap = d; hesapNot(el, H.not(v)); if (kaynak.indexOf(el) < 0) kaynak.push(el); ornekDokun(el);
+        if (el.value !== d) { el.value = d; tetikle(el); }
+        dolan.push(H.ad + ' ' + trS(d) + ' (hesaplandı)');
+      } else if (el._hesap != null) { var eski = el._hesap; hesapBirak(el); if (el.value === eski) { el.value = ''; tetikle(el); } }
+    });
+    return dolan;
+  }
+  // Kullanıcı kutuya yazınca (boşaltınca da) o kutuda hesap durur. data-hesap-yok: sayfa eGFR'yi kendi kreatinin kutusundan hesaplıyor (kbh-takibi, kontrast-nefropati)
+  document.addEventListener('input', function(e){ var t = e.target; if (e.isTrusted && t.matches && t.matches('input[data-hasta="egfr"], input[data-hasta-hesap]')) { if (t._hesap != null) hesapBirak(t); t._hesapElle = true; } }, true);
+  // data-hasta-isaret maddeleri: kullanıcı maddeye (radyoda gruba) elle dokunduysa kayıt değişince bile değişmez
+  var isaretElleGrup = {};
+  function isaretElle(el){ return el.type === 'radio' ? !!isaretElleGrup[el.name] : !!el._isaretElle; }
+  document.addEventListener('change', function(e){ var t = e.target; if (!e.isTrusted || !t.matches || !t.matches('input[type=radio], input[data-hasta-isaret]')) return;
+    if (t.type === 'radio') isaretElleGrup[t.name] = 1; else t._isaretElle = true; }, true);
+  // Kayıt sonradan değişince (Hasta paneli, sayfadaki hasta kutusu) işaretleri günceller: koşul doğruysa işaretler, yanlışsa (işaret kutusunda) kaldırır,
+  // değer silindiyse yalnız kendi koyduğu işareti kaldırır. k: değişen anahtar (yalnız onu kullanan maddeler)
+  function isaretGuncelle(k){
+    var v = turet(oku());
+    document.querySelectorAll('input[data-hasta-isaret]').forEach(function(el){
+      var s = el.getAttribute('data-hasta-isaret'), ks = s.match(/[a-z]\w*/g) || [];
+      if (k && ks.indexOf(k) < 0 && !(ks.indexOf('vki') >= 0 && (k === 'kilo' || k === 'boy'))) return;
+      if (isaretElle(el)) return;
+      var r = kosul(s, v), d = false;
+      if (r.d === true && !el.checked) { el.checked = true; el._oto = true; d = true; }
+      else if (r.d === false && el.type === 'checkbox' && el.checked) { el.checked = false; el._oto = false; d = true; }
+      else if (r.d === null && el._oto && el.checked) { el.checked = false; el._oto = false; d = true; }
+      if (r.d !== null || d) ornekDokun(el);
+      if (d) tetikle(el);
+    });
+    ornekDegisen(); ornekBitti(); bantGuncelle();
+  }
+  // Kayıt değişti: hesaplanan kutular ve kayıttan işaretlenen maddeler güncellenir
+  function kayitDegisti(k){ hesapUygula(oku()); isaretGuncelle(k); }
   // Seçim maddesinin kısa adı: "Yaş ≥ 65", HEART'ta "Yaş: ≥ 65"
   function secimAd(el){
     var l = el.closest('label'), t = l && l.querySelector('.txt'), a = t ? txt(t.firstChild && (t.firstChild.nodeType === 3 || t.firstChild.tagName === 'B') ? t.firstChild : t) : etiketAd(el);
@@ -337,8 +411,10 @@
     var kayit = oku(), kullanilan = [], hastaEl = kaynak;
     document.querySelectorAll('input[data-hasta]').forEach(function(el){
       var a = el.getAttribute('data-hasta');
-      if (kayit[a] != null && gecerli(el)) { el.value = kayit[a]; hastaEl.push(el); if (kullanilan.indexOf(AD[a] + ' ' + String(kayit[a]).replace('.', ',')) < 0) kullanilan.push(AD[a] + ' ' + String(kayit[a]).replace('.', ',')); }
+      // egfr sayfasının kayda yazdığı (egfrk) eGFR de hesaplanmış sayılır: kaynağı değişince kutudaki değer yenisiyle değişir
+      if (kayit[a] != null && gecerli(el)) { el.value = kayit[a]; hastaEl.push(el); if (a === 'egfr' && kayit.egfrk != null) el._hesap = String(kayit[a]); if (kullanilan.indexOf(AD[a] + ' ' + String(kayit[a]).replace('.', ',')) < 0) kullanilan.push(AD[a] + ' ' + String(kayit[a]).replace('.', ',')); }
     });
+    hesapUygula(kayit).forEach(function(y){ kullanilan.push(y); });
     var cinsEl = Array.prototype.filter.call(document.querySelectorAll('[data-hasta-cins]'), gecerli), uyg = false, koru = hastaEl.slice();
     if (kayit.cins) {
       var gruplar = [];
@@ -369,10 +445,11 @@
       ornekleriSil(koru, girdiler);
       (hastaEl.length ? hastaEl : girdiler.slice(0, 1)).forEach(tetikle);
       // Açık eşikli maddeler kayıttaki ham değerle işaretlenir (data-hasta-isaret="yas>=65", "sbp<90|dbp<=60", "yas>=45&yas<65"); kullanıcı sonradan değiştirebilir
+      var kt = turet(kayit);
       document.querySelectorAll('input[data-hasta-isaret]').forEach(function(el){
-        var r = kosul(el.getAttribute('data-hasta-isaret'), kayit);
-        r.k.forEach(function(a){ var y = AD[a] + ' ' + String(kayit[a]).replace('.', ','); if (kullanilan.indexOf(y) < 0) kullanilan.push(y); });
-        if (r.d === true && !el.checked) { el.checked = true; tetikle(el); isaretli.push(secimAd(el)); }
+        var r = kosul(el.getAttribute('data-hasta-isaret'), kt);
+        r.k.forEach(function(a){ var y = (AD[a] || HESAP[a].ad) + ' ' + String(kt[a]).replace('.', ','); if (kullanilan.indexOf(y) < 0) kullanilan.push(y); });
+        if (r.d === true && !el.checked) { el.checked = true; el._oto = true; tetikle(el); isaretli.push(secimAd(el)); }
       });
       cinsOrnek = !uyg && cinsEl.some(function(b){ return b.tagName === 'BUTTON' && b.getAttribute('aria-pressed') === 'true'; });
       if (!cinsOrnek) { dokunuldu = true; ornekGizle(true); }
@@ -435,7 +512,7 @@
       if (kalanOrnek().length) { yazi.textContent = 'Cinsiyet seçimi örnektir; hastaya göre seçin.'; dug.remove(); } else bant.remove();
     }
 
-    function cinsKaydet(deger){ var v = oku(); v.cins = deger; yaz(v); }
+    function cinsKaydet(deger){ var v = oku(); v.cins = deger; yaz(v); kayitDegisti('cins'); }
     // Hesaplanan eGFR'yi hasta kaydına yazar (data-hasta-yaz="egfr"): yalnız tüm dolu kutular hastadan ya da kullanıcıdan geldiyse,
     // cinsiyet seçilmişse, olası olmayan değer uyarısı yoksa ve sonuç pozitif bir sayıysa. Sonuç sonra geçersizleşirse yazılan değer geri alınır.
     var yazilan = {};
@@ -467,12 +544,12 @@
       if (el.matches && el.matches('input[data-hasta]') && gecerli(el)) {
         var v = oku(), a = el.getAttribute('data-hasta');
         if (el.value === '' || disinda(el)) delete v[a]; else v[a] = el.value;
-        yaz(v);
+        yaz(v); kayitDegisti(a);
       } else if (el.matches && el.matches('input[data-hasta][data-hasta-cevir]')) {
         // Diğer birimde (ör. kreatinin µmol/L) girilen değer kayda kayıt birimine çevrilerek yazılır (÷ 88,4, 2 basamak); geçersizse eskisi silinir
         var v2 = oku(), a2 = el.getAttribute('data-hasta'), x2 = parseFloat(el.value) / parseFloat(el.getAttribute('data-hasta-cevir'));
         if (el.value === '' || disinda(el) || !isFinite(x2)) delete v2[a2]; else v2[a2] = String(Math.round(x2 * 100) / 100);
-        yaz(v2);
+        yaz(v2); kayitDegisti(a2);
       }
       bantGuncelle();
     });
@@ -723,7 +800,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v68', SURUM_TARIH = '4 Kasım 2026', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v69', SURUM_TARIH = '5 Kasım 2026', GB_ADRES = 'blgnonur97@gmail.com';
   window.vizitSurum = SURUM; window.vizitGbAdres = GB_ADRES;
   var sEl = document.getElementById('surum'); if (sEl) sEl.textContent = 'Sürüm ' + SURUM + ' · ' + SURUM_TARIH;
   var kap = document.querySelector('.wrap');
@@ -947,8 +1024,8 @@
         b.onclick = function(){ var m = notOku(); m.splice(i, 1); notYaz(m); ciz(); rozet(); }; li.appendChild(sp); li.appendChild(b); ul.appendChild(li); });
     }
     function sayfayaYaz(k, deger){
-      document.querySelectorAll('input[data-hasta="' + k + '"]').forEach(function(el){ if (gecerli(el) && el.value !== deger) { el.value = deger; if (kaynak.indexOf(el) < 0) kaynak.push(el); ornekDokun(el); dokunuldu = true; tetikle(el); } });
-      ornekDegisen(); ornekBitti(); bantGuncelle();
+      document.querySelectorAll('input[data-hasta="' + k + '"]').forEach(function(el){ if (gecerli(el) && el.value !== deger) { if (el._hesap != null) hesapBirak(el); el.value = deger; if (kaynak.indexOf(el) < 0) kaynak.push(el); ornekDokun(el); dokunuldu = true; tetikle(el); } });
+      ornekDegisen(); ornekBitti(); bantGuncelle(); kayitDegisti(k);
     }
     function ac(){
       sonOdak = document.activeElement;
@@ -985,7 +1062,7 @@
       panel.querySelectorAll('button.c').forEach(function(b){ b.onclick = function(){
         var v = oku(); if (v.cins === b.dataset.c) delete v.cins; else v.cins = b.dataset.c; yaz(v);
         if (v.cins) document.querySelectorAll('button[data-hasta-cins="' + v.cins + '"]').forEach(function(x){ if (gecerli(x) && x.getAttribute('aria-pressed') !== 'true') x.click(); ornekDokun(x); });
-        ornekBitti(); bantGuncelle();
+        ornekBitti(); bantGuncelle(); kayitDegisti('cins');
         ciz(); }; });
       panel.querySelector('[data-i=kop]').onclick = function(){
         var b = this; if (window.vizitOlasiVar(panel)) { b.textContent = 'Değeri kontrol edin'; setTimeout(function(){ b.textContent = 'Kopyala'; }, 2500); return; }

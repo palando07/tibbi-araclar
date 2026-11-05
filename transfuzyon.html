@@ -82,7 +82,7 @@ select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .note a{color:var(--accent);font-weight:600}
 </style>
 </head>
-<body data-ornek-secim="pc kc">
+<body data-ornek-secim="pc kc #rc #pi">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -98,9 +98,10 @@ select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="6.4"></div>
       <div class="field"><label for="plt">Trombosit <span>×10³/µL</span></label><input id="plt" data-hasta="plt" type="number" inputmode="decimal" step="any" value="18"></div>
       <div class="field"><label for="inr">INR</label><input id="inr" data-hasta="inr" type="number" inputmode="decimal" step="any" value="1.6"></div>
-      <div class="field"><label for="fib">Fibrinojen <span>g/L</span></label><input id="fib" data-aralik="0.2-10 g/L" type="number" inputmode="decimal" step="any" value="1.2"></div>
+      <div class="field"><label for="fib">Fibrinojen <span id="u-fib">g/L</span></label><input id="fib" data-aralik="0.2-10 g/L|[data-g=fu][data-v=mg][aria-pressed=true]:20-1000 mg/dL" type="number" inputmode="decimal" step="any" value="1.2"></div>
     </div>
-    <p class="note">Fibrinojen mg/dL olarak raporlanıyorsa 10’a bölün (120 mg/dL = 1,2 g/L). Trombosit 18 = 18.000/µL.</p>
+    <div class="seg" role="group" aria-label="Fibrinojen birimi" style="margin-top:10px"><button type="button" data-g="fu" data-v="gl" aria-pressed="true">Fibrinojen g/L</button><button type="button" data-g="fu" data-v="mg" aria-pressed="false">Fibrinojen mg/dL</button></div>
+    <p class="note">Fibrinojen birimini laboratuvarınıza göre seçin; birim değişince kutudaki değer çevrilir (100 mg/dL = 1 g/L). Trombosit 18 = 18.000/µL.</p>
   </section>
 
   <section class="card">
@@ -272,17 +273,20 @@ select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 
   function calc(src){
     var wt=v('wt'),hb=v('hb'),plt=v('plt'),inr=v('inr'),fib=v('fib');
+    if(fib!==null&&segVal('fu')==='mg')fib=fib/100; // eşikler g/L
 
     // 1) Eritrosit
     var rc=$('rc').value,R=RBC[rc];
-    if(lastRc!==rc){$('hbt').value=R.h}
+    if(R&&lastRc!==rc){$('hbt').value=R.h}
     lastRc=rc;
     var tgt=v('hbt');
     $('rxR').innerHTML='';
-    $('rbn').textContent=(R.le?'≤ ':'< ')+fm(R.t);
+    $('rbn').textContent=R?(R.le?'≤ ':'< ')+fm(R.t):'–';
     var inc=wt>0?70/wt:null;
     $('rbi').textContent=inc?'~'+fm(inc)+' g/dL Hb · ~%'+fm(inc*3,0)+' Hct':'–';
-    if(hb===null){$('rbh').textContent='–';pill('rbp','','');$('rbu').textContent='–'}
+    // Klinik durum seçilmeden eşik yazılmaz (eşik ona göre değişir)
+    if(!R){$('rbh').textContent=hb===null?'–':fm(hb)+' g/dL';pill('rbp','Klinik durumu seçin','var(--muted)');$('rbu').textContent='–'}
+    else if(hb===null){$('rbh').textContent='–';pill('rbp','','');$('rbu').textContent='–'}
     else{
       $('rbh').textContent=fm(hb)+' g/dL';
       var below=R.le?hb<=R.t:hb<R.t; // ESGE 2021: ≤ 7 / ≤ 8 g/dL
@@ -302,9 +306,10 @@ select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
     // 2) Trombosit
     var P=PLT[$('pi').value];
     $('rxP').innerHTML='';
-    $('ptn').textContent='< '+P.t+(P.a?'–'+P.a:'');
-    $('ptg').textContent='Kılavuzlar: '+P.g;
-    if(plt===null){$('pth').textContent='–';pill('ptp','','')}
+    $('ptn').textContent=P?'< '+P.t+(P.a?'–'+P.a:''):'–';
+    $('ptg').textContent=P?'Kılavuzlar: '+P.g:'';
+    if(!P){$('pth').textContent=plt===null?'–':fm(plt)+' ×10³/µL ('+fm(plt*1000,0)+'/µL)';pill('ptp','Endikasyonu seçin','var(--muted)')}
+    else if(plt===null){$('pth').textContent='–';pill('ptp','','')}
     else{
       $('pth').textContent=fm(plt)+' ×10³/µL ('+fm(plt*1000,0)+'/µL)';
       if(plt<P.t)pill('ptp','Eşiğin altında: transfüzyon önerilir','var(--high)');
@@ -373,6 +378,12 @@ select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
   }
 
   ['tm','pc','kc'].forEach(function(g){seg(g,calc)});
+  // Fibrinojen birimi: değer çevrilir (g/L × 100 = mg/dL); örnek işareti çeviriyle kalkmasın diye vizit-cevir olayı gönderilir
+  document.querySelectorAll('[data-g="fu"]').forEach(function(b){b.addEventListener('click',function(){
+    var eski=segVal('fu'),yeni=b.dataset.v;if(eski===yeni)return;
+    document.querySelectorAll('[data-g="fu"]').forEach(function(o){o.setAttribute('aria-pressed',o===b)});
+    var x=v('fib');if(x!==null){$('fib').value=yeni==='mg'?Math.round(x*1000)/10:Math.round(x/100*1000)/1000;$('fib').dispatchEvent(new Event('vizit-cevir'))}
+    $('u-fib').textContent=yeni==='mg'?'mg/dL':'g/L';calc()})});
   $('pi').addEventListener('change',function(){calc()});$('rc').addEventListener('change',function(){calc()});
   document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',function(){calc()});e.addEventListener('change',function(){calc()})});
   calc();

@@ -111,6 +111,7 @@ table.t tr.cur td{font-weight:700;color:var(--accent)}
   <section class="card" aria-live="polite">
     <h2 id="t">Sonuç</h2>
     <div class="res"><span class="num" id="out">–</span><span class="unit" id="outu"></span><span class="pill" id="pl"></span></div>
+    <p class="note" id="kons" style="font-weight:600;color:var(--fg)"></p>
     <div class="sub" id="r-abs"><span>Mutlak doz</span><b id="abs">–</b></div>
     <div class="sub"><span>Konsantrasyon</span><b id="conc">–</b></div>
     <div class="sub"><span>Olağan aralık</span><b id="rng">–</b></div>
@@ -222,6 +223,8 @@ table.t tr.cur td{font-weight:700;color:var(--accent)}
     $('t').textContent=d.n;
     if(yon==='1'){$('out').textContent=fm(rate,1);$('outu').textContent='mL/saat'}else{$('out').textContent=fm(dose);$('outu').textContent=d.u}
     var cu=d.au==='mg'?(c>=1000?[c/1000,'mg/mL']:[c,'mcg/mL']):[c,d.au+'/mL'];$('conc').textContent=c?fm(cu[0])+' '+cu[1]:'–';
+    // Hesabın hangi karışım için yapıldığı sonucun başında yazar (servisin sulandırması farklı olabilir)
+    $('kons').textContent=c?'Hesap '+fm(a)+' '+d.au+' / '+fm(vl)+' mL ('+fm(cu[0])+' '+cu[1]+') karışım içindir; sizin karışımınız farklıysa yukarıda değiştirin.':'Toplam ilaç ve hacmi girin.';
     $('rng').textContent=(d.r[0]===d.r[1]?fm(d.r[0]):fm(d.r[0])+'–'+fm(d.r[1]))+' '+d.u;
     $('r-abs').hidden=!u[1];$('abs').textContent=u[1]&&dose!==null&&w?fm(dose*w)+' '+u[2]:'–';
     $('r-bol').hidden=!d.bol;$('bol').textContent=d.bol?d.bol(w):'';

@@ -171,7 +171,8 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
 
   var link=function(){};
   $('ure').addEventListener('input',function(){var u=v('ure');$('bun').value=u===null?'':Math.round(u/2.14*10)/10;calc()});
-  $('bun').addEventListener('input',function(){var b=v('bun');$('ure').value=b===null?'':Math.round(b*2.14);calc()});
+  // BUN'dan üreye yalnız kullanıcı yazınca çevrilir: örnekler silinirken boşalan BUN kayıttan gelen üreyi silmesin
+  $('bun').addEventListener('input',function(e){if(!e.isTrusted)return;var b=v('bun');$('ure').value=b===null?'':Math.round(b*2.14);calc()});
   function calc(){
     var age=v('age'),bun=v('bun'),g=segVal('et')==='2';
     // Boş üre/BUN ya da yaş 0 puan sayılmaz: en az b, en çok b + eksik madde sayısı; eşik (3) arada kalıyorsa sınıf verilmez

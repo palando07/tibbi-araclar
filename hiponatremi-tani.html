@@ -78,7 +78,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
 .mk.y{color:var(--ok)} .mk.n{color:var(--high)} .mk.u{color:var(--muted)}
 </style>
 </head>
-<body data-ornek-secim="vol">
+<body data-ornek-secim="vol sym">
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -221,7 +221,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
   function calc(){
     var na=v('na'),glu=v('glu'),mosm=v('osm'),wt=v('wt'),ua=v('ua'),ure=v('ure');
     var uosm=v('uosm'),una=v('una'),uk=v('uk'),feua=v('feua'),uvol=v('uvol');
-    var vol=segVal('vol'),acute=segVal('dur')==='a',sym=+segVal('sym');
+    var vol=segVal('vol'),acute=segVal('dur')==='a',symS=segVal('sym'),sym=symS===null?null:+symS;
     var diu=ck('diu'),ckd=ck('ckd'),tsh=ck('tsh'),cort=ck('cort');
     var risk=[];if(ck('rk'))risk.push('hipokalemi');if(ck('ralc'))risk.push('alkol');if(ck('rmal'))risk.push('malnütrisyon');if(ck('rliv'))risk.push('ileri karaciğer hastalığı');
     if(na!==null&&na<=105)risk.unshift('Na ≤ 105');
@@ -245,11 +245,11 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     $('osml').textContent=calcO?'Hesaplanan efektif osmolalite':'Ölçülen osmolalite';
     $('osmo').textContent=osm===null?'–':fm(osm,0)+' mOsm/kg';
     $('duro').textContent=acute?'akut (< 48 saat)':'kronik / bilinmiyor';
-    $('symo').textContent=['yok / hafif','orta şiddetli','ağır'][sym];
+    $('symo').textContent=sym===null?'seçilmedi':['yok / hafif','orta şiddetli','ağır'][sym];
     var em=$('emerg');em.hidden=true;em.innerHTML='';
-    if(sev&&sev!=='none'&&(sym>0||acute)){
+    if(sev&&sev!=='none'&&(sym===null||sym>0||acute)){
       em.hidden=false;
-      em.appendChild(document.createTextNode(sym===2?'Ağır belirtiler: tanısal ayırımı beklemeden hemen %3 NaCl bolusu gerekir. ':sym===1?'Orta şiddetli belirtiler: %3 NaCl tek doz ve neden araştırması. ':'Akut hiponatremi: belirti olmasa da Na düşüşü > 10 mmol/L ise tek doz 150 mL %3 NaCl (20 dakikada) düşünülür (ESE 2014). '));
+      em.appendChild(document.createTextNode(sym===null?'Belirtiler seçilmedi: ağır (kusma, nöbet, bilinç bozukluğu) ya da orta şiddetli belirti (bulantı, konfüzyon, baş ağrısı) varsa tanısal ayırımı beklemeden %3 NaCl gerekir; belirtileri seçin. ':sym===2?'Ağır belirtiler: tanısal ayırımı beklemeden hemen %3 NaCl bolusu gerekir. ':sym===1?'Orta şiddetli belirtiler: %3 NaCl tek doz ve neden araştırması. ':'Akut hiponatremi: belirti olmasa da Na düşüşü > 10 mmol/L ise tek doz 150 mL %3 NaCl (20 dakikada) düşünülür (ESE 2014). '));
       var a=document.createElement('a');a.href='acil-tedavi.html';a.textContent='Acil Tedavi Rehberi →';em.appendChild(a);
     }
 

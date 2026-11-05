@@ -202,6 +202,7 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
       '<div class="field" id="'+x.p+'-wr" hidden><label for="'+x.p+'-r">Hız <span>mL/saat</span></label><input id="'+x.p+'-r" data-aralik="0-1000 mL/saat" type="number" inputmode="decimal" step="any" value="'+x.r+'"></div></div></section>'+
       '<section class="card" aria-live="polite"><h2>'+x.n+' hızı</h2>'+
       '<div class="res"><span class="num" id="'+x.p+'-o">–</span><span class="of" id="'+x.p+'-ou"></span><span class="pill" id="'+x.p+'-p"></span></div>'+
+      '<p class="note" id="'+x.p+'-kn" style="font-weight:600;color:var(--fg)"></p>'+
       '<div class="sub"><span>Konsantrasyon</span><b class="w" id="'+x.p+'-k">–</b></div>'+
       '<div class="sub"><span>'+(x.kg?'Doz':'Hız')+'</span><b class="w" id="'+x.p+'-m">–</b></div>'+
       '<div class="sub"><span>Torba/şırınga biter</span><b id="'+x.p+'-s">–</b></div>'+
@@ -218,6 +219,7 @@ ul.links{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;
     $(x.p+'-x').innerHTML='';$(x.p+'-t').innerHTML='';
     var conc=amt>0&&vol>0?(x.au==='U'?amt/vol:amt*1000/vol):null; // mcg/mL veya U/mL
     var cu=x.au==='U'?' U/mL':' mcg/mL';
+    $(x.p+'-kn').textContent=conc?'Hesap '+fm(amt)+' '+(x.au==='U'?'ünite':x.au)+' / '+fm(vol)+' mL ('+fm(conc,conc<1?2:1)+cu+') karışım içindir; sizin karışımınız farklıysa yukarıda değiştirin.':'Hazırlanan çözeltiyi seçin.';
     $(x.p+'-k').textContent=conc?fm(conc,conc<1?2:1)+cu+' ('+fm(amt)+' '+x.au+' / '+fm(vol)+' mL)':'–';
     var need=x.kg&&!(wt>0);
     // per 1 dose unit -> amount per hour

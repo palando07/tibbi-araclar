@@ -118,7 +118,7 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
       <label class="item" id="w-hf"><input type="checkbox" id="hf" data-pp="1" data-pi="0" checked><span class="txt">Kalp veya solunum yetmezliği</span><span class="pts">P 1</span></label>
       <label class="item" id="w-mi"><input type="checkbox" id="mi" data-pp="1" data-pi="0"><span class="txt">Akut MI veya iskemik inme</span><span class="pts">P 1</span></label>
       <label class="item" id="w-inf"><input type="checkbox" id="inf" data-pp="1" data-pi="0" checked><span class="txt">Akut enfeksiyon veya romatolojik hastalık</span><span class="pts">P 1</span></label>
-      <label class="item auto" id="w-ob"><input type="checkbox" id="ob" data-pp="1" data-pi="0" disabled><span class="txt">Obezite (VKİ ≥ 30)</span><span class="pts">P 1</span></label>
+      <label class="item auto" id="w-ob"><input type="checkbox" id="ob" data-pp="1" data-pi="0" disabled><span class="txt">Obezite (VKİ ≥ 30)<small id="ob-n" hidden>VKİ bilinmiyor (boy ya da kilo yok): obezse elle işaretleyin</small></span><span class="pts">P 1</span></label>
       <label class="item" id="w-hor"><input type="checkbox" id="hor" data-pp="1" data-pi="0"><span class="txt">Hormon tedavisi<small>oral kontraseptif, hormon replasmanı, tamoksifen</small></span><span class="pts">P 1</span></label>
     </div>
     <h2>Kanama</h2>
@@ -174,25 +174,40 @@ input[type=datetime-local]{font:600 1rem var(--font-body);padding:11px 12px;bord
   var fm=function(x){return x.toLocaleString('tr-TR',{maximumFractionDigits:1})};
   function setA(id,on){$(id).checked=!!on}
   function li(b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$('rx').appendChild(l)}
+  // VKİ hesaplanamıyorsa obezite maddesi elle işaretlenir; boş değer "yok" sayılmaz: puan en az–en çok verilir, sınıf ancak iki uçta aynıysa yazılır
+  var obElle=false;$('ob').addEventListener('input',function(e){if(e.isTrusted)obElle=true});
   function calc(){var age=v('age'),wt=v('wt'),ht=v('ht'),g=v('egfr'),pl=v('plt'),sx=segVal('sx');
     var bmi=wt&&ht?wt/Math.pow(ht/100,2):null;
-    setA('a70',age!==null&&age>=70);setA('ob',bmi!==null&&bmi>=30);setA('p50',pl!==null&&pl<50);
+    $('ob').disabled=bmi!==null;$('w-ob').classList.toggle('auto',bmi!==null);$('ob-n').hidden=bmi!==null;
+    setA('a70',age!==null&&age>=70);if(bmi!==null)setA('ob',bmi>=30);else if(!obElle)setA('ob',false);setA('p50',pl!==null&&pl<50);
     setA('a85',age!==null&&age>=85);setA('a40',age!==null&&age>=40&&age<85);
     setA('r30',g!==null&&g<30);setA('r59',g!==null&&g>=30&&g<60);setA('male',sx==='m');
     var P=0,I=0;document.querySelectorAll('.items input').forEach(function(e){if(e.checked){P+=+e.dataset.pp;I+=+e.dataset.pi}});
     // romatolojik hastalık Padua'da enfeksiyonla aynı madde
     if($('rh').checked&&!$('inf').checked)P+=1;
-    $('ps').textContent=P;$('is').textContent=fm(I);
-    var hiP=P>=4,hiI=I>=7;
-    pill('ppl',hiP?'Yüksek risk':'Düşük risk',hiP?'var(--high)':'var(--ok)');$('pr').textContent=hiP?'≈ %11':'≈ %0,3';
-    pill('ipl',hiI?'Yüksek kanama riski':'Düşük kanama riski',hiI?'var(--high)':'var(--ok)');$('ir').textContent=hiI?'≈ %4,1':'≈ %0,4';
+    // Girilmeyen değerlerin en kötü durumda ekleyebileceği puan
+    var eP=[],eI=[],P2=P,I2=I;
+    if(age===null){eP.push('yaş');eI.push('yaş');P2+=1;I2+=3.5}
+    if(bmi===null&&!$('ob').checked){eP.push((wt===null&&ht===null?'kilo, boy':wt===null?'kilo':'boy')+' (VKİ)');P2+=1}
+    if(g===null){eI.push('eGFR');I2+=2.5}
+    if(pl===null){eI.push('trombosit');I2+=4}
+    var hiP=P>=4,hiI=I>=7,belP=hiP||P2<4,belI=hiI||I2<7;
+    $('ps').textContent=(eP.length?'≥ ':'')+P;$('is').textContent=(eI.length?'≥ ':'')+fm(I);
+    if(belP){pill('ppl',hiP?'Yüksek risk':'Düşük risk',hiP?'var(--high)':'var(--ok)');$('pr').textContent=hiP?'≈ %11':'≈ %0,3'}
+    else{pill('ppl','Eksik veri: '+eP.join(', '),'var(--muted)');$('pr').textContent='en az '+P+', en çok '+P2+' puan'}
+    if(belI){pill('ipl',hiI?'Yüksek kanama riski':'Düşük kanama riski',hiI?'var(--high)':'var(--ok)');$('ir').textContent=hiI?'≈ %4,1':'≈ %0,4'}
+    else{pill('ipl','Eksik veri: '+eI.join(', '),'var(--muted)');$('ir').textContent='en az '+fm(I)+', en çok '+fm(I2)+' puan'}
     $('rx').innerHTML='';
     var contra=$('ulc').checked||pl!==null&&pl<50;
+    if(!belP){$('adv').textContent='Tromboz riski değerlendirilemedi: '+eP.join(', ')+' girin. Girilmeyen değer “yok” sayılmaz.';return}
     if(!hiP){$('adv').textContent='Farmakolojik profilaksi gerekmiyor. Erken mobilizasyon; risk değişirse (hareketsizlik, yeni enfeksiyon) yeniden değerlendirin.';return}
+    if(!belI&&!contra){$('adv').textContent='Tromboz riski yüksek; kanama riski değerlendirilemedi: '+eI.join(', ')+' girin. Girilmeyen değer “yok” sayılmaz.';return}
     if(hiI||contra){$('adv').textContent='Tromboz riski yüksek ama kanama riski de yüksek'+(contra?' veya kontrendikasyon var':'')+': mekanik profilaksi (aralıklı pnömatik kompresyon). Kanama riski azalınca farmakolojiğe geçin.';
       if(!contra)li('Kanama riski kabul edilebilirse','Düşük doz UFH (5000 ünite 2×1) daha kolay geri döndürülebilir; protamin ile nötralize edilir.');return}
     $('adv').textContent='Farmakolojik profilaksi önerilir (DMAH, UFH tercih edilir).';
     var ob=bmi!==null&&bmi>=40,low=wt!==null&&wt<50,r=g!==null&&g<30;
+    if(pl===null)li('Trombosit girilmedi','Trombosit < 50.000 ise farmakolojik profilaksi yerine mekanik profilaksi; başlamadan önce değeri girin.');
+    if(g===null)li('eGFR / CrCl girilmedi','Doz böbrek işlevine göre değişir: CrCl < 30’da enoksaparin 20 mg günde 1, fondaparinuks CrCl < 20’de kontrendike. Değeri girin.');
     if(r)li('Enoksaparin 20 mg SC günde 1 (CrCl < 30)','Alternatif: UFH 5000 ünite SC 2–3×1; diyaliz veya CrCl < 15’te UFH tercih edilir.');
     else if(ob)li('Enoksaparin 40 mg SC günde 2 (VKİ '+fm(bmi)+')','Alternatif 0,5 mg/kg günde 1'+(wt?' = '+Math.round(wt*0.5)+' mg':'')+'; mümkünse anti-Xa (hedef 0,2–0,5 IU/mL).');
     else if(low)li('Enoksaparin 20–30 mg SC günde 1 (ağırlık < 50 kg)','Düşük kiloda birikim ve kanama riski artar.');

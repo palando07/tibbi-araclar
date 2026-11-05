@@ -233,6 +233,7 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
     if(hr===null&&sbp===null)pill('hdp','','');
     else if(hypo)pill('hdp','Hipotansiyon (SKB < 90)'+(tachy?' + taşikardi':''),'var(--high)');
     else if(tachy)pill('hdp','Taşikardi (nabız ≥ 100)','var(--warn)');
+    else if(hr===null||sbp===null)pill('hdp',(hr===null?'Nabız':'SKB')+' girilmedi','var(--muted)'); // biri boşken "yok" denmez
     else pill('hdp','Belirgin hipotansiyon/taşikardi yok','var(--ok)');
 
     // 2) Transfüzyon
