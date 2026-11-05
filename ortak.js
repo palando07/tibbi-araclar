@@ -296,7 +296,7 @@
   }
   function trS(x){ return String(x).replace('.', ','); }
   // Kayıttan türetilen değerler (data-hasta-isaret koşullarında da kullanılır): VKİ = kilo / boy²
-  function vkiHesap(v){ var k = parseFloat(v.kilo), b = parseFloat(v.boy); return k > 0 && b > 0 ? Math.round(k / Math.pow(b / 100, 2) * 10) / 10 : null; }
+  function vkiHesap(v){ var k = parseFloat(v.kilo), b = parseFloat(v.boy); return k > 0 && b > 0 ? k / Math.pow(b / 100, 2) : null; } // ham değer: eşiklerde yuvarlanmadan kullanılır
   function turet(v){ var w = {}; Object.keys(v).forEach(function(k){ w[k] = v[k]; }); if (w.vki == null) { var x = vkiHesap(v); if (x !== null) w.vki = String(x); } return w; }
   // Kayıttan hesaplanıp kutuya konan değerler: eGFR (data-hasta="egfr", kayıtta eGFR yokken), VKİ ve CrCl (data-hasta-hesap="vki" | "crcl").
   // Yalnız kayıttaki değerlerden hesaplanır (sayfadaki örnek değerlerden değil); kutunun altında kaynağı yazar. Kullanıcı kutuya yazınca hesap o kutuda durur.
@@ -304,7 +304,7 @@
   var HESAP = {
     egfr: {ad: 'eGFR', f: function(v){ if (v.egfr != null || v.kreatinin == null || v.yas == null || !v.cins) return null; var g = ckdEpi(v.kreatinin, v.yas, v.cins === 'f'); return g === null ? null : String(Math.round(g)); },
       not: function(v){ return 'Kreatininden hesaplandı (CKD-EPI 2021: kreatinin ' + trS(v.kreatinin) + ', ' + trS(v.yas) + ' yaş, ' + (v.cins === 'm' ? 'erkek' : 'kadın') + '). Değiştirebilirsiniz.'; }},
-    vki: {ad: 'VKİ', f: function(v){ var x = vkiHesap(v); return x === null ? null : String(x); },
+    vki: {ad: 'VKİ', f: function(v){ var x = vkiHesap(v); return x === null ? null : String(Math.round(x * 10) / 10); },
       not: function(v){ return 'Kilo ve boydan hesaplandı (' + trS(v.kilo) + ' kg, ' + trS(v.boy) + ' cm). Değiştirebilirsiniz.'; }},
     crcl: {ad: 'CrCl', f: function(v){ var y = parseFloat(v.yas), w = parseFloat(v.kilo), c = parseFloat(v.kreatinin);
         if (!(y >= 18) || !(w > 0) || !(c > 0) || !v.cins) return null; var x = (140 - y) * w * (v.cins === 'f' ? 0.85 : 1) / (72 * c); return x > 0 ? String(Math.round(x * 10) / 10) : null; },
@@ -448,7 +448,7 @@
       var kt = turet(kayit);
       document.querySelectorAll('input[data-hasta-isaret]').forEach(function(el){
         var r = kosul(el.getAttribute('data-hasta-isaret'), kt);
-        r.k.forEach(function(a){ var y = (AD[a] || HESAP[a].ad) + ' ' + String(kt[a]).replace('.', ','); if (kullanilan.indexOf(y) < 0) kullanilan.push(y); });
+        r.k.forEach(function(a){ var y = (AD[a] || HESAP[a].ad) + ' ' + String(a === 'vki' && kayit.vki == null ? Math.round(parseFloat(kt[a]) * 10) / 10 : kt[a]).replace('.', ','); if (kullanilan.indexOf(y) < 0) kullanilan.push(y); });
         if (r.d === true && !el.checked) { el.checked = true; el._oto = true; tetikle(el); isaretli.push(secimAd(el)); }
       });
       cinsOrnek = !uyg && cinsEl.some(function(b){ return b.tagName === 'BUTTON' && b.getAttribute('aria-pressed') === 'true'; });
