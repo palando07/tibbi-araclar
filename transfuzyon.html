@@ -98,9 +98,9 @@ select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
       <div class="field"><label for="hb">Hemoglobin <span>g/dL</span></label><input id="hb" data-hasta="hb" type="number" inputmode="decimal" step="any" value="6.4"></div>
       <div class="field"><label for="plt">Trombosit <span>×10³/µL</span></label><input id="plt" data-hasta="plt" type="number" inputmode="decimal" step="any" value="18"></div>
       <div class="field"><label for="inr">INR</label><input id="inr" data-hasta="inr" type="number" inputmode="decimal" step="any" value="1.6"></div>
-      <div class="field"><label for="fib">Fibrinojen <span id="u-fib">g/L</span></label><input id="fib" data-aralik="0.2-10 g/L|[data-g=fu][data-v=mg][aria-pressed=true]:20-1000 mg/dL" type="number" inputmode="decimal" step="any" value="1.2"></div>
+      <div class="field"><label for="fib">Fibrinojen <span id="u-fib">mg/dL</span></label><input id="fib" data-aralik="20-1000 mg/dL|[data-g=fu][data-v=gl][aria-pressed=true]:0.2-10 g/L" type="number" inputmode="decimal" step="any" value="120"></div>
     </div>
-    <div class="seg" role="group" aria-label="Fibrinojen birimi" style="margin-top:10px"><button type="button" data-g="fu" data-v="gl" aria-pressed="true">Fibrinojen g/L</button><button type="button" data-g="fu" data-v="mg" aria-pressed="false">Fibrinojen mg/dL</button></div>
+    <div class="seg" role="group" aria-label="Fibrinojen birimi" style="margin-top:10px"><button type="button" data-g="fu" data-v="mg" aria-pressed="true">Fibrinojen mg/dL</button><button type="button" data-g="fu" data-v="gl" aria-pressed="false">Fibrinojen g/L</button></div>
     <p class="note">Fibrinojen birimini laboratuvarınıza göre seçin; birim değişince kutudaki değer çevrilir (100 mg/dL = 1 g/L). Trombosit 18 = 18.000/µL.</p>
   </section>
 

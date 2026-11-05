@@ -308,7 +308,7 @@
       not: function(v){ return 'Kilo ve boydan hesaplandı (' + trS(v.kilo) + ' kg, ' + trS(v.boy) + ' cm). Değiştirebilirsiniz.'; }},
     crcl: {ad: 'CrCl', f: function(v){ var y = parseFloat(v.yas), w = parseFloat(v.kilo), c = parseFloat(v.kreatinin);
         if (!(y >= 18) || !(w > 0) || !(c > 0) || !v.cins) return null; var x = (140 - y) * w * (v.cins === 'f' ? 0.85 : 1) / (72 * c); return x > 0 ? String(Math.round(x * 10) / 10) : null; },
-      not: function(v){ return 'Kayıttan hesaplandı (Cockcroft-Gault, gerçek kilo ' + trS(v.kilo) + ' kg, kreatinin ' + trS(v.kreatinin) + ', ' + trS(v.yas) + ' yaş, ' + (v.cins === 'm' ? 'erkek' : 'kadın') + '). Değiştirebilirsiniz.'; }}
+      not: function(v){ return 'Kayıttan hesaplandı (Cockcroft-Gault, gerçek kilo ' + trS(v.kilo) + ' kg, kreatinin ' + trS(v.kreatinin) + ', ' + trS(v.yas) + ' yaş, ' + (v.cins === 'm' ? 'erkek' : 'kadın') + ').' + (vkiHesap(v) >= 30 ? ' Obez hastada ideal/düzeltilmiş kiloyla da bakın (Kreatinin klerensi sayfası).' : '') + ' Değiştirebilirsiniz.'; }}
   };
   function hesapNot(el, t){
     var n = el._hesapNot;
