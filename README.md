@@ -42,6 +42,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | VKİ ve vücut yüzey alanı | `vki.html` |
 | Düzeltilmiş QT | `qtc.html` |
 | Glasgow Koma Skalası | `glasgow-koma.html` |
+| SCORE2 / SCORE2-OP (ESC 10 yıllık KVH riski, Türkiye yüksek risk bölgesi) | `score2.html` |
 | PREVENT (10 yıllık KVH, ASKVH, KY) | `prevent.html` |
 | HEART skoru | `heart-skoru.html` |
 | Duke kriterleri | `duke-kriterleri.html` |

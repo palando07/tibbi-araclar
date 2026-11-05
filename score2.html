@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SCORE2 ve SCORE2-OP</title>
+<meta name="theme-color" content="#0f6e8c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>SCORE2 ve SCORE2-OP</h1>
+    <p>ESC 10 yıllık ölümcül ve ölümcül olmayan KVH riski (40–89 yaş), Türkiye kalibrasyonu (yüksek risk bölgesi)</p>
+  </header>
+
+  <section class="card">
+    <div class="grid">
+      <div class="field"><label for="age">Yaş <span>40–89</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="55"></div>
+      <div class="field"><label for="sbp">Sistolik KB <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="numeric" step="1" value="140"></div>
+      <div class="field"><label for="tc">Total kolesterol <span>mg/dL</span></label><input data-aralik="50-1000 mg/dL" id="tc" type="number" inputmode="decimal" step="any" value="213"></div>
+      <div class="field"><label for="hdl">HDL kolesterol <span>mg/dL</span></label><input data-aralik="5-200 mg/dL" id="hdl" type="number" inputmode="decimal" step="any" value="50"></div>
+    </div>
+    <div class="field"><span class="lbl">Cinsiyet</span><div class="seg"><button type="button" data-g="sex" data-v="m" data-hasta-cins="m" aria-pressed="false">Erkek</button><button type="button" data-g="sex" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div></div>
+    <div class="field"><span class="lbl">Sigara</span><div class="seg"><button type="button" data-g="smk" data-v="1" aria-pressed="false">Şu an içiyor</button><button type="button" data-g="smk" data-v="0" aria-pressed="false">İçmiyor</button></div></div>
+    <span class="lbl">Bunlardan biri varsa SCORE2 kullanılmaz</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="x-askvh"><span class="txt">ASKVH<small>Koroner, serebrovasküler ya da periferik arter hastalığı; görüntülemede belirgin plak</small></span></label>
+      <label class="item"><input type="checkbox" id="x-dm"><span class="txt">Diyabet</span></label>
+      <label class="item"><input type="checkbox" id="x-kbh"><span class="txt">Kronik böbrek hastalığı<small>eGFR &lt; 60 ya da albüminüri (ACR ≥ 30 mg/g)</small></span></label>
+      <label class="item"><input type="checkbox" id="x-ah"><span class="txt">Ailesel hiperkolesterolemi</span></label>
+      <label class="item"><input type="checkbox" id="x-rf"><span class="txt">Çok yüksek tek risk faktörü<small>Total kolesterol &gt; 310 mg/dL, LDL-K &gt; 190 mg/dL ya da KB ≥ 180/110 mmHg</small></span></label>
+    </div>
+    <p class="note">Türkiye, SCORE2 risk bölgelerinde <b>yüksek risk</b> bölgesindedir (ESC 2021); hesap bu bölgenin kalibrasyonuyla yapılır. 40–69 yaşta SCORE2, 70–89 yaşta SCORE2-OP kullanılır. Kolesterol mg/dL ÷ 38,67 ile mmol/L’ye çevrilir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl" id="model">10 yıllık KVH riski</span>
+    <div class="res"><span class="num" id="risk">–</span><span class="of">%</span><span class="pill" id="pl"></span></div>
+    <p class="advice" id="msg"></p>
+    <ol class="rec" id="rx"></ol>
+    <p class="note">KVH olayı: KV ölüm, ölümcül olmayan miyokard enfarktüsü ve inme. ESC 2021 yaşa göre risk sınıfı — &lt; 50 yaş: &lt; %2,5 düşük-orta, %2,5–&lt; 7,5 yüksek, ≥ %7,5 çok yüksek; 50–69 yaş: &lt; %5, %5–&lt; 10, ≥ %10; ≥ 70 yaş (SCORE2-OP): &lt; %7,5, %7,5–&lt; 15, ≥ %15. Düşük-orta riskte risk faktörü tedavisi genelde önerilmez, yüksek riskte düşünülmeli, çok yüksek riskte genelde önerilir. Karar risk değiştiricileri, eşlik eden hastalıklar, kırılganlık, tedavinin beklenen yaşam boyu yararı ve hasta tercihiyle birlikte verilir.</p>
+  </section>
+
+  <p class="note">Kaynaklar: SCORE2 working group and ESC Cardiovascular Risk Collaboration. SCORE2 risk prediction algorithms, Eur Heart J 2021;42:2439–54, doi:10.1093/eurheartj/ehab309 (40–69 yaş modeli; özetteki örnek hesap ile doğrulandı); SCORE2-OP working group and ESC Cardiovascular Risk Collaboration. SCORE2-OP risk prediction algorithms, Eur Heart J 2021;42:2455–67, doi:10.1093/eurheartj/ehab312 (≥ 70 yaş modeli, Tablo 2 katsayıları); Visseren FLJ ve ark. 2021 ESC Guidelines on cardiovascular disease prevention in clinical practice, Eur Heart J 2021;42:3227–337 (risk bölgeleri: Türkiye yüksek risk bölgesinde; yaşa göre risk sınıfları; SCORE2’nin kullanılmadığı durumlar; diyabet ve KBH risk sınıfları); HeartScore Europe risk regions (ESC); McEvoy JW ve ark. 2024 ESC Guidelines for the management of elevated blood pressure and hypertension, Eur Heart J 2024;45:3912–4018 (yükselmiş KB’de risk ≥ %10 ise 3 ay yaşam tarzından sonra ≥ 130/80 mmHg’de ilaç); 2025 Focused Update of the 2019 ESC/EAS Guidelines for the management of dyslipidaemias (SCORE2/SCORE2-OP ≥ %20 çok yüksek, %10–&lt; 20 yüksek, %2–&lt; 10 orta, &lt; %2 düşük) ve Mach F ve ark. 2019 ESC/EAS dislipidemi kılavuzu, Eur Heart J 2020;41:111–88 (LDL-K hedefleri; ailesel hiperkolesterolemi ve çok yüksek tek risk faktörü); SCORE2-Diabetes working group, Eur Heart J 2023;44:2544–56 (diyabette SCORE2 yerine; bu araçta yok). Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$('rx').appendChild(l)}
+
+  // SCORE2 (40–69 yaş): log SHR; yaş (yıl−60)/5, SKB (mmHg−120)/20, TK mmol/L−6, HDL (mmol/L−1,3)/0,5; sıra: yaş, sigara, SKB, TK, HDL, sigara×yaş, SKB×yaş, TK×yaş, HDL×yaş
+  // SCORE2-OP (≥ 70 yaş): yaş−73, diyabet (burada 0), sigara, SKB−150, TK−6, HDL−1,4 ve yaş etkileşimleri; risk = 1 − S0^exp(x − ortalama)
+  // Kalibrasyon: 1 − exp(−exp(a + b·ln(−ln(1 − risk)))); a, b = yüksek risk bölgesi (Türkiye)
+  var M={s2:{m:{b:[0.3742,0.6012,0.2777,0.1458,-0.2698,-0.0755,-0.0255,-0.0281,0.0426],s0:0.9605,k:[0.3207,0.9360]},
+             f:{b:[0.4648,0.7744,0.3131,0.1002,-0.2606,-0.1088,-0.0277,-0.0226,0.0613],s0:0.9776,k:[0.5710,0.9369]}},
+         op:{m:{b:[0.0634,0.3524,0.0094,0.0850,-0.3564,-0.0247,-0.0005,0.0073,0.0091],s0:0.7576,mu:0.0929,k:[0.08,1.15]},
+             f:{b:[0.0789,0.4921,0.0102,0.0605,-0.3040,-0.0255,-0.0004,-0.0009,0.0154],s0:0.8082,mu:0.229,k:[0.38,1.09]}}};
+  function risk(sx,age,smk,sbp,tc,hdl){
+    var op=age>=70,c=op?M.op[sx]:M.s2[sx],b=c.b,a,s,t,h;
+    if(op){a=age-73;s=sbp-150;t=tc-6;h=hdl-1.4}else{a=(age-60)/5;s=(sbp-120)/20;t=tc-6;h=(hdl-1.3)/0.5}
+    var x=b[0]*a+b[1]*smk+b[2]*s+b[3]*t+b[4]*h+b[5]*smk*a+b[6]*s*a+b[7]*t*a+b[8]*h*a;
+    var r=1-Math.pow(c.s0,Math.exp(op?x-c.mu:x));
+    return 100*(1-Math.exp(-Math.exp(c.k[0]+c.k[1]*Math.log(-Math.log(1-r)))));
+  }
+  window.vizitScore2=risk;
+  var X=[['x-askvh','ASKVH','Çok yüksek risk (ESC 2021). İkincil korunma hedefleri: LDL-K < 55 mg/dL ve ≥ %50 azalma.'],
+         ['x-dm','Diyabet','ESC 2021: kısa süreli (< 10 yıl), iyi kontrollü, hedef organ hasarı ve ek risk faktörü yoksa orta; hedef organ hasarı ya da ASKVH yoksa öteki hastalar yüksek; ağır hedef organ hasarı ya da ASKVH varsa çok yüksek risk. Tip 2 diyabette ESC 2023 SCORE2-Diabetes’i önerir; bu araçta yoktur.'],
+         ['x-kbh','KBH','ESC 2021: eGFR 30–44 ve ACR < 30, eGFR 45–59 ve ACR 30–300 ya da ACR > 300 mg/g ise yüksek; eGFR < 30 ya da eGFR 30–44 ve ACR > 30 mg/g ise çok yüksek risk.'],
+         ['x-ah','Ailesel hiperkolesterolemi','Yüksek risk; ASKVH ya da başka majör risk faktörü varsa çok yüksek (ESC/EAS 2019).'],
+         ['x-rf','Çok yüksek tek risk faktörü','Yüksek risk (ESC/EAS 2019, ESC 2021); o risk faktörünü doğrudan tedavi edin.']];
+  function calc(){
+    var age=v('age'),sbp=v('sbp'),tc=v('tc'),hdl=v('hdl'),sx=segVal('sex'),sm=segVal('smk');
+    $('rx').innerHTML='';$('risk').textContent='–';pill('pl','');$('model').textContent='10 yıllık KVH riski';
+    var ex=X.filter(function(e){return $(e[0]).checked});
+    // Girilen değerlerden çok yüksek tek risk faktörü: TK > 8 mmol/L (≈ 310 mg/dL) ya da SKB ≥ 180 mmHg (ham değerle)
+    var oto=[];if(tc!==null&&tc/38.67>8)oto.push('total kolesterol > 8 mmol/L (≈ 310 mg/dL)');if(sbp!==null&&sbp>=180)oto.push('sistolik KB ≥ 180 mmHg');
+    if(ex.length||oto.length){
+      pill('pl','SCORE2 kullanılmaz','var(--high)');
+      $('msg').textContent='Bu hastada risk SCORE2 ile hesaplanmaz; risk sınıfını aşağıdaki ölçütlerle belirleyin (çoğu hasta yüksek ya da çok yüksek risktedir; kısa süreli, iyi kontrollü diyabet orta risk olabilir).';
+      ex.forEach(function(e){li(e[1],e[2])});
+      if(oto.length&&!$('x-rf').checked)li('Çok yüksek tek risk faktörü','Girilen değer: '+oto.join(', ')+'. '+X[4][2]);
+      return;
+    }
+    var eks=[];if(age===null)eks.push('yaş');if(sx===null)eks.push('cinsiyet');if(sm===null)eks.push('sigara');
+    if(sbp===null)eks.push('sistolik KB');if(tc===null)eks.push('total kolesterol');if(hdl===null)eks.push('HDL');
+    if(eks.length){$('msg').textContent='Eksik veri: '+eks.join(', ')+'.';return}
+    // Olası olmayan değerle (yazım hatası, eksi sayı) risk gösterilmez; düşük çıkan bir sonuç güvenli sanılmasın
+    var ol=[];if(sbp<60||sbp>300)ol.push('sistolik KB');if(tc<50||tc>1000)ol.push('total kolesterol');if(hdl<5||hdl>200)ol.push('HDL');
+    if(ol.length){$('msg').textContent='Olası olmayan değer: '+ol.join(', ')+'. Değeri ve birimini kontrol edin (kolesterol mg/dL, KB mmHg).';return}
+    if(age<40){$('msg').textContent='SCORE2 40 yaş altında kullanılmaz. Bu yaşta 10 yıllık risk neredeyse her zaman düşüktür; risk faktörlerini tek tek değerlendirin ve tedavi edin.';return}
+    if(age>89){$('msg').textContent='ESC risk tabloları ve SCORE2-OP 70–89 yaş içindir; bu yaşta hesap yapılmaz. Kararı kırılganlık, eşlik eden hastalık, yaşam beklentisi ve hasta tercihiyle verin.';return}
+    if(!(hdl<tc)){$('msg').textContent='HDL total kolesterolden küçük olmalı; değerleri kontrol edin.';return}
+    var op=age>=70,r=risk(sx,age,+sm,sbp,tc/38.67,hdl/38.67);
+    $('model').textContent=(op?'SCORE2-OP':'SCORE2')+' · 10 yıllık KVH riski';
+    var T=age<50?[2.5,7.5]:age<70?[5,10]:[7.5,15];
+    // Gösterim yuvarlaması eşiği aşıyorsa (ör. 9,96 → 10,0 ama < %10) iki ondalık
+    var E=T.concat([2,10,20]),fs=function(y){return (E.some(function(e){return y<e&&+y.toFixed(1)>=e})?y.toFixed(2):y.toFixed(1)).replace('.',',')};
+    $('risk').textContent=fs(r);
+    var tt=function(x){return String(x).replace('.',',')};
+    if(r<T[0]){pill('pl','Düşük-orta risk','var(--ok)');$('msg').textContent='ESC 2021: risk faktörü (ilaç) tedavisi genelde önerilmez (< %'+tt(T[0])+'). Yaşam tarzı önerileri.'}
+    else if(r<T[1]){pill('pl','Yüksek risk','var(--warn)');$('msg').textContent='ESC 2021: risk faktörü tedavisi düşünülmeli (%'+tt(T[0])+'–< '+tt(T[1])+').'}
+    else{pill('pl','Çok yüksek risk','var(--high)');$('msg').textContent='ESC 2021: risk faktörü tedavisi genelde önerilir (≥ %'+tt(T[1])+').'}
+    if(op)$('msg').textContent+=' ≥ 70 yaşta ilaç kararında kırılganlık, eşlik eden hastalık ve hasta tercihi belirleyicidir.';
+    li('Kan basıncı (ESC 2024)',r>=10?'Risk ≥ %10: KB 130–139/80–89 mmHg ise 3 ay yaşam tarzından sonra hâlâ ≥ 130/80 ise ilaç; ≥ 140/90’da hemen ilaç.':'Risk < %10: KB ≥ 140/90 mmHg ise ilaç; 120–139/70–89’da yaşam tarzı (ek yüksek risk durumu yoksa).');
+    var L=r>=20?['çok yüksek','LDL-K < 55 mg/dL ve ≥ %50 azalma']:r>=10?['yüksek','LDL-K < 70 mg/dL ve ≥ %50 azalma']:r>=2?['orta','LDL-K < 100 mg/dL']:['düşük','LDL-K < 116 mg/dL'];
+    li('Lipid (ESC/EAS 2025)','Risk sınıfı '+L[0]+'; hedef '+L[1]+'. Ayrıntı için lipid tedavisi aracı.');
+  }
+  seg('sex',calc);seg('smk',calc);
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
