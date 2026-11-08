@@ -267,6 +267,7 @@ table.t.dz td:first-child{width:34%}
   function calc(){
     var tab=segVal('tab');$('pa').hidden=tab!=='a';$('pb').hidden=tab!=='b';
     var wt=v('wt'),age=v('age'),hr=v('hr'),t=v('tc'),na=v('na'),glu=v('glu');
+    if(hr!==null&&(hr<20||hr>300))hr=null;
 
     // ---------- A) BWPS ----------
     var s1=bwTemp(t),s4=bwHR(hr),s2=rad('cns'),s3=rad('gi'),s5=rad('chf'),s6=+segVal('af'),s7=+segVal('pre');

@@ -154,19 +154,19 @@ input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline
       {id:'glu',a:[10,3000],ad:'Glukoz',k:'glucose şeker kan şekeri',u:[['mg/dL',1,0,'glukoz',110],['mmol/L',0.05551,1]],f:'mg/dL × 0,0555 = mmol/L (mmol/L × 18 = mg/dL)'},
       {id:'a1c',a:[3,20],ad:'HbA1c',k:'a1c hba1c glikozile hemoglobin ifcc ngsp dcct',u:[['% (NGSP/DCCT)',null,1],['mmol/mol (IFCC)',null,0]],f:'IFCC = (NGSP − 2,152) ÷ 0,09148 · NGSP = 0,09148 × IFCC + 2,152',a1c:true},
       {id:'tk',a:[50,1000],ad:'Total kolesterol',k:'kolesterol cholesterol tk lipid',u:[['mg/dL',1,0],['mmol/L',0.02586,2]],f:'mg/dL × 0,02586 = mmol/L'},
-      {id:'ldl',a:[10,1000],ad:'LDL kolesterol',k:'ldl kolesterol cholesterol lipid',u:[['mg/dL',1,0],['mmol/L',0.02586,2]],f:'mg/dL × 0,02586 = mmol/L'},
+      {id:'ldl',a:[1,1000],ad:'LDL kolesterol',k:'ldl kolesterol cholesterol lipid',u:[['mg/dL',1,0],['mmol/L',0.02586,2]],f:'mg/dL × 0,02586 = mmol/L'},
       {id:'hdl',a:[5,200],ad:'HDL kolesterol',k:'hdl kolesterol cholesterol lipid',u:[['mg/dL',1,0],['mmol/L',0.02586,2]],f:'mg/dL × 0,02586 = mmol/L'},
       {id:'tg',a:[10,10000],ad:'Trigliserid',k:'tg trigliserit triglyceride lipid',u:[['mg/dL',1,0],['mmol/L',0.01129,2]],f:'mg/dL × 0,01129 = mmol/L (trioleine göre)'}
     ]},
     {id:'kc',ad:'Karaciğer, protein ve metabolik',r:[
-      {id:'bil',a:[0.1,60],ad:'Bilirubin (total / direkt)',k:'bilirubin total direkt indirekt',u:[['mg/dL',1,2,'bil',1],['µmol/L',17.104,0]],f:'mg/dL × 17,1 = µmol/L'},
+      {id:'bil',a:[0,60],ad:'Bilirubin (total / direkt)',k:'bilirubin total direkt indirekt',u:[['mg/dL',1,2,'bil',1],['µmol/L',17.104,0]],f:'mg/dL × 17,1 = µmol/L'},
       {id:'alb',a:[0.5,7],ad:'Albümin',k:'albumin protein',u:[['g/dL',1,1,'alb',3.8],['g/L',10,0]],f:'g/dL × 10 = g/L'},
       {id:'nh3',a:[1,5000],ad:'Amonyak',k:'amonyak ammonia nh3',u:[['µg/dL',1,0],['µmol/L',0.5872,0]],f:'µg/dL × 0,5872 = µmol/L (NH₃)',nh3:true,nt:'Laboratuvarınız µg/dL değerini NH₃ olarak mı, azot (N) olarak mı bildiriyor? Varsayılan NH₃ (0,5872); azot temelinde çarpan 0,714. Çoğu laboratuvar doğrudan µmol/L bildirir.'},
       {id:'lak',a:[0.5,300],ad:'Laktat',k:'laktat lactate lactic',u:[['mg/dL',1,1],['mmol/L',0.111,1]],f:'mg/dL × 0,111 = mmol/L (mmol/L × 9 = mg/dL)'}
     ]},
     {id:'hem',ad:'Hematoloji ve vitamin',r:[
       {id:'hb',a:[2,25],ad:'Hemoglobin',k:'hb hgb hemoglobin',u:[['g/dL',1,1,'hb',12.5],['g/L',10,0],['mmol/L',0.6206,1]],f:'g/dL × 10 = g/L · g/dL × 0,6206 = mmol/L (Hb(Fe) monomer)',nt:'mmol/L esas olarak Hollanda’da kullanılır.'},
-      {id:'fer',a:[1,50000],ad:'Ferritin',k:'ferritin demir',u:[['ng/mL',1,0],['µg/L',1,0],['pmol/L',2.247,0]],f:'ng/mL = µg/L · ng/mL × 2,247 = pmol/L'},
+      {id:'fer',a:[1,500000],ad:'Ferritin',k:'ferritin demir',u:[['ng/mL',1,0],['µg/L',1,0],['pmol/L',2.247,0]],f:'ng/mL = µg/L · ng/mL × 2,247 = pmol/L'},
       {id:'b12',a:[10,20000],ad:'Vitamin B12',k:'b12 kobalamin cobalamin',u:[['pg/mL',1,0],['pmol/L',0.7378,0]],f:'pg/mL × 0,7378 = pmol/L'},
       {id:'fol',a:[0.1,100],ad:'Folat',k:'folat folik asit folate',u:[['ng/mL',1,1],['nmol/L',2.266,1]],f:'ng/mL × 2,266 = nmol/L'}
     ]},

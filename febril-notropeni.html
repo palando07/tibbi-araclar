@@ -335,6 +335,8 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
 
     // 2) MASCC: yaş ve sistolik KB zorunlu
     var mk=function(id,b){$(id).textContent=b===null?'?':b?'✓':'✗'};
+    if(age!==null&&(age<0||age>120))age=null;
+    if(sbp!==null&&(sbp<40||sbp>300))sbp=null;
     var sOk=sbp===null?null:sbp>90,aOk=age===null?null:age<60;
     mk('m-sbp',sOk);mk('m-age',aOk);
     var ms=(ck('b5')?5:ck('b3')?3:0)+(sOk?5:0)+(ck('m-copd')?4:0)+(ck('m-tum')?4:0)+(ck('m-dhy')?3:0)+(ck('m-out')?3:0)+(aOk?2:0);
