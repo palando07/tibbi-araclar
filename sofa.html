@@ -58,6 +58,7 @@ details p{margin:8px 0 0}
 .sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
 .seg button{min-width:0}
 .card h3{margin:4px 0 0;font-size:1rem}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}.item:last-child{border-bottom:0}.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}.item .txt{flex:1;min-width:0}.item .txt small{display:block;color:var(--muted);font-size:.8rem}
 </style>
 </head>
 <body data-ornek-secim="vent vp">
@@ -87,7 +88,10 @@ details p{margin:8px 0 0}
       <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="2.1"></div>
       <div class="field"><label for="uo">İdrar çıkışı <span>mL/gün</span></label><input id="uo" data-aralik="0-20000 mL/gün" type="number" inputmode="decimal" step="any" value="800"></div>
     </div>
-    <p class="note">Böbrek puanı kreatinin ve idrar çıkışından yüksek olanıdır. İdrar çıkışı bilinmiyorsa böbrek puanı kesinleşmez.</p>
+    <div class="items" style="margin-top:12px">
+      <label class="item"><input type="checkbox" id="uoy"><span class="txt">İdrar çıkışı ölçülmedi<small>Böbrek puanı yalnız kreatininden hesaplanır; oligüri gözden kaçabilir</small></span></label>
+    </div>
+    <p class="note">Böbrek puanı kreatinin ve idrar çıkışından yüksek olanıdır. İdrar çıkışı bilinmiyorsa ve yukarıdaki kutu işaretli değilse böbrek puanı kesinleşmez.</p>
   </section>
 
   <section class="card">
@@ -113,7 +117,7 @@ details p{margin:8px 0 0}
     <div class="grid">
       <div class="field"><label for="gks">GKS <span>3–15</span></label><input id="gks" data-aralik="3-15" type="number" inputmode="numeric" step="1" value="13"></div>
     </div>
-    <p class="note">GKS’yi <a href="glasgow-koma.html">Glasgow Koma Skalası aracında</a> hesaplayabilirsiniz.</p>
+    <p class="note">GKS’yi <a href="glasgow-koma.html">Glasgow Koma Skalası aracında</a> hesaplayabilirsiniz. Sedasyon altındaki hastada sedasyon öncesi GKS’yi kullanın.</p>
   </section>
 
   <section class="card">
@@ -184,8 +188,9 @@ details p{margin:8px 0 0}
     var c=v('cr'),u=v('uo'),m=[];
     var cs=c===null?null:c>=5?4:c>=3.5?3:c>=2?2:c>=1.2?1:0;
     var us=u===null?null:u<200?4:u<500?3:0;
-    if(c===null)m.push('kreatinin');if(u===null)m.push('idrar çıkışı');
-    var lo=Math.max(cs||0,us||0), hi=(cs===null||us===null)?4:lo;
+    var uy=u===null&&$('uoy').checked;
+    if(c===null)m.push('kreatinin');if(u===null&&!uy)m.push('idrar çıkışı');
+    var lo=Math.max(cs||0,us||0), hi=(cs===null||(us===null&&!uy))?4:lo;
     return lo===hi?{r:[lo,lo]}:{r:[lo,hi],m:m.join(', ')};
   }
   function kardiyo(){

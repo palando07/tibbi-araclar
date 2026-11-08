@@ -201,17 +201,17 @@ ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
 
     // Steroid kararı
     $('rx').innerHTML='';
-    var ci=['ci-enf','ci-hbv','ci-gis','ci-bob','ci-dm'].filter(function(id){return $(id).checked});
+    var ci=['ci-enf','ci-hbv','ci-gis','ci-bob','ci-dm'].filter(function(id){return $(id).checked});if(dia&&ci.indexOf('ci-bob')<0)ci.push('dia');
     if(sev===null){pill('rxp','Eksik veri','var(--warn)');li(eksik(mdf.concat(mm).filter(function(x,i,a){return a.indexOf(x)===i})),'Ciddiyet hesaplanmadan steroid kararı verilemez.')}
     else if(sev===0){pill('rxp','Steroid önerilmez','var(--ok)');
       li('Ciddi olmayan alkolik hepatit','Steroidin faydası gösterilmemiştir. Destek tedavisi: alkolün bırakılması, yoksunluk tedavisi, beslenme desteği, enfeksiyon izlemi. Kötüleşmede skorları yineleyin.')}
     else if(ci.length){pill('rxp','Steroid kontrendike','var(--high)');
-      li('Kontrendikasyon var','Önce kontrendikasyonu tedavi edin (enfeksiyon, kanama, HBV); düzelirse steroid yeniden değerlendirilir. Steroid verilemeyen ciddi hastada erken karaciğer nakli açısından nakil merkezine danışın (ACG 2024).')}
+      li(ci.indexOf('dia')>=0&&ci.length===1?'Diyaliz: ciddi böbrek yetmezliği kontrendikasyondur':'Kontrendikasyon var','Önce kontrendikasyonu tedavi edin (enfeksiyon, kanama, HBV); düzelirse steroid yeniden değerlendirilir. Steroid verilemeyen ciddi hastada erken karaciğer nakli açısından nakil merkezine danışın (ACG 2024).')}
     else if(mh!==null&&mh>50){pill('rxp','Fayda beklenmez','var(--high)');
       li('MELD > 50 (sınırlanmamış MELD '+mh+')','Bu düzeyde steroidin sağkalım faydası gösterilmemiştir (ACG 2024). Nakil merkezine danışın.')}
     else{pill('rxp','Kontrendikasyon yoksa prednizolon','var(--accent)');
       li('Önce kontrendikasyonları dışlayın','İşaretsiz kutular "yok" demek değildir. Kontrol altına alınmamış enfeksiyon, tedavi edilmemiş HBV, aktif GİS kanaması, ciddi böbrek yetmezliği ve kontrolsüz diyabet yoksa başlayın. Enfeksiyon taraması: kan ve idrar kültürü, akciğer grafisi, asit varsa tanısal parasentez; HBsAg.'+(dia?' Diyaliz işaretli: ciddi böbrek yetmezliği steroid kontrendikasyonudur (ACG 2024); böbrek işlevi düzelmeden başlamayın.':''));
-      li('Prednizolon 40 mg/gün, ağızdan, 28 gün','Ağızdan alamıyorsa metilprednizolon 32 mg/gün IV. 28 gün sonunda birden kesilebilir ya da 3 haftada azaltılarak bırakılır (EASL 2018).'+(m===null?' MELD hesaplanmadı ('+eksikK(mm)+'); MELD > 50 ise steroidden fayda beklenmez.':mh>=40?' MELD 40–50 aralığında fayda sınırlıdır (ACG 2024).':''));
+      li('Prednizolon 40 mg/gün, ağızdan, 28 gün','Ağızdan alamıyorsa metilprednizolon 32 mg/gün IV. 28 gün sonunda kesilir; hızlı ya da yavaş azaltmanın birbirine üstünlüğü gösterilmemiştir (ACG 2024).'+(m===null?' MELD hesaplanmadı ('+eksikK(mm)+'); MELD > 50 ise steroidden fayda beklenmez.':mh>=40?' MELD 40–50 aralığında fayda sınırlıdır (ACG 2024).':''));
       li('7. günde Lille skoru','Aşağıdaki kartta 7. gün bilirubiniyle yanıtı değerlendirin; Lille ≥ 0,45 ise steroidi kesin.');
       li('Steroid süresince','Enfeksiyonu yakından izleyin (STOPAH: ciddi enfeksiyon %13 ve %7). Kan şekeri ve GİS kanaması izlemi; alkol bırakma desteği.')}
 

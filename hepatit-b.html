@@ -127,6 +127,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
           <option value="sit">Ustekinumab, sekukinumab (anti-IL)</option>
           <option value="aba">Abatasept</option>
           <option value="jak">JAK inhibitörü (tofasitinib, barisitinib)</option>
+          <option value="dbio">Diğer biyolojik (ör. vedolizumab, natalizumab)</option>
         </optgroup>
         <optgroup label="Diğer">
           <option value="daa">HCV tedavisi (doğrudan etkili antiviral)</option>
@@ -197,7 +198,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
   // AGA 2025 Tablo 6: [HBsAg+, HBsAg−/anti-HBc+]; H yüksek, M orta, L düşük
   // hsct: AASLD 2018, ASCO 2020, EASL 2025 (anti-HBc+'da da profilaksi); kemo: Türkiye 2023 (antrasiklin dışı sitotoksik: orta/orta)
   var R={cd20:['H','H'],hsct:['H','H'],cart:['H','M'],antra:['H','M'],kemo:['M','M'],tki:['H','M'],ici:['M','L'],tace:['H','M'],
-    ia:['L','L'],anti:['L','L'],tnf:['H','L'],il6:['H','M'],sit:['H','M'],aba:['M','M'],jak:['H','M'],daa:['H','L']};
+    ia:['L','L'],anti:['L','L'],tnf:['H','L'],il6:['H','M'],sit:['H','M'],aba:['M','M'],jak:['H','M'],daa:['H','L'],dbio:['X','X']};
   var RAD={H:'Yüksek risk (> %10)',M:'Orta risk (%1–10)',L:'Düşük risk (< %1)',X:'Sınıflanmamış'};
   var RRENK={H:KIR,M:SAR,L:YES,X:GRI};
 
@@ -292,7 +293,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
       if(grp===0||dnaP||risk==='H')karar='pro';
       else if(risk==='M')karar='pro-iz';
       else karar='iz';
-      var bas=(grp===0?'HBsAg pozitif':'HBsAg negatif, anti-HBc pozitif')+(T==='ster'&&ss==='o'?': 1–4 hafta steroid AGA 2025’te sınıflanmamış':'');
+      var bas=(grp===0?'HBsAg pozitif':'HBsAg negatif, anti-HBc pozitif')+(T==='ster'&&ss==='o'?': 1–4 hafta steroid AGA 2025’te sınıflanmamış':'')+(T==='dbio'?': bu ilaçlar için AGA 2025’te yeterli kanıt yok, risk sınıflanmamış':'')+(T==='tnf'&&grp===1?' (Türkiye 2023 bazı anti-TNF’leri orta risk sayar)':'');
       if(karar==='iz'&&dna!=='n'){pill('rp',RAD[risk],RRENK[risk]);e2.push('başlangıç HBV DNA');
         $('ra').textContent=bas+'. HBV DNA saptanmazsa profilaksi yerine izlem önerilir.'}
       else{pill('rp',RAD[risk]+(karar==='pro'?': profilaksi':karar==='pro-iz'?': profilaksi önerilir':': izlem'),karar==='iz'?RRENK[risk]:(risk==='L'||risk==='X'?SAR:RRENK[risk]));
