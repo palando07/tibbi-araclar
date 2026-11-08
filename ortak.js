@@ -41,7 +41,9 @@
     'input.olasi-g{border-color:var(--high,#d24b32)!important;box-shadow:0 0 0 2px var(--high,#d24b32)}' +
     '.olasi-m{margin:3px 0 0;padding:4px 8px;border:1px solid var(--high,#d24b32);border-radius:8px;background:var(--surface);font-size:.78rem;line-height:1.3;font-weight:600;color:color-mix(in srgb,var(--high,#d24b32) 70%,var(--fg))}' +
     '.hesap-not{display:block;margin-top:3px;font-size:.75rem;line-height:1.3;color:var(--muted)}' +
-    '.olasi-s{margin:0 0 4px;padding:8px 12px;border-radius:10px;border-left:4px solid var(--high,#d24b32);background:color-mix(in srgb,var(--high,#d24b32) 12%,var(--surface));color:var(--fg);font-size:.88rem;font-weight:600;line-height:1.4}';
+    '.olasi-s{margin:0 0 4px;padding:8px 12px;border-radius:10px;border-left:4px solid var(--high,#d24b32);background:color-mix(in srgb,var(--high,#d24b32) 12%,var(--surface));color:var(--fg);font-size:.88rem;font-weight:600;line-height:1.4}' +
+    // Olası olmayan değer varken sonuç kartında yalnız başlık, uyarı ve giriş öğeleri kalır; sonuç gizlenir ("girilmedi" gibi)
+    '.olasi-k>:not(.olasi-t),.olasi-kd{display:none!important}';
   document.head.appendChild(css);
 
   function txt(el){ return el ? el.textContent.replace(/\s+/g, ' ').trim() : ''; }
@@ -573,7 +575,8 @@
     var a = ARALIK[el.getAttribute('data-hasta') || el.getAttribute('data-k')] || ARALIK[KUTU[el.id]];
     return a ? {a: a[0], b: a[1], birim: a[2], ad: a[3]} : null;
   }
-  function disinda(el){ var r = el.value !== '' ? aralikBul(el) : null, x = parseFloat(el.value); return r && isFinite(x) && (x < r.a || x > r.b || x < 0) ? r : null; }
+  // Eksi değer alt sınırın altında kaldığı için zaten olası değildir; data-aralik eksi bir alt sınır verirse (ör. "-30-30") eksi değer kabul edilir
+  function disinda(el){ var r = el.value !== '' ? aralikBul(el) : null, x = parseFloat(el.value); return r && isFinite(x) && (x < r.a || x > r.b) ? r : null; }
   // Bir bölümde (panel, menüdeki Hasta kartı) olası olmayan değer var mı? Varsa oradaki Kopyala çalışmaz.
   window.vizitOlasiVar = function(kok){ return Array.prototype.some.call(kok.querySelectorAll('input[type=number]'), function(el){ return !!disinda(el); }); };
   function sayiTr(x){ return String(x).replace('.', ','); }
@@ -621,14 +624,16 @@
   }
   var denBek = null, gecBek = null;
   function denetle(){
-    var hatalar = [], simdi = Date.now(), bekle = false;
+    var hatalar = [], simdi = Date.now(), bekle = false, gizle = false;
     document.querySelectorAll('input[type=number]').forEach(function(el){
       if (el.closest('header, .gb')) return;
       var r = el.offsetParent !== null ? disinda(el) : null, m = el._olasiM, panel = !!el.closest('.hpanel, #h-grid'), kalan;
       if (r) {
         if (!panel) hatalar.push(r.ad + ' ' + sayiTr(el.value));
         // Yazarken her tuşta çıkıp kaybolmasın: uyarı yazmaya ara verince (600 ms) ya da kutudan çıkınca görünür; düzelince hemen kalkar
-        if (document.activeElement === el && (kalan = 600 - (simdi - (el._yT || 0))) > 0) { bekle = bekle ? Math.min(bekle, kalan) : kalan; return; }
+        // Sonuç da aynı anda gizlenir: yazarken (600 ms) sonuç yanıp sönmez; kutu uyarısı zaten görünüyorsa gizli kalır
+        if (document.activeElement === el && (kalan = 600 - (simdi - (el._yT || 0))) > 0) { if (!panel && m && m.parentNode) gizle = true; bekle = bekle ? Math.min(bekle, kalan) : kalan; return; }
+        if (!panel) gizle = true;
         if (!m) { m = el._olasiM = document.createElement('p'); m.className = 'olasi-m'; m.id = 'olasi-' + Math.random().toString(36).slice(2, 8); }
         var y = 'Bu değer olası görünmüyor (beklenen ' + sayiTr(r.a) + '–' + sayiTr(r.b) + (r.birim ? ' ' + r.birim : '') + '). Kontrol edin.';
         if (m.textContent !== y) m.textContent = y;
@@ -641,13 +646,21 @@
     var kartlar = Array.prototype.slice.call(document.querySelectorAll('section.card[aria-live]')), eks = {};
     eksikler().forEach(function(el){ var c = kartBul(el, kartlar); if (!c) return; var i = kartlar.indexOf(c), a = grupAd(el); eks[i] = eks[i] || []; if (eks[i].indexOf(a) < 0) eks[i].push(a); });
     kartlar.forEach(function(card, i){
-      var g, e = eks[i], y = hatalar.length ? (hatalar.length > 1 ? 'Girilen bazı değerler olası değil (' : 'Girilen bir değer olası değil (') + hatalar.join(', ') + '). Bu sonucu kullanmayın.'
+      var g, e = eks[i], y = hatalar.length ? (hatalar.length > 1 ? 'Girilen bazı değerler olası değil (' : 'Girilen bir değer olası değil (') + hatalar.join(', ') + (gizle ? '). Sonuç gösterilmiyor; değeri düzeltin.' : '). Bu sonucu kullanmayın.')
         : (g = sonucGecersiz(card)) ? 'Hesaplanan sonuç geçersiz (' + g + '). Girilen değerleri kontrol edin; bu sonucu kullanmayın.'
         : e ? 'Seçilmemiş madde var: ' + e.slice(0, 3).join(', ') + (e.length > 3 ? ' ve ' + (e.length - 3) + ' madde daha' : '') + '. Sonuç eksik; seçimleri hastaya göre yapın.' : '';
       var s = card._olasiS;
       if (y) { if (!s) { s = card._olasiS = document.createElement('div'); s.className = 'olasi-s'; s.setAttribute('role', 'alert'); }
         if (s.textContent !== y) s.textContent = y; if (!s.parentNode) card.insertBefore(s, card.firstChild); }
       else if (s && s.parentNode) s.remove();
+      if (gizle) Array.prototype.forEach.call(card.children, function(c){
+        c.classList.toggle('olasi-t', c.matches('h2, .lbl, .olasi-s, .olasi-m') || !!c.querySelector('input, select, textarea, button:not(.copy)')); });
+      card.classList.toggle('olasi-k', gizle);
+    });
+    // Sonuç kartı (aria-live) olmayan ama sayfanın hesapladığı bölümler de gizlenir: giriş öğesi yok, içinde betiğin doldurduğu [id] öğesi var
+    // (kan gazında "Ayırıcı tanı", diyabette "İlaç sınıfları bu hasta için", parasetamol nomogramı gibi). Değer düzelince geri gelir.
+    document.querySelectorAll('section.card:not([aria-live])').forEach(function(c){
+      c.classList.toggle('olasi-kd', gizle && !c.closest('header, .hpanel') && !c.querySelector('input, select, textarea, button') && !!c.querySelector('[id]'));
     });
     if (geriYaz) geriYaz();
   }
@@ -801,7 +814,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v70', SURUM_TARIH = '5 Kasım 2026', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v71', SURUM_TARIH = '8 Kasım 2026', GB_ADRES = 'blgnonur97@gmail.com';
   window.vizitSurum = SURUM; window.vizitGbAdres = GB_ADRES;
   var sEl = document.getElementById('surum'); if (sEl) sEl.textContent = 'Sürüm ' + SURUM + ' · ' + SURUM_TARIH;
   var kap = document.querySelector('.wrap');

@@ -83,13 +83,14 @@ td:first-child{font-family:var(--font-num);font-weight:700;white-space:nowrap}
     <a class="back" href="./">← Vizit</a>
     <h1>Ayarlar ve hakkında</h1>
     <p>Dahiliye pratiği için hesaplayıcılar · 78 araç</p>
-    <p class="surum" id="surum">Sürüm v70 · 5 Kasım 2026</p>
+    <p class="surum" id="surum">Sürüm v71 · 8 Kasım 2026</p>
   </header>
 
   <section class="card degisiklik">
     <details>
       <summary>Değişiklikler</summary>
       <ul>
+        <li><b>v71 · 8 Kasım:</b> Güvenlik: olanaksız bir değer girilince (ör. K 0, SKB 20) sonuç ve öneriler gizleniyor, “Sonuç gösterilmiyor; değeri düzeltin” yazıyor; değer düzeltilince geri geliyor. Aralığı olmayan kutulara (birim çevirici, kan gazı, infüzyon, tiroid) olası değer sınırı eklendi.</li>
         <li><b>v70 · 5 Kasım:</b> Yeni araç: SCORE2 ve SCORE2-OP (ESC 10 yıllık KVH riski, Türkiye yüksek risk bölgesi). KBH takibi, hiperkalemi ve hipertansiyon: K &gt; 5,5’te ACEi/ARB kesilmiyor, “K’yi düşürüp sürdürün” deniyor; K ≥ 6,0’da geçici ara (KDIGO 2024, UKKA 2026).</li>
         <li><b>v69 · 5 Kasım:</b> Kullanım kolaylığı: eGFR, VKİ ve kreatinin klerensi kayıttaki değerlerden hesaplanıyor; PREVENT VKİ olmadan da risk veriyor; AKI’de artış süresi bilinmiyorsa tahmini evre; siroz sayfasında üre kutusu; fibrinojen birim seçimi; eksik değerde VTE, KOAH, üst GİS, transfüzyon, hiponatremi, siroz SBP profilaksisi ve diyabet (idrar ACR, VKİ) artık güvenli sonuç göstermiyor.</li>
         <li><b>v68 · 4 Kasım:</b> Güvenlik: boş bırakılan değerler artık 0 ya da normal sayılmıyor (PESI, BISAP/Ranson, Burch-Wartofsky, sepsis sıvı, steroid); örnek değerler silinene kadar işaretli kalıyor; işaretli skorlarda (CURB-65, qSOFA, Wells, HEART, GKS, 4AT) hasta yüklenince örnek işaretler siliniyor.</li>
