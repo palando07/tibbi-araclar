@@ -67,7 +67,7 @@
     cl:'cl', mg:'mg', p:'p', osm:'osm', mos:'osm', uosm:'uosm', uos2:'uosm', una:'una', uk:'uk', fio2:'fio2', a1c:'a1c'};
   // Ana sonucu eksi çıkamayacak araçlar (baz açığı, sodyum değişimi, açıklar gibi eksi olabilen sonuçlar bu listede yok)
   var EKSI_OLMAZ = ['kreatinin-klerensi', 'egfr', 'bobrek-ilac-dozu', 'febril-notropeni', 'vki', 'qtc', 'ortalama-arter-basinci', 'iv-demir', 'beslenme',
-    'idame-sivi', 'infuzyon-hizi', 'insulin-dozu', 'meld-na', 'fib-4', 'kontrast-nefropati', 'levotiroksin', 'prevent', 'score2', 'child-pugh', 'vte-profilaksisi',
+    'idame-sivi', 'infuzyon-hizi', 'insulin-dozu', 'meld-na', 'fib-4', 'kontrast-nefropati', 'levotiroksin', 'prevent', 'score2', 'sofa', 'child-pugh', 'vte-profilaksisi',
     'antikoagulan-kesme', 'steroid-esdegeri', 'opioid-donusumu', 'r-faktor'];
   // Hasta kaydına (ve başka araçlara) yalnız olası değerler gider
   function olasi(k, d){ var r = ARALIK[k], x = parseFloat(d); return !r || d === '' || d == null || (isFinite(x) && x >= r[0] && x <= r[1]); }
@@ -695,7 +695,7 @@
     'duke-kriterleri':'Duke kriterleri','ortalama-arter-basinci':'Ortalama arter basıncı','siroz-asit':'Siroz ve asit','child-pugh':'Child-Pugh','meld-na':'MELD-Na',
     'glasgow-blatchford':'Glasgow-Blatchford','pankreatit':'Pankreatit skorları','r-faktor':'R faktör','fib-4':'FIB-4','acil-tedavi':'Acil tedavi rehberi',
     'hipertansif-acil':'Hipertansif acil','infuzyon-hizi':'İnfüzyon hızı','ampirik-antibiyotik':'Ampirik antibiyotik','antibiyotik-suresi':'Antibiyotik süresi','curb-65':'CURB-65','news2':'NEWS2',
-    'qsofa':'qSOFA','glasgow-koma':'Glasgow Koma Skalası','anemi':'Anemi yaklaşımı','diyabet-tedavi':'Tip 2 diyabet tedavisi','insulin-dozu':'İnsülin dozu',
+    'qsofa':'qSOFA','sofa':'SOFA skoru','alkolik-hepatit':'Alkolik hepatit','hepatit-b':'Hepatit B','glasgow-koma':'Glasgow Koma Skalası','anemi':'Anemi yaklaşımı','diyabet-tedavi':'Tip 2 diyabet tedavisi','insulin-dozu':'İnsülin dozu',
     'steroid-esdegeri':'Steroid eşdeğeri','opioid-donusumu':'Opioid dönüşümü','iv-demir':'IV demir dozu','vki':'VKİ ve VYA','tiroid-testi':'Tiroid testi yorumu',
     'levotiroksin':'Levotiroksin dozu','stop-bang':'STOP-BANG','birim-cevirici':'Birim çevirici','idame-sivi':'İdame sıvı ve refeeding','pesi':'PESI ve sPESI','hit-4t':'4T skoru (HIT)','rcri':'RCRI (ameliyat öncesi)','ust-gis-kanama':'Üst GİS kanaması','sepsis-sivi':'Sepsiste sıvı ve vazopresör','koah-astim':'KOAH ve astım alevlenmesi','tiroid-krizi':'Tiroid krizi ve miksödem','transfuzyon':'Transfüzyon eşikleri','light-kriterleri':'Light kriterleri','delirium-4at':'4AT deliryum taraması','alkol-yoksunlugu':'Alkol yoksunluğu','hepatik-ensefalopati':'Hepatik ensefalopati','beslenme':'Beslenme hesabı','febril-notropeni':'Febril nötropeni','parasetamol-zehirlenmesi':'Parasetamol zehirlenmesi','kontrast-nefropati':'Kontrast ilişkili AKI','kalp-yetersizligi':'Kalp yetersizliği','lipid-tedavisi':'Lipid tedavisi','dka-hhs':'DKA ve HHS','hiperkalemi':'Hiperkalemi yaklaşımı','ilac-etkilesimi':'İlaç etkileşimi','trombositopeni':'Trombositopeni yaklaşımı','hipokalemi':'Hipokalemi yaklaşımı','normal-degerler':'Normal değerler'};
   var IL = {
@@ -734,11 +734,13 @@
     'ortalama-arter-basinci':['hipertansif-acil','news2','infuzyon-hizi','qsofa'],
     'siroz-asit':['child-pugh','meld-na','hepatik-ensefalopati','ust-gis-kanama'],
     'child-pugh':['meld-na','siroz-asit','fib-4','bobrek-ilac-dozu'],
-    'meld-na':['child-pugh','siroz-asit','fib-4'],
+    'meld-na':['child-pugh','siroz-asit','fib-4','alkolik-hepatit'],
+    'alkolik-hepatit':['meld-na','child-pugh','alkol-yoksunlugu','hepatik-ensefalopati'],
     'glasgow-blatchford':['ust-gis-kanama','anemi','transfuzyon','antikoagulan-kesme'],
     'pankreatit':['news2','elektrolit-replasmani','r-faktor','kan-gazi'],
     'r-faktor':['fib-4','child-pugh','pankreatit'],
-    'fib-4':['child-pugh','meld-na','r-faktor','siroz-asit'],
+    'fib-4':['hepatit-b','child-pugh','meld-na','siroz-asit'],
+    'hepatit-b':['fib-4','steroid-esdegeri','bobrek-ilac-dozu','febril-notropeni'],
     'acil-tedavi':['dka-hhs','elektrolit-replasmani','insulin-dozu','kan-gazi'],
     'hipertansif-acil':['hipertansiyon-tedavisi','ortalama-arter-basinci','infuzyon-hizi','acil-tedavi'],
     'infuzyon-hizi':['acil-tedavi','hipertansif-acil','elektrolit-replasmani','opioid-donusumu'],
@@ -746,12 +748,13 @@
     'antibiyotik-suresi':['ampirik-antibiyotik','curb-65','bobrek-ilac-dozu','febril-notropeni'],
     'curb-65':['ampirik-antibiyotik','news2','qsofa'],
     'news2':['qsofa','curb-65','ampirik-antibiyotik','glasgow-koma'],
-    'qsofa':['sepsis-sivi','news2','ampirik-antibiyotik','kan-gazi'],
+    'qsofa':['sofa','sepsis-sivi','news2','ampirik-antibiyotik'],
+    'sofa':['qsofa','sepsis-sivi','glasgow-koma','ortalama-arter-basinci'],
     'glasgow-koma':['news2','hipertansif-acil','acil-tedavi'],
     'anemi':['iv-demir','transfuzyon','glasgow-blatchford','egfr'],
     'diyabet-tedavi':['insulin-dozu','kbh-takibi','prevent','vki'],
     'insulin-dozu':['diyabet-tedavi','steroid-esdegeri','acil-tedavi','egfr'],
-    'steroid-esdegeri':['insulin-dozu','acil-tedavi'],
+    'steroid-esdegeri':['insulin-dozu','acil-tedavi','hepatit-b'],
     'opioid-donusumu':['infuzyon-hizi','bobrek-ilac-dozu'],
     'iv-demir':['anemi','kalp-yetersizligi','egfr'],
     'vki':['kreatinin-klerensi','stop-bang','prevent','diyabet-tedavi'],
@@ -764,13 +767,13 @@
     'hit-4t':['trombositopeni','antikoagulan-kesme','vte-profilaksisi','transfuzyon'],
     'rcri':['stop-bang','antikoagulan-kesme','egfr','heart-skoru'],
     'ust-gis-kanama':['glasgow-blatchford','transfuzyon','child-pugh','antikoagulan-kesme'],
-    'sepsis-sivi':['qsofa','ampirik-antibiyotik','infuzyon-hizi','news2'],
+    'sepsis-sivi':['sofa','qsofa','ampirik-antibiyotik','infuzyon-hizi'],
     'koah-astim':['kan-gazi','news2','ampirik-antibiyotik','curb-65'],
     'tiroid-krizi':['tiroid-testi','levotiroksin','steroid-esdegeri','acil-tedavi'],
     'transfuzyon':['anemi','iv-demir','ust-gis-kanama','varfarin-inr'],
     'light-kriterleri':['siroz-asit','ampirik-antibiyotik','pesi'],
     'delirium-4at':['alkol-yoksunlugu','elektrolit','hiponatremi-tani','glasgow-koma'],
-    'alkol-yoksunlugu':['delirium-4at','hepatik-ensefalopati','elektrolit-replasmani','idame-sivi'],
+    'alkol-yoksunlugu':['delirium-4at','hepatik-ensefalopati','alkolik-hepatit','elektrolit-replasmani'],
     'hepatik-ensefalopati':['siroz-asit','child-pugh','meld-na','ust-gis-kanama'],
     'beslenme':['idame-sivi','vki','insulin-dozu','siroz-asit'],
     'febril-notropeni':['ampirik-antibiyotik','bobrek-ilac-dozu','sepsis-sivi','news2'],
@@ -814,7 +817,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v71', SURUM_TARIH = '8 Kasım 2026', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v72', SURUM_TARIH = '8 Kasım 2026', GB_ADRES = 'blgnonur97@gmail.com';
   window.vizitSurum = SURUM; window.vizitGbAdres = GB_ADRES;
   var sEl = document.getElementById('surum'); if (sEl) sEl.textContent = 'Sürüm ' + SURUM + ' · ' + SURUM_TARIH;
   var kap = document.querySelector('.wrap');
@@ -1107,7 +1110,7 @@
   })();
 
   // Güven satırı: aracın dayandığı ana kılavuz ve son kontrol tarihi (başlığın altında)
-  var KL = {"score2":"ESC 2021 · SCORE2/SCORE2-OP 2021 · ESC 2024 · ESC/EAS 2025","kbh-takibi":"KDIGO 2024 · KDIGO 2022 · KFRE (Tangri 2016)","doak-dozu":"EHRA 2021 · ESC 2024 · KÜB/SmPC","hiperkalsemi":"ES 2023 · TEMD 2025 · SfE 2016","antibiyotik-suresi":"ATS 2025 · IDSA 2025 · IDSA/ESCMID 2026","hipertansiyon-tedavisi":"ESC 2024 · AHA/ACC 2025 · KDIGO 2021","hiperkalemi":"UKKA 2026 · KDIGO 2024 · ESC 2021/2023","lipid-tedavisi":"ESC/EAS 2019 · ESC 2025 · TEMD 2021","dka-hhs":"ADA/EASD/JBDS 2024 · JBDS 2023 · JBDS HHS 2022","kalp-yetersizligi":"ESC 2026 · HFA 2019 · STRONG-HF","ilac-etkilesimi":"CredibleMeds 2025 · AHA 2020 · FDA 2023","trombositopeni":"PLASMIC 2017 · ISTH 2001 · AABB/ICTMG 2025","hipokalemi":"Harrison's · CCJM 2024 · NHS York 2024","normal-degerler":"ABIM 2026 · AMA SI tablosu","acil-tedavi":"UKKA 2026 · TEMD 2026 · ADA 2026","af-skor":"ESC 2024 · Lip 2010 · Pisters 2010","akut-bobrek-hasari":"KDIGO 2012 · NICE NG148","alkol-yoksunlugu":"CIWA-Ar 1989 · ASAM 2020","ampirik-antibiyotik":"ATS/IDSA 2019 · IDSA · SSC 2026","anemi":"WHO 2024 · BSG 2021 · AGA 2020","antikoagulan-kesme":"EHRA 2021 · ACCP 2022 · PAUSE","beslenme":"NRS 2002 · ESPEN 2019/2023","birim-cevirici":"AMA SI tablosu · MSD Manual","bobrek-ilac-dozu":"KÜB/SmPC · Sanford · KDIGO 2022","child-pugh":"Pugh 1973","curb-65":"Lim 2003 · BTS 2009","delirium-4at":"4AT (Bellelli 2014) · NICE CG103","diyabet-tedavi":"ADA 2026 · TEMD 2026 · KDIGO 2022","duke-kriterleri":"Li 2000 · ESC 2023","egfr":"CKD-EPI 2021","elektrolit-replasmani":"Kraft 2005 · Brown 2006","elektrolit":"Payne 1973 · Figge 1998 · Hillier 1999","febril-notropeni":"IDSA 2010 · ASCO/IDSA 2018 · MASCC","fib-4":"Sterling 2006 · EASL-EASD-EASO 2024","glasgow-blatchford":"Blatchford 2000 · ESGE 2021","glasgow-koma":"Teasdale 1974","heart-skoru":"Six 2008 · Backus 2013","hepatik-ensefalopati":"AASLD/EASL 2014 · EASL 2022","hipertansif-acil":"ESC 2019 · ESC 2024 · AHA/ASA","hiponatremi-tani":"ESE/ESICM/ERBP 2014","hit-4t":"Lo 2006 (4T) · ASH 2018","idame-sivi":"NICE CG174 · NICE CG32","infuzyon-hizi":"SSC 2021/2026 · ESC · Raschke 1993","insulin-dozu":"ADA 2026 · Endocrine Society 2012","iv-demir":"Ganzoni 1970 · ESC 2023","kan-gazi":"Berend 2014 · Kraut 2007","koah-astim":"GOLD 2026 · GINA 2026","kontrast-nefropati":"Mehran 2004 · ESUR 2018","kreatinin-klerensi":"Cockcroft-Gault 1976","levotiroksin":"ATA 2014 · ATA 2017","light-kriterleri":"Light 1972 · BTS 2023","meld-na":"Kim 2008 · MELD 3.0 (Kim 2021)","news2":"RCP NEWS2 2017","opioid-donusumu":"CDC 2022 · ESMO 2018","ortalama-arter-basinci":"SSC 2026","osmolalite":"Standart formül","pankreatit":"BISAP 2008 · Atlanta 2013 · ACG 2024","parasetamol-zehirlenmesi":"MHRA 2012 · Dart 2023 · SNAP","pesi":"Aujesky 2005 · Jiménez 2010 · ESC 2019","prevent":"Khan 2024 (PREVENT) · ACC/AHA 2026 · AHA/ACC 2025","qsofa":"Seymour 2016","qtc":"Bazett · Fridericia · AHA 2009","r-faktor":"EASL DILI 2019","rcri":"Lee 1999 · CCS 2017 · ESC 2022","sepsis-sivi":"SSC 2021 · SSC 2026","siroz-asit":"AASLD 2021 · EASL 2018","sodyum":"Adrogué 2000 · ESE 2014","steroid-esdegeri":"Liu 2013 · ESE/ES 2024","stop-bang":"Chung 2016","tiroid-krizi":"TEMD 2025 · Burch-Wartofsky 1993","tiroid-testi":"TEMD 2025","transfuzyon":"AABB 2023 · AABB/ICTMG 2025 · BSH","ust-gis-kanama":"ESGE 2021 · ACG 2021 · Baveno VII","varfarin-inr":"ACCP 2012 · ASH 2018","vki":"DSÖ sınıflaması · Mosteller · DuBois","vte-profilaksisi":"Padua 2010 · IMPROVE 2011 · ASH 2018","wells-pe":"Wells 2000 · ESC 2019"}, SON_KONTROL = 'Kasım 2026';
+  var KL = {"sofa":"Vincent 1996 · Sepsis-3 (Singer 2016) · SOFA-2 2025","alkolik-hepatit":"Maddrey 1978 · Lille 2007 · ACG 2024 · EASL 2018","hepatit-b":"AASLD 2018 · AGA 2025 · EASL 2025 · TKAD/VHSD 2023","score2":"ESC 2021 · SCORE2/SCORE2-OP 2021 · ESC 2024 · ESC/EAS 2025","kbh-takibi":"KDIGO 2024 · KDIGO 2022 · KFRE (Tangri 2016)","doak-dozu":"EHRA 2021 · ESC 2024 · KÜB/SmPC","hiperkalsemi":"ES 2023 · TEMD 2025 · SfE 2016","antibiyotik-suresi":"ATS 2025 · IDSA 2025 · IDSA/ESCMID 2026","hipertansiyon-tedavisi":"ESC 2024 · AHA/ACC 2025 · KDIGO 2021","hiperkalemi":"UKKA 2026 · KDIGO 2024 · ESC 2021/2023","lipid-tedavisi":"ESC/EAS 2019 · ESC 2025 · TEMD 2021","dka-hhs":"ADA/EASD/JBDS 2024 · JBDS 2023 · JBDS HHS 2022","kalp-yetersizligi":"ESC 2026 · HFA 2019 · STRONG-HF","ilac-etkilesimi":"CredibleMeds 2025 · AHA 2020 · FDA 2023","trombositopeni":"PLASMIC 2017 · ISTH 2001 · AABB/ICTMG 2025","hipokalemi":"Harrison's · CCJM 2024 · NHS York 2024","normal-degerler":"ABIM 2026 · AMA SI tablosu","acil-tedavi":"UKKA 2026 · TEMD 2026 · ADA 2026","af-skor":"ESC 2024 · Lip 2010 · Pisters 2010","akut-bobrek-hasari":"KDIGO 2012 · NICE NG148","alkol-yoksunlugu":"CIWA-Ar 1989 · ASAM 2020","ampirik-antibiyotik":"ATS/IDSA 2019 · IDSA · SSC 2026","anemi":"WHO 2024 · BSG 2021 · AGA 2020","antikoagulan-kesme":"EHRA 2021 · ACCP 2022 · PAUSE","beslenme":"NRS 2002 · ESPEN 2019/2023","birim-cevirici":"AMA SI tablosu · MSD Manual","bobrek-ilac-dozu":"KÜB/SmPC · Sanford · KDIGO 2022","child-pugh":"Pugh 1973","curb-65":"Lim 2003 · BTS 2009","delirium-4at":"4AT (Bellelli 2014) · NICE CG103","diyabet-tedavi":"ADA 2026 · TEMD 2026 · KDIGO 2022","duke-kriterleri":"Li 2000 · ESC 2023","egfr":"CKD-EPI 2021","elektrolit-replasmani":"Kraft 2005 · Brown 2006","elektrolit":"Payne 1973 · Figge 1998 · Hillier 1999","febril-notropeni":"IDSA 2010 · ASCO/IDSA 2018 · MASCC","fib-4":"Sterling 2006 · EASL-EASD-EASO 2024","glasgow-blatchford":"Blatchford 2000 · ESGE 2021","glasgow-koma":"Teasdale 1974","heart-skoru":"Six 2008 · Backus 2013","hepatik-ensefalopati":"AASLD/EASL 2014 · EASL 2022","hipertansif-acil":"ESC 2019 · ESC 2024 · AHA/ASA","hiponatremi-tani":"ESE/ESICM/ERBP 2014","hit-4t":"Lo 2006 (4T) · ASH 2018","idame-sivi":"NICE CG174 · NICE CG32","infuzyon-hizi":"SSC 2021/2026 · ESC · Raschke 1993","insulin-dozu":"ADA 2026 · Endocrine Society 2012","iv-demir":"Ganzoni 1970 · ESC 2023","kan-gazi":"Berend 2014 · Kraut 2007","koah-astim":"GOLD 2026 · GINA 2026","kontrast-nefropati":"Mehran 2004 · ESUR 2018","kreatinin-klerensi":"Cockcroft-Gault 1976","levotiroksin":"ATA 2014 · ATA 2017","light-kriterleri":"Light 1972 · BTS 2023","meld-na":"Kim 2008 · MELD 3.0 (Kim 2021)","news2":"RCP NEWS2 2017","opioid-donusumu":"CDC 2022 · ESMO 2018","ortalama-arter-basinci":"SSC 2026","osmolalite":"Standart formül","pankreatit":"BISAP 2008 · Atlanta 2013 · ACG 2024","parasetamol-zehirlenmesi":"MHRA 2012 · Dart 2023 · SNAP","pesi":"Aujesky 2005 · Jiménez 2010 · ESC 2019","prevent":"Khan 2024 (PREVENT) · ACC/AHA 2026 · AHA/ACC 2025","qsofa":"Seymour 2016","qtc":"Bazett · Fridericia · AHA 2009","r-faktor":"EASL DILI 2019","rcri":"Lee 1999 · CCS 2017 · ESC 2022","sepsis-sivi":"SSC 2021 · SSC 2026","siroz-asit":"AASLD 2021 · EASL 2018","sodyum":"Adrogué 2000 · ESE 2014","steroid-esdegeri":"Liu 2013 · ESE/ES 2024","stop-bang":"Chung 2016","tiroid-krizi":"TEMD 2025 · Burch-Wartofsky 1993","tiroid-testi":"TEMD 2025","transfuzyon":"AABB 2023 · AABB/ICTMG 2025 · BSH","ust-gis-kanama":"ESGE 2021 · ACG 2021 · Baveno VII","varfarin-inr":"ACCP 2012 · ASH 2018","vki":"DSÖ sınıflaması · Mosteller · DuBois","vte-profilaksisi":"Padua 2010 · IMPROVE 2011 · ASH 2018","wells-pe":"Wells 2000 · ESC 2019"}, SON_KONTROL = 'Kasım 2026';
   if (KL[bu]) { var bh = document.querySelector('header'), bp = bh && bh.querySelector('p');
     if (bp) { var dy = document.createElement('p'); dy.className = 'dayanak'; dy.textContent = 'Dayanak: ' + KL[bu] + ' · son kontrol ' + SON_KONTROL;
       dy.style.cssText = 'margin:6px 0 0;font-size:.78rem;color:var(--muted)'; bp.parentNode.insertBefore(dy, bp.nextSibling); } }

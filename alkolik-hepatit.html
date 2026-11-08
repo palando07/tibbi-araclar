@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Alkolik Hepatit</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.f{margin:0;font:500 .78rem var(--font-num);color:var(--muted);background:var(--accent-soft);padding:6px 8px;border-radius:6px;word-break:break-word}
+.seg.wrapseg{flex-wrap:wrap}
+.seg button{min-width:0}
+ul.chk{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+table.t{width:100%;border-collapse:collapse;font-size:.92rem}
+table.t th,table.t td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Alkolik Hepatit</h1>
+    <p>Maddrey ve MELD ile ciddiyet, prednizolon kararı ve 7. gün Lille skoru ile steroid yanıtı</p>
+  </header>
+
+  <section class="card">
+    <h2>Başlangıç (0. gün)</h2>
+    <div class="grid">
+      <div class="field"><label for="pt">Protrombin zamanı <span>hasta, sn</span></label><input data-aralik="8-150 sn" id="pt" type="number" inputmode="decimal" step="any" value="22"></div>
+      <div class="field"><label for="ptc">Protrombin zamanı <span>kontrol, sn</span></label><input data-aralik="8-20 sn" id="ptc" data-sabit type="number" inputmode="decimal" step="any" value="12"></div>
+      <div class="field"><label for="bil">Total bilirubin <span>mg/dL</span></label><input id="bil" data-hasta="bil" type="number" inputmode="decimal" step="any" value="14"></div>
+      <div class="field"><label for="inr">INR</label><input id="inr" data-hasta="inr" type="number" inputmode="decimal" step="any" value="2.0"></div>
+      <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="0.9"></div>
+      <div class="field"><label for="na">Sodyum <span>mEq/L</span></label><input id="na" data-hasta="na" type="number" inputmode="decimal" step="any" value="132"></div>
+      <div class="field"><label for="alb">Albümin <span>g/dL</span></label><input id="alb" data-hasta="alb" type="number" inputmode="decimal" step="any" value="2.8"></div>
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="decimal" step="1" value="48"></div>
+    </div>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="dia"><span class="txt">Son 1 haftada en az 2 kez diyaliz veya 24 saat CVVHD<small>MELD'de kreatinin 4,0 alınır; Lille'de böbrek yetmezliği var sayılır</small></span></label>
+    </div>
+    <p class="note">Kontrol protrombin zamanı laboratuvarınızın değeridir. Yaş ve albümin yalnız Lille skoru için gerekir.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Ciddiyet</h2>
+    <span class="lbl">Maddrey diskriminan fonksiyonu</span>
+    <div class="res"><span class="num" id="df">–</span><span class="pill" id="dfp"></span></div>
+    <span class="lbl">MELD</span>
+    <div class="res"><span class="num" id="meld">–</span><span class="of">/ 40</span><span class="pill" id="meldp"></span></div>
+    <div class="sub" id="smh" hidden><span>Sınırlanmamış MELD <small>(40 tavanı yok)</small></span><b id="mh">–</b></div>
+    <div class="sub"><span>MELD-Na</span><b id="meldna">–</b></div>
+    <p class="advice" id="sev"></p>
+    <p class="f">Maddrey = 4,6 × (PT hasta − PT kontrol, sn) + bilirubin (mg/dL) · ciddi: ≥ 32</p>
+    <p class="f">MELD = 10 × (0,957 ln Cr + 0,378 ln bilirubin + 1,120 ln INR + 0,643) · ciddi: &gt; 20</p>
+    <p class="note">MELD ve MELD-Na <a href="meld-na.html">MELD-Na aracıyla</a> aynı hesaplanır: kreatinin, bilirubin ve INR en az 1,0; kreatinin en fazla 4,0; tam sayıya yuvarlanır (UNOS tanımı). Alkolik hepatit çalışmalarında MELD 40 ile sınırlanmaz; MELD &gt; 50 kararı sınırlanmamış değerle verilir. ACG 2024 ciddiyet için MELD'i tercih eder (MELD &gt; 20 ≈ %20 90 günlük mortalite).</p>
+  </section>
+
+  <section class="card">
+    <h2>Steroid kontrendikasyonları</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="ci-enf"><span class="txt">Kontrol altına alınmamış aktif enfeksiyon<small>sepsis, SBP, pnömoni; uygun tedavi edilen enfeksiyon engel değildir (EASL)</small></span></label>
+      <label class="item"><input type="checkbox" id="ci-hbv"><span class="txt">Tedavi edilmemiş HBV enfeksiyonu</span></label>
+      <label class="item"><input type="checkbox" id="ci-gis"><span class="txt">Aktif gastrointestinal kanama</span></label>
+      <label class="item"><input type="checkbox" id="ci-bob"><span class="txt">Ciddi böbrek yetmezliği<small>AKI / HRS-AKI</small></span></label>
+      <label class="item"><input type="checkbox" id="ci-dm"><span class="txt">Kontrolsüz diyabet</span></label>
+    </div>
+    <p class="note">Var olanı işaretleyin. İşaretsiz kutu "yok" diye doğrulanmış sayılmaz; öneri bu yüzden "kontrendikasyon yoksa" koşuluyla verilir. Başlamadan önce enfeksiyon taraması yapın: kan ve idrar kültürü, akciğer grafisi, asit varsa tanısal parasentez.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Steroid kararı</h2>
+    <div class="res"><span class="pill" id="rxp"></span></div>
+    <ol class="rec" id="rx"></ol>
+  </section>
+
+  <section class="card">
+    <h2>7. gün</h2>
+    <div class="grid">
+      <div class="field"><label for="bil7">7. gün bilirubin <span>mg/dL</span></label><input data-aralik="0.1-60 mg/dL" id="bil7" type="number" inputmode="decimal" step="any" value="9"></div>
+    </div>
+    <p class="note">Yaş, 0. gün albümin, bilirubin, kreatinin ve protrombin zamanı (hasta, sn) yukarıdan alınır. Kreatinin &gt; 1,3 mg/dL ise böbrek yetmezliği var sayılır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Lille skoru ve yanıt</h2>
+    <div class="res"><span class="num" id="lille">–</span><span class="pill" id="lillep"></span></div>
+    <div class="sub"><span>Bilirubin değişimi (0. → 7. gün)</span><b id="dbil">–</b></div>
+    <div class="sub"><span>Böbrek yetmezliği (Kr &gt; 1,3 mg/dL)</span><b id="ri">–</b></div>
+    <p class="advice" id="lilla"></p>
+    <p class="f">R = 3,19 − 0,101 × yaş + 0,147 × albümin (g/L) + 0,0165 × (bilirubin 0. gün − 7. gün, µmol/L) − 0,206 × böbrek yetmezliği (0/1) − 0,0065 × bilirubin 0. gün (µmol/L) − 0,0096 × PT (sn) · Lille = e<sup>−R</sup> / (1 + e<sup>−R</sup>)</p>
+    <p class="note">Bilirubin mg/dL × 17,1 = µmol/L; albümin g/dL × 10 = g/L. Lille ≥ 0,45 yanıtsızlıktır (6 ay sağkalım yaklaşık %25, &lt; 0,45'te %85; Louvet 2007). ≥ 0,56 "tam yanıtsız" grupta steroidin faydası yoktur (Mathurin 2011). 4. gün bilirubiniyle hesaplanan Lille de aynı eşikle kullanılabilir (ACG 2024).</p>
+  </section>
+
+  <p class="note">Kaynaklar: Maddrey WC ve ark. Corticosteroid therapy of alcoholic hepatitis. Gastroenterology 1978;75:193–9 (diskriminant fonksiyon, prednizolon 40 mg/gün); Carithers RL ve ark. Ann Intern Med 1989;110:685–90 (DF 4,6 × PT farkı + bilirubin, eşik 32; metilprednizolon 32 mg/gün 28 gün); Louvet A ve ark. The Lille model. Hepatology 2007;45:1348–54 (formül, 0,45 eşiği); Mathurin P ve ark. Gut 2011;60:255–60 (0,56 tam yanıtsızlık); Thursz MR ve ark. STOPAH, N Engl J Med 2015;372:1619–28 (prednizolon 40 mg/gün 28 gün; 28 günlük mortalite %14 ve %17, OR 0,72, p = 0,06; 90 gün ve 1 yılda fark yok; ciddi enfeksiyon %13 ve %7); Jophlin LL ve ark. ACG Clinical Guideline: Alcohol-Associated Liver Disease, Am J Gastroenterol 2024;119:30–54 (MELD &gt; 20 ciddi; prednizolon 40 mg/gün 4 hafta, metilprednizolon 32 mg/gün IV; kontrendikasyonlar; fayda MELD 21–39'da, 40–50'de sınırlı, &gt; 50'de yok; 4. gün Lille); EASL Clinical Practice Guidelines: Management of alcohol-related liver disease, J Hepatol 2018;69:154–81 (DF ≥ 32, MELD &gt; 20, prednizolon 40 mg/gün 28 gün, Lille ≥ 0,45 yanıtsızlık, kesme kuralı, 3 haftada azaltma ya da birden kesme); Crabb DW ve ark. AASLD 2019 Practice Guidance, Hepatology 2020;71:306–33; Kim WR ve ark. N Engl J Med 2008 (MELD-Na). Türkiye'ye özgü (TKAD, TGD) alkolik hepatit kılavuzu bulunamadı. Bu araç klinik karar desteği içindir; tedavi kararı hastanın tüm klinik durumuyla birlikte verilmelidir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function li(b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$('rx').appendChild(l)}
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{minimumFractionDigits:d,maximumFractionDigits:d})};
+  // Gösterim yuvarlaması eşiğin öbür yanına düşerse ondalık artırılır (karşılaştırma ham değerle)
+  function fmT(x,d,thr){var s,i;for(i=d;i<=4;i++){s=fm(x,i);if((Math.round(x*Math.pow(10,i))/Math.pow(10,i)>=thr)===(x>=thr))return s}return s}
+  var eksik=function(a){return 'Eksik veri: '+a.join(', ')+'.'};
+  var eksikK=function(a){return 'eksik veri: '+a.join(', ')};
+
+  function calc(){
+    var pt=v('pt'),ptc=v('ptc'),bil=v('bil'),inr=v('inr'),cr=v('cr'),na=v('na'),alb=v('alb'),age=v('age'),bil7=v('bil7'),dia=$('dia').checked;
+
+    // Maddrey
+    var df=null,mdf=[];
+    if(pt===null)mdf.push('PT (hasta)');if(ptc===null)mdf.push('PT (kontrol)');if(bil===null)mdf.push('bilirubin');
+    if(!mdf.length){df=4.6*(pt-ptc)+bil;$('df').textContent=fmT(df,1,32);
+      if(df>=32)pill('dfp','≥ 32: ciddi','var(--high)');else pill('dfp','< 32','var(--ok)')}
+    else{$('df').textContent='–';pill('dfp','','')}
+
+    // MELD (meld-na.html ile aynı)
+    var m=null,mh=null,mm=[];
+    if(cr===null&&!dia)mm.push('kreatinin');if(bil===null)mm.push('bilirubin');if(inr===null)mm.push('INR');
+    if(!mm.length){var c=dia?4:Math.min(Math.max(cr,1),4),b=Math.max(bil,1),r=Math.max(inr,1);
+      m=Math.round(10*(0.957*Math.log(c)+0.378*Math.log(b)+1.12*Math.log(r)+0.643));
+      var mn=null;
+      if(na!==null){var n=Math.min(Math.max(na,125),137);mn=m>11?m+1.32*(137-n)-0.033*m*(137-n):m;mn=Math.min(Math.round(mn),40)}
+      mh=m;m=Math.min(m,40);
+      $('meld').textContent=m;$('smh').hidden=mh<=40;$('mh').textContent=mh;$('meldna').textContent=mn===null?eksik(['sodyum']):mn;
+      if(m>20)pill('meldp','> 20: ciddi','var(--high)');else pill('meldp','≤ 20','var(--ok)')}
+    else{$('meld').textContent='–';pill('meldp','','');$('meldna').textContent='–';$('smh').hidden=true}
+
+    // Ciddiyet: biri ciddiyse ciddi; ciddi değil demek için ikisi de hesaplanmalı
+    var sev;
+    if((df!==null&&df>=32)||(m!==null&&m>20)){sev=1;
+      $('sev').textContent='Ciddi alkolik hepatit'+(df!==null&&df>=32&&m!==null&&m>20?' (Maddrey ve MELD).':df!==null&&df>=32?' (Maddrey'+(m===null?'; MELD için '+eksikK(mm):'; MELD ≤ 20')+').':' (MELD'+(df===null?'; Maddrey için '+eksikK(mdf):'; Maddrey < 32')+').')}
+    else if(df!==null&&m!==null){sev=0;$('sev').textContent='Ciddi değil (Maddrey < 32 ve MELD ≤ 20).'}
+    else{sev=null;$('sev').textContent=eksik(mdf.concat(mm).filter(function(x,i,a){return a.indexOf(x)===i}))}
+    if(df!==null&&pt<ptc)$('sev').textContent+=' Dikkat: hasta PT kontrolden kısa; iki kutunun yer değiştirmediğini kontrol edin.';
+
+    // Steroid kararı
+    $('rx').innerHTML='';
+    var ci=['ci-enf','ci-hbv','ci-gis','ci-bob','ci-dm'].filter(function(id){return $(id).checked});
+    if(sev===null){pill('rxp','Eksik veri','var(--warn)');li(eksik(mdf.concat(mm).filter(function(x,i,a){return a.indexOf(x)===i})),'Ciddiyet hesaplanmadan steroid kararı verilemez.')}
+    else if(sev===0){pill('rxp','Steroid önerilmez','var(--ok)');
+      li('Ciddi olmayan alkolik hepatit','Steroidin faydası gösterilmemiştir. Destek tedavisi: alkolün bırakılması, yoksunluk tedavisi, beslenme desteği, enfeksiyon izlemi. Kötüleşmede skorları yineleyin.')}
+    else if(ci.length){pill('rxp','Steroid kontrendike','var(--high)');
+      li('Kontrendikasyon var','Önce kontrendikasyonu tedavi edin (enfeksiyon, kanama, HBV); düzelirse steroid yeniden değerlendirilir. Steroid verilemeyen ciddi hastada erken karaciğer nakli açısından nakil merkezine danışın (ACG 2024).')}
+    else if(mh!==null&&mh>50){pill('rxp','Fayda beklenmez','var(--high)');
+      li('MELD > 50 (sınırlanmamış MELD '+mh+')','Bu düzeyde steroidin sağkalım faydası gösterilmemiştir (ACG 2024). Nakil merkezine danışın.')}
+    else{pill('rxp','Kontrendikasyon yoksa prednizolon','var(--accent)');
+      li('Önce kontrendikasyonları dışlayın','İşaretsiz kutular "yok" demek değildir. Kontrol altına alınmamış enfeksiyon, tedavi edilmemiş HBV, aktif GİS kanaması, ciddi böbrek yetmezliği ve kontrolsüz diyabet yoksa başlayın. Enfeksiyon taraması: kan ve idrar kültürü, akciğer grafisi, asit varsa tanısal parasentez; HBsAg.'+(dia?' Diyaliz işaretli: ciddi böbrek yetmezliği steroid kontrendikasyonudur (ACG 2024); böbrek işlevi düzelmeden başlamayın.':''));
+      li('Prednizolon 40 mg/gün, ağızdan, 28 gün','Ağızdan alamıyorsa metilprednizolon 32 mg/gün IV. 28 gün sonunda birden kesilebilir ya da 3 haftada azaltılarak bırakılır (EASL 2018).'+(m===null?' MELD hesaplanmadı ('+eksikK(mm)+'); MELD > 50 ise steroidden fayda beklenmez.':mh>=40?' MELD 40–50 aralığında fayda sınırlıdır (ACG 2024).':''));
+      li('7. günde Lille skoru','Aşağıdaki kartta 7. gün bilirubiniyle yanıtı değerlendirin; Lille ≥ 0,45 ise steroidi kesin.');
+      li('Steroid süresince','Enfeksiyonu yakından izleyin (STOPAH: ciddi enfeksiyon %13 ve %7). Kan şekeri ve GİS kanaması izlemi; alkol bırakma desteği.')}
+
+    // Lille
+    var lm=[];
+    if(age===null)lm.push('yaş');if(alb===null)lm.push('albümin');if(bil===null)lm.push('0. gün bilirubin');if(bil7===null)lm.push('7. gün bilirubin');
+    if(cr===null&&!dia)lm.push('kreatinin');if(pt===null)lm.push('PT (hasta)');
+    if(!lm.length){
+      var riv=dia||cr>1.3?1:0;
+      var R=3.19-0.101*age+0.147*(alb*10)+0.0165*((bil-bil7)*17.1)-0.206*riv-0.0065*(bil*17.1)-0.0096*pt;
+      var L=Math.exp(-R)/(1+Math.exp(-R));
+      $('lille').textContent=fmT(L,2,0.45);
+      var d=bil7-bil;$('dbil').textContent=(d>0?'+':d<0?'−':'')+fm(Math.abs(d),1)+' mg/dL'+(bil>0?' ('+(d>0?'+':d<0?'−':'')+'%'+fm(Math.abs(d)/bil*100,0)+')':'');
+      $('ri').textContent=riv?'var':'yok';
+      if(L>=0.45){pill('lillep','≥ 0,45: yanıtsız','var(--high)');
+        $('lilla').textContent='Steroide yanıt yok: prednizolonu kesin. Steroidi sürdürmek sağkalımı artırmaz, enfeksiyon riskini artırır. Uygun hastada erken karaciğer nakli için nakil merkezine danışın.'}
+      else{pill('lillep','< 0,45: yanıt var','var(--ok)');
+        $('lilla').textContent='Steroide yanıt var: prednizolonu 28 güne tamamlayın.'}
+    }else{$('lille').textContent='–';pill('lillep','','');$('dbil').textContent='–';$('ri').textContent='–';$('lilla').textContent=eksik(lm)}
+  }
+  document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

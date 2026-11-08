@@ -18,6 +18,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Child-Pugh | `child-pugh.html` |
 | Wells skoru (pulmoner emboli) | `wells-pe.html` |
 | MELD-Na | `meld-na.html` |
+| Alkolik hepatit (Maddrey, MELD, Lille, steroid kararı) | `alkolik-hepatit.html` |
 | Acil tedavi rehberi (hiperkalemi, DKA, hipoglisemi, hiponatremi, hiperkalsemi, adrenal kriz) | `acil-tedavi.html` |
 | Hipertansif acil (hedef tansiyon ve IV ilaç) | `hipertansif-acil.html` |
 | İnfüzyon hızı (doz ↔ mL/saat, heparin aPTT ayarı) | `infuzyon-hizi.html` |
@@ -35,6 +36,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Antibiyotik süresi (enfeksiyona göre toplam süre, kesme, IV→oral geçiş) | `antibiyotik-suresi.html` |
 | CURB-65 | `curb-65.html` |
 | qSOFA | `qsofa.html` |
+| SOFA skoru (Sepsis-3; SOFA-2 farkları) | `sofa.html` |
 | Glasgow-Blatchford | `glasgow-blatchford.html` |
 | Hiponatremi tanısı (neden ayrımı, SIADH, sıvı kısıtlama) | `hiponatremi-tani.html` |
 | Sodyum ve sıvı açığı (hipo/hipernatremi) | `sodyum.html` |
@@ -49,6 +51,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Ortalama arter basıncı | `ortalama-arter-basinci.html` |
 | R faktör | `r-faktor.html` |
 | FIB-4 | `fib-4.html` |
+| Hepatit B (seroloji, reaktivasyon profilaksisi) | `hepatit-b.html` |
 | Tiroid testi yorumu | `tiroid-testi.html` |
 | Levotiroksin dozu | `levotiroksin.html` |
 | STOP-BANG | `stop-bang.html` |

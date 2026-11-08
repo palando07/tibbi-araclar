@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SOFA Skoru</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartları, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.seg button{min-width:0}
+.card h3{margin:4px 0 0;font-size:1rem}
+</style>
+</head>
+<body data-ornek-secim="vent vp">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>SOFA Skoru</h1>
+    <p>Altı organ sisteminde işlev bozukluğu; Sepsis-3 için bazale göre artış</p>
+  </header>
+
+  <section class="card">
+    <h2>Solunum</h2>
+    <div class="grid">
+      <div class="field"><label for="po2">PaO₂ <span>mmHg</span></label><input id="po2" data-aralik="10-700 mmHg" type="number" inputmode="decimal" step="any" value="75"></div>
+      <div class="field"><label for="fio2">FiO₂ <span>%</span></label><input id="fio2" data-aralik="21-100 %" type="number" inputmode="decimal" step="any" value="50"></div>
+    </div>
+    <span class="lbl">Solunum desteği (invaziv ya da noninvaziv mekanik ventilasyon)</span>
+    <div class="seg"><button type="button" data-g="vent" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="vent" data-v="1" aria-pressed="true">Var</button></div>
+    <p class="note">PaO₂/FiO₂ &lt; 200 ancak solunum desteği varsa 3–4 puan alır; destek yoksa en çok 2 puandır. Yüksek akımlı nazal oksijenin destek sayılıp sayılmadığı klasik SOFA’da tanımlı değildir (SOFA-2’de sayılır).</p>
+  </section>
+
+  <section class="card">
+    <h2>Koagülasyon, karaciğer, böbrek</h2>
+    <div class="grid">
+      <div class="field"><label for="plt">Trombosit <span>×10³/µL</span></label><input id="plt" data-hasta="plt" type="number" inputmode="decimal" step="any" value="90"></div>
+      <div class="field"><label for="bil">Total bilirubin <span>mg/dL</span></label><input id="bil" data-hasta="bil" type="number" inputmode="decimal" step="any" value="1.5"></div>
+      <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="2.1"></div>
+      <div class="field"><label for="uo">İdrar çıkışı <span>mL/gün</span></label><input id="uo" data-aralik="0-20000 mL/gün" type="number" inputmode="decimal" step="any" value="800"></div>
+    </div>
+    <p class="note">Böbrek puanı kreatinin ve idrar çıkışından yüksek olanıdır. İdrar çıkışı bilinmiyorsa böbrek puanı kesinleşmez.</p>
+  </section>
+
+  <section class="card">
+    <h2>Kardiyovasküler</h2>
+    <div class="grid">
+      <div class="field"><label for="sbp">Sistolik <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="decimal" step="any" value="95"></div>
+      <div class="field"><label for="dbp">Diyastolik <span>mmHg</span></label><input id="dbp" data-hasta="dbp" type="number" inputmode="decimal" step="any" value="50"></div>
+      <div class="field"><label for="oab">ya da OAB <span>mmHg</span></label><input id="oab" data-aralik="20-200 mmHg" type="number" inputmode="decimal" step="any" value=""></div>
+    </div>
+    <span class="lbl">Vazopresör / inotrop (≥ 1 saat)</span>
+    <div class="seg"><button type="button" data-g="vp" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="vp" data-v="1" aria-pressed="true">Var</button></div>
+    <div class="grid" id="w-vp">
+      <div class="field"><label for="ne">Norepinefrin <span>mcg/kg/dk</span></label><input id="ne" data-aralik="0-5 mcg/kg/dk" type="number" inputmode="decimal" step="any" value="0.08"></div>
+      <div class="field"><label for="epi">Epinefrin <span>mcg/kg/dk</span></label><input id="epi" data-aralik="0-5 mcg/kg/dk" type="number" inputmode="decimal" step="any" value=""></div>
+      <div class="field"><label for="dop">Dopamin <span>mcg/kg/dk</span></label><input id="dop" data-aralik="0-50 mcg/kg/dk" type="number" inputmode="decimal" step="any" value=""></div>
+      <div class="field"><label for="dob">Dobutamin <span>mcg/kg/dk</span></label><input id="dob" data-aralik="0-50 mcg/kg/dk" type="number" inputmode="decimal" step="any" value=""></div>
+    </div>
+    <p class="note" id="vpnot">OAB yazılırsa o kullanılır; yoksa sistolik ve diyastolikten hesaplanır. “Var” seçiliyken boş bırakılan ilaç verilmiyor sayılır. mL/saat hızını <a href="infuzyon-hizi.html">infüzyon aracında</a> mcg/kg/dk’ya çevirebilirsiniz.</p>
+  </section>
+
+  <section class="card">
+    <h2>Nörolojik</h2>
+    <div class="grid">
+      <div class="field"><label for="gks">GKS <span>3–15</span></label><input id="gks" data-aralik="3-15" type="number" inputmode="numeric" step="1" value="13"></div>
+    </div>
+    <p class="note">GKS’yi <a href="glasgow-koma.html">Glasgow Koma Skalası aracında</a> hesaplayabilirsiniz.</p>
+  </section>
+
+  <section class="card">
+    <h2>Bazal SOFA</h2>
+    <div class="grid">
+      <div class="field"><label for="baz">Bilinen bazal SOFA <span>0–24</span></label><input id="baz" data-aralik="0-24" type="number" inputmode="numeric" step="1" value="" placeholder="bilinmiyor"></div>
+    </div>
+    <p class="note">Enfeksiyondan önce bilinen akut ya da kronik organ işlev bozukluğu varsa (ör. KBH, siroz) o dönemdeki SOFA’yı yazın. Boş bırakılırsa Sepsis-3’e göre 0 varsayılır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">SOFA</span>
+    <div class="res"><span class="num" id="sc">–</span><span class="of">/ 24</span><span class="pill" id="pl"></span></div>
+    <div class="sub"><span>Solunum <small id="pfo"></small></span><b id="s-res">–</b></div>
+    <div class="sub"><span>Koagülasyon</span><b id="s-koa">–</b></div>
+    <div class="sub"><span>Karaciğer</span><b id="s-kc">–</b></div>
+    <div class="sub"><span>Kardiyovasküler <small id="mapo"></small></span><b id="s-kv">–</b></div>
+    <div class="sub"><span>Nörolojik</span><b id="s-nr">–</b></div>
+    <div class="sub"><span>Böbrek</span><b id="s-bb">–</b></div>
+    <div class="sub"><span>Bazale göre artış</span><b id="dl">–</b></div>
+    <p class="advice" id="adv"></p>
+    <p class="note" id="baznot"></p>
+    <p class="note">Değerler örnek olarak doldurulmuştur. Her sistem için son 24 saatin en kötü değerini kullanın. Sepsis-3: enfeksiyona bağlı SOFA’da bazale göre ≥ 2 puan artış organ işlev bozukluğunu gösterir; şüpheli enfeksiyonu olan genel hastane hastalarında SOFA ≥ 2 yaklaşık %10 hastane mortalitesiyle ilişkilidir (Singer 2016). SOFA tek başına tanı değildir; ≥ 2 olmaması tedaviyi geciktirmemelidir. Septik şok: yeterli sıvıya rağmen OAB ≥ 65 mmHg için vazopresör gereksinimi ve laktat &gt; 2 mmol/L.</p>
+  </section>
+
+  <section class="card">
+    <h2>Puan tablosu</h2>
+    <details>
+      <summary>Klasik SOFA eşikleri (Vincent 1996)</summary>
+      <p>Solunum, PaO₂/FiO₂ (mmHg): ≥ 400 → 0; &lt; 400 → 1; &lt; 300 → 2; &lt; 200 + destek → 3; &lt; 100 + destek → 4.</p>
+      <p>Trombosit (×10³/µL): ≥ 150 → 0; &lt; 150 → 1; &lt; 100 → 2; &lt; 50 → 3; &lt; 20 → 4.</p>
+      <p>Bilirubin (mg/dL): &lt; 1,2 → 0; 1,2–1,9 → 1; 2,0–5,9 → 2; 6,0–11,9 → 3; ≥ 12 → 4.</p>
+      <p>Kardiyovasküler (mcg/kg/dk, ≥ 1 saat): OAB ≥ 70 → 0; OAB &lt; 70 → 1; dopamin ≤ 5 ya da herhangi dozda dobutamin → 2; dopamin &gt; 5 ya da epinefrin ≤ 0,1 ya da norepinefrin ≤ 0,1 → 3; dopamin &gt; 15 ya da epinefrin &gt; 0,1 ya da norepinefrin &gt; 0,1 → 4.</p>
+      <p>GKS: 15 → 0; 13–14 → 1; 10–12 → 2; 6–9 → 3; &lt; 6 → 4.</p>
+      <p>Böbrek, kreatinin (mg/dL): &lt; 1,2 → 0; 1,2–1,9 → 1; 2,0–3,4 → 2; 3,5–4,9 ya da idrar &lt; 500 mL/gün → 3; ≥ 5 ya da idrar &lt; 200 mL/gün → 4.</p>
+      <p>Kaynak tablolarda 12,0 mg/dL bilirubin ve 5,0 mg/dL kreatinin “&gt; 12,0” ve “&gt; 5,0” olarak yazılmış, aradaki değer boşta kalmıştır; burada 4 puan sayılır.</p>
+    </details>
+    <details>
+      <summary>SOFA-2 (Ranzani, JAMA 2025) farkı</summary>
+      <p>2025’te yayımlanan SOFA-2 aynı altı sistemi korur, eşikleri ve organ desteğini günceller: PaO₂/FiO₂ ≤ 300 / ≤ 225 / ≤ 150 + ileri solunum desteği (yüksek akımlı nazal oksijen, CPAP/NIV ya da invaziv ventilasyon) / ≤ 75 + ileri destek ya da ECMO; norepinefrin + epinefrin toplam dozu ≤ 0,2 / &gt; 0,2–0,4 / &gt; 0,4 mcg/kg/dk ve mekanik dolaşım desteği; bilirubin &gt; 1,2 / &gt; 3 / &gt; 6 / &gt; 12 mg/dL; trombosit ≤ 150 / ≤ 100 / ≤ 80 / ≤ 50; GKS 13–14 / 9–12 / 6–8 / 3–5; böbrekte saatlik idrar (mL/kg/saat) ve RRT (4 puan); deliryum için ilaç gereksinimi beyin puanına girer. (Sıralar 1–4 puanın eşikleridir.) Sepsis-3 klasik SOFA ile tanımlanmıştır; SOFA-2’nin onun yerini alıp almayacağına Sepsis-3’ü yayımlayan derneklerin karar vereceği belirtilmiştir. Bu araç klasik SOFA’yı hesaplar.</p>
+    </details>
+  </section>
+
+  <p class="note">Kaynaklar: Vincent JL ve ark. The SOFA (Sepsis-related Organ Failure Assessment) score to describe organ dysfunction/failure. Intensive Care Med 1996;22:707–10 (puan tablosu); Singer M ve ark. The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3). JAMA 2016;315:801–10 (Tablo 1; bazale göre ≥ 2 artış, bazalin 0 varsayılması, SOFA ≥ 2 ile yaklaşık %10 mortalite, septik şok ölçütleri); Ranzani OT ve ark. Development and Validation of the SOFA-2 Score. JAMA 2025;334:2090–103 (SOFA-2 eşikleri); Moreno R ve ark. SOFA-2 consensus statement. JAMA Netw Open 2025;8:e2545040. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var f1=function(x){return (Math.round(x*10)/10).toString().replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+
+  // Her sistem [en düşük, en yüksek] olası puan verir; eksik veri aralığı genişletir. Eşikler ham değerle karşılaştırılır.
+  function solunum(){
+    var p=v('po2'),f=v('fio2'),vent=segVal('vent');
+    if(p===null||f===null)return{r:[0,4],m:'PaO₂/FiO₂'};
+    var pf=p/(f/100);$('pfo').textContent='P/F '+Math.round(pf);
+    var yok=pf<300?2:pf<400?1:0, var_=pf<100?4:pf<200?3:yok;
+    if(vent===null)return yok===var_?{r:[yok,yok]}:{r:[yok,var_],m:'solunum desteği'};
+    return{r:vent==='1'?[var_,var_]:[yok,yok]};
+  }
+  function koag(){var x=v('plt');if(x===null)return{r:[0,4],m:'trombosit'};var s=x<20?4:x<50?3:x<100?2:x<150?1:0;return{r:[s,s]}}
+  function karaciger(){var x=v('bil');if(x===null)return{r:[0,4],m:'bilirubin'};var s=x>=12?4:x>=6?3:x>=2?2:x>=1.2?1:0;return{r:[s,s]}}
+  function noro(){var x=v('gks');if(x===null)return{r:[0,4],m:'GKS'};var s=x<6?4:x<10?3:x<13?2:x<15?1:0;return{r:[s,s]}}
+  function bobrek(){
+    var c=v('cr'),u=v('uo'),m=[];
+    var cs=c===null?null:c>=5?4:c>=3.5?3:c>=2?2:c>=1.2?1:0;
+    var us=u===null?null:u<200?4:u<500?3:0;
+    if(c===null)m.push('kreatinin');if(u===null)m.push('idrar çıkışı');
+    var lo=Math.max(cs||0,us||0), hi=(cs===null||us===null)?4:lo;
+    return lo===hi?{r:[lo,lo]}:{r:[lo,hi],m:m.join(', ')};
+  }
+  function kardiyo(){
+    var o=v('oab'),s=v('sbp'),d=v('dbp'),map=o!==null?o:(s!==null&&d!==null?(s+2*d)/3:null),vp=segVal('vp');
+    $('mapo').textContent=map===null?'':'OAB '+Math.round(map)+(o===null?' (hesap)':'');
+    var ms=map===null?null:map<70?1:0;
+    $('w-vp').hidden=vp==='0';
+    if(vp===null)return{r:[ms||0,4],m:'vazopresör'+(map===null?', OAB':'')};
+    if(vp==='0')return ms===null?{r:[0,1],m:'OAB'}:{r:[ms,ms]};
+    var ne=v('ne'),ep=v('epi'),dp=v('dop'),db=v('dob');
+    if(ne===null&&ep===null&&dp===null&&db===null)return{r:[Math.max(ms||0,2),4],m:'vazopresör dozu'};
+    ne=ne||0;ep=ep||0;dp=dp||0;db=db||0;
+    var vs=(dp>15||ep>0.1||ne>0.1)?4:(dp>5||ep>0||ne>0)?3:(dp>0||db>0)?2:0;
+    if(vs>=1)return{r:[vs,vs]};
+    return ms===null?{r:[0,1],m:'OAB'}:{r:[ms,ms]};
+  }
+  var SIS=[['s-res',solunum],['s-koa',koag],['s-kc',karaciger],['s-kv',kardiyo],['s-nr',noro],['s-bb',bobrek]];
+
+  function calc(){
+    $('pfo').textContent='';
+    var lo=0,hi=0,miss=[];
+    SIS.forEach(function(x){var o=x[1]();lo+=o.r[0];hi+=o.r[1];if(o.m)miss.push(o.m);
+      $(x[0]).textContent=o.r[0]===o.r[1]?String(o.r[0]):o.r[0]+'–'+o.r[1]+' (eksik)'});
+    var b=v('baz'),bz=b===null?0:b;
+    $('baznot').textContent=b===null?'Bazal SOFA girilmedi: Sepsis-3’e göre 0 varsayıldı (bilinen önceden organ işlev bozukluğu yoksa). Önceden organ işlev bozukluğu varsa bazali yazın.':'Bazal SOFA '+bz+' olarak alındı.';
+    var dlo=lo-bz,dhi=hi-bz;
+    if(miss.length){
+      $('sc').textContent='≥ '+lo;pill('pl','Eksik veri: '+miss.join(', '),'var(--muted)');
+      $('dl').textContent='≥ '+dlo;
+    }else{
+      $('sc').textContent=lo;$('dl').textContent=(dlo>0?'+':'')+dlo;
+      pill('pl',dlo>=2?'Bazale göre ≥ 2 artış':'Artış < 2',dlo>=2?'var(--high)':'var(--ok)');
+    }
+    // Sepsis-3 yorumu ancak eksik maddeler sonucu değiştiremiyorsa verilir
+    if(dlo>=2)$('adv').textContent='Bazale göre ≥ 2 puan artış: enfeksiyon varsa Sepsis-3 organ işlev bozukluğu ölçütü karşılanıyor (sepsis).'+(miss.length?' Eksik maddeler bu sonucu değiştirmez; toplam puan için tamamlayın.':'');
+    else if(dhi<2)$('adv').textContent='Bazale göre artış < 2 puan: Sepsis-3 organ işlev bozukluğu ölçütü karşılanmıyor. Sepsisi dışlamaz; klinik şüphe sürüyorsa yeniden değerlendirin.'+(miss.length?' Eksik maddeler bu sonucu değiştirmez.':'');
+    else $('adv').textContent='Sepsis-3 ölçütü değerlendirilemiyor: eksik maddelerle artış '+dlo+'–'+dhi+' puan arasında olabilir. Eksik verileri girin.';
+  }
+  ['vent','vp'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

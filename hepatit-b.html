@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hepatit B</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right}
+table.t{width:100%;border-collapse:collapse;font-size:.88rem}
+table.t th,table.t td{text-align:left;padding:7px 5px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.eks{margin:0;font-weight:600;color:var(--high)}
+.lbl.kc{text-transform:none;letter-spacing:.02em;font-size:.85rem}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+</style>
+</head>
+<body data-ornek-secim="hbs=- hbc=- igm=u ahbs=- #ted sd=- ss=- dna=u hd=0">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Hepatit B</h1>
+    <p>Seroloji yorumu ve immünsüpresyon/kemoterapi öncesi HBV reaktivasyon riski, profilaksi (entekavir, tenofovir) ve izlem</p>
+  </header>
+
+  <section class="card">
+    <h2>Seroloji</h2>
+    <span class="lbl kc">HBsAg</span>
+    <div class="seg"><button type="button" data-g="hbs" data-v="n" aria-pressed="false">Negatif</button><button type="button" data-g="hbs" data-v="p" aria-pressed="false">Pozitif</button></div>
+    <span class="lbl kc">Anti-HBc total (IgG)</span>
+    <div class="seg"><button type="button" data-g="hbc" data-v="n" aria-pressed="false">Negatif</button><button type="button" data-g="hbc" data-v="p" aria-pressed="false">Pozitif</button></div>
+    <span class="lbl kc">Anti-HBc IgM</span>
+    <div class="seg"><button type="button" data-g="igm" data-v="u" aria-pressed="true">Bakılmadı</button><button type="button" data-g="igm" data-v="n" aria-pressed="false">Negatif</button><button type="button" data-g="igm" data-v="p" aria-pressed="false">Pozitif</button></div>
+    <span class="lbl kc">Anti-HBs</span>
+    <div class="seg"><button type="button" data-g="ahbs" data-v="n" aria-pressed="false">Negatif (&lt; 10)</button><button type="button" data-g="ahbs" data-v="p" aria-pressed="false">Pozitif (≥ 10)</button></div>
+    <div class="grid">
+      <div class="field"><label for="ahbsv">Anti-HBs değeri <span>mIU/mL, isteğe bağlı</span></label><input data-aralik="0-100000 mIU/mL" id="ahbsv" type="number" inputmode="decimal" step="any" value=""></div>
+    </div>
+    <p class="note">Seçilmeyen test negatif sayılmaz. Anti-HBs değeri yazılırsa seçim ondan yapılır (≥ 10 mIU/mL koruyucu).</p>
+  </section>
+
+  <section class="card" aria-live="polite" id="k1">
+    <h2>Seroloji yorumu</h2>
+    <div class="res"><span class="pill" id="sp"></span></div>
+    <p class="eks" id="se" hidden></p>
+    <p class="advice" id="sa"></p>
+    <ol class="rec" id="rx1"></ol>
+  </section>
+
+  <section class="card">
+    <h2>İmmünsüpresyon / kemoterapi öncesi</h2>
+    <p class="note">HBsAg ve anti-HBc yukarıdaki seçimlerden alınır.</p>
+    <div class="field"><label for="ted">Planlanan tedavi</label>
+      <select id="ted">
+        <option value="">— Seçin —</option>
+        <optgroup label="Hematoloji / onkoloji">
+          <option value="cd20">Anti-CD20 (rituksimab, obinutuzumab)</option>
+          <option value="hsct">Kök hücre nakli (otolog ya da allojenik)</option>
+          <option value="cart">CAR-T hücre tedavisi</option>
+          <option value="antra">Antrasiklin (doksorubisin, epirubisin)</option>
+          <option value="kemo">Diğer sitotoksik kemoterapi</option>
+          <option value="tki">Tirozin kinaz inhibitörü (imatinib, sunitinib)</option>
+          <option value="ici">Kontrol noktası inhibitörü (nivolumab vb.)</option>
+          <option value="tace">TACE (HCC)</option>
+        </optgroup>
+        <optgroup label="Steroid ve immünsüpresifler">
+          <option value="ster">Sistemik steroid</option>
+          <option value="ia">İntraartiküler steroid</option>
+          <option value="anti">Metotreksat, azatiyoprin, 6-merkaptopürin</option>
+        </optgroup>
+        <optgroup label="Biyolojik ve hedefe yönelik">
+          <option value="tnf">Anti-TNF (infliksimab, adalimumab, etanersept)</option>
+          <option value="il6">Anti-IL-6 (tosilizumab)</option>
+          <option value="sit">Ustekinumab, sekukinumab (anti-IL)</option>
+          <option value="aba">Abatasept</option>
+          <option value="jak">JAK inhibitörü (tofasitinib, barisitinib)</option>
+        </optgroup>
+        <optgroup label="Diğer">
+          <option value="daa">HCV tedavisi (doğrudan etkili antiviral)</option>
+        </optgroup>
+      </select>
+    </div>
+    <div id="w-ster" hidden>
+      <span class="lbl">Steroid dozu (prednizolon eşdeğeri)</span>
+      <div class="seg"><button type="button" data-g="sd" data-v="lo" aria-pressed="false">&lt; 10 mg/gün</button><button type="button" data-g="sd" data-v="hi" aria-pressed="false">≥ 10 mg/gün</button></div>
+      <span class="lbl" style="display:block;margin-top:14px">Süre</span>
+      <div class="seg"><button type="button" data-g="ss" data-v="k" aria-pressed="false">≤ 1 hafta</button><button type="button" data-g="ss" data-v="o" aria-pressed="false">1–4 hafta</button><button type="button" data-g="ss" data-v="u" aria-pressed="false">≥ 4 hafta</button></div>
+      <p class="note" style="margin-top:8px">Eşdeğer doz için <a href="steroid-esdegeri.html">steroid eşdeğeri aracı</a>.</p>
+    </div>
+    <span class="lbl kc">Başlangıç HBV DNA</span>
+    <div class="seg"><button type="button" data-g="dna" data-v="u" aria-pressed="true">Bakılmadı</button><button type="button" data-g="dna" data-v="n" aria-pressed="false">Saptanmadı</button><button type="button" data-g="dna" data-v="p" aria-pressed="false">Saptandı</button></div>
+    <h3>Böbrek işlevi (antiviral dozu için)</h3>
+    <div class="grid">
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" type="number" inputmode="numeric" step="1" value="62"></div>
+      <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="70"></div>
+      <div class="field"><label for="scr">Kreatinin <span>mg/dL</span></label><input id="scr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.4"></div>
+    </div>
+    <span class="lbl">Cinsiyet</span>
+    <div class="seg"><button type="button" data-g="sex" data-v="m" data-hasta-cins="m" aria-pressed="false">Erkek</button><button type="button" data-g="sex" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div>
+    <span class="lbl">Hemodiyaliz</span>
+    <div class="seg"><button type="button" data-g="hd" data-v="0" aria-pressed="true">Hayır</button><button type="button" data-g="hd" data-v="1" aria-pressed="false">Evet</button></div>
+    <p class="note">Değerler örnek olarak doldurulmuştur. Kreatinin klerensi Cockcroft-Gault ile (gerçek ağırlık) hesaplanır; ilaç prospektüslerindeki doz basamakları buna göredir.</p>
+  </section>
+
+  <section class="card" aria-live="polite" id="k2">
+    <h2>Reaktivasyon riski ve profilaksi</h2>
+    <div class="res"><span class="pill" id="rp"></span></div>
+    <p class="eks" id="re" hidden></p>
+    <p class="advice" id="ra"></p>
+    <ol class="rec" id="rx2"></ol>
+    <div id="w-doz" hidden>
+      <div class="sub"><span>Kreatinin klerensi (Cockcroft-Gault)</span><b id="crcl">–</b></div>
+      <table class="t" id="dt">
+        <thead><tr><th>CrCl mL/dk</th><th>Entekavir</th><th>Tenofovir DF</th><th>Tenofovir alafenamid</th></tr></thead>
+        <tbody>
+          <tr data-b="50"><td>≥ 50</td><td>0,5 mg/gün</td><td>300 mg/gün</td><td>25 mg/gün</td></tr>
+          <tr data-b="30"><td>30–49</td><td>0,5 mg 48 saatte bir <small>(ya da 0,25 mg/gün)</small></td><td>300 mg 48 saatte bir</td><td>25 mg/gün</td></tr>
+          <tr data-b="15"><td>15–29</td><td>0,5 mg 72 saatte bir <small>(ya da 0,15 mg/gün)</small></td><td>300 mg 72–96 saatte bir</td><td>25 mg/gün</td></tr>
+          <tr data-b="10"><td>10–14</td><td>0,5 mg 72 saatte bir <small>(ya da 0,15 mg/gün)</small></td><td>300 mg 72–96 saatte bir</td><td>Önerilmez</td></tr>
+          <tr data-b="0"><td>&lt; 10, diyaliz yok</td><td>0,5 mg 7 günde bir <small>(ya da 0,05 mg/gün)</small></td><td>Öneri yok</td><td>Önerilmez</td></tr>
+          <tr data-b="hd"><td>Hemodiyaliz</td><td>0,5 mg 7 günde bir, diyalizden sonra <small>(ya da 0,05 mg/gün)</small></td><td>300 mg 7 günde bir, diyalizden sonra</td><td>25 mg/gün; diyaliz günü diyalizden sonra</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Kılavuz farkı ve seçilen yol: HBsAg pozitifte risk ne olursa olsun profilaksi önerilir (AASLD 2018, EASL 2017, ASCO 2020, Türkiye 2023); AGA 2025 yalnız düşük riskte izlemi önerir. Risk sınıfları AGA 2025 tablosundan; AGA’nın sınıflamadığı kök hücre nakli AASLD, ASCO ve EASL 2025’e göre, antrasiklin dışı kemoterapi Türkiye 2023’e göre verilir. Süre için Türkiye 2023 (en uzun) seçildi: AGA 2025 en az 6 ay (anti-CD20’de 12 ay), EASL 2025 6–12 ay (B hücresi baskılayıcıda en az 18 ay), ASCO 2020 en az 12 ay. Anti-HBs düzeyi profilaksi kararını değiştirmez (AGA 2025). Lamivudin direnç riski nedeniyle önerilmez. Daha önce lamivudin kullanmış ya da lamivudin direnci olan hastada tenofovir tercih edilir; entekavir kullanılacaksa doz 1 mg/gün, böbrek basamaklarında tablodaki dozların iki katıdır (KÜB). TDF 300 mg, 245 mg tenofovir disoproksile eşittir (kutuda 245 mg yazabilir).</p>
+  </section>
+
+  <p class="note">Kaynaklar: Terrault NA ve ark. AASLD 2018 hepatit B rehberi, Hepatology 2018;67:1560–99 (seroloji yorumu tablosu, izole anti-HBc, aşı sonrası anti-HBs, akut hepatit B tedavi ölçütleri, immünsüpresyonda profilaksi ve 6/12 ay süre, izlemde 1–3 ayda HBV DNA, entekavir/TDF/TAF dozları); Ghany MG ve ark. AASLD-IDSA 2025 kronik hepatit B tedavi rehberi, Hepatology 2026;83:974–97 (ETV, TDF, TAF tercih; TAF CrCl &lt; 15 ve diyaliz yoksa önerilmez; immünsüpresyon için 2018 rehberine gönderme yapar); Ali FS ve ark. AGA 2025 HBV reaktivasyonu kılavuzu, Gastroenterology 2025;168:267–84 (2015 kılavuzunun güncellemesi; Tablo 6 risk sınıfları, yüksek riskte profilaksi, orta riskte profilaksi önerisi, düşük riskte izlem, 1–3 ayda HBV DNA ve ALT, süre ≥ 6 ay / anti-CD20 ≥ 12 ay, anti-HBs’nin karar için kullanılmaması); EASL 2017 HBV kılavuzu, J Hepatol 2017;67:370–98 (tüm HBsAg pozitiflere ETV/TDF/TAF; yüksek riskli anti-HBc pozitife profilaksi; 12 ay, rituksimabda 18 ay; eGFR &lt; 50’de ETV ve TDF doz ayarı; yaş &gt; 60, kemik hastalığı, eGFR &lt; 60, albüminüri, düşük fosfat ya da hemodiyalizde TDF yerine ETV/TAF); EASL 2025 HBV kılavuzu, J Hepatol 2025, doi:10.1016/j.jhep.2025.03.018 (HBsAg ve anti-HBc ile tarama; HBsAg ve anti-HBc negatife aşı; reaktivasyon bölümünün tam metnine ulaşılamadı, süreler ikincil kaynaktan); Hwang JP ve ark. ASCO 2020 kanser hastalarında HBV taraması, J Clin Oncol 2020;38:3698–715 (HBsAg, anti-HBc, anti-HBs taraması; kronik HBV’de tüm sistemik tedavide profilaksi; geçirilmiş HBV’de anti-CD20 ya da kök hücre naklinde profilaksi; süre ≥ 12 ay; diğerlerinde 3 ayda HBsAg ve ALT); TKAD ve Viral Hepatitle Savaşım Derneği, Türkiye Hepatit B Tanı ve Tedavi Kılavuzu 2023 (HBsAg, anti-HBc IgG ve anti-HBs taraması; HBsAg veya anti-HBc pozitifse HBV DNA; risk tablosu, steroid dozları; süre 12 ay, anti-CD20’de 2 yıl; düşük riskte 3 ayda HBV DNA; böbrek doz tablosu; aşı 20 µg 0–1–6. ay; akut hepatitte INR ≥ 1,5 ya da &gt; 4 hafta sarılıkta tedavi); CDC 2021 STI tedavi rehberi Tablo 5 (aşıdan sonra ≤ 18 gün geçici HBsAg). Piyasa adları: Viread (TDF), Vemlidy (TAF). Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb(group)}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function segSet(group,val){document.querySelectorAll('[data-g="'+group+'"]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===val)})}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function eks(id,list,card){var e=$(id);e.hidden=!list.length;e.textContent=list.length?'Eksik: '+list.join(', ')+'.':'';
+    if(list.length)$(card).setAttribute('data-eksik','Eksik test var');else $(card).removeAttribute('data-eksik')}
+  var GRI='var(--muted)',YES='var(--ok)',SAR='var(--warn)',KIR='var(--high)',MAV='var(--low)';
+
+  // AGA 2025 Tablo 6: [HBsAg+, HBsAg−/anti-HBc+]; H yüksek, M orta, L düşük
+  // hsct: AASLD 2018, ASCO 2020, EASL 2025 (anti-HBc+'da da profilaksi); kemo: Türkiye 2023 (antrasiklin dışı sitotoksik: orta/orta)
+  var R={cd20:['H','H'],hsct:['H','H'],cart:['H','M'],antra:['H','M'],kemo:['M','M'],tki:['H','M'],ici:['M','L'],tace:['H','M'],
+    ia:['L','L'],anti:['L','L'],tnf:['H','L'],il6:['H','M'],sit:['H','M'],aba:['M','M'],jak:['H','M'],daa:['H','L']};
+  var RAD={H:'Yüksek risk (> %10)',M:'Orta risk (%1–10)',L:'Düşük risk (< %1)',X:'Sınıflanmamış'};
+  var RRENK={H:KIR,M:SAR,L:YES,X:GRI};
+
+  function calc(){
+    var S=segVal('hbs'),C=segVal('hbc'),M=segVal('igm'),A=segVal('ahbs'),av=v('ahbsv');
+    if(av!==null){A=av>=10?'p':'n';segSet('ahbs',A)}
+    var avT=av!==null?' ('+fm(av)+' mIU/mL)':'';
+
+    // 1) Seroloji
+    $('rx1').innerHTML='';$('sa').textContent='';
+    var e1=[];
+    if(S===null)e1.push('HBsAg');
+    if(C===null&&S!=='p')e1.push('anti-HBc total');
+    if(S==='n'&&A===null)e1.push('anti-HBs');
+    var st=null;
+    if(C==='n'&&M==='p'){st='uyum';pill('sp','Uyumsuz sonuç',GRI);$('sa').textContent='Anti-HBc total negatifken anti-HBc IgM pozitif olamaz. Testleri tekrarlayın.';e1=[]}
+    else if(S==='p'){
+      if(C==='n'){st='yalniz';pill('sp','Yalnız HBsAg pozitif',SAR);
+        $('sa').textContent='Çok erken akut enfeksiyon, aşıdan sonraki ilk günlerde (≤ 18 gün) geçici pozitiflik ya da yalancı pozitiflik.';
+        li('rx1','HBsAg’yi doğrulayın (nötralizasyon testi), HBV DNA ve ALT','Yakın zamanda aşı yapıldıysa 2–3 hafta sonra HBsAg’yi tekrarlayın. Akut enfeksiyonda birkaç hafta içinde anti-HBc pozitifleşir.')}
+      else if(M==='p'){st='akut';pill('sp','Akut hepatit B',KIR);
+        $('sa').textContent='HBsAg ve anti-HBc IgM pozitif. Kronik hepatit B alevlenmesinde de IgM pozitif olabilir.';
+        li('rx1','ALT, bilirubin, INR, HBV DNA','Erişkinde çoğu kendiliğinden iyileşir; destek tedavisi.');
+        li('rx1','Antiviral (entekavir ya da tenofovir) endikasyonu','Akut karaciğer yetmezliği ya da ağır/uzayan seyir: INR ≥ 1,5, > 4 hafta süren sarılık (Türkiye 2023); AASLD 2018: total bilirubin > 3 mg/dL (direkt > 1,5), INR > 1,5, ensefalopati ya da asit. Karaciğer yetmezliğinde nakil merkezine sevk.');
+        li('rx1','6 ay sonra HBsAg','Pozitif kalırsa kronik hepatit B olarak izleyin. Ev içi ve cinsel temaslıları tarayın, duyarlı olanları aşılayın.')}
+      else if(M==='n'){st='kronik';pill('sp','Kronik hepatit B',KIR);
+        $('sa').textContent='HBsAg pozitif, anti-HBc IgM negatif.';
+        kronikYap()}
+      else{st='hbsp';pill('sp','HBsAg pozitif: akut ya da kronik',KIR);
+        $('sa').textContent='Ayırım için anti-HBc IgM bakın; HBsAg 6 aydan uzun süredir pozitifse kronik hepatit B’dir.';
+        kronikYap()}
+      if(C===null)e1.push('anti-HBc total');
+      if(A==='p')li('rx1','HBsAg ve anti-HBs birlikte pozitif','Az görülür (farklı alt tiple enfeksiyon ya da kaçış mutantı); HBsAg pozitif hasta gibi yönetin.');
+    }
+    else if(S==='n'&&C==='n'){
+      if(A==='p'){st='asi';pill('sp','Aşıyla bağışık',YES);$('sa').textContent='Anti-HBs ≥ 10 mIU/mL'+avT+', anti-HBc negatif.';
+        li('rx1','Ek test ya da aşı gerekmez','Bağışıklığı normal kişide rapel önerilmez. Hemodiyaliz hastasında yılda bir anti-HBs; < 10 mIU/mL olursa rapel (AASLD 2018). Reaktivasyon riski yoktur.')}
+      else if(A==='n'){st='duy';pill('sp','Geçirilmemiş, duyarlı',MAV);$('sa').textContent='HBsAg, anti-HBc ve anti-HBs negatif'+avT+'.';
+        li('rx1','Hepatit B aşısı','3 doz: 0, 1 ve 6. ay, 20 µg (Türkiye 2023). Hemodiyaliz ya da immünsüpresyonda çift doz (AASLD 2018). İmmünsüpresif tedavi planlanıyorsa mümkünse önce aşılayın; yanıt zayıf olabilir.');
+        li('rx1','Aşıdan 1–2 ay sonra anti-HBs','Sağlık çalışanı, HBsAg pozitif kişinin eşi, hemodiyaliz, HIV ya da immünsüpresyonda bakın. < 10 mIU/mL ise 3 dozluk seriyi tekrarlayın.')}
+      else{pill('sp','Eksik veri',GRI);$('sa').textContent='HBsAg ve anti-HBc negatif: bağışık mı duyarlı mı ayırmak için anti-HBs gerekir.'}
+    }
+    else if(S==='n'&&C==='p'){
+      if(M==='p'){st='pencere';pill('sp','Akut, iyileşme dönemi',SAR);
+        $('sa').textContent=A==='p'?'HBsAg negatif, anti-HBc IgM ve anti-HBs pozitif: yakın zamanda geçirilmiş, iyileşen akut enfeksiyon.':'HBsAg negatif, anti-HBc IgM pozitif: HBsAg kaybolmuş, anti-HBs henüz oluşmamış olabilir (pencere dönemi).';
+        li('rx1','HBV DNA ve ALT','3–6 ay sonra HBsAg ve anti-HBs’yi tekrarlayın; anti-HBs çıkışı iyileşmeyi gösterir.')}
+      else if(A==='p'){st='gecbag';pill('sp','Geçirilmiş, bağışık',YES);$('sa').textContent='Anti-HBc ve anti-HBs pozitif'+avT+': iyileşmiş eski enfeksiyon.';
+        li('rx1','Aşı ve tedavi gerekmez','İmmünsüpresif tedavi ya da kemoterapi planlanırsa reaktivasyon riski vardır; aşağıdaki bölümü kullanın.')}
+      else if(A==='n'){st='izole';pill('sp','İzole anti-HBc',SAR);$('sa').textContent='HBsAg ve anti-HBs negatif'+avT+', anti-HBc pozitif.';
+        li('rx1','Olası nedenler','En sık anti-HBs’si azalmış eski enfeksiyon; yalancı pozitiflik, akut enfeksiyonun pencere dönemi ya da düşük düzeyde (gizli) kronik enfeksiyon.');
+        if(M==='u')li('rx1','Anti-HBc IgM','ALT yüksekse ya da yakın temas varsa pencere dönemini ayırmak için bakın.');
+        li('rx1','HBV DNA','İmmünsüpresyonda ya da immünsüpresif tedavi planlanıyorsa bakın (AASLD 2018; Türkiye 2023 anti-HBc pozitif herkese önerir).');
+        li('rx1','Aşı','Düşük endemik bölgeden ve risk etkeni yoksa tam seri (AASLD 2018); HIV ya da immünsüpresyonda da aşılayın. Risk etkeni olanlara rutin önerilmez. Aşıdan sonra anti-HBs bakın.')}
+      else{st='gec';pill('sp','Geçirilmiş enfeksiyon',SAR);$('sa').textContent='Anti-HBc pozitif. Bağışık mı (anti-HBs pozitif) izole anti-HBc mi ayırmak için anti-HBs gerekir.';
+        li('rx1','İmmünsüpresyon planlanıyorsa','Reaktivasyon riski vardır; aşağıdaki bölümü kullanın.')}
+    }
+    else pill('sp','Eksik veri',GRI);
+    eks('se',st==='uyum'?[]:e1,'k1');
+
+    function kronikYap(){
+      li('rx1','HBeAg, anti-HBe, HBV DNA, ALT','Faz ve tedavi kararı için. ALT’yi 3–6 ayda bir tekrarlayın.');
+      li('rx1','Fibroz ve karaciğer','Trombosit, albümin, INR; FIB-4 ya da elastografi; karaciğer USG.');
+      li('rx1','Eşlik eden enfeksiyon','Anti-HDV, anti-HCV, anti-HIV; anti-HAV IgG negatifse hepatit A aşısı.');
+      li('rx1','Temaslılar','Ev içi ve cinsel temaslıları tarayın, duyarlı olanları aşılayın.');
+      li('rx1','Sevk','Gastroenteroloji ya da enfeksiyon hastalıkları. Sirozda 6 ayda bir USG ile HCC taraması.');
+    }
+
+    // 2) Reaktivasyon
+    $('rx2').innerHTML='';$('ra').textContent='';
+    var T=$('ted').value||null,sd=segVal('sd'),ss=segVal('ss'),dna=segVal('dna');
+    $('w-ster').hidden=T!=='ster';
+    var e2=[],grp=null,risk=null,karar=null;
+    if(S===null)e2.push('HBsAg');
+    if(S==='n'&&C===null)e2.push('anti-HBc total');
+    if(st==='uyum'){e2=['testleri tekrarlayın']}
+    else if(S==='p')grp=0;else if(S==='n'&&C==='p')grp=1;else if(S==='n'&&C==='n')grp=2;
+    if(grp===0||grp===1){
+      if(!T)e2.push('planlanan tedavi');
+      else if(T==='ster'){
+        if(!sd)e2.push('steroid dozu');if(!ss)e2.push('steroid süresi');
+        if(sd&&ss)risk=ss==='k'?'L':ss==='o'?'X':(sd==='hi'?['H','M']:['M','L'])[grp];
+      }else risk=R[T][grp];
+    }
+    $('w-doz').hidden=true;
+    var sure=T==='cd20'?'24 ay':'12 ay';
+    if(grp===2){karar='yok';pill('rp','Reaktivasyon riski yok',YES);
+      $('ra').textContent='HBsAg ve anti-HBc negatif: HBV ile karşılaşmamış.';
+      if(A==='n')li('rx2','Hepatit B aşısı','Anti-HBs negatif: immünsüpresyondan önce mümkünse aşılayın (yukarıya bakın).');
+      else if(A===null)li('rx2','Anti-HBs bakın','Negatifse immünsüpresyondan önce aşılayın.')}
+    else if(grp!==null&&risk){
+      var dnaP=dna==='p';
+      if(grp===0||dnaP||risk==='H')karar='pro';
+      else if(risk==='M')karar='pro-iz';
+      else karar='iz';
+      var bas=(grp===0?'HBsAg pozitif':'HBsAg negatif, anti-HBc pozitif')+(T==='ster'&&ss==='o'?': 1–4 hafta steroid AGA 2025’te sınıflanmamış':'');
+      if(karar==='iz'&&dna!=='n'){pill('rp',RAD[risk],RRENK[risk]);e2.push('başlangıç HBV DNA');
+        $('ra').textContent=bas+'. HBV DNA saptanmazsa profilaksi yerine izlem önerilir.'}
+      else{pill('rp',RAD[risk]+(karar==='pro'?': profilaksi':karar==='pro-iz'?': profilaksi önerilir':': izlem'),karar==='iz'?RRENK[risk]:(risk==='L'||risk==='X'?SAR:RRENK[risk]));
+        $('ra').textContent=bas+'.'}
+      if(karar==='pro'||karar==='pro-iz'){
+        var neden=grp===0?(risk==='H'?'Tüm kılavuzlar önerir.':risk==='L'?'AASLD 2018, EASL 2017, ASCO 2020 ve Türkiye 2023 tüm HBsAg pozitiflere önerir; AGA 2025 düşük riskte izlemi önerir.':'AASLD 2018, EASL, ASCO 2020 ve Türkiye 2023 tüm HBsAg pozitiflere önerir; AGA 2025 de önerir.')
+          :dnaP?'HBV DNA saptanıyor: HBsAg pozitif gibi profilaksi (EASL 2025, Türkiye 2023).'
+          :risk==='H'?'AGA 2025, AASLD 2018, ASCO 2020, EASL ve Türkiye 2023 önerir.'
+          :'AGA 2025 profilaksiyi önerir. HBV DNA saptanmıyorsa ve izlem güvenilir yapılabiliyorsa izlem de seçenektir (AASLD 2018, EASL 2025): HBV DNA ve ALT 1–3 ayda bir.';
+        li('rx2',karar==='pro'?'Antiviral profilaksi':'Antiviral profilaksi önerilir',neden+' İmmünsüpresif tedaviden önce ya da en geç onunla birlikte başlayın. Entekavir, tenofovir DF (Viread) ya da tenofovir alafenamid (Vemlidy); doz aşağıdaki tabloda.');
+        li('rx2','Süre: tedavi bitiminden sonra en az '+sure,T==='cd20'?'Anti-CD20’de son dozdan sonra 24 ay (Türkiye 2023); EASL 2025 en az 18 ay, AGA 2025 en az 12 ay.':'Tüm immünsüpresif tedavi bittikten sonra 12 ay (Türkiye 2023, ASCO 2020); AGA 2025 en az 6 ay. Anti-CD20 içeren şemada 24 ay.');
+        li('rx2','İzlem','Profilaksi sırasında ALT ve HBV DNA 3–6 ayda bir; kesildikten sonra 12 ay ALT ve HBV DNA izleyin (AASLD 2018, EASL 2017).');
+        if(grp===0)li('rx2','Başlangıçta HBV DNA, ALT, HBeAg','Kronik hepatit B tedavi ölçütlerini karşılıyorsa profilaksi değil uzun süreli tedavi yapılır.');
+        $('w-doz').hidden=false;
+      }else if(dna==='n'){
+        li('rx2','Profilaksi gerekmez: izlem','HBV DNA ve ALT 1–3 ayda bir, immünsüpresif tedavi süresince ve bittikten sonra 12 ay (AASLD 2018, AGA 2025; Türkiye 2023 3 ayda bir HBV DNA). Hasta yakın izlemi kabul etmiyorsa profilaksi de makul (AGA 2025).'+(T==='ster'&&ss==='o'?' Steroid 4 haftayı aşacaksa riski ≥ 4 hafta seçerek yeniden değerlendirin.':''));
+        li('rx2','Reaktivasyonda hemen tedavi','HBV DNA saptanır ya da HBsAg pozitifleşirse entekavir ya da tenofovir başlayın; doz için böbrek işlevini girin.');
+      }else li('rx2','Önce HBV DNA bakın','Saptanmazsa HBV DNA ve ALT 1–3 ayda bir izlem; saptanırsa profilaksi.');
+    }else if(grp!==null){pill('rp','Eksik veri',GRI)}
+    else pill('rp','Eksik veri',GRI);
+    if((karar==='pro'||karar==='pro-iz')&&dna==='u'&&grp===1&&risk!=='H')e2.push('başlangıç HBV DNA');
+    eks('re',e2,'k2');
+
+    // Doz: Cockcroft-Gault
+    var age=v('age'),wt=v('wt'),cr=v('scr'),sex=segVal('sex'),hd=segVal('hd')==='1',cl=null,band=null;
+    if(age!==null&&wt!==null&&cr!==null&&cr>0&&sex)cl=Math.round((140-age)*wt/(72*cr)*(sex==='f'?0.85:1)*10)/10;
+    if(hd)band='hd';else if(cl!==null)band=cl>=50?'50':cl>=30?'30':cl>=15?'15':cl>=10?'10':'0';
+    var ce=[];if(!hd){if(age===null)ce.push('yaş');if(wt===null)ce.push('ağırlık');if(cr===null||cr<=0)ce.push('kreatinin');if(!sex)ce.push('cinsiyet')}
+    $('crcl').textContent=hd?'hemodiyaliz':cl!==null?fm(Math.max(cl,0),1)+' mL/dk':'eksik: '+ce.join(', ');
+    document.querySelectorAll('#dt tbody tr').forEach(function(r){r.classList.toggle('cur',r.dataset.b===band)});
+    if(!$('w-doz').hidden){
+      if(band===null)li('rx2','Doz için böbrek işlevi eksik','CrCl < 50 mL/dk’da entekavir ve TDF aralığı uzar. Eksik: '+ce.join(', ')+'.');
+      else{
+        var r=document.querySelector('#dt tr[data-b="'+band+'"]').children;
+        var t=function(i){return r[i].textContent.replace(/\s+/g,' ').trim()};
+        li('rx2','Bu hasta için doz ('+(hd?'hemodiyaliz':'CrCl '+fm(Math.max(cl,0),1)+' mL/dk')+')','Entekavir (aç karnına) '+t(1)+' · TDF '+t(2)+' · TAF '+t(3)+'.');
+        if(hd||cl<60||(age!==null&&age>60))li('rx2','TDF yerine entekavir ya da TAF tercih edin','Yaş > 60, eGFR < 60, albüminüri, düşük fosfat, kemik hastalığı ya da hemodiyalizde (EASL 2017).');
+      }
+    }
+  }
+  ['hbs','hbc','igm','ted','sd','ss','dna','sex','hd'].forEach(function(g){seg(g,calc)});
+  // Anti-HBs düğmesine basınca yazılı değer silinir (seçim ile değer çelişmesin)
+  seg('ahbs',function(){$('ahbsv').value='';calc()});
+  $('ted').addEventListener('change',calc);
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>
