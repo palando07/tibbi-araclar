@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gut Tedavisi</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+select{font:600 1rem var(--font-body);padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%;min-width:0}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer;min-width:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;text-align:right}
+table.t{width:100%;border-collapse:collapse;font-size:.88rem}
+table.t th,table.t td{text-align:left;padding:7px 5px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t th{font-size:.75rem;color:var(--muted);font-weight:600;letter-spacing:.03em}
+table.t td{font-variant-numeric:tabular-nums}
+table.t tr.cur td{font-weight:700;color:var(--accent)}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+.card h3{margin:4px 0 0;font-size:1rem}
+.eks{margin:0;font-weight:600;color:var(--high)}
+.lbl.kc{text-transform:none;letter-spacing:.02em;font-size:.85rem}
+table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:400}
+</style>
+</head>
+<body data-ornek-secim="hd=0 ink=- atk=- tof=- rad=- tas=-">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Gut tedavisi</h1>
+    <p>Akut atakta kolşisin, NSAİİ ve steroid dozu; ürat düşürücü tedavi endikasyonu, allopürinol başlangıç dozu ve profilaksi, böbrek işlevine göre</p>
+  </header>
+
+  <section class="card">
+    <h2>Böbrek işlevi ve ilaçlar</h2>
+    <div class="grid">
+      <div class="field"><label for="egfr">eGFR <span>mL/dk/1,73 m²</span></label><input id="egfr" data-hasta="egfr" data-aralik="1-200 mL/dk/1,73 m²" type="number" inputmode="decimal" step="any" value="45"></div>
+    </div>
+    <span class="lbl">Hemodiyaliz / periton diyalizi</span>
+    <div class="seg"><button type="button" data-g="hd" data-v="0" aria-pressed="true">Hayır</button><button type="button" data-g="hd" data-v="1" aria-pressed="false">Evet</button></div>
+    <span class="lbl kc">CYP3A4 / P-gp inhibitörü kullanıyor mu?</span>
+    <div class="seg"><button type="button" data-g="ink" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="ink" data-v="o" aria-pressed="false">Orta</button><button type="button" data-g="ink" data-v="g" aria-pressed="false">Güçlü</button></div>
+    <p class="note">Değerler örnek olarak doldurulmuştur. Güçlü: klaritromisin, telitromisin, ketokonazol, itrakonazol, vorikonazol, ritonavir, atazanavir, indinavir, siklosporin. Orta: eritromisin, diltiazem, verapamil, greyfurt suyu. KÜB doz basamakları kreatinin klerensine göredir; eGFR yerine kullanılır, sınırda <a href="kreatinin-klerensi.html">Cockcroft-Gault</a> ile de bakın.</p>
+  </section>
+
+  <section class="card" aria-live="polite" id="k1">
+    <h2>Akut atak</h2>
+    <div class="res"><span class="pill" id="ap"></span></div>
+    <p class="eks" id="ae" hidden></p>
+    <p class="advice" id="aa"></p>
+    <ol class="rec" id="rx1"></ol>
+    <p class="note">Tedaviye olabildiğince erken başlayın; kolşisin ilk 12 saatte en etkilidir (EULAR 2016). Kolşisin, NSAİİ ve steroid eşit etkili ilk seçeneklerdir; seçim eşlik eden hastalığa göre yapılır (ACR 2020). Düşük doz kolşisin yüksek doz kadar etkili, yan etkisi daha azdır. Ağır karaciğer yetmezliğinde kolşisin kontrendikedir (KÜB). Çoklu eklem ya da ağır atakta ilaçlar birleştirilebilir; bu üç ilaç kullanılamıyorsa IL-1 inhibitörü (ACR 2020). Buz uygulaması destekleyicidir.</p>
+  </section>
+
+  <section class="card">
+    <h2>Ürat düşürücü tedavi (ÜDT)</h2>
+    <span class="lbl kc">Atak sıklığı</span>
+    <div class="seg"><button type="button" data-g="atk" data-v="1" aria-pressed="false">İlk atak</button><button type="button" data-g="atk" data-v="az" aria-pressed="false">&gt; 1, &lt; 2/yıl</button><button type="button" data-g="atk" data-v="sik" aria-pressed="false">≥ 2/yıl</button></div>
+    <span class="lbl kc">Deri altı tofüs</span>
+    <div class="seg"><button type="button" data-g="tof" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="tof" data-v="1" aria-pressed="false">Var</button></div>
+    <span class="lbl kc">Gute bağlı eklem hasarı (görüntülemede)</span>
+    <div class="seg"><button type="button" data-g="rad" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="rad" data-v="1" aria-pressed="false">Var</button></div>
+    <span class="lbl kc">Böbrek taşı (ürolitiyazis)</span>
+    <div class="seg"><button type="button" data-g="tas" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="tas" data-v="1" aria-pressed="false">Var</button></div>
+    <div class="grid">
+      <div class="field"><label for="ua">Ürik asit <span>mg/dL</span></label><input id="ua" data-aralik="0.5-30 mg/dL" type="number" inputmode="decimal" step="any" value="9.4"></div>
+    </div>
+    <p class="note">Böbrek işlevi ve etkileşen ilaç yukarıdan alınır.</p>
+  </section>
+
+  <section class="card" aria-live="polite" id="k2">
+    <h2>Ürat düşürücü tedavi</h2>
+    <div class="res"><span class="pill" id="up"></span></div>
+    <p class="eks" id="ue" hidden></p>
+    <p class="advice" id="ua2"></p>
+    <ol class="rec" id="rx2"></ol>
+    <p class="note">Kılavuz farkı: ACR 2020 hedefi herkes için &lt; 6 mg/dL koyar; EULAR 2016 ağır gutta (tofüs, kronik artropati, sık atak) kristaller eriyene dek &lt; 5 mg/dL önerir. ACR 2020 ilk atakta ÜDT’yi genellikle önermez (koşullu); EULAR 2016 ilk başvurudan itibaren konuşulmasını, &lt; 40 yaş, ürik asit &gt; 8 mg/dL ya da böbrek yetmezliği, hipertansiyon, iskemik kalp hastalığı, kalp yetersizliği varsa erken başlanmasını önerir. Asemptomatik hiperürisemide ÜDT önerilmez (ACR 2020). Tiyazidi mümkünse başka antihipertansife çevirin, losartan tercih edilebilir (ACR 2020).</p>
+  </section>
+
+  <p class="note">Kaynaklar: FitzGerald JD ve ark. 2020 ACR gut tedavi kılavuzu, Arthritis Care Res 2020;72:744–60 (atakta kolşisin, NSAİİ ya da oral/eklem içi/IM steroid; düşük doz kolşisin, 1,2 mg + 1 saat sonra 0,6 mg; ÜDT endikasyonları: ≥ 1 tofüs, görüntülemede gut hasarı, ≥ 2 atak/yıl güçlü; &gt; 1 ama &lt; 2 atak/yıl koşullu; ilk atakta KBH evre ≥ 3, ürik asit &gt; 9 mg/dL ya da ürolitiyazis varsa koşullu; allopürinol ilk seçenek, KBH’de de; başlangıç ≤ 100 mg/gün, KBH’de daha düşük, ör. ≤ 50 mg/gün; febuksostat ≤ 40 mg/gün; titrasyon haftalar-aylar içinde, KBH’de de 300 mg üzerine çıkılabilir, FDA üst sınırı 800 mg; hedef &lt; 6 mg/dL; profilaksi 3–6 ay; atak sırasında ÜDT başlanabilir; HLA-B*5801 Güneydoğu Asya kökenli ve Afrika kökenli Amerikalılarda; febuksostatta KV hastalıkta başka ilaca geçiş); Khanna D ve ark. 2012 ACR gut kılavuzu bölüm 1–2, Arthritis Care Res 2012;64:1431–61 (allopürinol titrasyonu 2–5 haftada bir; kolşisin yüklemesinden 12 saat sonra günde 1–2 kez; profilakside düşük doz prednizolon ≤ 10 mg/gün); Richette P ve ark. 2016 EULAR gut önerileri, Ann Rheum Dis 2017;76:29–42 (kolşisin ilk 12 saatte 1 mg, 1 saat sonra 0,5 mg; prednizolon 30–35 mg/gün 3–5 gün; ağır böbrek yetmezliğinde kolşisin ve NSAİİ’den kaçının, GFR &lt; 30’da kolşisin güvenliliği gösterilmemiş; güçlü P-gp/CYP3A4 inhibitörü alana kolşisin verilmez; profilaksi ilk 6 ay kolşisin 0,5–1 mg/gün; ÜDT endikasyonu yineleyen atak, tofüs, ürat artropatisi, böbrek taşı; hedef &lt; 6, ağır gutta &lt; 5 mg/dL; allopürinol 100 mg/gün başlayıp 2–4 haftada 100 mg artırma; böbrek yetmezliğinde en yüksek doz kreatinin klerensine göre); kolşisin 0,5 mg KÜB (TİTCK; akut atakta 6 mg’a dek yüksek doz şema; CrCl 10–50: profilakside günde 1 tablet, akut atakta normal dozun yarısı, günde en çok 3 mg; CrCl &lt; 10, hemodiyaliz ve ağır karaciğer hastalığında kontrendike; P-gp ya da güçlü CYP3A4 inhibitörüyle doz azaltma, böbrek ya da karaciğer yetmezliğinde birlikte kullanımdan kaçınma); allopürinol 100/300 mg KÜB (başlangıç 100 mg/gün; ağır olguda 700–900 mg/gün; ağır böbrek yetmezliğinde &lt; 100 mg/gün ya da aralık uzatma; bir preparatta CrCl &lt; 20’de kontrendike; diyalizde her diyalizden sonra 300–400 mg; azatiyoprin/merkaptopürin dozu %25’e); febuksostat 80/120 mg KÜB (80 mg, 2–4 hafta sonra ürik asit &gt; 6 ise 120 mg; hafif-orta böbrek yetmezliğinde doz ayarı yok, CrCl &lt; 30’da yerleşmemiş; majör KV hastalıkta yalnız allopürinol uygun değilse; profilaksi en az 6 ay; azatiyoprin/merkaptopürin önerilmez); naproksen sodyum 550 mg KÜB (akut gutta 825 mg, sonra 8 saatte bir 275 mg; CrCl &lt; 30’da kontrendike); White WB ve ark. CARES, N Engl J Med 2018;378:1200–10 (febuksostatta KV ve tüm nedenli ölüm artışı); Mackenzie IS ve ark. FAST, Lancet 2020;396:1745–57 (allopürinole göre KV olayda fark yok). Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var fm=function(x,d){return x.toLocaleString('tr-TR',{maximumFractionDigits:d===undefined?1:d})};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb(group)}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?b.dataset.v:null}
+  function li(ol,b,a){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}$(ol).appendChild(l)}
+  function eks(id,list,card){var e=$(id);e.hidden=!list.length;e.textContent=list.length?'Eksik: '+list.join(', ')+'.':'';
+    if(list.length)$(card).setAttribute('data-eksik','Eksik veri var');else $(card).removeAttribute('data-eksik')}
+  var GRI='var(--muted)',YES='var(--ok)',SAR='var(--warn)',KIR='var(--high)',MAV='var(--low)';
+
+  // Kolşisin durumu: 'tam' | 'azal' (eGFR 30–49) | 'orta' (orta inhibitör, eGFR ≥ 50) | 'yok' (verilmez) | null (veri eksik)
+  function kolsisin(g,hd,ink){
+    if(hd)return {d:'yok',n:'Diyalizde kontrendike (KÜB: diyalizle uzaklaştırılamaz).'};
+    if(g===null)return null;
+    if(ink==='g')return {d:'yok',n:'Güçlü CYP3A4/P-gp inhibitörü alan hastaya kolşisin verilmez (EULAR 2016); ölümcül toksisite bildirilmiştir.'};
+    if(g<30)return {d:'yok',n:'eGFR < 30’da güvenliliği gösterilmemiş, kaçının (EULAR 2016); KÜB CrCl < 10’da kontrendike.'};
+    if(ink==='o'&&g<50)return {d:'yok',n:'Böbrek yetmezliğinde CYP3A4/P-gp inhibitörüyle birlikte kullanımdan kaçının (KÜB).'};
+    if(ink===null)return null;
+    if(ink==='o')return {d:'orta'};
+    return {d:g<50?'azal':'tam'};
+  }
+
+  function calc(){
+    var g=v('egfr'),hd=segVal('hd')==='1',ink=segVal('ink');
+    var gT=hd?'diyaliz':g!==null?'eGFR '+fm(g,0):'';
+    var K=kolsisin(g,hd,ink);
+
+    // 1) Akut atak
+    $('rx1').innerHTML='';$('aa').textContent='';
+    var e1=[];
+    if(g===null&&!hd)e1.push('eGFR');
+    if(ink===null&&!(K&&K.d==='yok'))e1.push('etkileşen ilaç (CYP3A4/P-gp)');
+    var nsOk=hd?'yok':g===null?null:g<30?'yok':g<60?'dikkat':'tam';
+    if(e1.length&&(!K||nsOk===null)){pill('ap','Eksik veri',GRI);$('aa').textContent='Kolşisin ve NSAİİ dozu böbrek işlevine ve etkileşen ilaçlara bağlıdır.'}
+    else if(K&&K.d!=='yok'){pill('ap',K.d==='tam'?'Kolşisin, NSAİİ ya da steroid':'Kolşisin azaltılmış doz, NSAİİ ya da steroid',K.d==='tam'?YES:SAR);$('aa').textContent=gT+': üç ilaçtan biri seçilebilir.'}
+    else if(K){pill('ap','Kolşisin önerilmez: steroid',KIR);$('aa').textContent=gT+(nsOk==='yok'?': kolşisin ve NSAİİ’den kaçının; ilk seçenek steroid.':': kolşisin verilmez; NSAİİ ya da steroid.')}
+    else{pill('ap','Eksik veri',GRI)}
+    // Kolşisin
+    if(!K)li('rx1','Kolşisin: '+(g===null&&!hd?'eGFR girin':'etkileşen ilacı seçin'),'Doz böbrek işlevine ve CYP3A4/P-gp inhibitörlerine göre değişir.');
+    else if(K.d==='tam')li('rx1','Kolşisin: 1 mg (2 tablet 0,5 mg) hemen, 1 saat sonra 0,5 mg','1. gün toplam 1,5 mg (EULAR 2016). 12 saat sonra 0,5 mg günde 1–2 kez, atak geçene dek (ACR 2012). İshalde dozu azaltın ya da kesin.');
+    else if(K.d==='azal')li('rx1','Kolşisin (eGFR 30–49): 1 mg hemen, 1 saat sonra 0,5 mg; sonraki günler 0,5 mg 1×1','1. gün 1,5 mg, KÜB’ün CrCl 10–50 için verdiği günlük en çok 3 mg’ın altında; ertesi gün KÜB’ün bu basamaktaki günlük dozu. İshal, kas güçsüzlüğü, sitopeni yönünden izleyin.');
+    else if(K.d==='orta')li('rx1','Kolşisin (orta CYP3A4/P-gp inhibitörü): 1 mg tek doz, 3 gün tekrarlanmaz','Yükleme sonrası 0,5 mg verilmez. KÜB doz azaltmayı önerir; şema FDA etiketinden (1,2 mg tek doz) 0,5 mg tablete uyarlandı. Mümkünse inhibitörü kesin ya da steroid seçin.');
+    else li('rx1','Kolşisin: önerilmez',K.n);
+    // NSAİİ
+    if(nsOk===null)li('rx1','NSAİİ: eGFR girin','eGFR < 30’da kaçınılır.');
+    else if(nsOk==='yok')li('rx1','NSAİİ: kaçının',hd?'Diyaliz hastasında önerilmez (EULAR 2016: ağır böbrek yetmezliği).':'eGFR < 30 (EULAR 2016); naproksen KÜB CrCl < 30’da kontrendike.');
+    else li('rx1','NSAİİ: naproksen sodyum 825 mg, sonra 8 saatte bir 275 mg',(nsOk==='dikkat'?'eGFR 30–59: böbrek işlevini kötüleştirebilir; kısa süre, kreatinin ve potasyum izleyin; mümkünse steroid ya da kolşisin. ':'')+'275 mg tabletle 3 tablet, sonra 8 saatte bir 1 tablet (550 mg tablet çentiksiz). Atak geçince kesin (KÜB). Ya da başka bir NSAİİ tam dozda. GİS riski varsa PPI ekleyin; kalp yetersizliği, peptik ülser ve antikoagülanda kaçının.');
+    // Steroid
+    li('rx1','Prednizolon 30–35 mg/gün, 3–5 gün','Metilprednizolon eşdeğeri 24–28 mg/gün; sonra kesin (EULAR 2016). Böbrek işlevinden bağımsızdır. Diyabette glukozu izleyin.');
+    li('rx1','Eklem içi steroid','Tek ya da iki büyük eklemde; septik artrit dışlandıktan sonra. Ağızdan alamayan hastada IM ya da IV steroid (ACR 2020).');
+    eks('ae',e1,'k1');
+
+    // 2) ÜDT
+    $('rx2').innerHTML='';$('ua2').textContent='';
+    var atk=segVal('atk'),tof=segVal('tof'),rad=segVal('rad'),tas=segVal('tas'),ua=v('ua');
+    var e2=[],ind=null;
+    var guclu=tof==='1'||rad==='1'||atk==='sik';
+    if(guclu){ind='var';pill('up','ÜDT önerilir',KIR);
+      $('ua2').textContent=[atk==='sik'?'≥ 2 atak/yıl':null,tof==='1'?'tofüs':null,rad==='1'?'gute bağlı eklem hasarı':null].filter(Boolean).join(', ')+': güçlü öneri (ACR 2020, EULAR 2016).'}
+    else{
+      if(atk===null)e2.push('atak sıklığı');if(tof===null)e2.push('tofüs');if(rad===null)e2.push('eklem hasarı');if(tas===null)e2.push('böbrek taşı');
+      if(e2.length)pill('up','Eksik veri',GRI);
+      else if(tas==='1'){ind='var';pill('up','ÜDT önerilir (EULAR); ACR koşullu',SAR);$('ua2').textContent='Böbrek taşı: EULAR 2016 ÜDT endikasyonu sayar; ACR 2020 ilk atakta bile koşullu önerir.'}
+      else if(atk==='az'){ind='kos';pill('up','ÜDT koşullu önerilir',SAR);$('ua2').textContent='Birden çok atak, ancak yılda 2’den az: hastayla birlikte karar verin (ACR 2020 koşullu).'}
+      else{
+        var kbh=hd||(g!==null&&g<60),yuk=ua!==null&&ua>9;
+        if(kbh||yuk){ind='kos';pill('up','İlk atak: ÜDT koşullu önerilir',SAR);
+          $('ua2').textContent='İlk atak ve '+[kbh?'KBH evre ≥ 3 ('+gT+')':null,yuk?'ürik asit > 9 mg/dL':null].filter(Boolean).join(' ve ')+' (ACR 2020 koşullu).'}
+        else if(g===null||ua===null){pill('up','Eksik veri',GRI);if(g===null)e2.push('eGFR');if(ua===null)e2.push('ürik asit');
+          $('ua2').textContent='İlk atakta KBH evre ≥ 3 ya da ürik asit > 9 mg/dL varsa ÜDT koşullu önerilir.'}
+        else{ind='yok';pill('up','İlk atak: ÜDT genellikle başlanmaz',GRI);
+          $('ua2').textContent='Komplikasyonsuz ilk atakta ACR 2020 ÜDT’ye karşı koşullu öneri verir; hastayla konuşun.'+(ua>8?' EULAR 2016: ürik asit > 8 mg/dL olduğu için erken başlamayı düşünün.':' EULAR 2016: < 40 yaş, böbrek yetmezliği, hipertansiyon, iskemik kalp hastalığı ya da kalp yetersizliğinde erken başlamayı düşünün.')}
+      }
+    }
+    eks('ue',e2,'k2');
+
+    var bas=ind==='yok'?'Başlanırsa: ':'';
+    // Hedef
+    var hedef=tof==='1'?5:6;
+    li('rx2','Hedef ürik asit < '+hedef+' mg/dL'+(tof==='1'?' (tofüs)':''),(tof==='1'?'Tofüsler eriyene dek < 5, sonra < 6 mg/dL (EULAR 2016); ACR 2020 < 6 mg/dL. ':'Tüm ÜDT alanlarda < 6 mg/dL (ACR 2020, EULAR 2016). ')+(ua!==null?'Şimdi '+fm(ua)+' mg/dL'+(ua>=hedef?(ua-hedef<0.05?', hedefe ulaşılmamış (sınırda). ':', hedefin '+fm(ua-hedef)+' mg/dL üstünde. '):', hedefin altında. '):'')+'Hedefe ulaşana dek dozu artırın; ömür boyu sürdürün.');
+    // Allopürinol
+    if(g===null&&!hd)li('rx2',bas+'Allopürinol (ilk seçenek): eGFR girin','Başlangıç dozu böbrek işlevine göre: eGFR ≥ 60’ta 100 mg/gün, KBH’de daha düşük (ACR 2020).');
+    else if(hd)li('rx2',bas+'Allopürinol (diyaliz): nefrolojiyle kararlaştırın','ACR 2020 KBH’de ≤ 50 mg/gün gibi düşük dozla başlayıp ürik aside göre titre etmeyi önerir. KÜB haftada 2–3 diyalizde her diyalizden hemen sonra 300–400 mg (aralarda ilaç yok) seçeneğini verir.');
+    else if(g>=60){li('rx2',bas+'Allopürinol (ilk seçenek): 100 mg/gün, 1 tablet 100 mg','Başlangıç ≤ 100 mg/gün (ACR 2020, EULAR 2016).');
+      li('rx2','Titrasyon: 2–5 haftada bir 100 mg artırın','100 → 200 → 300 mg/gün…; her artıştan sonra ürik asit bakın (ACR 2020; EULAR 2–4 hafta). Hedef için 300 mg üzerine çıkılabilir; en çok 800 mg/gün (ACR 2020, FDA), KÜB ağır olguda 700–900 mg/gün. 300 mg tablet bulunur.')}
+    else if(g>=30){li('rx2',bas+'Allopürinol (ilk seçenek, KBH evre 3): 50 mg/gün, yarım tablet 100 mg','ACR 2020: KBH’de 100 mg’dan düşük, ör. ≤ 50 mg/gün başlayın; KBH’de de ilk seçenek allopürinoldür.');
+      li('rx2','Titrasyon: 2–5 haftada bir 50 mg artırın','50 → 100 → 150 mg/gün…; her artıştan sonra ürik asit. ACR 2020 KBH’de artış miktarı vermez, 50 mg’lık basamak yaygın uygulamadır (doğrulanmadı). Yakın izlemle 300 mg üzerine çıkılabilir (ACR 2020).')}
+    else{li('rx2',bas+'Allopürinol (eGFR < 30): ≤ 50 mg/gün, yarım tablet 100 mg','ACR 2020: KBH’de ≤ 50 mg/gün başlayın. KÜB: ağır böbrek yetmezliğinde < 100 mg/gün ya da doz aralığı uzatılır; bir preparatın KÜB’ü CrCl < 20’de kontrendike sayar. Nefrolojiyle birlikte.');
+      li('rx2','Titrasyon: 2–5 haftada bir 50 mg, yakın izlemle','Her artıştan sonra ürik asit; döküntüde hemen kesin. Ağır cilt reaksiyonu (AHS) riski KBH’de ve yüksek başlangıç dozunda artar (ACR 2020).')}
+    li('rx2','HLA-B*5801','Han Çinli, Koreli, Taylandlı gibi Güneydoğu Asya kökenli ve Afrika kökenli Amerikalı hastada allopürinolden önce bakın; diğerlerinde rutin önerilmez (ACR 2020). Pozitifse allopürinol vermeyin.');
+    // Profilaksi
+    var prof;
+    if(!K)prof=['Profilaksi: '+(g===null&&!hd?'eGFR girin':'etkileşen ilacı seçin'),'Kolşisin dozu böbrek işlevine ve etkileşen ilaçlara bağlıdır.'];
+    else if(K.d==='yok')prof=['Profilaksi: kolşisin önerilmez',K.n+' Seçenek: düşük doz prednizolon ≤ 10 mg/gün (ACR 2012)'+(nsOk==='yok'?'.':' ya da düşük doz NSAİİ (EULAR 2016).')];
+    else if(K.d==='tam')prof=['Profilaksi: kolşisin 0,5 mg 1×1','EULAR 2016: 0,5–1 mg/gün. Statinle kas toksisitesine dikkat.'];
+    else prof=['Profilaksi: kolşisin 0,5 mg 1×1, artırılmaz',K.d==='azal'?'KÜB CrCl 10–50 profilaktik dozu. Nörotoksisite ve kas toksisitesi yönünden izleyin (EULAR 2016).':'Orta CYP3A4/P-gp inhibitörüyle doz artırılmaz; toksisite yönünden izleyin (KÜB).'];
+    li('rx2',prof[0],prof[1]+' Süre 3–6 ay (ACR 2020; EULAR ilk 6 ay); atak sürerse uzatın.');
+    li('rx2','Atak sırasında başlanabilir','ÜDT endikasyonu varsa atak geçmesini beklemeden başlanabilir (ACR 2020 koşullu); atak sırasında ÜDT kesilmez. Febuksostat KÜB’ü atak sırasında başlamamayı önerir.');
+    // Febuksostat
+    li('rx2','İkinci seçenek: febuksostat 80 mg 1×1','Allopürinolle hedefe ulaşılamaz ya da tolere edilemezse. 2–4 hafta sonra ürik asit > 6 mg/dL ise 120 mg (KÜB). ACR 2020 ≤ 40 mg ile başlamayı önerir; Türkiye’de 80 ve 120 mg tablet var, 40 mg bulunamadı. '+(g!==null&&g<30||hd?'eGFR < 30’da etkinlik ve güvenlilik yerleşmemiş (KÜB). ':'Hafif-orta böbrek yetmezliğinde doz ayarı yok (KÜB). ')+'KV hastalık: CARES’te KV ve tüm nedenli ölüm arttı, FAST’ta artmadı; majör KV hastalıkta yalnız allopürinol uygun değilse kullanın (KÜB, ACR 2020).');
+    li('rx2','Azatiyoprin ya da merkaptopürin alıyorsa','Allopürinolle birlikte kaçının; zorunluysa onların dozu %25’e (KÜB). Febuksostatla önerilmez.');
+  }
+  ['hd','ink','atk','tof','rad','tas'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

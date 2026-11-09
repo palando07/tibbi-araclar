@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GRACE Skoru (AKS)</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartları, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+label.lbl,.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
+.seg button{flex:1;border:0;background:transparent;color:var(--fg);font:500 .95rem var(--font-body);padding:11px 14px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff;font-weight:600}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.res .num{font:700 2.8rem/1 var(--font-num);font-variant-numeric:tabular-nums}
+.res .of{color:var(--muted);font-size:.9rem}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+details{font-size:.88rem;color:var(--muted)}
+details summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details p{margin:8px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+.sub{display:flex;justify-content:space-between;gap:12px;font-size:.92rem;border-top:1px solid var(--line);padding-top:10px}
+.sub b{font-family:var(--font-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+.seg button{min-width:0}
+.card h3{margin:4px 0 0;font-size:1rem}
+.item .pts{font:700 .9rem var(--font-num);color:var(--muted);flex:none}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}.item:last-child{border-bottom:0}.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}.item .txt{flex:1;min-width:0}.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+</style>
+</head>
+<body data-ornek-secim="ka st enz">
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>GRACE Skoru (AKS)</h1>
+    <p>ST yükselmesiz AKS’de hastane içi ölüm riski ve invaziv strateji zamanlaması</p>
+  </header>
+
+  <section class="card">
+    <h2>Başvurudaki değerler</h2>
+    <div class="grid">
+      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="any" value="68"></div>
+      <div class="field"><label for="nabiz">Nabız <span>/dk</span></label><input id="nabiz" data-hasta="nabiz" type="number" inputmode="decimal" step="any" value="92"></div>
+      <div class="field"><label for="sbp">Sistolik KB <span>mmHg</span></label><input id="sbp" data-hasta="sbp" type="number" inputmode="decimal" step="any" value="128"></div>
+      <div class="field"><label for="cr">Kreatinin <span>mg/dL</span></label><input id="cr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.3"></div>
+    </div>
+    <div class="field"><span class="lbl">Killip sınıfı</span><div class="items">
+      <label class="item"><input type="radio" name="kl" value="0"><span class="txt">I<small>Kalp yetersizliği bulgusu yok</small></span><span class="pts">0</span></label>
+      <label class="item"><input type="radio" name="kl" value="20" checked><span class="txt">II<small>Raller, S3 ya da juguler venöz dolgunluk</small></span><span class="pts">20</span></label>
+      <label class="item"><input type="radio" name="kl" value="39"><span class="txt">III<small>Akciğer ödemi</small></span><span class="pts">39</span></label>
+      <label class="item"><input type="radio" name="kl" value="59"><span class="txt">IV<small>Kardiyojenik şok</small></span><span class="pts">59</span></label>
+    </div></div>
+    <span class="lbl">Başvuruda kalp durması</span>
+    <div class="seg"><button type="button" data-g="ka" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="ka" data-v="39" aria-pressed="false">Var (39)</button></div>
+    <span class="lbl">EKG’de ST sapması (çökme ya da yükselme)</span>
+    <div class="seg"><button type="button" data-g="st" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="st" data-v="28" aria-pressed="true">Var (28)</button></div>
+    <span class="lbl">Kardiyak belirteç (troponin) yüksekliği</span>
+    <div class="seg"><button type="button" data-g="enz" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="enz" data-v="14" aria-pressed="true">Var (14)</button></div>
+  </section>
+
+  <section class="card">
+    <h2>Çok yüksek risk ölçütleri</h2>
+    <div class="items">
+      <label class="item"><input type="checkbox" class="cy"><span class="txt">Hemodinamik instabilite ya da kardiyojenik şok</span></label>
+      <label class="item"><input type="checkbox" class="cy"><span class="txt">Tedaviye karşın yineleyen ya da dirençli göğüs ağrısı</span></label>
+      <label class="item"><input type="checkbox" class="cy"><span class="txt">Yaşamı tehdit eden aritmi ya da başvuru sonrası kalp durması</span></label>
+      <label class="item"><input type="checkbox" class="cy"><span class="txt">MI’nın mekanik komplikasyonu</span></label>
+      <label class="item"><input type="checkbox" class="cy"><span class="txt">Süren iskemiye bağlı olduğu düşünülen akut kalp yetersizliği</span></label>
+      <label class="item"><input type="checkbox" class="cy"><span class="txt">Yineleyen dinamik ST/T değişiklikleri<small>özellikle aralıklı ST yükselmesi</small></span></label>
+    </div>
+    <h3>Yüksek risk ölçütleri</h3>
+    <div class="items">
+      <label class="item"><input type="checkbox" class="yr"><span class="txt">hs-troponin algoritmasıyla kesinleşmiş NSTEMI</span></label>
+      <label class="item"><input type="checkbox" class="yr"><span class="txt">Dinamik ST ya da T dalgası değişiklikleri</span></label>
+      <label class="item"><input type="checkbox" class="yr"><span class="txt">Geçici ST yükselmesi</span></label>
+    </div>
+    <p class="note">GRACE &gt; 140 yüksek risk ölçütü olarak skordan otomatik alınır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <span class="lbl">GRACE (hastane içi ölüm)</span>
+    <div class="res"><span class="num" id="sc">–</span><span class="of">/ 372</span><span class="pill" id="pl"></span></div>
+    <div class="sub"><span>Hastane içi ölüm olasılığı</span><b id="mort">–</b></div>
+    <div class="sub"><span>İnvaziv strateji</span><b id="zam">–</b></div>
+    <p class="advice" id="adv"></p>
+    <p class="note">Değerler örnek olarak doldurulmuştur. Başvurudaki ilk değerleri kullanın. NSTE-AKS’de hastane içi ölüm riski: ≤ 108 düşük (&lt; %1), 109–140 orta (%1–3), &gt; 140 yüksek (&gt; %3). Ölüm olasılığı Granger 2003 nomogramının 10 puanlık tablosundan okunur; tablo STEMI dahil tüm AKS’den türetilmiştir. GRACE 2.0 aynı değişkenleri sürekli (doğrusal olmayan) işlevlerle kullanıp 1 ve 3 yıllık ölümü de verir; GRACE 3.0 (2022) NSTE-AKS için cinsiyete özgü makine öğrenmesi modelidir. Bu araç klasik puanı hesaplar. Düşük riskli göğüs ağrısında <a href="heart-skoru.html">HEART skoru</a> kullanılabilir.</p>
+  </section>
+
+  <section class="card">
+    <h2>Puan tablosu</h2>
+    <details>
+      <summary>Klasik GRACE, hastane içi ölüm (Granger 2003)</summary>
+      <p>Yaş: &lt; 30 → 0; 30–39 → 8; 40–49 → 25; 50–59 → 41; 60–69 → 58; 70–79 → 75; 80–89 → 91; ≥ 90 → 100.</p>
+      <p>Nabız (/dk): &lt; 50 → 0; 50–69 → 3; 70–89 → 9; 90–109 → 15; 110–149 → 24; 150–199 → 38; ≥ 200 → 46.</p>
+      <p>Sistolik KB (mmHg): &lt; 80 → 58; 80–99 → 53; 100–119 → 43; 120–139 → 34; 140–159 → 24; 160–199 → 10; ≥ 200 → 0.</p>
+      <p>Kreatinin (mg/dL): 0–0,39 → 1; 0,40–0,79 → 4; 0,80–1,19 → 7; 1,20–1,59 → 10; 1,60–1,99 → 13; 2,00–3,99 → 21; ≥ 4 → 28.</p>
+      <p>Killip I → 0; II → 20; III → 39; IV → 59. Başvuruda kalp durması → 39; ST sapması → 28; kardiyak belirteç yüksekliği → 14.</p>
+      <p>Hastane içi ölüm (puan → %): ≤ 60 → ≤ 0,2; 70 → 0,3; 80 → 0,4; 90 → 0,6; 100 → 0,8; 110 → 1,1; 120 → 1,6; 130 → 2,1; 140 → 2,9; 150 → 3,9; 160 → 5,4; 170 → 7,3; 180 → 9,8; 190 → 13; 200 → 18; 210 → 23; 220 → 29; 230 → 36; 240 → 44; ≥ 250 → ≥ 52.</p>
+    </details>
+    <details>
+      <summary>ESC 2023 invaziv strateji zamanlaması</summary>
+      <p>En az bir çok yüksek risk ölçütü: acil invaziv strateji (&lt; 2 saat) önerilir (sınıf I, C).</p>
+      <p>En az bir yüksek risk ölçütü (kesin NSTEMI, dinamik ST/T değişikliği, geçici ST yükselmesi ya da GRACE &gt; 140): erken invaziv strateji (&lt; 24 saat) düşünülmelidir (sınıf IIa, A; 2020’de sınıf I idi).</p>
+      <p>Bu ölçütleri olmayanlarda: kararsız angina şüphesi yüksekse yatış süresince invaziv strateji; şüphe düşükse non-invaziv test ya da klinik değerlendirmeye göre seçici invaziv yaklaşım.</p>
+    </details>
+  </section>
+
+  <p class="note">Kaynaklar: Granger CB ve ark. Predictors of hospital mortality in the Global Registry of Acute Coronary Events. Arch Intern Med 2003;163:2345–53 (puan tablosu ve nomogram); Fox KAA ve ark. Prediction of risk of death and myocardial infarction in the six months after presentation with acute coronary syndrome: prospective multinational observational study (GRACE). BMJ 2006;333:1091 (6 aylık model); Byrne RA ve ark. 2023 ESC Guidelines for the management of acute coronary syndromes. Eur Heart J 2023;44:3720–826 (risk ölçütleri, invaziv strateji zamanlaması); risk sınıfları (≤ 108 / 109–140 / &gt; 140) GRACE NSTE-AKS hastane içi ölüm tertilleridir. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var v=function(id){var x=parseFloat($(id).value);return isFinite(x)?x:null};
+  var tr=function(x){return String(x).replace('.',',')};
+  function pill(id,txt,color){var p=$(id);p.textContent=txt;p.style.background=color;p.hidden=!txt}
+  function seg(group,cb){var bs=document.querySelectorAll('[data-g="'+group+'"]');bs.forEach(function(b){b.onclick=function(){bs.forEach(function(o){o.setAttribute('aria-pressed',o===b)});cb()}})}
+  function segVal(group){var b=document.querySelector('[data-g="'+group+'"][aria-pressed=true]');return b?+b.dataset.v:null}
+  function rv(n){var e=document.querySelector('input[name='+n+']:checked');return e?+e.value:null}
+
+  // Granger 2003: aralıklar alt sınır dahil (ör. nabız 50 → 3, 70 → 9)
+  function yasP(x){return x<30?0:x<40?8:x<50?25:x<60?41:x<70?58:x<80?75:x<90?91:100}
+  function hrP(x){return x<50?0:x<70?3:x<90?9:x<110?15:x<150?24:x<200?38:46}
+  function sbpP(x){return x<80?58:x<100?53:x<120?43:x<140?34:x<160?24:x<200?10:0}
+  function crP(x){return x<0.4?1:x<0.8?4:x<1.2?7:x<1.6?10:x<2?13:x<4?21:28}
+  // Nomogram: 60…250 puan, 10’ar puan aralıkla hastane içi ölüm (%)
+  var NOMO=[0.2,0.3,0.4,0.6,0.8,1.1,1.6,2.1,2.9,3.9,5.4,7.3,9.8,13,18,23,29,36,44,52];
+  function olum(s){
+    if(s<=60)return '≤ %0,2';if(s>=250)return '≥ %52';
+    var i=Math.floor((s-60)/10),a=NOMO[i],b=NOMO[i+1],p=60+i*10;
+    return s===p?'%'+tr(a):'%'+tr(a)+'–'+tr(b)+' ('+p+'–'+(p+10)+' puan)';
+  }
+  // [ad, puan işlevi, en yüksek puan]
+  var MAD=[['yaş',function(){var x=v('yas');return x===null?null:yasP(x)},100],
+    ['nabız',function(){var x=v('nabiz');return x===null?null:hrP(x)},46],
+    ['sistolik KB',function(){var x=v('sbp');return x===null?null:sbpP(x)},58],
+    ['kreatinin',function(){var x=v('cr');return x===null?null:crP(x)},28],
+    ['Killip',function(){return rv('kl')},59],
+    ['kalp durması',function(){return segVal('ka')},39],
+    ['ST sapması',function(){return segVal('st')},28],
+    ['troponin',function(){return segVal('enz')},14]];
+
+  function calc(){
+    var lo=0,hi=0,miss=[];
+    MAD.forEach(function(m){var p=m[1]();if(p===null){miss.push(m[0]);hi+=m[2]}else{lo+=p;hi+=p}});
+    var cy=document.querySelectorAll('.cy:checked').length,yr=document.querySelectorAll('.yr:checked').length;
+    var kesin=!miss.length;
+    $('sc').textContent=(kesin?'':'≥ ')+lo;
+    // Risk sınıfı ancak eksik maddeler sınıfı değiştiremiyorsa verilir
+    var sl=lo<=108?0:lo<=140?1:2, sh=hi<=108?0:hi<=140?1:2;
+    var AD=['Düşük risk','Orta risk','Yüksek risk'],RK=['var(--ok)','var(--warn)','var(--high)'];
+    // Eksik veriyle güven verici "düşük risk" gösterilmez
+    if(sl===sh&&(kesin||sl>0))pill('pl',AD[sl]+(kesin?'':' · eksik veri'),RK[sl]);
+    else pill('pl','Eksik veri: '+miss.join(', '),'var(--muted)');
+    $('mort').textContent=kesin?olum(lo):(lo>=250?'≥ %52':'–');
+    var g140=lo>140, gBelirsiz=!g140&&hi>140;
+    var z,a;
+    if(cy){z='Acil (< 2 saat)';a='Çok yüksek risk ölçütü var: acil invaziv strateji (< 2 saat) önerilir (ESC 2023, sınıf I).'}
+    else if(yr||g140){z='Erken (< 24 saat)';a='Yüksek risk ('+[yr?'işaretli ölçüt':'',g140?'GRACE > 140':''].filter(Boolean).join(', ')+'): 24 saat içinde erken invaziv strateji düşünülmelidir (ESC 2023, sınıf IIa).'}
+    else if(!kesin){z='Belirsiz';a=(gBelirsiz?'Eksik maddelerle GRACE 140’ı aşabilir':'Eksik madde var ('+miss.join(', ')+')')+'; zamanlama için eksik verileri girin. Çok yüksek ve yüksek risk ölçütlerini de gözden geçirin.'}
+    else{z='Yatışta / seçici';a='Çok yüksek ya da yüksek risk ölçütü işaretlenmedi ve GRACE ≤ 140: kararsız angina şüphesi yüksekse yatış süresince invaziv strateji, düşükse non-invaziv teste göre seçici invaziv yaklaşım.'+(segVal('enz')===14?' Troponin yüksek işaretli: hs-troponin algoritmasıyla NSTEMI kesinleştiyse bu yüksek risk ölçütüdür (erken < 24 saat); yukarıda işaretleyin.':'')}
+    $('zam').textContent=z;
+    $('adv').textContent=(kesin?'':'En az '+lo+', en çok '+hi+' puan. ')+a;
+  }
+  ['ka','st','enz'].forEach(function(g){seg(g,calc)});
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});
+  calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

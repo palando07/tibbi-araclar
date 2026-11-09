@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Erişkin Aşılama</title>
+<meta name="theme-color" content="#8c1c2c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+/* Layout: tek sütun; giriş kartı, sonra sonuç kartı */
+:root{
+  --bg:#f3f6f8; --surface:#ffffff; --fg:#14222b; --muted:#5b6b75; --line:#d8e0e5;
+  --accent:#8c1c2c; --accent-soft:#f6e7e9;
+  --ok:#2e8b57; --warn:#d9a21b; --high:#d24b32; --low:#3b6fc4;
+  --font-body:system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-num:ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e171c; --surface:#16232a; --fg:#e4ecf0; --muted:#93a5af; --line:#2a3a43;
+  --accent:#cf5468; --accent-soft:#3a1d23; --low:#6b9be0; color-scheme:dark;
+}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(24px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+.back{color:var(--accent);text-decoration:none;font-weight:600;font-size:.9rem}
+header h1{font-size:1.6rem;margin:0;letter-spacing:-.01em;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card h2{margin:0;font-size:1.15rem}
+.field{display:flex;flex-direction:column;gap:6px}
+.lbl{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+input[type=number]{font:600 1.25rem var(--font-num);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.res{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-top:4px}
+.pill{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.9rem;color:#fff}
+.advice{margin:0;font-size:.98rem}
+.note{font-size:.82rem;color:var(--muted);margin:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field label{font-size:.78rem;font-weight:600;letter-spacing:.04em;color:var(--muted)}
+.field label span{font-weight:400}
+ol.rec{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:12px}
+ol.rec li b{display:block}
+ol.rec li .advice{margin:2px 0 0;font-size:.92rem}
+ol.rec li .gr{margin:2px 0 0;font-size:.82rem;color:var(--muted)}
+.eks{margin:0;font-weight:600;color:var(--high)}
+.uyari{margin:0;font-size:.92rem;border-left:4px solid var(--high);padding:6px 0 6px 12px}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;background:var(--bg)}
+.item:last-child{border-bottom:0}
+.item input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin:0}
+.item .txt{flex:1;min-width:0}
+.item .txt small{display:block;color:var(--muted);font-size:.8rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back" href="./">← Vizit</a>
+    <h1>Erişkin Aşılama</h1>
+    <p>Yaş ve risk durumuna göre önerilen aşılar: pnömokok, zona, influenza, Td/Tdap, hepatit B, RSV, HPV</p>
+  </header>
+
+  <section class="card">
+    <h2>Hasta</h2>
+    <div class="grid">
+      <div class="field"><label for="age">Yaş <span>yıl</span></label><input id="age" data-hasta="yas" data-aralik="18-120 yıl" type="number" inputmode="numeric" step="1" value=""></div>
+    </div>
+    <span class="lbl">Risk durumları</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" id="dm"><span class="txt">Diyabet</span></label>
+      <label class="item"><input type="checkbox" id="kbh"><span class="txt">Kronik böbrek hastalığı<small>kronik böbrek yetmezliği, nefrotik sendrom</small></span></label>
+      <label class="item"><input type="checkbox" id="diy"><span class="txt">Diyaliz<small>ya da son dönem böbrek hastalığı</small></span></label>
+      <label class="item"><input type="checkbox" id="kc"><span class="txt">Kronik karaciğer hastalığı<small>siroz, kronik hepatit B ya da C, alkole bağlı karaciğer hastalığı</small></span></label>
+      <label class="item"><input type="checkbox" id="akc"><span class="txt">Kronik akciğer hastalığı<small>KOAH, astım, amfizem</small></span></label>
+      <label class="item"><input type="checkbox" id="kalp"><span class="txt">Kronik kalp hastalığı<small>kalp yetersizliği, kardiyomiyopati, koroner arter hastalığı; yalnız hipertansiyon değil</small></span></label>
+      <label class="item"><input type="checkbox" id="asp"><span class="txt">Aspleni<small>splenektomi (planlanan dahil), orak hücre hastalığı</small></span></label>
+      <label class="item"><input type="checkbox" id="hiv"><span class="txt">HIV enfeksiyonu</span></label>
+      <label class="item"><input type="checkbox" id="imm"><span class="txt">İmmünsüpresyon<small>immünsüpresif tedavi, kanser, organ ya da kök hücre nakli</small></span></label>
+      <label class="item"><input type="checkbox" id="geb"><span class="txt">Gebelik</span></label>
+      <label class="item"><input type="checkbox" id="sc"><span class="txt">Sağlık çalışanı</span></label>
+      <label class="item"><input type="checkbox" id="sig"><span class="txt">Sigara içiyor</span></label>
+    </div>
+    <p class="note">İşaretlenmeyen durum yok sayılır. Daha önce yapılmış aşıları sorun; öneriler eksik ya da hiç aşılanmamış erişkin içindir.</p>
+  </section>
+
+  <section class="card" aria-live="polite" id="k1">
+    <h2>Önerilen aşılar</h2>
+    <div class="res"><span class="pill" id="sp"></span></div>
+    <p class="eks" id="se" hidden></p>
+    <p class="uyari" id="canli" hidden></p>
+    <ol class="rec" id="rx"></ol>
+    <p class="note">Kılavuz farkı: CDC 2025 pnömokok aşısını ≥ 50 yaşta herkese önerir; EKMUD 2024 sağlıklı erişkinde ≥ 65 yaş eşiğini kullanır. İnfluenza aşısı CDC’de üç değerlikli, EKMUD 2024’te dört değerliklidir; mevsimin aşısı kullanılır. İmmünsüpresif tedavi planlanıyorsa aşıları mümkünse önceden yapın: inaktive aşılar en az 2 hafta, canlı aşılar en az 4 hafta önce (IDSA 2013). Hepatit B serolojisi ve immünsüpresyonda reaktivasyon için <a href="hepatit-b.html">hepatit B aracı</a>.</p>
+  </section>
+
+  <p class="note">Kaynaklar: CDC/ACIP erişkin aşı takvimi 2025, notlar bölümü (cdc.gov/vaccines/hcp/imz-schedules/adult-notes.html; pnömokok: ≥ 50 yaş ya da 19–49 yaş risk durumu, PCV15/PCV20/PCV21 tek doz, PCV15’ten sonra PPSV23 ≥ 1 yıl, immünsüpresyon, beyin omurilik sıvısı kaçağı ve koklear implantta ≥ 8 hafta, önceki aşıya göre aralıklar; zona: rekombinant aşı ≥ 50 yaş ve ≥ 19 yaş immünsüpresyon/HIV, 2 doz 2–6 ay ara; influenza: yıllık, ≥ 65 yaşta yüksek doz, adjuvanlı ya da rekombinant tercih; Td/Tdap: 10 yılda bir, her gebelikte 27–36. haftada Tdap; hepatit B: 19–59 yaş herkes, ≥ 60 yaşta risk varsa, ≥ 60 yaş diyabette ortak karar, diyalizde 40 µg doz; RSV: ≥ 75 yaş ve 50–74 yaş risk durumu, tek doz, gebelikte 32–36. hafta; HPV: 26 yaşa kadar, ≥ 15 yaşta başlayanda ve immünsüpresyonda 3 doz, 27–45 yaşta ortak karar; MenACWY, MenB, Hib aspleni ve HIV; hepatit A kronik karaciğer hastalığı ve HIV); Kobayashi M ve ark. ACIP pnömokok aşısı önerisinin ≥ 50 yaşa genişletilmesi, MMWR 2025;74(1):1–8; Weng MK ve ark. ACIP evrensel erişkin hepatit B aşılaması, MMWR 2022;71:477–83; Anderson TC ve ark. ACIP rekombinant zona aşısı, ≥ 19 yaş immünsüpresyon, MMWR 2022;71:80–4; CDC 2025–26 COVID-19 aşılama rehberi (bireysel karar); EKMUD Erişkin Bağışıklama Rehberi 2024 (PPSV23, PCV13, PCV15, PCV20; sağlıklı ≥ 65 yaşta tek doz PCV20; rekombinant zona aşısı ≥ 50 yaş ve ≥ 18 yaş immünsüpresyon, 2 doz 2–6 ay ara; hepatit B 0–1–6. ay, diyalizde çift doz; influenza her yıl; Td/Tdap 10 yılda bir); Rubin LG ve ark. IDSA 2013 immünsüpresif konakta aşılama rehberi, Clin Infect Dis 2014;58:e44–100 (canlı aşılar ve tedavi öncesi zamanlama). Türkiye’de ruhsat, bulunabilirlik ve geri ödeme bu araçta doğrulanmadı. Bu araç klinik karar desteği içindir.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var c=function(id){return $(id).checked};
+  function li(b,a,g){var l=document.createElement('li'),x=document.createElement('b');x.textContent=b;l.appendChild(x);
+    if(a){var p=document.createElement('p');p.className='advice';p.textContent=a;l.appendChild(p)}
+    if(g){var q=document.createElement('p');q.className='gr';q.textContent='Gerekçe: '+g;l.appendChild(q)}
+    $('rx').appendChild(l)}
+  var TR=' Türkiye’de bulunabilirliğini kontrol edin.';
+  var AD={dm:'diyabet',kbh:'kronik böbrek hastalığı',diy:'diyaliz',kc:'kronik karaciğer hastalığı',akc:'kronik akciğer hastalığı',kalp:'kronik kalp hastalığı',
+    asp:'aspleni',hiv:'HIV',imm:'immünsüpresyon',geb:'gebelik',sc:'sağlık çalışanı',sig:'sigara'};
+  function ad(ks){return ks.filter(c).map(function(k){return AD[k]})}
+
+  function calc(){
+    $('rx').innerHTML='';
+    var x=parseFloat($('age').value),a=isFinite(x)?x:null;
+    var R={};Object.keys(AD).forEach(function(k){R[k]=c(k)});
+    var yasYok=a===null,n=0,ertelenen=[];
+    var IMM=R.kbh||R.diy||R.asp||R.hiv||R.imm; // pnömokokta immünsüpresif durum
+    function ekle(b,t,g){li(b,t,g);n++}
+
+    // Pnömokok
+    var pr=ad(['dm','kbh','diy','kc','akc','kalp','asp','hiv','imm','sig']);
+    if((a!==null&&a>=50)||pr.length){
+      var g=(a!==null&&a>=50?['≥ 50 yaş']:[]).concat(pr).join(', ');
+      ekle('Pnömokok: PCV20 ya da PCV21, tek doz',
+        (a!==null&&a>=50&&a<65&&!pr.length?'CDC 2025 önerisi; EKMUD 2024 sağlıklı erişkinde ≥ 65 yaş eşiğini kullanır. ':'')+'Seçenek: PCV15 ve ardından PPSV23, '+(IMM?'en az 8 hafta sonra (immünsüpresif durum)':'en az 1 yıl sonra')+'. Daha önce aşılandıysa: yalnız PPSV23 ya da yalnız PCV13 aldıysa en az 1 yıl sonra PCV20 ya da PCV21; PCV13 ve PPSV23 aldıysa son dozdan en az 5 yıl sonra PCV20 ya da PCV21 (PPSV23 ≥ 65 yaşta yapılmışsa ortak karar); PCV20 ya da PCV21 aldıysa ek doz gerekmez.'+(R.geb?' Gebelikte veri sınırlı, CDC öneri vermez; doğumdan sonraya bırakılabilir.':'')+' PCV21’in'+TR,g)}
+
+    // Zona
+    if(R.imm||R.hiv||(a!==null&&a>=50)){
+      var zg=(a!==null&&a>=50?['≥ 50 yaş']:[]).concat(ad(['imm','hiv'])).join(', ');
+      if(R.geb)ertelenen.push('zona aşısı (gebelikte öneri yok, doğumdan sonra)');
+      else ekle('Zona: rekombinant zoster aşısı, 2 doz',
+        '2–6 ay arayla (en az 4 hafta)'+(R.imm||R.hiv?'; tedavi öncesi hızlı koruma gerekiyorsa ikinci doz 1–2 ay sonra':'')+'. Daha önce zona geçirmiş ya da canlı zona aşısı olmuş olsa da yapılır. İnaktive aşıdır, immünsüpresyonda kullanılabilir.'+TR,zg)}
+
+    // İnfluenza
+    ekle('İnfluenza: her yıl 1 doz',
+      (a!==null&&a>=65?'≥ 65 yaşta yüksek doz, adjuvanlı ya da rekombinant aşı tercih edilir; yoksa standart aşı. ':'')+(R.geb?'Gebelikte inaktive aşı, gebeliğin herhangi bir döneminde yapılır. ':'')+(R.imm||R.hiv||R.geb||R.asp?'Canlı (intranazal) aşı yapılmaz. ':'')+'Sonbaharda, mevsim başında.',
+      'tüm erişkinler'+(a!==null&&a>=65?'; ≥ 65 yaş':''));
+
+    // Td/Tdap
+    if(R.geb)ekle('Tdap: bu gebelikte 1 doz','27–36. haftada, tercihen erken (bebeği boğmacaya karşı korur). Her gebelikte tekrarlanır.','gebelik');
+    ekle('Td/Tdap: 10 yılda bir rapel','Erişkinlikte hiç Tdap yapılmadıysa 1 doz Tdap, sonra 10 yılda bir Td ya da Tdap. Primer seri yoksa ya da eksikse 3 doz: 0, 4 hafta, 6–12 ay (ilki Tdap).','tüm erişkinler');
+
+    // Hepatit B
+    var hr=ad(['diy','kbh','kc','hiv','sc']);
+    if(a!==null||hr.length){
+      var hb=null,hg;
+      if(a!==null&&a<60){hb='Hepatit B: 3 doz (0, 1, 6. ay)';hg=['19–59 yaş: tüm erişkinler (CDC 2022)'].concat(hr)}
+      else if(hr.length){hb='Hepatit B: 3 doz (0, 1, 6. ay)';hg=(a!==null?['≥ 60 yaş, risk var']:[]).concat(hr)}
+      else if(R.dm){hb='Hepatit B: ortak karar';hg=['≥ 60 yaş ve diyabet']}
+      else{hb='Hepatit B: isteyene yapılabilir';hg=['≥ 60 yaş, risk etkeni yok']}
+      ekle(hb,(R.diy?'Diyalizde yüksek doz (40 µg): 3 doz 0, 1, 6. ay ya da 4 doz 0, 1, 2, 6. ay; yılda bir anti-HBs, < 10 mIU/mL ise rapel. ':'')
+        +'Aşı öncesi HBsAg, anti-HBc ve anti-HBs bakın; bağışık olana gerekmez.'
+        +(R.sc||R.diy||R.hiv||R.imm||R.kbh?' Seriden 1–2 ay sonra anti-HBs bakın; < 10 mIU/mL ise seriyi tekrarlayın.':'')
+        +(R.geb?' Gebelikte standart 3 dozluk aşı kullanılır.':R.diy?'':' CpG adjuvanlı aşıyla 2 doz (0, 1. ay) seçeneği de vardır;'+TR),hg.join(', '))}
+
+    // Hepatit A
+    var har=ad(['kc','hiv']);
+    if(har.length)ekle('Hepatit A: 2 doz (0, 6–12. ay)','Anti-HAV IgG negatifse.',har.join(', '));
+
+    // Meningokok, Hib
+    if(R.asp||R.hiv){
+      ekle('Meningokok ACWY: 2 doz, en az 8 hafta arayla','Risk sürdükçe 5 yılda bir rapel.',ad(['asp','hiv']).join(', '));
+      if(R.asp){
+        ekle('Meningokok B: 3 doz (0, 1–2, 6. ay)','CDC 2025 risk durumunda her iki ürün için 3 doz önerir (2. doz 1. dozdan ≥ 6 ay sonra yapıldıysa 3. doz gerekmez). 1 yıl sonra rapel, sonra risk sürdükçe 2–3 yılda bir. Aynı ürünle tamamlayın.'+TR,'aspleni');
+        ekle('Hib: 1 doz','Daha önce Hib aşısı yoksa. Planlı splenektomide aşıları en az 14 gün önce yapın.','aspleni')}}
+
+    // RSV
+    var rr=ad(['kalp','akc','diy','kc','imm','hiv','dm']);
+    if(R.geb)ekle('RSV (gebelik): RSVpreF aşısı, 1 doz','32–36. haftada, RSV mevsimi öncesi ve sırasında; bebeği korur. Bebeğe nirsevimab yapılacaksa gerekmez. Gebelikte yalnız RSVpreF kullanılır; sonraki gebeliklerde tekrarlanmaz.'+TR,'gebelik');
+    if(a!==null&&(a>=75||(a>=50&&rr.length))){
+      ekle('RSV: tek doz','Tekrar dozu gerekmez. Tercihen yaz sonu ya da sonbaharda.'+(a<75&&R.dm?' Diyabette komplikasyon ya da insülin/SGLT2 inhibitörü kullanımı varsa risk sayılır.':'')+(a<75&&R.hiv&&!R.imm?' HIV’de orta-ağır immün yetmezlik varsa risk sayılır.':'')+TR,
+        a>=75?'≥ 75 yaş':'50–74 yaş ve '+rr.join(', '))}
+
+    // HPV
+    if(a!==null&&a<=45){
+      if(R.geb)ertelenen.push('HPV aşısı (gebelikte yapılmaz, doğumdan sonra)');
+      else if(a<=26)ekle('HPV: 3 doz (0, 1–2, 6. ay)','Daha önce tamamlanmadıysa. 15 yaşından önce başlayıp 2 doz alan ve immünsüpresyonu olmayanda tamamdır.','26 yaşa kadar herkes'+(R.imm||R.hiv?'; immünsüpresyonda her zaman 3 doz':''));
+      else ekle('HPV: ortak karar','Yeni HPV maruziyeti riski olanda yararlı olabilir; 3 doz.','27–45 yaş')}
+
+    // COVID-19
+    ekle('COVID-19: bireysel karar','CDC 2025–26 rutin öneri yerine hekimle birlikte karar önerir; yarar ≥ 65 yaş, immünsüpresyon ve kronik hastalıkta en fazladır. Güncel ulusal öneriyi izleyin.',null);
+
+    // Sağlık çalışanı
+    if(R.sc)ekle('Sağlık çalışanı: kızamık-kızamıkçık-kabakulak ve suçiçeği bağışıklığı','Belgelenmiş 2 doz aşı ya da serolojik bağışıklık yoksa aşılayın (canlı aşı; gebelik ve immünsüpresyonda yapılmaz).','sağlık çalışanı');
+
+    if(ertelenen.length)ekle('Doğumdan sonraya bırakın',ertelenen.join('; ')+'.','gebelik');
+
+    // Canlı aşı uyarısı
+    var cu=ad(['geb','imm','hiv']);
+    $('canli').hidden=!cu.length;
+    $('canli').textContent=cu.length?'Canlı aşılar (kızamık-kızamıkçık-kabakulak, suçiçeği, intranazal influenza, sarı humma, oral tifo) kontrendikedir: '+(R.geb?'gebelikte; ':'')+(R.imm?'ağır immünsüpresyonda (tedaviden en az 4 hafta önce yapılabilir); ':'')+(R.hiv?'HIV’de CD4 < 200/mm³ ise; ':'')+'inaktive aşılar güvenle yapılır.':'';
+
+    var sp=$('sp');
+    if(yasYok){sp.textContent='Yaş girin';sp.style.background='var(--muted)';
+      $('se').hidden=false;$('se').textContent='Yaş girilmedi: yaşa bağlı öneriler (pnömokok, zona, hepatit B, RSV, HPV) gösterilmiyor; yalnız risk durumuna ve tüm erişkinlere yönelik öneriler listelendi.';
+      $('k1').setAttribute('data-eksik','Yaş girilmedi')}
+    else{sp.textContent=n+' öneri';sp.style.background='var(--accent)';$('se').hidden=true;$('se').textContent='';$('k1').removeAttribute('data-eksik')}
+  }
+  document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',calc);e.addEventListener('change',calc)});calc();
+})();
+</script>
+<script src="ortak.js"></script>
+</body>
+</html>

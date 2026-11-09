@@ -16,7 +16,7 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | Böbrekte ilaç dozu (CrCl'ye göre antibiyotik, NOAK, sık ilaçlar) | `bobrek-ilac-dozu.html` |
 | Siroz ve asit (SAAG, SBP, parasentez, diüretik, HRS-AKI) | `siroz-asit.html` |
 | Child-Pugh | `child-pugh.html` |
-| Wells skoru (pulmoner emboli) | `wells-pe.html` |
+| Pulmoner emboli (Wells, revize Cenevre, YEARS, yaşa göre D-dimer, PERC) | `wells-pe.html` |
 | MELD-Na | `meld-na.html` |
 | Alkolik hepatit (Maddrey, MELD, Lille, steroid kararı) | `alkolik-hepatit.html` |
 | Acil tedavi rehberi (hiperkalemi, DKA, hipoglisemi, hiponatremi, hiperkalsemi, adrenal kriz) | `acil-tedavi.html` |
@@ -47,6 +47,9 @@ Dahiliye pratiği için telefona kurulabilen, internetsiz de çalışan hesaplay
 | SCORE2 / SCORE2-OP (ESC 10 yıllık KVH riski, Türkiye yüksek risk bölgesi) | `score2.html` |
 | PREVENT (10 yıllık KVH, ASKVH, KY) | `prevent.html` |
 | HEART skoru | `heart-skoru.html` |
+| GRACE skoru (NSTE-AKS) | `grace.html` |
+| Gut tedavisi | `gut.html` |
+| Erişkin aşılama | `eriskin-asi.html` |
 | Duke kriterleri | `duke-kriterleri.html` |
 | Ortalama arter basıncı | `ortalama-arter-basinci.html` |
 | R faktör | `r-faktor.html` |
