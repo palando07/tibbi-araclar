@@ -69,15 +69,12 @@ details p{margin:8px 0 0}
 .seg.wrapseg{flex-wrap:wrap}
 .seg button{min-width:0}
 .card h3{margin:4px 0 0;font-size:1rem}
-.yrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.yrow>span{flex:1 1 150px;min-width:0;font-size:.95rem}
-.yrow .seg{flex:0 0 auto}
-.yrow .seg button{padding:8px 14px}
+details .sub{margin-top:8px;color:var(--fg)}
 .sub>span{min-width:0}
 .sub b{text-align:right;white-space:normal}
 </style>
 </head>
-<body data-ornek-secim="y1 y2 y3">
+<body>
 <div class="wrap">
   <header>
     <a class="back" href="./">← Vizit</a>
@@ -86,16 +83,11 @@ details p{margin:8px 0 0}
   </header>
 
   <section class="card">
-    <h2>Yaş ve nabız</h2>
+    <h2>Wells skoru</h2>
     <div class="grid">
       <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" data-aralik="12-120 yıl" type="number" inputmode="numeric" step="1" value="58"></div>
       <div class="field"><label for="nabiz">Nabız <span>/dk</span></label><input id="nabiz" data-hasta="nabiz" data-aralik="20-300 /dk" type="number" inputmode="numeric" step="1" value="108"></div>
     </div>
-    <p class="note">Değerler örnek olarak doldurulmuştur. Aşağıdaki skorların yaş ve nabız maddeleri buradan otomatik işaretlenir; boş bırakılırsa sonuç “eksik veri” olarak gösterilir.</p>
-  </section>
-
-  <section class="card">
-    <h2>Wells skoru</h2>
     <div class="items">
       <label class="item"><input type="checkbox" id="dvt" data-p="3"><span class="txt">DVT klinik bulguları<small>bacakta şişlik ve derin ven palpasyonunda ağrı</small></span><span class="pts">+3</span></label>
       <label class="item"><input type="checkbox" id="alt" data-p="3" checked><span class="txt">Pulmoner emboli en olası tanı<small>alternatif tanılardan daha olası</small></span><span class="pts">+3</span></label>
@@ -105,7 +97,7 @@ details p{margin:8px 0 0}
       <label class="item"><input type="checkbox" id="hemo" data-p="1"><span class="txt">Hemoptizi</span><span class="pts">+1</span></label>
       <label class="item"><input type="checkbox" id="ca" data-p="1"><span class="txt">Aktif malignite<small>tedavi altında, son 6 ayda tedavi almış veya palyatif</small></span><span class="pts">+1</span></label>
     </div>
-    <p class="note">Örnek olarak bir madde işaretlenmiştir.</p>
+    <p class="note">Yaş ve nabız tüm skorlarda otomatik kullanılır; boşsa sonuç “eksik veri” olur.</p>
   </section>
 
   <section class="card" aria-live="polite">
@@ -113,8 +105,7 @@ details p{margin:8px 0 0}
     <div class="res"><span class="num" id="sc">–</span><span class="of">/ 12,5</span><span class="pill" id="two"></span></div>
     <p class="advice" id="adv"></p>
     <div class="sub"><span>Üç basamaklı sınıflama</span><b id="three">–</b></div>
-    <p class="note">İki basamaklı: ≤ 4 olası değil, &gt; 4 olası. Üç basamaklı: &lt; 2 düşük, 2–6 orta, &gt; 6 yüksek olasılık.</p>
-    <p class="note">Kaynak: Wells PS ve ark., Thromb Haemost 2000; 2019 ESC Pulmoner Emboli Kılavuzu.</p>
+    <p class="note">≤ 4 olası değil, &gt; 4 olası. &lt; 2 düşük, 2–6 orta, &gt; 6 yüksek.</p>
   </section>
 
   <section class="card">
@@ -129,7 +120,6 @@ details p{margin:8px 0 0}
       <label class="item auto"><input type="checkbox" id="g-hr" disabled><span class="txt">Nabız 75–94: +3 · ≥ 95: +5<small id="g-hr-not"></small></span><span class="pts" id="g-hr-p">–</span></label>
       <label class="item"><input type="checkbox" id="g-palp" data-p="4" data-s="1"><span class="txt">Derin ven palpasyonunda ağrı ve tek taraflı ödem<small>alt ekstremitede</small></span><span class="pts">+4</span></label>
     </div>
-    <p class="note">Örnek olarak bir madde işaretlenmiştir. Puanlar orijinal revize Cenevre skorudur (Le Gal 2006). Sadeleştirilmiş sürümde (Klok 2008) her madde 1 puan, nabız ≥ 95 ise 2 puandır; sonuç kartında ikisi de gösterilir.</p>
   </section>
 
   <section class="card" aria-live="polite">
@@ -137,32 +127,33 @@ details p{margin:8px 0 0}
     <div class="res"><span class="num" id="g-sc">–</span><span class="of">/ 22</span><span class="pill" id="g-two"></span></div>
     <p class="advice" id="g-adv"></p>
     <div class="sub"><span>Üç basamaklı sınıflama</span><b id="g-three">–</b></div>
-    <div class="sub"><span>Sadeleştirilmiş (Klok 2008)</span><b id="g-simp">–</b></div>
-    <p class="note">Orijinal: 0–3 düşük, 4–10 orta, ≥ 11 yüksek; 0–5 olası değil, ≥ 6 olası. Sadeleştirilmiş (/ 9): 0–1 düşük, 2–4 orta, ≥ 5 yüksek; 0–2 olası değil, ≥ 3 olası (2019 ESC, Tablo 5).</p>
+    <p class="note">0–5 olası değil, ≥ 6 olası. 0–3 düşük, 4–10 orta, ≥ 11 yüksek.</p>
+    <details>
+      <summary>Sadeleştirilmiş Cenevre</summary>
+      <div class="sub"><span>Sadeleştirilmiş (Klok 2008)</span><b id="g-simp">–</b></div>
+      <p>Her madde 1 puan, nabız ≥ 95 ise 2 puan (toplam 9). 0–1 düşük, 2–4 orta, ≥ 5 yüksek; 0–2 olası değil, ≥ 3 olası (2019 ESC, Tablo 5). Yukarıdaki puanlar orijinal revize Cenevre skorudur (Le Gal 2006).</p>
+    </details>
   </section>
 
-  <section class="card">
+  <section class="card" aria-live="polite">
     <h2>D-dimer ve YEARS</h2>
     <div class="grid">
       <div class="field"><label for="dd">D-dimer <span>FEU</span></label><input id="dd" data-aralik="0-100000 ng/mL|[data-g=du][data-v=ug][aria-pressed=true]:0-100 µg/mL" type="number" inputmode="decimal" step="any" value="" placeholder="girilmedi"></div>
       <div class="field"><span class="lbl">Birim</span><div class="seg"><button type="button" data-g="du" data-v="ng" aria-pressed="true">ng/mL</button><button type="button" data-g="du" data-v="ug" aria-pressed="false">µg/mL</button></div></div>
     </div>
-    <p class="note">ng/mL FEU = µg/L FEU; 0,5 µg/mL = 0,5 mg/L = 500 ng/mL. Eşikler FEU (fibrinojen eşdeğer birimi) içindir. Laboratuvar DDU (D-dimer birimi) bildiriyorsa bu eşikler doğrudan kullanılamaz: FEU değeri DDU’nun yaklaşık 2 katıdır; laboratuvarın kendi kesim değerine bakın.</p>
-    <h3>YEARS maddeleri</h3>
-    <div class="yrow"><span>DVT klinik bulguları</span><div class="seg"><button type="button" data-g="y1" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="y1" data-v="1" aria-pressed="false">Var</button></div></div>
-    <div class="yrow"><span>Hemoptizi</span><div class="seg"><button type="button" data-g="y2" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="y2" data-v="1" aria-pressed="false">Var</button></div></div>
-    <div class="yrow"><span>PE en olası tanı</span><div class="seg"><button type="button" data-g="y3" data-v="0" aria-pressed="false">Yok</button><button type="button" data-g="y3" data-v="1" aria-pressed="false">Var</button></div></div>
-    <p class="note">YEARS, Wells skorunun bu üç maddesini kullanır ve Wells/Cenevre yerine geçen ayrı bir yoldur: hiç madde yoksa D-dimer &lt; 1000, ≥ 1 madde varsa &lt; 500 ng/mL PE’yi dışlar; diğerlerinde BTPA.</p>
-  </section>
-
-  <section class="card" aria-live="polite">
-    <span class="lbl">D-dimer yorumu</span>
     <div class="res"><span class="num" id="d-sc">–</span><span class="of">ng/mL FEU</span><span class="pill" id="d-pl"></span></div>
     <div class="sub"><span>Yaşa göre eşik <small id="d-yasnot"></small></span><b id="d-yas">–</b></div>
     <div class="sub"><span>Sabit eşik 500</span><b id="d-sabit">–</b></div>
     <div class="sub"><span>YEARS <small id="d-ynot"></small></span><b id="d-years">–</b></div>
     <p class="advice" id="d-adv"></p>
-    <p class="note">Sabit ve yaşa göre eşik yalnız skor “PE olası değil” ise kullanılır (Wells ≤ 4, Cenevre ≤ 5); PE olası ya da yüksek olasılıkta D-dimer istenmez, doğrudan BTPA (2019 ESC). Yaşa göre eşik: &gt; 50 yaşta yaş × 10 µg/L (ADJUST-PE). Gebelik (Artemis, van der Pol 2019): YEARS aynı eşiklerle kullanılabilir; DVT bulgusu varsa önce bacak kompresyon USG yapılır, DVT görülürse BTPA’sız tedavi başlanır.</p>
+    <p class="note">Eşikler FEU içindir; laboratuvar DDU bildiriyorsa doğrudan kullanılamaz (FEU ≈ 2 × DDU).</p>
+    <details>
+      <summary>Eşikler, YEARS ve gebelik</summary>
+      <p>Birim: ng/mL FEU = µg/L FEU; 0,5 µg/mL = 0,5 mg/L = 500 ng/mL. DDU bildiren laboratuvarda kendi kesim değerine bakın.</p>
+      <p>Sabit ve yaşa göre eşik yalnız skor “PE olası değil” ise kullanılır (Wells ≤ 4, Cenevre ≤ 5); PE olası ya da yüksek olasılıkta D-dimer istenmez, doğrudan BTPA (2019 ESC). Yaşa göre eşik: &gt; 50 yaşta yaş × 10 µg/L (ADJUST-PE).</p>
+      <p>YEARS, Wells/Cenevre yerine geçen ayrı bir yoldur; üç maddesi (DVT klinik bulguları, hemoptizi, PE en olası tanı) yukarıdaki Wells kutularından alınır: hiç madde yoksa D-dimer &lt; 1000, ≥ 1 madde varsa &lt; 500 ng/mL PE’yi dışlar; diğerlerinde BTPA.</p>
+      <p>Gebelik (Artemis, van der Pol 2019): YEARS aynı eşiklerle kullanılabilir; DVT bulgusu varsa önce bacak kompresyon USG yapılır, DVT görülürse BTPA’sız tedavi başlanır.</p>
+    </details>
   </section>
 
   <section class="card" aria-live="polite">
@@ -180,7 +171,11 @@ details p{margin:8px 0 0}
     </div>
     <div class="sub"><span>Karşılanan ölçüt</span><b id="p-n">–</b></div>
     <p class="advice" id="p-adv"></p>
-    <p class="note">PERC acil serviste, hekimin klinik izlenimiyle olasılığı düşük (&lt; %15) bulduğu hastada D-dimer bile istememek için geliştirilmiştir (Kline 2004). 2019 ESC: bir doğrulama ve bir randomize çalışmada (PROPER) düşük olasılıklı ve tüm ölçütleri karşılayan hastada güvenli dışlama bildirilmiştir; ancak bu çalışmalarda PE sıklığı düşük olduğundan sonuçlar genellenemez. ESC PERC için numaralı bir öneri vermez; yatan hastada ve gebelikte kullanmayın.</p>
+    <p class="note">Yatan hastada ve gebelikte kullanmayın.</p>
+    <details>
+      <summary>PERC hakkında</summary>
+      <p>Acil serviste, hekimin klinik izlenimiyle olasılığı düşük (&lt; %15) bulduğu hastada D-dimer bile istememek için geliştirilmiştir (Kline 2004). 2019 ESC: bir doğrulama ve bir randomize çalışmada (PROPER) düşük olasılıklı ve tüm ölçütleri karşılayan hastada güvenli dışlama bildirilmiştir; ancak bu çalışmalarda PE sıklığı düşük olduğundan sonuçlar genellenemez. ESC PERC için numaralı bir öneri vermez.</p>
+    </details>
   </section>
 
   <p class="note">Kaynaklar: Wells PS ve ark. Thromb Haemost 2000;83:416–20; Le Gal G ve ark. Prediction of pulmonary embolism in the emergency department: the revised Geneva score. Ann Intern Med 2006;144:165–71; Klok FA ve ark. Simplification of the revised Geneva score. Arch Intern Med 2008;168:2131–6; van der Hulle T ve ark. Simplified diagnostic management of suspected pulmonary embolism (the YEARS study). Lancet 2017;390:289–97; van der Pol LM ve ark. Pregnancy-adapted YEARS algorithm (Artemis). N Engl J Med 2019;380:1139–49; Righini M ve ark. Age-adjusted D-dimer cutoff levels to rule out pulmonary embolism: the ADJUST-PE study. JAMA 2014;311:1117–24; Kline JA ve ark. Clinical criteria to prevent unnecessary diagnostic testing (PERC). J Thromb Haemost 2004;2:1247–55; Freund Y ve ark. PROPER. JAMA 2018;319:559–66; Konstantinides SV ve ark. 2019 ESC Guidelines for the diagnosis and management of acute pulmonary embolism. Eur Heart J 2020;41:543–603 (Tablo 5; yaşa göre ya da klinik olasılığa göre D-dimer eşiği sabit eşiğe alternatif olarak, sınıf IIa; gebelikte D-dimer ve klinik kurallar, sınıf IIa; PERC bölüm 4.3). Bu araç klinik karar desteği içindir.</p>
@@ -235,19 +230,17 @@ details p{margin:8px 0 0}
     var raw=v('dd'),y=v('yas'),d=raw===null?null:(segVal('du')==='ug'?raw*1000:raw);
     var thrY=y===null?null:y>50?y*10:500;
     $('d-yasnot').textContent=y===null?'(yaş girilmedi)':y>50?'('+tr(y)+' × 10)':'(≤ 50 yaş: 500)';
-    var yy=['y1','y2','y3'].map(segVal),bos=yy.filter(function(x){return x===null}).length,nm=yy.filter(function(x){return x==='1'}).length;
-    var thrYe=bos?null:nm?500:1000;
-    $('d-ynot').textContent=bos?'('+bos+' madde seçilmedi)':'('+nm+' madde)';
+    // YEARS maddeleri Wells kutularından: DVT klinik bulguları, hemoptizi, PE en olası tanı
+    var nm=['dvt','hemo','alt'].filter(function(id){return $(id).checked}).length,thrYe=nm?500:1000;
+    $('d-ynot').textContent='(Wells’ten '+nm+' madde)';
     $('d-sc').textContent=d===null?'–':tr(d);
     var r=function(t){return d<t?'negatif (< '+tr(t)+')':'pozitif (≥ '+tr(t)+')'};
     var yRes=null,yearsNeg=null;
-    if(d===null){$('d-yas').textContent=thrY===null?'–':'eşik '+tr(thrY);$('d-sabit').textContent='eşik 500';$('d-years').textContent=thrYe?'eşik '+tr(thrYe):'–'}
+    if(d===null){$('d-yas').textContent=thrY===null?'–':'eşik '+tr(thrY);$('d-sabit').textContent='eşik 500';$('d-years').textContent='eşik '+tr(thrYe)}
     else{
       $('d-sabit').textContent=r(500);
       $('d-yas').textContent=thrY===null?'Eksik veri: yaş':r(thrY);
-      if(thrYe){$('d-years').textContent=r(thrYe);yearsNeg=d<thrYe}
-      else if(d>=1000){$('d-years').textContent='pozitif (≥ 1.000, maddelerden bağımsız)';yearsNeg=false}
-      else $('d-years').textContent='Eksik veri: maddeleri seçin';
+      $('d-years').textContent=r(thrYe);yearsNeg=d<thrYe;
       yRes=thrY===null?(d<500?true:null):d<thrY;
     }
     var yuksek=dur.wells==='olasi'||dur.cen==='olasi'||dur.cen==='yuksek', dusuk=!yuksek&&(dur.wells==='degil'||dur.cen==='degil'), a=[];
@@ -257,11 +250,11 @@ details p{margin:8px 0 0}
       else if(yRes===false)a.push('Yaşa göre eşiğin üstünde: Wells/Cenevre yolunda BTPA gerekir.');
       else a.push('Sabit eşiğin üstünde; yaşa göre eşik için yaşı girin.');
       if(yearsNeg===true)a.push('YEARS’e göre PE dışlanır (BTPA gerekmez).');
-      else if(yearsNeg===false)a.push('YEARS’e göre BTPA gerekir.');
-      else a.push('YEARS için üç maddeyi seçin.');
+      else a.push('YEARS’e göre BTPA gerekir.');
       if(yuksek&&yearsNeg===true)a.push('Dikkat: skorlar PE olası/yüksek diyor. 2019 ESC’ye göre bu hastada normal D-dimer PE’yi güvenle dışlamaz ve doğrudan BTPA önerilir; YEARS çalışması bu hastaları da kapsıyordu. Hangi yolu izleyeceğinize siz karar verin.');
       else if(yuksek&&yRes===true)a.push('Uyarı: yukarıdaki skorlardan biri PE olası/yüksek diyor; bu durumda sabit ya da yaşa göre eşikle dışlama yapılmaz.');
-      if(yearsNeg===true&&(yRes!==true||yuksek))pill('d-pl',yuksek?'YEARS negatif, skor yüksek':'YEARS negatif',yuksek?'var(--warn)':'var(--ok)');
+      var sifir=!nm&&yearsNeg===true&&d>=500;if(sifir)a.push('0 madde sayıldı ve eşik 1.000 kullanıldı: DVT bulgusu, hemoptizi ve “PE en olası tanı” gerçekten yok mu? Wells kutularını kontrol edin.');
+      if(yearsNeg===true&&(yRes!==true||yuksek))pill('d-pl',yuksek?'YEARS negatif, skor yüksek':sifir?'YEARS negatif · 0 madde':'YEARS negatif',(yuksek||sifir)?'var(--warn)':'var(--ok)');
       else if(yRes===true&&!yuksek&&!dusuk){pill('d-pl','Negatif · skor eksik','var(--muted)');a.push('Dışlamak için Wells ya da Cenevre “PE olası değil” çıkmalı; eksik maddeleri girin.')}
       else if(yRes===true)pill('d-pl',yuksek?'Negatif, olasılık yüksek':'Negatif',yuksek?'var(--warn)':'var(--ok)');
       else if(yRes===false)pill('d-pl','Pozitif','var(--high)');
@@ -278,7 +271,7 @@ details p{margin:8px 0 0}
     $('p-adv').textContent=yuksek?'Wells ya da Cenevre PE olası diyor: PERC kullanılmaz.':k===8&&!dus?'8/8 ölçüt karşılandı, ama PERC yalnız klinik olasılık düşükken kullanılır (Wells < 2 ya da Cenevre düşük; orta olasılıkta değil): D-dimer bakın.':k===8?'PERC negatif: klinik olasılık düşükse D-dimer istemeden PE dışlanabilir.':'PERC negatif değil ('+(8-k)+' ölçüt karşılanmadı ya da işaretlenmedi): D-dimer bakın.';
   }
   function calc(){wells();cenevre();ddimer();perc()}
-  ['du','y1','y2','y3'].forEach(function(g){seg(g,calc)});
+  seg('du',calc);
   document.querySelectorAll('input').forEach(function(el){el.addEventListener('input',calc);el.addEventListener('change',calc)});
   calc();
 })();
