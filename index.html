@@ -512,13 +512,32 @@ h2{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.07e
   // Kısa kelimeler (1–2 harf: K, Na, PE, Mİ) yalnız tam kelime olarak eşleşir; 'na' naproksen'i, 'mi' midazolam'ı bulmaz
   // 3 harfliler (INR, DKA) kelime başında eşleşir; 'inr' pinral'ı bulmaz
   var bul=function(t,x,ek){if(x.length<=3)return new RegExp('(^|[^a-z0-9])'+x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+(x.length<3?'($|[^a-z0-9])':'')).test(t);if(t.indexOf(x)>=0)return true;if(!ek)return false;for(var i=1;i<=4&&x.length-i>=5;i++)if(t.indexOf(x.slice(0,-i))>=0)return true;return false};
+  // İlgiye göre sıralama (yalnız arama varken): adında bir kelimesi aranan kelimeyle başlayan araç önce, sonra adının içinde,
+  // en son açıklamasında ya da anahtar kelimelerinde (data-k) geçenler menü sırasıyla (ikisi eşit: 'potasyum' DKA'yı öne almasın). Aynı düzeyde Türkçe harfi birebir tutan (aşı → aşılama), harf katlanarak tutandan (aşı → asit) önce gelir.
+  // Bölümler en iyi eşleşen araçlarına göre dizilir, başlıkları yerinde kalır. Arama silinince menünün ilk sırası geri gelir.
+  var bosP=document.getElementById('empty'),gruplar=[].slice.call(document.querySelectorAll('.group')),ilk=gruplar.map(function(g){return[].slice.call(g.children)});
+  var kucuk=function(s){return s.toLocaleLowerCase('tr').normalize('NFC')};
+  var basla=function(t,x){return new RegExp('(^|[^0-9a-zçğıöşüâîû])'+x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).test(t)};
+  var sirala=function(ek){
+    var ham=kucuk(q.value.trim());
+    if(!ham){gruplar.forEach(function(g,i){bosP.parentNode.insertBefore(g,bosP);ilk[i].forEach(function(c){g.appendChild(c)})});return}
+    var kel=ham.split(/\s+/);
+    var puan=function(a){var s=a.querySelector('strong + span'),ad=a.querySelector('strong').textContent,ac=s?s.textContent:'',parca=[ad,ad,ac,a.dataset.k||''];
+      return kel.reduce(function(top,y){var x=norm(y),d;
+        for(d=0;d<4;d++)if(d===0?(x.length<3?bul(norm(ad),x,ek):basla(norm(ad),x)):bul(norm(parca[d]),x,ek))break;
+        var t=kucuk(parca[d]||''),tam=d===0?basla(t,y):t.indexOf(y)>=0;
+        return top+(d>=2?4:d*2+(tam?0:1))},0)};
+    var enIyi=gruplar.map(function(g,gi){var en=1e9,sat=[].slice.call(g.querySelectorAll('.trow')).map(function(r){var p=r.hidden?1e9:puan(r.querySelector('a.tool'));if(p<en)en=p;return{r:r,p:p,i:ilk[gi].indexOf(r)}});
+      sat.sort(function(a,b){return a.p-b.p||a.i-b.i}).forEach(function(o){g.appendChild(o.r)});return{g:g,p:en,i:gi}});
+    enIyi.sort(function(a,b){return a.p-b.p||a.i-b.i}).forEach(function(o){bosP.parentNode.insertBefore(o.g,bosP)})};
   q.addEventListener('input',function(){
     var w=norm(q.value.trim()), any=false;
     document.querySelectorAll('.quick').forEach(function(g){g.style.display=w?'none':''});
     var suz=function(ek){var hep=false;document.querySelectorAll('.group').forEach(function(g){
       var vis=0;g.querySelectorAll('a.tool').forEach(function(a){var t=norm(a.textContent+' '+a.dataset.k),m=!w||w.split(/\s+/).every(function(x){return bul(t,x,ek)});(a.closest('.trow')||a).hidden=!m;if(m)vis++});
       g.hidden=!vis;if(vis)hep=true});return hep};
-    any=suz(false)||suz(true);
+    var ek=false;any=suz(false)||(ek=true,suz(true));
+    sirala(ek);
     document.getElementById('empty').hidden=any;
     // Bulunamayan arama: geri bildirim e-postası aranan kelimelerle hazır açılır
     // Aranan metin e-postaya yazılmaz (hasta adı yazılmış olabilir); kullanıcı konuyu kendisi yazar

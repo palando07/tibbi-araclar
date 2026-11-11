@@ -820,7 +820,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v74', SURUM_TARIH = '11 Kasım 2026', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v75', SURUM_TARIH = '12 Kasım 2026', GB_ADRES = 'blgnonur97@gmail.com';
   window.vizitSurum = SURUM; window.vizitGbAdres = GB_ADRES;
   var sEl = document.getElementById('surum'); if (sEl) sEl.textContent = 'Sürüm ' + SURUM + ' · ' + SURUM_TARIH;
   var kap = document.querySelector('.wrap');
@@ -1004,16 +1004,19 @@
         var k = h.cloneNode(true); k.querySelectorAll('span, small, button').forEach(function(x){ x.remove(); });
         var a = document.createElement('a'); a.href = '#' + kart.id; a.textContent = k.textContent.replace(/\s+/g, ' ').trim();
         a.addEventListener('click', function(e){ e.preventDefault(); kart.scrollIntoView({behavior: 'smooth', block: 'start'}); });
-        tc.appendChild(a); return {a: a, kart: kart};
+        return {a: a, kart: kart};
       });
+      // Sonuç kartlarının düğmeleri önde (sayfa sırasıyla), giriş ve diğer kartlarınki arkada: şerit açılışta sonuca giden düğmeyi gösterir
+      var sonucMu = function(c){ return c.kart.hasAttribute('aria-live'); };
+      ciftler.filter(sonucMu).concat(ciftler.filter(function(c){ return !sonucMu(c); })).forEach(function(c){ tc.appendChild(c.a); });
       header.parentNode.insertBefore(tc, header.nextSibling);
-      var sb = document.querySelector('.sonuca'); if (sb) sb.remove();
       var etkin = null;
+      // Sayfanın en üstünde hiçbir düğme işaretlenmez ve şerit başta durur; kaydırınca geçilen bölümün düğmesi işaretlenip ortalanır
       function isaretle(){
-        var sec = ciftler[0];
-        ciftler.forEach(function(c){ if (c.kart.getBoundingClientRect().top < 120) sec = c; });
+        var sec = null;
+        if (window.scrollY > 0) ciftler.forEach(function(c){ if (c.kart.getBoundingClientRect().top < 120) sec = c; });
         if (sec === etkin) return; if (etkin) etkin.a.classList.remove('on');
-        etkin = sec; sec.a.classList.add('on');
+        etkin = sec; if (!sec) { tc.scrollTo({left: 0}); return; } sec.a.classList.add('on');
         var x = sec.a.offsetLeft - (tc.clientWidth - sec.a.offsetWidth) / 2; tc.scrollTo({left: Math.max(0, x)});
       }
       var bek = false;
