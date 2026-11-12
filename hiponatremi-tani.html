@@ -93,22 +93,8 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
       <div class="field"><label for="glu">Glukoz <span>mg/dL</span></label><input id="glu" data-hasta="glukoz" type="number" inputmode="decimal" step="any" value="110"></div>
       <div class="field"><label for="osm">Ölçülen osmolalite <span>mOsm/kg</span></label><input id="osm" type="number" inputmode="decimal" step="any" value="258" placeholder="yoksa hesaplanır"></div>
       <div class="field"><label for="wt">Ağırlık <span>kg</span></label><input id="wt" data-hasta="kilo" type="number" inputmode="decimal" step="any" value="60"></div>
-      <div class="field"><label for="ua">Ürik asit <span>mg/dL, isteğe bağlı</span></label><input data-aralik="0.1-30 mg/dL" id="ua" type="number" inputmode="decimal" step="any" value="3.1"></div>
-      <div class="field"><label for="ure">Üre <span>mg/dL, isteğe bağlı</span></label><input id="ure" data-hasta="ure" type="number" inputmode="decimal" step="any" value="18"></div>
     </div>
-    <p class="note">Osmolalite boş bırakılırsa efektif osmolalite hesaplanır (2 × Na + glukoz / 18). Kılavuz ölçülen osmolaliteyi esas alır. Üre değil BUN biliniyorsa: üre = BUN × 2,14.</p>
-  </section>
-
-  <section class="card">
-    <h2>İdrar (spot, tedaviden önce)</h2>
-    <div class="grid">
-      <div class="field"><label for="uosm">Osmolalite <span>mOsm/kg</span></label><input id="uosm" type="number" inputmode="decimal" step="any" value="480"></div>
-      <div class="field"><label for="una">Sodyum <span>mmol/L</span></label><input id="una" type="number" inputmode="decimal" step="any" value="62"></div>
-      <div class="field"><label for="uk">Potasyum <span>mmol/L</span></label><input id="uk" type="number" inputmode="decimal" step="any" value="28"></div>
-      <div class="field"><label for="feua">FE ürat <span>%, isteğe bağlı</span></label><input data-aralik="0-100 %" id="feua" type="number" inputmode="decimal" step="any" value="14"></div>
-      <div class="field"><label for="uvol">24 saat idrar <span>mL, isteğe bağlı</span></label><input data-aralik="0-20000 mL" id="uvol" type="number" inputmode="decimal" step="any" value="" placeholder="biliniyorsa"></div>
-    </div>
-    <p class="note">FE ürat = (idrar ürik asit × serum kreatinin) / (serum ürik asit × idrar kreatinin) × 100.</p>
+    <p class="note">Osmolalite boş bırakılırsa efektif osmolalite hesaplanır (2 × Na + glukoz / 18). Kılavuz ölçülen osmolaliteyi esas alır.</p>
   </section>
 
   <section class="card">
@@ -148,12 +134,52 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
   </section>
 
   <section class="card" aria-live="polite">
+    <h2>Düzeltme sınırları</h2>
+    <div class="res"><span class="pill" id="odsp"></span></div>
+    <table class="t">
+      <thead><tr><th>Dönem</th><th>Artış sınırı</th><th>Na en çok</th></tr></thead>
+      <tbody>
+        <tr><td>İlk 24 saat <small id="l1s">ESE: 10 mmol/L</small></td><td id="l1">–</td><td id="l1n">–</td></tr>
+        <tr><td>Sonraki her 24 saat <small>ESE: 8 mmol/L</small></td><td id="l2">–</td><td id="l2n">–</td></tr>
+      </tbody>
+    </table>
+    <ol class="rec" id="lim"></ol>
+    <p class="note">ESE 2014: orta veya derin kronik hiponatremide ilk 24 saatte &gt; 10, sonraki her 24 saatte &gt; 8 mmol/L artıştan kaçının. ABD 2013: hedef 4–8 mmol/L/gün, sınır 10–12; ODS riski yüksekse hedef 4–6, sınır 8 mmol/L/gün. Yüksek risk: Na ≤ 105 mmol/L, hipokalemi, alkolizm, malnütrisyon, ileri karaciğer hastalığı.</p>
+  </section>
+
+  <section class="card">
+    <h2>İdrar ve ek tetkikler</h2>
+    <h3>İdrar (spot, tedaviden önce)</h3>
+    <div class="grid">
+      <div class="field"><label for="uosm">Osmolalite <span>mOsm/kg</span></label><input id="uosm" type="number" inputmode="decimal" step="any" value="480"></div>
+      <div class="field"><label for="una">Sodyum <span>mmol/L</span></label><input id="una" type="number" inputmode="decimal" step="any" value="62"></div>
+      <div class="field"><label for="uk">Potasyum <span>mmol/L</span></label><input id="uk" type="number" inputmode="decimal" step="any" value="28"></div>
+      <div class="field"><label for="feua">FE ürat <span>%, isteğe bağlı</span></label><input data-aralik="0-100 %" id="feua" type="number" inputmode="decimal" step="any" value="14"></div>
+      <div class="field"><label for="uvol">24 saat idrar <span>mL, isteğe bağlı</span></label><input data-aralik="0-20000 mL" id="uvol" type="number" inputmode="decimal" step="any" value="" placeholder="biliniyorsa"></div>
+    </div>
+    <p class="note">FE ürat = (idrar ürik asit × serum kreatinin) / (serum ürik asit × idrar kreatinin) × 100.</p>
+    <h3>Ek serum değerleri</h3>
+    <div class="grid">
+      <div class="field"><label for="ua">Ürik asit <span>mg/dL, isteğe bağlı</span></label><input data-aralik="0.1-30 mg/dL" id="ua" type="number" inputmode="decimal" step="any" value="3.1"></div>
+      <div class="field"><label for="ure">Üre <span>mg/dL, isteğe bağlı</span></label><input id="ure" data-hasta="ure" type="number" inputmode="decimal" step="any" value="18"></div>
+    </div>
+    <p class="note">Üre değil BUN biliniyorsa: üre = BUN × 2,14.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
     <h2>Tanı algoritması</h2>
     <div class="res"><span class="pill" id="dxp"></span></div>
     <ol class="rec" id="alg"></ol>
     <h3>En olası nedenler</h3>
     <ol class="rec" id="cause"></ol>
     <p class="note">Algoritma böbrek hastalığında ve diüretik kullananlarda dikkatle yorumlanmalıdır. İdrar osmolalitesi ve sodyumu aynı örnekte, mümkünse tedaviden önce ölçülmelidir. Diüretik kullananlarda FE ürat &gt; %12 SIADH lehine en yararlı bulgudur.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Nedene yönelik tedavi</h2>
+    <div class="res"><span class="pill" id="rxp"></span></div>
+    <ol class="rec" id="rx"></ol>
+    <p class="note">Ağır veya orta şiddetli belirtili hiponatremide %3 NaCl için <a href="acil-tedavi.html">Acil Tedavi Rehberi</a>, sodyum açığı ve infüzyonun Na’ya etkisi için <a href="sodyum.html">Sodyum ve Sıvı Açığı</a> sayfasını kullanın.</p>
   </section>
 
   <section class="card" aria-live="polite">
@@ -176,27 +202,6 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
     <div class="sub"><span>Kısıtlamaya yanıtsızlık öngördürücüleri</span><b class="w" id="fpr">–</b></div>
     <ol class="rec" id="frx"></ol>
     <p class="note">Furst oranı &lt; 0,5: ≤ 1 L/gün; 0,5–1: ≤ 500 mL/gün; &gt; 1: kısıtlama tek başına yeterince etkili olmaz. Yanıtsızlık öngördürücüleri (ABD 2013): idrar osmolalitesi &gt; 500 mOsm/kg, Furst oranı &gt; 1, 24 saatlik idrar &lt; 1500 mL. Kısıtlama yiyecek dışındaki tüm sıvıları kapsar; en çok çalışılan sınır 1000 mL/gün’dür.</p>
-  </section>
-
-  <section class="card" aria-live="polite">
-    <h2>Düzeltme sınırları</h2>
-    <div class="res"><span class="pill" id="odsp"></span></div>
-    <table class="t">
-      <thead><tr><th>Dönem</th><th>Artış sınırı</th><th>Na en çok</th></tr></thead>
-      <tbody>
-        <tr><td>İlk 24 saat <small id="l1s">ESE: 10 mmol/L</small></td><td id="l1">–</td><td id="l1n">–</td></tr>
-        <tr><td>Sonraki her 24 saat <small>ESE: 8 mmol/L</small></td><td id="l2">–</td><td id="l2n">–</td></tr>
-      </tbody>
-    </table>
-    <ol class="rec" id="lim"></ol>
-    <p class="note">ESE 2014: orta veya derin kronik hiponatremide ilk 24 saatte &gt; 10, sonraki her 24 saatte &gt; 8 mmol/L artıştan kaçının. ABD 2013: hedef 4–8 mmol/L/gün, sınır 10–12; ODS riski yüksekse hedef 4–6, sınır 8 mmol/L/gün. Yüksek risk: Na ≤ 105 mmol/L, hipokalemi, alkolizm, malnütrisyon, ileri karaciğer hastalığı.</p>
-  </section>
-
-  <section class="card" aria-live="polite">
-    <h2>Nedene yönelik tedavi</h2>
-    <div class="res"><span class="pill" id="rxp"></span></div>
-    <ol class="rec" id="rx"></ol>
-    <p class="note">Ağır veya orta şiddetli belirtili hiponatremide %3 NaCl için <a href="acil-tedavi.html">Acil Tedavi Rehberi</a>, sodyum açığı ve infüzyonun Na’ya etkisi için <a href="sodyum.html">Sodyum ve Sıvı Açığı</a> sayfasını kullanın.</p>
   </section>
 
   <p class="note">Kaynaklar: Spasovski G ve ark. ESE/ESICM/ERBP hiponatremi tanı ve tedavi kılavuzu, Eur J Endocrinol 2014;170:G1–47 (şiddet ve süre sınıflaması, belirti şiddeti, glukoz düzeltmesi, &lt; 275 mOsm/kg, idrar osmolalitesi ≤ 100, idrar Na ≤ 30, tanı algoritması ve neden listeleri, SIADH ölçütleri Tablo 6, FE ürat &gt; %12, 10/8 mmol/L sınırları, aşırı düzeltmede 10 mL/kg elektrolitsiz su, üre 0,25–0,50 g/kg/gün, kıvrım diüretiği + oral NaCl, lityum/demeklosiklin/vaptan önerilmez, hipovolemide 0,5–1,0 mL/kg/saat izotonik sıvı); Verbalis JG ve ark. ABD uzman paneli, Am J Med 2013;126:S1–42 (4–8 ve 4–6 mmol/L hedefleri, 10–12 ve 8 mmol/L sınırları, ODS risk etkenleri, idrar hacminin 500 mL altında kısıtlama, kısıtlamaya yanıtsızlık öngördürücüleri, üre 15–60 g/gün); Furst H ve ark. Am J Med Sci 2000;319:240–4 (idrar/plazma elektrolit oranı); Warren AM ve ark. Endocr Rev 2023;44:819–61 (iki kılavuzun karşılaştırması, kortizol eşikleri, ilaç listesi, EFFUSE-FLUID ve empagliflozin çalışmaları, tolvaptan güvenlik önerileri); Samsca (tolvaptan) KÜB, Nisan 2025 (endikasyon, 15/7,5 mg başlangıç, en çok 60 mg, hastanede başlama, izlem ve kesme eşikleri, kontrendikasyonlar). Kılavuzun 2024’te yayımlanmış resmî bir güncellemesi yoktur. Bu araç klinik karar desteği içindir.</p>
@@ -364,7 +369,7 @@ table.t td small{display:block;color:var(--muted);font-size:.78rem;font-weight:4
       else if(fu<=1){pill('fup','0,5–1','var(--warn)');$('fua').textContent='≤ 500 mL/gün'}
       else{pill('fup','> 1','var(--high)');$('fua').textContent='kısıtlama tek başına yetersiz'}
     }
-    if(cat==='hypo'||cat==='renalloss')li('frx','Hipovolemide sıvı kısıtlaması yapılmaz','Önce volüm açığını giderin (aşağıda).');
+    if(cat==='hypo'||cat==='renalloss')li('frx','Hipovolemide sıvı kısıtlaması yapılmaz','Önce volüm açığını giderin (yukarıda).');
     else if(fu!==null){
       if(preds.length)li('frx','Sıvı kısıtlamasına yanıt olasılığı düşük ('+preds.join(', ')+')','Erken ikinci basamak tedaviyi düşünün (ABD 2013). Kısıtlamaya tek başına güvenmeyin.');
       else li('frx','Sıvı kısıtlaması ilk basamak','Na’yı 24–48 saat izleyin; yanıtsızlıkta ikinci basamağa geçin.');

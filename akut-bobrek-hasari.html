@@ -140,6 +140,13 @@ ol.rec li b .tag{margin-left:4px}
     <p class="note">AKI tanımı (KDIGO 2012): 48 saatte ≥ 0,3 mg/dL artış, 7 gün içinde bazalin ≥ 1,5 katı veya 6 saat &lt; 0,5 mL/kg/saat idrar. Hasta en yüksek evreyi veren ölçüte göre evrelenir. Kr ≥ 4,0 ile evre 3 için önce tanım ölçütü karşılanmalıdır. 18 yaş altı eGFR ölçütü bu sayfada yoktur (erişkin içindir).</p>
   </section>
 
+  <section class="card" aria-live="polite">
+    <h2>KDIGO’ya göre yönetim</h2>
+    <div class="res"><span class="pill" id="mgp"></span></div>
+    <ol class="rec" id="rxM"></ol>
+    <p class="note">Evreye göre adımlar KDIGO 2012 Şekil 4’ten (yüksek risk ve tüm evreler; evre 1’den, 2’den ve 3’ten itibaren eklenenler); parantez içindeki numaralar KDIGO önerileridir.</p>
+  </section>
+
   <section class="card">
     <h2>İdrar indeksleri</h2>
     <div class="grid">
@@ -186,6 +193,95 @@ ol.rec li b .tag{margin-left:4px}
       </tbody>
     </table>
     <p class="note">FENa = (idrar Na × serum Kr) ÷ (serum Na × idrar Kr) × 100; FEÜre aynı formülde Na yerine üre. Eşikler oligürik AKI’de geliştirilmiştir (Miller 1978, Espinel 1976); tek bir indeks her hastada ayırt etmez, klinik seyirle birlikte yorumlayın.</p>
+  </section>
+
+  <section class="card">
+    <h2>Acil diyaliz değerlendirmesi</h2>
+    <div class="grid">
+      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="5.4"></div>
+      <div class="field"><label for="ph">Arteriyel pH</label><input id="ph" type="number" inputmode="decimal" step="any" value="7.31"></div>
+      <div class="field"><label for="hco">Bikarbonat <span>mmol/L</span></label><input id="hco" type="number" inputmode="decimal" step="any" value="18"></div>
+      <div class="field"><label for="pf">PaO₂/FiO₂</label><input data-aralik="20-700" id="pf" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+      <div class="field"><label for="olg">Oligüri / anüri süresi <span>saat</span></label><input data-aralik="0-720 saat" id="olg" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
+    </div>
+    <span class="lbl">Diüretiğe dirençli akciğer ödemi / volüm yükü</span>
+    <div class="seg"><button type="button" data-g="ovl" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="ovl" data-v="1" aria-pressed="false">Var</button></div>
+    <p class="note">BUN “İdrar indeksleri” kartındaki serum üre/BUN değerinden alınır.</p>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>Acil RRT ölçütleri</h2>
+    <div class="res"><span class="pill" id="rrp"></span></div>
+    <table class="t">
+      <thead><tr><th></th><th>AKIKI <small>2016</small></th><th>STARRT-AKI <small>2020</small></th></tr></thead>
+      <tbody>
+        <tr id="ta"><td>A Asidoz</td><td>pH &lt; 7,15 <small>metabolik (PaCO₂ &lt; 35) veya solunumla düzeltilemeyen mikst</small></td><td>pH ≤ 7,20 veya HCO₃ ≤ 12 mmol/L</td></tr>
+        <tr id="te"><td>E Potasyum</td><td>K &gt; 6 veya tedaviye rağmen &gt; 5,5 mmol/L</td><td>K ≥ 6,0 mmol/L</td></tr>
+        <tr id="to"><td>O Volüm yükü</td><td>Diüretiğe rağmen akciğer ödemi; SpO₂ &gt; %95 için O₂ &gt; 5 L/dk veya FiO₂ &gt; %50</td><td>PaO₂/FiO₂ ≤ 200 + volüm yükü</td></tr>
+        <tr id="tu"><td>U Üremi</td><td>BUN &gt; 112 mg/dL <small>üre &gt; 40 mmol/L ≈ 240 mg/dL</small></td><td>–</td></tr>
+        <tr id="tg"><td>Oligüri</td><td>Oligüri/anüri &gt; 72 saat</td><td>AKI &gt; 72 saat sürmesi</td></tr>
+      </tbody>
+    </table>
+    <ol class="rec" id="rxR"></ol>
+    <p class="note">KDIGO 2012 (5.1.1–5.1.2) sayısal eşik vermez: yaşamı tehdit eden sıvı, elektrolit veya asit–baz bozukluğunda RRT acil başlanır; karar tek BUN/kreatinin eşiğine değil klinik bağlama ve laboratuvar eğilimine dayanır. Tablodaki eşikler, ağır AKI’li yoğun bakım hastalarında “bekleyen” kolun RRT başlatma ölçütleridir. I (intoksikasyon): diyalizle uzaklaştırılan zehirlenmede ayrıca değerlendirin.</p>
+  </section>
+
+  <section class="card" id="ilac">
+    <h2>Nefrotoksik ilaçlar</h2>
+    <p class="note">Hastanın kullandığı ilaçları işaretleyin. Kreatinin ve kilo yukarıdaki kartlardan alınır.</p>
+    <div class="grid">
+      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="1" value="68"></div>
+      <div class="field"><span class="lbl">Cinsiyet</span><div class="seg"><button type="button" data-g="cins" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="cins" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div></div>
+    </div>
+    <span class="lbl">Hemodinamik</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-d="nsaid" checked><span class="txt">NSAİİ<small>COX-2 seçici dahil; reçetesiz kullanımı sorun</small></span></label>
+      <label class="item"><input type="checkbox" data-d="raas" checked><span class="txt">ACEİ / ARB / ARNI<small>-pril, -sartan, sakubitril-valsartan</small></span></label>
+      <label class="item"><input type="checkbox" data-d="mra"><span class="txt">MRA<small>Spironolakton, eplerenon, finerenon</small></span></label>
+      <label class="item"><input type="checkbox" data-d="diu"><span class="txt">Diüretik<small>Furosemid, torasemid, tiyazid</small></span></label>
+      <label class="item"><input type="checkbox" data-d="cni"><span class="txt">Kalsinörin inhibitörü<small>Takrolimus, siklosporin</small></span></label>
+    </div>
+    <span class="lbl">Metabolik</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-d="met" checked><span class="txt">Metformin</span></label>
+      <label class="item"><input type="checkbox" data-d="sglt"><span class="txt">SGLT2 inhibitörü<small>-flozin</small></span></label>
+      <label class="item"><input type="checkbox" data-d="su"><span class="txt">Sülfonilüre<small>Gliklazid, glimepirid, glibenklamid</small></span></label>
+    </div>
+    <span class="lbl">Doğrudan nefrotoksik</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-d="ag"><span class="txt">Aminoglikozid<small>Gentamisin, amikasin</small></span></label>
+      <label class="item"><input type="checkbox" data-d="vanko"><span class="txt">Vankomisin</span></label>
+      <label class="item"><input type="checkbox" data-d="amfo"><span class="txt">Amfoterisin B</span></label>
+      <label class="item"><input type="checkbox" data-d="kont"><span class="txt">İyotlu kontrast<small>Yakın zamanda verildi veya planlanıyor</small></span></label>
+      <label class="item"><input type="checkbox" data-d="ppi"><span class="txt">Proton pompa inhibitörü<small>AİN</small></span></label>
+      <label class="item"><input type="checkbox" data-d="tmp"><span class="txt">Trimetoprim-sülfametoksazol</span></label>
+      <label class="item"><input type="checkbox" data-d="diger"><span class="txt">Diğer nefrotoksik<small>Sisplatin, metotreksat, kolistin, IV asiklovir, tenofovir DF, IV bisfosfonat</small></span></label>
+    </div>
+    <span class="lbl">Böbrekten atılan, dar aralıklı</span>
+    <div class="items">
+      <label class="item"><input type="checkbox" data-d="li"><span class="txt">Lityum</span></label>
+      <label class="item"><input type="checkbox" data-d="dig"><span class="txt">Digoksin</span></label>
+      <label class="item"><input type="checkbox" data-d="doak"><span class="txt">DOAK / DMAH<small>Apiksaban, rivaroksaban, edoksaban, dabigatran, enoksaparin</small></span></label>
+      <label class="item"><input type="checkbox" data-d="opi"><span class="txt">Morfin, gabapentin, pregabalin</span></label>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <h2>İlaç önerileri</h2>
+    <div class="res"><span class="pill" id="ilp"></span></div>
+    <div class="sub"><span>CrCl, güncel Kr ile <small>Cockcroft-Gault, gerçek kilo</small></span><b id="crg">–</b></div>
+    <div class="sub"><span>CrCl, bazal Kr ile</span><b id="crb">–</b></div>
+    <div class="sub"><span>eGFR, bazal Kr ile <small>CKD-EPI 2021</small></span><b id="egb">–</b></div>
+    <ol class="rec" id="rxC"></ol>
+    <ol class="rec" id="rxD"></ol>
+    <h3>Yeniden başlama (sick day)</h3>
+    <ol class="rec">
+      <li><b>Kesilen her ilaç için yazılı yeniden başlama planı</b><p class="advice">Ne zaman ve hangi koşulda başlanacağı kayda ve epikriz/taburculuk notuna yazılmalı; unutulup başlanmayan ilaç da zarar verir (KDIGO 2024 UN 4.3.2–4.3.3).</p></li>
+      <li><b>Koşullar</b><p class="advice">Hasta en az 24 saattir normal yiyip içiyor ve akut hasta değil (NHS İskoçya sick day rehberi); hemodinamik olarak stabil ve öyemik; Kr bazale dönüyor veya stabil; K normal.</p></li>
+      <li><b>Sıra ve izlem</b><p class="advice">Önce kardiyorenal yararı olanlar (ACEİ/ARB/ARNI, SGLT2i, MRA), birer birer. ACEİ/ARB başlanınca 2–4 hafta içinde kan basıncı, Kr ve K kontrol edin (KDIGO 2024 UN 3.6.2). NSAİİ’yi yeniden başlamayın.</p></li>
+      <li><b>Hastaya sick day eğitimi</b><p class="advice">İki veya daha fazla kusma/ishal ya da ateş-titreme olursa SGLT2i, ACEİ, ARB, diüretik, metformin ve NSAİİ geçici bırakılır, 24–48 saat normal beslendikten sonra yeniden başlanır; 72 saatten uzun süren hastalıkta hekime başvurulur (NHS İskoçya 2026). Kanıt düzeyi düşüktür: KDIGO 2024 sick day kuralları için ayrı bir öneri vermez, yalnız yeniden başlama planını vurgular.</p></li>
+    </ol>
+    <p class="note"><b>Kes</b>: AKI süresince bırakın, mümkünse alternatif. <b>Beklet</b>: geçici bırakın, koşullar sağlanınca yeniden başlayın. <b>Düzeye göre</b>: ilaç düzeyiyle karar verin. <b>Doz ayarı</b>: böbrek işlevine göre doz; dozlar <a href="bobrek-ilac-dozu.html">Böbrekte İlaç Dozu</a> aracında.</p>
   </section>
 
   <section class="card" id="etio">
@@ -279,102 +375,6 @@ ol.rec li b .tag{margin-left:4px}
     <h3>Önerilen tetkikler</h3>
     <ol class="rec" id="rxW"></ol>
     <p class="note">Sayılar destekleyen bulgu sayısıdır, olasılık değildir; gruplar birlikte bulunabilir (ör. sepsiste prerenal ve ATN). Kesin tanı için nefroloji, gerekirse biyopsi.</p>
-  </section>
-
-  <section class="card" aria-live="polite">
-    <h2>KDIGO’ya göre yönetim</h2>
-    <div class="res"><span class="pill" id="mgp"></span></div>
-    <ol class="rec" id="rxM"></ol>
-    <p class="note">Evreye göre adımlar KDIGO 2012 Şekil 4’ten (yüksek risk ve tüm evreler; evre 1’den, 2’den ve 3’ten itibaren eklenenler); parantez içindeki numaralar KDIGO önerileridir.</p>
-  </section>
-
-  <section class="card" id="ilac">
-    <h2>Nefrotoksik ilaçlar</h2>
-    <p class="note">Hastanın kullandığı ilaçları işaretleyin. Kreatinin ve kilo yukarıdaki kartlardan alınır.</p>
-    <div class="grid">
-      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="1" value="68"></div>
-      <div class="field"><span class="lbl">Cinsiyet</span><div class="seg"><button type="button" data-g="cins" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="cins" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div></div>
-    </div>
-    <span class="lbl">Hemodinamik</span>
-    <div class="items">
-      <label class="item"><input type="checkbox" data-d="nsaid" checked><span class="txt">NSAİİ<small>COX-2 seçici dahil; reçetesiz kullanımı sorun</small></span></label>
-      <label class="item"><input type="checkbox" data-d="raas" checked><span class="txt">ACEİ / ARB / ARNI<small>-pril, -sartan, sakubitril-valsartan</small></span></label>
-      <label class="item"><input type="checkbox" data-d="mra"><span class="txt">MRA<small>Spironolakton, eplerenon, finerenon</small></span></label>
-      <label class="item"><input type="checkbox" data-d="diu"><span class="txt">Diüretik<small>Furosemid, torasemid, tiyazid</small></span></label>
-      <label class="item"><input type="checkbox" data-d="cni"><span class="txt">Kalsinörin inhibitörü<small>Takrolimus, siklosporin</small></span></label>
-    </div>
-    <span class="lbl">Metabolik</span>
-    <div class="items">
-      <label class="item"><input type="checkbox" data-d="met" checked><span class="txt">Metformin</span></label>
-      <label class="item"><input type="checkbox" data-d="sglt"><span class="txt">SGLT2 inhibitörü<small>-flozin</small></span></label>
-      <label class="item"><input type="checkbox" data-d="su"><span class="txt">Sülfonilüre<small>Gliklazid, glimepirid, glibenklamid</small></span></label>
-    </div>
-    <span class="lbl">Doğrudan nefrotoksik</span>
-    <div class="items">
-      <label class="item"><input type="checkbox" data-d="ag"><span class="txt">Aminoglikozid<small>Gentamisin, amikasin</small></span></label>
-      <label class="item"><input type="checkbox" data-d="vanko"><span class="txt">Vankomisin</span></label>
-      <label class="item"><input type="checkbox" data-d="amfo"><span class="txt">Amfoterisin B</span></label>
-      <label class="item"><input type="checkbox" data-d="kont"><span class="txt">İyotlu kontrast<small>Yakın zamanda verildi veya planlanıyor</small></span></label>
-      <label class="item"><input type="checkbox" data-d="ppi"><span class="txt">Proton pompa inhibitörü<small>AİN</small></span></label>
-      <label class="item"><input type="checkbox" data-d="tmp"><span class="txt">Trimetoprim-sülfametoksazol</span></label>
-      <label class="item"><input type="checkbox" data-d="diger"><span class="txt">Diğer nefrotoksik<small>Sisplatin, metotreksat, kolistin, IV asiklovir, tenofovir DF, IV bisfosfonat</small></span></label>
-    </div>
-    <span class="lbl">Böbrekten atılan, dar aralıklı</span>
-    <div class="items">
-      <label class="item"><input type="checkbox" data-d="li"><span class="txt">Lityum</span></label>
-      <label class="item"><input type="checkbox" data-d="dig"><span class="txt">Digoksin</span></label>
-      <label class="item"><input type="checkbox" data-d="doak"><span class="txt">DOAK / DMAH<small>Apiksaban, rivaroksaban, edoksaban, dabigatran, enoksaparin</small></span></label>
-      <label class="item"><input type="checkbox" data-d="opi"><span class="txt">Morfin, gabapentin, pregabalin</span></label>
-    </div>
-  </section>
-
-  <section class="card" aria-live="polite">
-    <h2>İlaç önerileri</h2>
-    <div class="res"><span class="pill" id="ilp"></span></div>
-    <div class="sub"><span>CrCl, güncel Kr ile <small>Cockcroft-Gault, gerçek kilo</small></span><b id="crg">–</b></div>
-    <div class="sub"><span>CrCl, bazal Kr ile</span><b id="crb">–</b></div>
-    <div class="sub"><span>eGFR, bazal Kr ile <small>CKD-EPI 2021</small></span><b id="egb">–</b></div>
-    <ol class="rec" id="rxC"></ol>
-    <ol class="rec" id="rxD"></ol>
-    <h3>Yeniden başlama (sick day)</h3>
-    <ol class="rec">
-      <li><b>Kesilen her ilaç için yazılı yeniden başlama planı</b><p class="advice">Ne zaman ve hangi koşulda başlanacağı kayda ve epikriz/taburculuk notuna yazılmalı; unutulup başlanmayan ilaç da zarar verir (KDIGO 2024 UN 4.3.2–4.3.3).</p></li>
-      <li><b>Koşullar</b><p class="advice">Hasta en az 24 saattir normal yiyip içiyor ve akut hasta değil (NHS İskoçya sick day rehberi); hemodinamik olarak stabil ve öyemik; Kr bazale dönüyor veya stabil; K normal.</p></li>
-      <li><b>Sıra ve izlem</b><p class="advice">Önce kardiyorenal yararı olanlar (ACEİ/ARB/ARNI, SGLT2i, MRA), birer birer. ACEİ/ARB başlanınca 2–4 hafta içinde kan basıncı, Kr ve K kontrol edin (KDIGO 2024 UN 3.6.2). NSAİİ’yi yeniden başlamayın.</p></li>
-      <li><b>Hastaya sick day eğitimi</b><p class="advice">İki veya daha fazla kusma/ishal ya da ateş-titreme olursa SGLT2i, ACEİ, ARB, diüretik, metformin ve NSAİİ geçici bırakılır, 24–48 saat normal beslendikten sonra yeniden başlanır; 72 saatten uzun süren hastalıkta hekime başvurulur (NHS İskoçya 2026). Kanıt düzeyi düşüktür: KDIGO 2024 sick day kuralları için ayrı bir öneri vermez, yalnız yeniden başlama planını vurgular.</p></li>
-    </ol>
-    <p class="note"><b>Kes</b>: AKI süresince bırakın, mümkünse alternatif. <b>Beklet</b>: geçici bırakın, koşullar sağlanınca yeniden başlayın. <b>Düzeye göre</b>: ilaç düzeyiyle karar verin. <b>Doz ayarı</b>: böbrek işlevine göre doz; dozlar <a href="bobrek-ilac-dozu.html">Böbrekte İlaç Dozu</a> aracında.</p>
-  </section>
-
-  <section class="card">
-    <h2>Acil diyaliz değerlendirmesi</h2>
-    <div class="grid">
-      <div class="field"><label for="k">Potasyum <span>mmol/L</span></label><input id="k" data-hasta="k" type="number" inputmode="decimal" step="any" value="5.4"></div>
-      <div class="field"><label for="ph">Arteriyel pH</label><input id="ph" type="number" inputmode="decimal" step="any" value="7.31"></div>
-      <div class="field"><label for="hco">Bikarbonat <span>mmol/L</span></label><input id="hco" type="number" inputmode="decimal" step="any" value="18"></div>
-      <div class="field"><label for="pf">PaO₂/FiO₂</label><input data-aralik="20-700" id="pf" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
-      <div class="field"><label for="olg">Oligüri / anüri süresi <span>saat</span></label><input data-aralik="0-720 saat" id="olg" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
-    </div>
-    <span class="lbl">Diüretiğe dirençli akciğer ödemi / volüm yükü</span>
-    <div class="seg"><button type="button" data-g="ovl" data-v="0" aria-pressed="true">Yok</button><button type="button" data-g="ovl" data-v="1" aria-pressed="false">Var</button></div>
-    <p class="note">BUN “İdrar indeksleri” kartındaki serum üre/BUN değerinden alınır.</p>
-  </section>
-
-  <section class="card" aria-live="polite">
-    <h2>Acil RRT ölçütleri</h2>
-    <div class="res"><span class="pill" id="rrp"></span></div>
-    <table class="t">
-      <thead><tr><th></th><th>AKIKI <small>2016</small></th><th>STARRT-AKI <small>2020</small></th></tr></thead>
-      <tbody>
-        <tr id="ta"><td>A Asidoz</td><td>pH &lt; 7,15 <small>metabolik (PaCO₂ &lt; 35) veya solunumla düzeltilemeyen mikst</small></td><td>pH ≤ 7,20 veya HCO₃ ≤ 12 mmol/L</td></tr>
-        <tr id="te"><td>E Potasyum</td><td>K &gt; 6 veya tedaviye rağmen &gt; 5,5 mmol/L</td><td>K ≥ 6,0 mmol/L</td></tr>
-        <tr id="to"><td>O Volüm yükü</td><td>Diüretiğe rağmen akciğer ödemi; SpO₂ &gt; %95 için O₂ &gt; 5 L/dk veya FiO₂ &gt; %50</td><td>PaO₂/FiO₂ ≤ 200 + volüm yükü</td></tr>
-        <tr id="tu"><td>U Üremi</td><td>BUN &gt; 112 mg/dL <small>üre &gt; 40 mmol/L ≈ 240 mg/dL</small></td><td>–</td></tr>
-        <tr id="tg"><td>Oligüri</td><td>Oligüri/anüri &gt; 72 saat</td><td>AKI &gt; 72 saat sürmesi</td></tr>
-      </tbody>
-    </table>
-    <ol class="rec" id="rxR"></ol>
-    <p class="note">KDIGO 2012 (5.1.1–5.1.2) sayısal eşik vermez: yaşamı tehdit eden sıvı, elektrolit veya asit–baz bozukluğunda RRT acil başlanır; karar tek BUN/kreatinin eşiğine değil klinik bağlama ve laboratuvar eğilimine dayanır. Tablodaki eşikler, ağır AKI’li yoğun bakım hastalarında “bekleyen” kolun RRT başlatma ölçütleridir. I (intoksikasyon): diyalizle uzaklaştırılan zehirlenmede ayrıca değerlendirin.</p>
   </section>
 
   <p class="note">Kaynaklar: KDIGO AKI Çalışma Grubu. KDIGO Clinical Practice Guideline for Acute Kidney Injury, Kidney Int Suppl 2012;2:1–138 (AKI tanımı ve evreleri, en yüksek evre kuralı, Kr ≥ 4,0 koşulu, Şekil 4 evreye göre yönetim, öneriler 2.3, 3.1.1–3.1.2, 3.3.1–3.3.4, 3.4.1–3.4.2, 3.5.1, 3.8.1–3.8.7, 4.2–4.5, 5.1.1–5.1.2); Kellum JA, Lameire N. KDIGO özeti, Crit Care 2013;17:204 ve 205; KDIGO 2026 AKI/AKD kılavuzu henüz taslaktır, bu sayfa 2012 kılavuzuna dayanır. Espinel CH. JAMA 1976;236:579–81 ve Espinel CH, Gregory AW. Clin Nephrol 1980;13:73–7 (FENa &lt; 1 / &gt; 3); Miller TR ve ark. Ann Intern Med 1978;89:47–50 (idrar Na, ozmolalite, U/P kreatinin ve üre); Carvounis CP ve ark. Kidney Int 2002;62:2223–9 (FEÜre ≤ %35, diüretik); Steiner RW. Am J Med 1984;77:699–702 ve Zarich S ve ark. Arch Intern Med 1985;145:108–12 (FENa istisnaları); Feinfeld DA ve ark. Int Urol Nephrol 2002;34:143–5 (BUN/Kr); Perazella MA ve ark. Clin J Am Soc Nephrol 2008;3:1615–9 ve Fadel R ve ark. Kidney360 2023;4:918–23 (sediment); Gaudry S ve ark. AKIKI, N Engl J Med 2016;375:122–33 ve protokol (Crit Care 2015;19 Suppl 1) ile AKIKI 2, Lancet 2021;397:1293–300; STARRT-AKI Investigators, N Engl J Med 2020;383:240–51 ve çalışma sitesi (University of Alberta; standart kol RRT ölçütleri). Nefrotoksik ilaçlar ve etiyoloji: NICE NG148 Acute kidney injury: prevention, detection and management (2019; öneriler 1.1.1, 1.1.7, 1.2.8–1.2.9, 1.2.14, 1.4.2–1.4.6, 1.5.1–1.5.4, 1.5.15, 1.6.4); KDIGO 2024 CKD kılavuzu, Kidney Int 2024;105(4S):S117–S314 (uygulama noktaları 3.6.2, 3.6.5, 3.7.2, 3.8.3, 3.8.5, 4.1.2–4.1.3, 4.2.5, 4.3.1–4.3.3, 4.4.1.2; Tablo 31); KDIGO 2022 diyabet ve KBH kılavuzu (metformin eGFR eşikleri); KDIGO 2021 glomerüler hastalıklar kılavuzu (GN serolojisi); Rybak MJ ve ark. ASHP/IDSA/PIDS/SIDP vankomisin konsensüsü, Am J Health Syst Pharm 2020;77:835–64 (AUC 400–600); NHS İskoçya (Healthcare Improvement Scotland) Medicine sick day guidance, Haziran 2026 (tetikleyiciler, 24–48 saat sonra yeniden başlama); Stoffel JT ve ark. AUA nonnörojenik kronik üriner retansiyon raporu, 2017 (PVR &gt; 300 mL); Cockcroft DW, Gault MH. Nephron 1976;16:31–41; Inker LA ve ark. CKD-EPI 2021, N Engl J Med 2021;385:1737–49. Bu araç klinik karar desteği içindir.</p>
