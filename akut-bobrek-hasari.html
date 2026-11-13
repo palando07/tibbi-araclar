@@ -101,6 +101,10 @@ ol.rec li b .tag{margin-left:4px}
       <div class="field"><label for="bcr">Bazal kreatinin <span>mg/dL</span></label><input id="bcr" type="number" inputmode="decimal" step="any" value="0.9"></div>
       <div class="field"><label for="ccr">Güncel kreatinin <span>mg/dL</span></label><input id="ccr" data-hasta="kreatinin" type="number" inputmode="decimal" step="any" value="1.6"></div>
     </div>
+    <div class="grid">
+      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="1" value="68"></div>
+      <div class="field"><span class="lbl">Cinsiyet</span><div class="seg"><button type="button" data-g="cins" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="cins" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div></div>
+    </div>
     <span class="lbl">Artışın gerçekleştiği süre</span>
     <div class="seg wrapseg"><button type="button" data-g="tm" data-v="48" aria-pressed="true">48 saat içinde</button><button type="button" data-g="tm" data-v="7" aria-pressed="false">7 gün içinde</button><button type="button" data-g="tm" data-v="x" aria-pressed="false">7 günden uzun</button><button type="button" data-g="tm" data-v="u" aria-pressed="false">Bilinmiyor</button></div>
     <span class="lbl">Böbrek replasman tedavisi (RRT)</span>
@@ -228,11 +232,7 @@ ol.rec li b .tag{margin-left:4px}
 
   <section class="card" id="ilac">
     <h2>Nefrotoksik ilaçlar</h2>
-    <p class="note">Hastanın kullandığı ilaçları işaretleyin. Kreatinin ve kilo yukarıdaki kartlardan alınır.</p>
-    <div class="grid">
-      <div class="field"><label for="yas">Yaş <span>yıl</span></label><input id="yas" data-hasta="yas" type="number" inputmode="decimal" step="1" value="68"></div>
-      <div class="field"><span class="lbl">Cinsiyet</span><div class="seg"><button type="button" data-g="cins" data-v="m" data-hasta-cins="m" aria-pressed="true">Erkek</button><button type="button" data-g="cins" data-v="f" data-hasta-cins="f" aria-pressed="false">Kadın</button></div></div>
-    </div>
+    <p class="note">Hastanın kullandığı ilaçları işaretleyin. Kreatinin, yaş, cinsiyet ve kilo yukarıdaki kartlardan alınır.</p>
     <span class="lbl">Hemodinamik</span>
     <div class="items">
       <label class="item"><input type="checkbox" data-d="nsaid" checked><span class="txt">NSAİİ<small>COX-2 seçici dahil; reçetesiz kullanımı sorun</small></span></label>
@@ -343,6 +343,8 @@ ol.rec li b .tag{margin-left:4px}
       <div class="field"><label for="pvr">Mesane hacmi / PVR <span>mL</span></label><input data-aralik="0-5000 mL" id="pvr" type="number" inputmode="decimal" step="any" value="" placeholder="isteğe bağlı"></div>
     </div>
     <p class="note">Mesane taraması (bladder scan) veya işeme sonrası rezidü. AUA (2017) kronik retansiyonu en az iki kez PVR &gt; 300 mL olarak tanımlar; AKI’ye özgü kılavuz eşiği yoktur.</p>
+    <details>
+      <summary>İdrar bulguları ne düşündürür?</summary>
     <table class="t">
       <thead><tr><th>İdrar bulgusu</th><th>Düşündürür</th></tr></thead>
       <tbody>
@@ -359,6 +361,7 @@ ol.rec li b .tag{margin-left:4px}
         <tr><td>Silik (bland) sediment</td><td>Prerenal, postrenal; bazı vasküler nedenler</td></tr>
       </tbody>
     </table>
+    </details>
     <p class="note">Görüntüleme, özellikle böbrek ultrasonu, AKI değerlendirmesinin temel parçasıdır (KDIGO 2012). FENa obstrüksiyonu ayırt etmez: Espinel 1980’de obstrüksiyonda FENa &gt; %1 iken akut obstrüksiyonda FENa &lt; %1 de bildirilmiştir (Steiner 1984; Zarich 1985).</p>
   </section>
 

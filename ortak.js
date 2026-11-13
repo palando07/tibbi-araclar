@@ -820,7 +820,7 @@
   }
 
   // Geri bildirim: sayfanın en altında; araç adı ve sürüm yazılı hazır e-posta açar. Hiçbir şey kaydedilmez.
-  var SURUM = 'v76', SURUM_TARIH = '13 Kasım 2026', GB_ADRES = 'blgnonur97@gmail.com';
+  var SURUM = 'v77', SURUM_TARIH = '14 Kasım 2026', GB_ADRES = 'blgnonur97@gmail.com';
   window.vizitSurum = SURUM; window.vizitGbAdres = GB_ADRES;
   var sEl = document.getElementById('surum'); if (sEl) sEl.textContent = 'Sürüm ' + SURUM + ' · ' + SURUM_TARIH;
   var kap = document.querySelector('.wrap');
